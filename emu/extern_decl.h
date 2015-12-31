@@ -238,7 +238,7 @@ extern BPLONG bp_updiv_bigint_bigint(BPLONG op1, BPLONG op2);
 extern BPLONG bp_lowdiv_bigint_bigint(BPLONG op1, BPLONG op2);								
 extern BPLONG bp_gcd_bigint_bigint(BPLONG i1,BPLONG i2);								
 extern BPLONG bp_pow_bigint_int(BPLONG op1,BPLONG op2);								
-extern int bp_write_bigint_to_strf(BPLONG op, char *buf, int buf_size);
+extern int bp_write_bigint_to_str(BPLONG op, char *buf, int buf_size);
 extern void bp_print_bigint(BPLONG op);											
 extern int b_BUILD_56B_INT_ccf(BPLONG w1, BPLONG w0, BPLONG v);
 
