@@ -971,6 +971,10 @@ extern BPLONG make_cons_in_parea(BPLONG car, BPLONG cdr);
 extern BPLONG copy_term_heap_to_parea(BPLONG value);									
 extern BPLONG copy_term_heap_to_parea_with_varno(BPLONG value,BPLONG *varno);						 
 extern int c_UNNUMBER_VARS(void);											
+//
+//	glpk_bp.c prototypes
+//
+extern void Cboot_glpk();
 
 //
 //	init.c prototypes
@@ -1013,6 +1017,8 @@ extern int c_CURRENT_PREDICATES(void);
 extern SYM_REC_PTR look_for_sym_with_entrance(BPLONG_PTR p);								
 extern int c_LOAD_BYTE_CODE_FROM_BPLISTS();
 extern int c_GET_MODULE_SIGNATURE_cf();
+extern int load_byte_code_from_c_array();
+extern BPLONG bp_prime(BPLONG numentry);
 
 //
 //	mic.c prototypes
@@ -1301,6 +1307,8 @@ extern int c_update_term_start_line_no(void);
 extern int c_report_syntax_error(void);											
 extern int utf8_getc(FILE *curr_in, int c);
 extern char *utf8_codepoint_to_str(int code, CHAR_PTR s);
+extern int utf8_char_to_codepoint(CHAR_PTR *s_ptr);
+extern int utf8_nchars(char *s);
 
 //
 //	unify.c prototypes
@@ -1320,6 +1328,7 @@ extern void merge_cs(BPLONG_PTR addr_head_cs1,BPLONG cs2);
 extern int key_identical(BPLONG op1, BPLONG op2);							
 extern int unifyNumberedTerms(BPLONG t1, BPLONG t2);
 extern int c_SAME_ADDR();
+extern int bp_identical(BPLONG op1, BPLONG op2);
 
 //
 //	univ.c prototypes
@@ -1344,3 +1353,4 @@ extern int c_call_espresso();
 extern int c_call_espresso_element();
 extern int c_call_espresso_table();
 extern int c_call_espresso_pb();
+extern void Cboot_sat();

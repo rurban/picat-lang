@@ -29,6 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include "dummy_print.h"
 
 /* library version numbers: */
 #define GLP_MAJOR_VERSION  4

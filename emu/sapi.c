@@ -14,7 +14,13 @@
 #include <stdarg.h>
 #include <string.h>
 
+#ifdef __unix__
+#include <unistd.h>
+#endif
+
 /* extern char *malloc();*/
+int SP_list_len(SP_term_ref t);
+int SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *s);
 
 char *SP_error_message(BPLONG errno){
     quit("Not implemented \n");

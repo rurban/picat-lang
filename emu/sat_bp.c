@@ -145,7 +145,7 @@ int c_sat_start(){
     return BP_FALSE;
 }
 
-Cboot_sat(){
+void Cboot_sat(){
     insert_cpred("c_sat_init",0,c_sat_init);
     insert_cpred("c_sat_start",1,c_sat_start);
 }

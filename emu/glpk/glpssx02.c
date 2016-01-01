@@ -25,6 +25,7 @@
 
 #include "glplib.h"
 #include "glpssx.h"
+#include "dummy_print.h"
 #define print dummy_print    
 
 static void show_progress(SSX *ssx, int phase)

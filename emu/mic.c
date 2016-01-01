@@ -60,6 +60,8 @@ extern char *string_in;
 
 BPLONG greater_than_sym,less_than_sym,equal_sym;
 
+int compare_bigint_float(BPLONG val1, BPLONG val2);
+
 int c_ref_equal(){
   BPLONG op1 = ARG(1,2);
   BPLONG op2 = ARG(2,2);

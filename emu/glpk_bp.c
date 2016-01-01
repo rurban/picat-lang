@@ -282,7 +282,7 @@ exit_glpk:
     return BP_TRUE;
 }
 
-Cboot_glpk(){
+void Cboot_glpk(){
     insert_cpred("c_lp_solve",8,c_lp_solve);
 }
 #endif

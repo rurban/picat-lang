@@ -543,6 +543,7 @@ extern struct cdata_struct cdata, temp_cdata_save;
 /* cvrin.c */ extern void parse_pla (FILE *fp, pPLA PLA);
 /* cvrin.c */ extern void read_cube (register FILE *fp, pPLA PLA);
 /* cvrin.c */ extern void skip_line (register FILE *fpin, register FILE *fpout, register int echo);
+/* cvrin.c */ extern int after_setup_pla(int needs_dcset, int needs_offset, pPLA PLA);
 /* cvrm.c */ extern void foreach_output_function (pPLA PLA, int (*func)(pPLA, int), int (*func1)(pPLA, int));
 /* cvrm.c */ extern int cubelist_partition (pset *T, pset **A, pset **B, unsigned int comp_debug);
 /* cvrm.c */ extern int so_both_do_espresso (pPLA PLA, int i);
