@@ -2836,7 +2836,7 @@ void Cboot_mic()
 
 #define	ROTL32(x,r) (x << r) | (x >> (32 - r))
     
-FORCE_INLINE UW32 fmix ( UW32 h )
+FORCE_INLINE inline UW32 fmix ( UW32 h )
 {
   h ^= h >> 16;
   h *= 0x85ebca6b;
