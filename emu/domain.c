@@ -1823,7 +1823,7 @@ void domain_reduce_to_two(dv_ptr,val1,val2)
   $alldistinct_exclude_hall_set(X,[_|Ys]):-true : 
   $alldistinct_exclude_hall_set(X,Ys).
 */
-b_ALLDISTINCT_CHECK_HALL_VAR_cccc(X,NumElmsLeft,L,R)
+int b_ALLDISTINCT_CHECK_HALL_VAR_cccc(X,NumElmsLeft,L,R)
 BPLONG X,NumElmsLeft,L,R;
 {
     BPLONG L0,NumElmsLeft0;

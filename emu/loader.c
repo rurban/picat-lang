@@ -1324,7 +1324,7 @@ CHAR_PTR namestring(sym_ptr, s)
     return s;
 }
 
-c_CURRENT_PREDICATE(){
+int c_CURRENT_PREDICATE(){
     BPLONG bucket_no,length;
     SYM_REC_PTR sym_ptr;
     BPLONG f,n;

@@ -1191,7 +1191,7 @@ int c_GET_NONEMPTY_LINE(){
     return BP_TRUE;
 }
 
-getline_is_spaces(s)
+int getline_is_spaces(s)
 char *s;
 {
     while (*s!='\0'){

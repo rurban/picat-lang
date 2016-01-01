@@ -104,7 +104,7 @@
     }
 
   
-c_test_bigint(){
+int c_test_bigint(){
     BPLONG res;
   
     res = bp_mul_bigint_bigint(bp_int_to_bigint(-536870910),bp_int_to_bigint(1));

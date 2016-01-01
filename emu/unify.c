@@ -186,7 +186,7 @@ int unify_lst_lst(op1,op2)
 /*
   op1,op2 are both structures
 */
-unify_str_str(op1,op2)
+int unify_str_str(op1,op2)
 register BPLONG op1,op2;
 {
     register BPLONG     arity, i;
@@ -207,13 +207,13 @@ register BPLONG op1,op2;
     return unify(op1,op2);
 }
   
-is_IDENTICAL(op1, op2)
+int is_IDENTICAL(op1, op2)
 BPLONG op1, op2;
 {
     return bp_identical(op1, op2);
 }
 
-bp_identical(op1, op2)
+int bp_identical(op1, op2)
 register BPLONG op1, op2;
 {
     register BPLONG_PTR top;
@@ -255,7 +255,7 @@ register BPLONG op1, op2;
     return 0;
 }
 
-is_UNIFIABLE(t1,t2)
+int is_UNIFIABLE(t1,t2)
 BPLONG t1,t2;
 {
     BPLONG_PTR trail_top0,hbreg0;
@@ -281,13 +281,13 @@ BPLONG t1,t2;
     return res;
 }
   
-c_UNIFIABLE(){
+int c_UNIFIABLE(){
     register BPLONG op1,op2;
     op1 = ARG(1,2); op2 = ARG(2,2);
     return is_UNIFIABLE(op1,op2);
 }
 
-unify_suspvar_suspvar(op1,op2)
+int unify_suspvar_suspvar(op1,op2)
 BPLONG op1,op2;
 {
     BPLONG_PTR dv_ptr1,dv_ptr2;
@@ -317,7 +317,7 @@ BPLONG op1,op2;
         }
 }
 
-unify_dvar_dvar(dv_ptr1,dv_ptr2)
+int unify_dvar_dvar(dv_ptr1,dv_ptr2)
 BPLONG_PTR dv_ptr1,dv_ptr2;
 {
     BPLONG first,last,count;
@@ -436,7 +436,7 @@ itdvar_bvdvar:
 }
   
 /* let dv_ptr2 point to dv_ptr1 */
-bind_susp_susp(dv_ptr1,dv_ptr2)
+int bind_susp_susp(dv_ptr1,dv_ptr2)
 BPLONG_PTR dv_ptr1,dv_ptr2;
 {
     /*
@@ -523,7 +523,7 @@ void merge_cs(addr_head_cs1,cs2)
 
 
 /* same as identical(op1,op2) except that variables are not compared */
-key_identical(op1, op2)
+int key_identical(op1, op2)
 register BPLONG op1, op2;
 {
     register BPLONG_PTR top;

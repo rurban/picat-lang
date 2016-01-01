@@ -798,7 +798,7 @@ int read_utf8_character(FILE * card, int q){
     }
 } 
 
-handleEolInQuoted2()
+int handleEolInQuoted2()
 {
     lastc = '\0';
     exception = c_syntax_error(et_IN_CHARACTER);

@@ -1934,7 +1934,7 @@ int b_PLANNER_CURR_RPC_fff(BPLONG Amount, BPLONG Plan, BPLONG Cost){
 }
 
 /* insert the call $picat_table_map(Key,_) to the subgoal table with $picat_table_map(Key,Val) as an answer */
-b_TABLE_MAP_PUT_cc(BPLONG Key,BPLONG Val){
+int b_TABLE_MAP_PUT_cc(BPLONG Key,BPLONG Val){
     BPLONG_PTR subgoal_entry,stack_arg_ptr,answer,trail_top0;
     BPLONG initial_diff0;
   
@@ -1960,7 +1960,7 @@ b_TABLE_MAP_PUT_cc(BPLONG Key,BPLONG Val){
 }
 
 /* check if there is a subgoal $picat_table_map(Key,_) in the subgoal table. If so, retrieve Val of the answer */
-b_TABLE_MAP_GET_cf(BPLONG Key,BPLONG Val){
+int b_TABLE_MAP_GET_cf(BPLONG Key,BPLONG Val){
     BPLONG_PTR subgoal_entry,stack_arg_ptr,answer,table_arg_ptr;
 
     //  printf("=>TABLE_MAP_GET ");    write_term(Key); printf("\n");
@@ -1981,7 +1981,7 @@ b_TABLE_MAP_GET_cf(BPLONG Key,BPLONG Val){
     return BP_TRUE;
 }
 
-c_TABLE_MAP_SIZE(){
+int c_TABLE_MAP_SIZE(){
     BPLONG_PTR subgoal_entry;
     SYM_REC_PTR sym_ptr;
     BPLONG Size,i,count = 0;
@@ -2002,7 +2002,7 @@ c_TABLE_MAP_SIZE(){
 }
 
 /* check if a call '_$planner'(S,_) has been tabled */
-b_IS_PLANNER_STATE_c(BPLONG state){
+int b_IS_PLANNER_STATE_c(BPLONG state){
     BPLONG_PTR stack_arg_ptr;
 
     stack_arg_ptr = local_top;
