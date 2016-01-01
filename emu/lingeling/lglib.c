@@ -49,6 +49,15 @@
 
 #define cover(b) assert(!(b))
 
+/* When assertions are disabled, many variables used in
+   assertions are being considered "set but unused". Work
+   aroud this by making assert to evaluate the variables. */
+#ifdef NDEBUG
+#define ASSERT(x) do { (void)sizeof(x); } while (0)
+#else
+#define ASSERT(x) assert(x)
+#endif
+
 typedef enum Tag {
   FREEVAR = 0,
   FIXEDVAR = 1,
@@ -728,7 +737,7 @@ static int lglceilsqrt32 (int x) {
   if (x >= rr) return r;
   for (;;) {
     assert (l < r);
-    assert (ll < x && x < rr);
+    ASSERT (ll < x && x < rr);
     if (r - l == 1) return r;
     m = (l + r)/2;
     mm = m*m;
@@ -746,7 +755,7 @@ static int lglceilsqrt64 (int x) {
   if (x >= rr) return r;
   for (;;) {
     assert (l < r);
-    assert (ll < x && x < rr);
+    ASSERT (ll < x && x < rr);
     if (r - l == 1) return r;
     m = (l + r)/2;
     mm = m*m;
@@ -2922,7 +2931,7 @@ static void lgladdcls (LGL * lgl, int red, int glue) {
     lgl->stats.red.lrg++;
     lgl->stats.rdded++;
     rescore = lglbumplidx (lgl, lidx);
-    assert (!rescore);
+    ASSERT (!rescore);
   }
   if (!red && lgl->dense) {
     assert (!lgl->level);
@@ -3061,7 +3070,6 @@ static void lgltonflict (LGL * lgl, int lit, int blit, int other2) {
 static void lglonflict (LGL * lgl,
                          int check,
                          int lit, int red, int lidx) {
-  Lir * lir;
   int glue;
 #if !defined (NLGLOG) || !defined (NDEBUG)
   int * p, * c = lglidx2lits (lgl, red, lidx);
@@ -3092,7 +3100,6 @@ static void lglonflict (LGL * lgl,
 #endif
   if (red) {
     glue = lidx & GLUEMASK;
-    lir = lgl->red + glue;
     lgl->stats.lir[glue].conflicts++;
     assert (lgl->stats.lir[glue].conflicts > 0);
     if (glue != MAXGLUE) lgl->stats.ronflicts++;
@@ -4094,7 +4101,6 @@ static void lglreduce (LGL * lgl) {
   int r0, lidx, src, dst, lit;
   int64_t factor, hits;
   HTS * hts;
-  AVar * av;
   DVar * dv;
   Lir * lir;
   lglchkred (lgl);
@@ -4151,7 +4157,7 @@ static void lglreduce (LGL * lgl) {
   for (i = 0; i < lglcntstk (&lgl->trail); i++) {
     lit = lglpeek (&lgl->trail, i);
     idx = abs (lit);
-    av = lglavar (lgl, idx);
+    lglavar (lgl, idx);
     rsn = lglrsn (lgl, idx);
     r0 = rsn[0];
     red = r0 & REDCS;
@@ -4271,7 +4277,7 @@ static void lglreduce (LGL * lgl) {
   nunlocked = 0;
   for (idx = 2; idx < lgl->nvars; idx++) {
     if (!lglval (lgl, idx)) continue;
-    av = lglavar (lgl, idx);
+    lglavar (lgl, idx);
     rsn = lglrsn (lgl, idx);
     r0 = rsn[0];
     red = r0 & REDCS;
@@ -4647,7 +4653,6 @@ static int lglana (LGL * lgl) {
   int rescore_clauses, rescore_vars;
   int del, cl, c0, c1, sl, s0, s1;
   int64_t tmp;
-  AVar * av;
   if (lgl->mt) return 0;
   if (lgl->failed) return 0;
   if (!lgl->conf.lit) return 1;
@@ -4786,7 +4791,7 @@ RESTART:
     lglunassign (lgl, lit);
     if (!--open) { uip = -lit; break; }
     LOG (2, "analyzing reason of literal %d next", lit);
-    av = lglavar (lgl, lit);
+    lglavar (lgl, lit);
     rsn = lglrsn (lgl, lit);
     r0 = rsn[0], r1 = rsn[1];
   }
@@ -4796,6 +4801,7 @@ RESTART:
   lglpushstk (lgl, &lgl->clause, uip);
   assert (lglmarked (lgl, uip));
 #ifdef RESOLVENT
+  AVar * av;
   LOGRESOLVENT (3, "final resolvent before flushing fixed literals");
   if (lglmaintainresolvent  (lgl)) {
     q = lgl->resolvent.start;
@@ -4808,12 +4814,12 @@ RESTART:
     for (p = lgl->clause.start; p < lgl->clause.top; p++)
       assert (lglavar (lgl, *p)->mark == 1);
     for (p = lgl->resolvent.start; p < lgl->resolvent.top; p++) {
-      av = lglavar (lgl, *p); assert (av->mark == 1); av->mark = 0;
+      av = lglavar (lgl, *p); ASSERT (av->mark == 1); av->mark = 0;
     }
     for (p = lgl->clause.start; p < lgl->clause.top; p++)
       assert (lglavar (lgl, *p)->mark == 0);
     for (p = lgl->resolvent.start; p < lgl->resolvent.top; p++) {
-      av = lglavar (lgl, *p); assert (av->mark == 0); av->mark = 1;
+      av = lglavar (lgl, *p); ASSERT (av->mark == 0); av->mark = 1;
     }
     lglclnstk (&lgl->resolvent);
   }
@@ -5040,7 +5046,7 @@ static void lglrestart (LGL * lgl) {
 }
 
 static void lgldefrag (LGL * lgl) {
-  int * p, * eow, * q, lit, idx, sign, move, recycled, ld, offset;
+  int * p, * eow, * q, lit, idx, sign, move, ld, offset;
   int next, cnt, blit;
   HTS * hts;
   lglstart (lgl, &lgl->stats.tms.dfg);
@@ -5104,8 +5110,7 @@ static void lgldefrag (LGL * lgl) {
   }
   assert (p == eow);
   assert (*p == INT_MAX);
-  recycled = lglcntstk (&lgl->wchs) - move - 1;
-  LOG (2, "recycling %d watch stack words", recycled);
+  LOG (2, "recycling %d watch stack words", lglcntstk (&lgl->wchs) - move - 1);
   cnt = 0;
   q = lgl->saved.start;
   for (idx = 2; idx < lgl->nvars; idx++)
@@ -6658,8 +6663,8 @@ static int lglmyturn (LGL * lgl, int counts) {
 }
 
 static int lglprobe (LGL * lgl) {
-  int lit, root, units, lifted, ok, old, orig, first, dom;
-  int nprobes, nvars, probed, fixed, changed, success = 0;
+  int lit, root, units, lifted, ok, old, first, dom;
+  int nprobes, probed, changed, success = 0;
   int idx;
   Stk probes, lift, saved;
   unsigned pos, delta;
@@ -6691,12 +6696,10 @@ static int lglprobe (LGL * lgl) {
     lglpushstk (lgl, &probes, idx);
   }
   nprobes = lglcntstk (&probes);
-  nvars = lgl->nvars - 1;
   LOG (1, "found %d active probes out of %d variables %.1f%%",
-       nprobes, nvars, lglpcnt (nprobes, nvars));
+       nprobes, lgl->nvars - 1, lglpcnt (nprobes, nvars));
   lifted = units = 0;
   probed = 0;
-  orig = lglcntstk (&lgl->trail);
   if (!nprobes) goto DONE;
   pos = lglrand (lgl) % nprobes;
   delta = lglrand (lgl) % nprobes;
@@ -6791,7 +6794,6 @@ DONE:
   lglrelstk (lgl, &lift);
   lglrelstk (lgl, &probes);
   lglrelstk (lgl, &saved);
-  fixed = lglcntstk (&lgl->trail) - orig;
   LOG (1, "found %d units %.1f%% lifted %d through probing",
        units, lglpcnt (units, probed), lifted);
   lgl->measureagility = 1;
@@ -7031,6 +7033,8 @@ static void lgladdecl (LGL * lgl, const int * c) {
       assert (c[i] == lglm2i (lgl, lglpeek (&lgl->elm.lits, lidx + j++)));
     }
   }
+#else
+  (void)lidx;  /* Evaluate lidx to avoid warning */
 #endif
 }
 
@@ -7217,7 +7221,7 @@ static void lglelrmcls (LGL * lgl, int lit, int * c, int clidx) {
   assert (blit && tag);
   assert (p < eow);
   if (tag == BINCS) {
-    assert (size >= 2);
+    ASSERT (size >= 2);
     other = blit >> RMSHFT;
     lglrmbcls (lgl, lit, other, 0);
   } else if (tag == TRNCS) {
@@ -7385,7 +7389,7 @@ static int lglelmstr (LGL * lgl) {
 	lglpushstk (lgl, &lgl->clause, ilit);
 	size++;
       }
-      assert (found);
+      ASSERT (found);
       lglpushstk (lgl, &lgl->clause, 0);
       LOGCLS (2, lgl->clause.start, "static strengthened irredundant clause");
 #ifndef NLGLPICOSAT
@@ -7488,7 +7492,6 @@ static void lglelmfrelit (LGL * lgl, int mpivot,
 			  int bintoo) {
   int ipivot = mpivot * lgl->elm.pivot, clidx, ilit, tmp, cover, maxcover;
   int * c, * d, * e, * p, * q, lit, nontrivial, idx, sgn, clen, reslen;
-  EVar * ev;
   int size;
   assert (mpivot == 1 || mpivot == -1);
   assert (ipivot);
@@ -7496,7 +7499,7 @@ static void lglelmfrelit (LGL * lgl, int mpivot,
        "blocked clause elimination and forced resolution of clauses with %d",
         ipivot);
   clidx = 0;
-  ev = lglevar (lgl, ipivot);
+  lglevar (lgl, ipivot);
   cover = lglpeek (&lgl->elm.noccs, lglulit (-mpivot));
   for (c = sop; c < eop; c = p + 1) {
     if (*c == REMOVED) { for (p = c + 1; *p; p++) ; continue; }
@@ -7538,7 +7541,7 @@ static void lglelmfrelit (LGL * lgl, int mpivot,
 	while (*++q) ;
         LOG (3, "trying forced resolution ends with trivial resolvent");
       } else {
-	assert (!e);
+	ASSERT (!e);
 	LOG (3, "non trivial resolvent in blocked clause elimination");
 	nontrivial = INT_MAX;
       }
@@ -8972,7 +8975,7 @@ static void lglhte (LGL * lgl) {
 	else if (!lglval (lgl, other)) lglpushstk (lgl, &lgl->clause, other);
       if (!other) {
 	lglpushstk (lgl, &lgl->clause, 0);
-	assert (found);
+	ASSERT (found);
 	lglrmlcls (lgl, lidx, 0);
 #ifndef NLGLPICOSAT
 	lglpicosatchkcls (lgl);
@@ -9079,7 +9082,7 @@ static DFPR * lglstampall (LGL *, int);
 
 static int lglelim (LGL * lgl) {
   int res = 1, idx, elmd, relelmd, oldnvars, skip, oldelmd;
-  int round, flushed, success;
+  int flushed, success;
   int64_t limit, oldprgss;
   DFPR * dfpr;
   assert (lgl->opts.elim.val);
@@ -9099,7 +9102,6 @@ static int lglelim (LGL * lgl) {
   lgldense (lgl);
   if (lgl->opts.hte.val) { lglhte (lgl); res = !lgl->mt; }
   if (res && lgl->opts.block.val) lglblock (lgl);
-  round = 1;
   LOG (2, "current elimination excess %d", lgl->limits.elm.excess);
   if (lgl->stats.elm.count == 1) limit = lgl->opts.elmaxeff.val/10;
   else limit = (lgl->opts.elmreleff.val*lgl->stats.visits.search)/1000;
@@ -9173,7 +9175,7 @@ static int lglelitblockingoreliminated (LGL * lgl, int elit) {
 }
 
 static int lglsynceqs (LGL * lgl) {
-  int * ereprs, * ireprs, emax = lgl->maxext;
+  int * ereprs, emax = lgl->maxext;
   int elit1, erepr1, elit2, erepr2;
   int ilit1, irepr1, ilit2, irepr2;
   int consumed = 0, produced = 0;
@@ -9183,7 +9185,6 @@ static int lglsynceqs (LGL * lgl) {
   assert (lgl->repr);
   if (!lgl->eqs.lock.fun) return 1;
   ereprs = lgl->eqs.lock.fun (lgl->eqs.lock.state);
-  ireprs = lgl->repr;
   produced = consumed = 0;
   for (elit1 = 1; elit1 <= emax; elit1++) {
     if (lglelitblockingoreliminated (lgl, elit1)) continue;
@@ -9467,7 +9468,7 @@ FIRST_OUTER_BRANCH_WIHOUT_INNER_PROBE:
       LOG (0, "1st inner branch failed literal %d on 1st outer branch %d",
           inner, outer);
       lglbacktrack (lgl, 1);
-      assert (lglcntstk (&lgl->trail) == oldinner);
+      ASSERT (lglcntstk (&lgl->trail) == oldinner);
       lgladdliftbincls (lgl, -inner, -outer);
       assert (lglcntstk (&lgl->trail) == oldinner + 1);
       ok = lglbcp (lgl);
@@ -9866,6 +9867,7 @@ static int lgldstanaconf (LGL * lgl) {
     lit = lglpeek (&lgl->seen, next++);
     av = lglavar (lgl, lit);
     assert ((lit < 0) == av->wasfalse);
+    (void)av;  /* Evaluate av to avoid warning */
     rsn = lglrsn (lgl, lit);
     r0 = rsn[0], r1 = rsn[1];
     LOGREASON (2, lit, r0, r1, "conflict distillation analysis of");
@@ -12094,7 +12096,7 @@ static int lglbcptop (LGL * lgl) {
   int tmp;
   if (lglbcp (lgl)) return 1;
   tmp = lglana (lgl);
-  assert (!tmp && lgl->mt);
+  ASSERT (!tmp && lgl->mt);
   return 0;
 }
 
@@ -12415,8 +12417,7 @@ static void lglgluestats (LGL * lgl) {
   double madded, mreduced, mforcing, mresolved, mconflicts;
   double vadded, vreduced, vforcing, vresolved, vconflicts;
   double sadded, sreduced, sforcing, sresolved, sconflicts;
-  int count, glue;
-  Lir * lir;
+  int glue;
   lglprs (lgl, "");
   lglprs (lgl, "scaledglue%7s %3s %9s %3s %9s %3s %9s %3s %9s",
 	  "added","",
@@ -12424,11 +12425,9 @@ static void lglgluestats (LGL * lgl) {
 	  "forcing","",
 	  "resolved","",
 	  "conflicts");
-  count = 0;
   added = reduced = forcing = resolved = conflicts = 0;
   wadded = wreduced = wforcing = wresolved = wconflicts = 0;
   for (glue = 0; glue <= MAXGLUE; glue++) {
-    lir = lgl->red + glue;
     added += lgl->stats.lir[glue].added;
     reduced += lgl->stats.lir[glue].reduced;
     forcing += lgl->stats.lir[glue].forcing;
@@ -12455,7 +12454,6 @@ static void lglgluestats (LGL * lgl) {
      (long long) conflicts, 100.0);
   lglprs (lgl, "");
   for (glue = 0; glue <= MAXGLUE; glue++) {
-    lir = lgl->red + glue;
     lglprs (lgl,
 "%2d  %9lld %3.0f%c%9lld %3.0f%c%9lld %3.0f%c%9lld %3.0f%c%9lld %3.0f%c",
       glue,
@@ -12489,7 +12487,6 @@ static void lglgluestats (LGL * lgl) {
 
   vadded = vreduced = vforcing = vresolved = vconflicts = 0;
   for (glue = 0; glue <= MAXGLUE; glue++) {
-    lir = lgl->red + glue;
     vadded += lgl->stats.lir[glue].added * lglsqr (glue - madded);
     vreduced += lgl->stats.lir[glue].reduced * lglsqr (glue - mreduced);
     vforcing += lgl->stats.lir[glue].forcing * lglsqr (glue - mforcing);
