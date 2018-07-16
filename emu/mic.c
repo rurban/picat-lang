@@ -311,7 +311,7 @@ l_start:
                          {return BP_COMPARE_UNSIGNED_VALS(val1,val2);});});
 
 compare_atom_atom:
-	if (val1 == val2) return 0;
+    if (val1 == val2) return 0;
     if (ISINT(val1)){
         if (ISINT(val2)){
             val1 = INTVAL(val1); val2 = INTVAL(val2);
@@ -319,12 +319,12 @@ compare_atom_atom:
         } else
             return -1L; /* int atom */
     }  else {
-	  if (ISATOM(val2)) {
-		sym_ptr1 = GET_ATM_SYM_REC(val1);
-		sym_ptr2 = GET_ATM_SYM_REC(val2);
-		return comalpha(sym_ptr1, sym_ptr2);
-	  } else
-		return 1; /* atom int */
+        if (ISATOM(val2)) {
+            sym_ptr1 = GET_ATM_SYM_REC(val1);
+            sym_ptr2 = GET_ATM_SYM_REC(val2);
+            return comalpha(sym_ptr1, sym_ptr2);
+        } else
+            return 1; /* atom int */
     }
 
 compare_atom_bigint:
@@ -362,34 +362,34 @@ compare_bigint_unknown:
               {if (IS_FLOAT_PSC(val2)) return compare_bigint_float(val1,val2); else if (IS_BIGINT_PSC(val2)) return bp_compare_bigint_bigint(val1,val2); else return -1L;},
               {return 1;});
    
- compare_struct_struct:	{
-	  BPLONG_PTR ptr1, ptr2;
-	  if (val1 == val2) return 0;
-	  ptr1 = (BPLONG_PTR)UNTAGGED_ADDR(val1);
-	  ptr2 = (BPLONG_PTR)UNTAGGED_ADDR(val2);	  
-	  sym_ptr1 = (SYM_REC_PTR)(FOLLOW(ptr1));
-	  sym_ptr2 = (SYM_REC_PTR)(FOLLOW(ptr2));	  
-	  a = GET_ARITY(sym_ptr1);
-	  b = GET_ARITY(sym_ptr2);
-	  if (a != b){
-		if (GET_LENGTH(sym_ptr1) == 2 && GET_LENGTH(sym_ptr2) == 2){
-		  CHAR_PTR char_ptr1, char_ptr2;
-		  char_ptr1 = GET_NAME(sym_ptr1);
-		  char_ptr2 = GET_NAME(sym_ptr2);		
-		  if (*char_ptr1 == '{' && *(char_ptr1+1) == '}' && *char_ptr2 == '{' && *(char_ptr2+1) == '}'){
-			return bp_compare_array_array(ptr1,ptr2,a,b);
-		  }
-		}
-		return BP_COMPARE_VALS(a,b);
-	  }
-	  c = comalpha(sym_ptr1, sym_ptr2);
-	  if (c) return c;
-	  for (b = 1; b <= a; b++) {
-        c = bp_compare(FOLLOW(ptr1+b), FOLLOW(ptr2+b));
-        if (c) break;
-	  }
-	  return c;
-	}
+compare_struct_struct:  {
+        BPLONG_PTR ptr1, ptr2;
+        if (val1 == val2) return 0;
+        ptr1 = (BPLONG_PTR)UNTAGGED_ADDR(val1);
+        ptr2 = (BPLONG_PTR)UNTAGGED_ADDR(val2);   
+        sym_ptr1 = (SYM_REC_PTR)(FOLLOW(ptr1));
+        sym_ptr2 = (SYM_REC_PTR)(FOLLOW(ptr2));   
+        a = GET_ARITY(sym_ptr1);
+        b = GET_ARITY(sym_ptr2);
+        if (a != b){
+            if (GET_LENGTH(sym_ptr1) == 2 && GET_LENGTH(sym_ptr2) == 2){
+                CHAR_PTR char_ptr1, char_ptr2;
+                char_ptr1 = GET_NAME(sym_ptr1);
+                char_ptr2 = GET_NAME(sym_ptr2);         
+                if (*char_ptr1 == '{' && *(char_ptr1+1) == '}' && *char_ptr2 == '{' && *(char_ptr2+1) == '}'){
+                    return bp_compare_array_array(ptr1,ptr2,a,b);
+                }
+            }
+            return BP_COMPARE_VALS(a,b);
+        }
+        c = comalpha(sym_ptr1, sym_ptr2);
+        if (c) return c;
+        for (b = 1; b <= a; b++) {
+            c = bp_compare(FOLLOW(ptr1+b), FOLLOW(ptr2+b));
+            if (c) break;
+        }
+        return c;
+    }
 }
 
 int compare_bigint_float(BPLONG val1, BPLONG val2)
@@ -423,17 +423,17 @@ int compare_float_unknown(BPLONG val1, BPLONG val2)
 
 /* size1 and size2 are not equal */
 int bp_compare_array_array(BPLONG_PTR ptr1, BPLONG_PTR ptr2, BPLONG size1, BPLONG size2){
-  BPLONG i;
+    BPLONG i;
   
-  BPLONG size = (size1 < size2) ? size1 : size2;
-  for (i = 1; i <= size; i++){
-	int c = bp_compare(FOLLOW(ptr1+i), FOLLOW(ptr2+i));
-	if (c)  return c;
-  }
-  return (size1 < size2) ? -1L : 1L;
+    BPLONG size = (size1 < size2) ? size1 : size2;
+    for (i = 1; i <= size; i++){
+        int c = bp_compare(FOLLOW(ptr1+i), FOLLOW(ptr2+i));
+        if (c)  return c;
+    }
+    return (size1 < size2) ? -1L : 1L;
 }
 
-				 
+                                 
   
 
 int comalpha(sym_ptr1, sym_ptr2)

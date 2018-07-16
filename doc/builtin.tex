@@ -110,8 +110,8 @@ January 14, 2013 \\
     \item \texttt{atomic($Term$)}\index{\texttt{atomic/1}} 
     \item \texttt{attr\_var($Term$)}\index{\texttt{attr\_var/1}} 
     \item \texttt{avg($ListOrArray$) = $Val$}\index{\texttt{avg/1}}
-    \item \texttt{bind\_vars($Term$,$Val$)}\index{\texttt{bind\_vars/2}}
     \item \texttt{between($From$,$To$,$X$)}\index{\texttt{between/3}} (nondet)
+    \item \texttt{bind\_vars($Term$,$Val$)}\index{\texttt{bind\_vars/2}}
     \item \texttt{call($S$,$Arg_1$,$\ldots$,$Arg_n$)}\index{\texttt{call}} 
     \item \texttt{call\_cleanup($S$,$Cleanup$)}\index{\texttt{call\_cleanup/2}} 
     \item \texttt{catch($S$,$Exception$,$Handler$)}\index{\texttt{catch/3}} 
@@ -152,6 +152,12 @@ January 14, 2013 \\
     \item \texttt{has\_key($Map$,$Key$)}\index{\texttt{has\_key/2}} 
     \item \texttt{hash\_code($Term$) = $Int$}\index{\texttt{hash\_code/1}} 
     \item \texttt{head($List$) = $Term$}\index{\texttt{head/1}} 
+    \item \texttt{heap\_is\_empty($Heap$)}\index{\texttt{heap\_is\_empty/1}}
+    \item \texttt{heap\_pop($Heap$) = $Elm$}\index{\texttt{heap\_pop/1}}
+    \item \texttt{heap\_push($Heap$,$Elm$)}\index{\texttt{heap\_push/2}}
+    \item \texttt{heap\_size($Heap$) = $Size$}\index{\texttt{heap\_size/1}}
+    \item \texttt{heap\_to\_list($Heap$) = $List$}\index{\texttt{heap\_to\_list/1}}
+    \item \texttt{heap\_top($Heap$) = $Elm$}\index{\texttt{heap\_top/1}}
     \item \texttt{insert($List$,$Index$,$Elm$) = $ResList$}\index{\texttt{insert/3}} 
     \item \texttt{insert\_all($List$,$Index$,$AList$) = $ResList$}\index{\texttt{insert\_all/3}} 
     \item \texttt{insert\_ordered($List$,$Term$) = $R$}\index{\texttt{insert\_ordered/3}} 
@@ -166,8 +172,8 @@ January 14, 2013 \\
     \item \texttt{list($Term$)}\index{\texttt{list/1}} 
     \item \texttt{list\_to\_and($List$) = $Conj$}\index{\texttt{list\_to\_and/1}}
     \item \texttt{lowercase($Char$)}\index{\texttt{lowercase/1}} 
-    \item \texttt{map($FunOrList$,$ListOrFunc$) = $ResList$} \index{\texttt{map/2}}
-    \item \texttt{map($Fun$,$List1$,$List2$) = $ResList$} \index{\texttt{map/3}}
+    \item \texttt{map($Func$,$List1$,$List2$) = $ResList$} \index{\texttt{map/3}}
+    \item \texttt{map($FuncOrList$,$ListOrFunc$) = $ResList$} \index{\texttt{map/2}}
     \item \texttt{map($Term$)}\index{\texttt{map/1}} 
     \item \texttt{map\_to\_list($Map$) = $List$}\index{\texttt{map\_to\_list/1}} 
     \item \texttt{max($ListOrArray$) = $Val$}\index{\texttt{max/1}} 
@@ -192,6 +198,8 @@ January 14, 2013 \\
     \item \texttt{new\_list($N$,$InitVal$) = $List$}\index{\texttt{new\_list/2}} 
     \item \texttt{new\_map($Int$,$PairsList$) = $Map$}\index{\texttt{new\_map/2}} 
     \item \texttt{new\_map($IntOrPairsList$) = $Map$}\index{\texttt{new\_map/1}} 
+    \item \texttt{new\_max\_heap($IntOrList$) = $Heap$}\index{\texttt{new\_max\_heap/1}}
+    \item \texttt{new\_min\_heap($IntOrList$) = $Heap$}\index{\texttt{new\_min\_heap/1}}
     \item \texttt{new\_set($Int$,$ElmsList$) = $Map$}\index{\texttt{new\_set/2}} 
     \item \texttt{new\_set($IntOrElmsList$) = $Map$}\index{\texttt{new\_set/1}} 
     \item \texttt{new\_struct($Name$,$IntOrList$) = $Struct$}\index{\texttt{new\_struct/2}} 
@@ -213,13 +221,13 @@ January 14, 2013 \\
     \item \texttt{post\_event\_dom($X$,$Event$)}\index{\texttt{post\_event\_dom/2}}
     \item \texttt{post\_event\_ins($X$)}\index{\texttt{post\_event\_ins/1}}
     \item \texttt{prod($ListOrArray$) = $Val$}\index{\texttt{prod/1}}
-    \item \texttt{put($Map$,$Key$,$Val$)}\index{\texttt{put/3}} 
     \item \texttt{put($Map$,$Key$)}\index{\texttt{put/2}} 
-    \item \texttt{put\_attr($Var$,$Key$,$Val$)}\index{\texttt{put\_attr/3}} 
+    \item \texttt{put($Map$,$Key$,$Val$)}\index{\texttt{put/3}} 
     \item \texttt{put\_attr($Var$,$Key$)}\index{\texttt{put\_attr/2}} 
+    \item \texttt{put\_attr($Var$,$Key$,$Val$)}\index{\texttt{put\_attr/3}} 
     \item \texttt{real($Term$)}\index{\texttt{real/1}} 
-    \item \texttt{reduce($FunOrList$,$ListOrFunc$) = $Value$}\index{\texttt{reduce/2}} 
-    \item \texttt{reduce($Fun$,$List$,$InitVal$) = $Value$}\index{\texttt{reduce/3}} 
+    \item \texttt{reduce($Func$,$List$) = $Res$}\index{\texttt{reduce/2}} 
+    \item \texttt{reduce($Func$,$List$,$InitVal$) = $Res$}\index{\texttt{reduce/3}} 
     \item \texttt{remove\_dups($ListOrArray$) = $ResList$}\index{\texttt{remove\_dups/1}} 
     \item \texttt{repeat}\index{\texttt{repeat/0}} (nondet)
     \item \texttt{reverse($ListOrArray$) = $Res$}\index{\texttt{reverse/1}} 
@@ -243,7 +251,7 @@ January 14, 2013 \\
     \item \texttt{subsumes($Term_1$,$Term_2$)}\index{\texttt{subsumes/2}}
     \item \texttt{sum($ListOrArray$) = $Val$}\index{\texttt{sum/1}}
     \item \texttt{tail($List$) = $Term$}\index{\texttt{tail/1}} 
-    \item \texttt{throw $E$}\index{\texttt{throw}}    
+    \item \texttt{throw($E$)}\index{\texttt{throw/1}}    
     \item \texttt{to\_array($List$) = $Array$}\index{\texttt{to\_array/1}} 
     \item \texttt{to\_atom($String$) = $Atom$}\index{\texttt{to\_atom/1}} 
     \item \texttt{to\_binary\_string($Int$) = $String$}\index{\texttt{to\_binary\_string/1}}
@@ -628,6 +636,7 @@ January 14, 2013 \\
 \item \texttt{plan($S$,$Limit$,$Plan$)}\index{\texttt{plan/3}}
 \item \texttt{plan($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{plan/4}}
 \item \texttt{plan($S$,$Plan$)}\index{\texttt{plan/2}}
+\item \texttt{plan($S$,$Plan$,$PlanCost$)}\index{\texttt{plan/3}}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$)}\index{\texttt{plan\_unbounded/3}}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{plan\_unbounded/4}}
 \item \texttt{plan\_unbounded($S$,$Plan$)}\index{\texttt{plan\_unbounded/2}}
@@ -746,18 +755,18 @@ January 14, 2013 \\
 \begin{scriptsize}
 \begin{itemize}
     \item \texttt{abort}\index{\texttt{abort/0}}
+    \item \texttt{cl}\index{\texttt{cl/0}}
     \item \texttt{cl($File$)}\index{\texttt{cl/1}}
     \item \texttt{cl\_facts($Facts$)}\index{\texttt{cl\_facts/1}}
     \item \texttt{cl\_facts($Facts$,$IndexInfo$)}\index{\texttt{cl\_facts/2}}    
     \item \texttt{cl\_facts\_table($Facts$)}\index{\texttt{cl\_facts\_table/1}}
     \item \texttt{cl\_facts\_table($Facts$,$IndexInfo$)}\index{\texttt{cl\_facts\_table/1}}
-    \item \texttt{cl}\index{\texttt{cl/0}}
     \item \texttt{command($String$)}\index{\texttt{command/1}}
     \item \texttt{compile($File$)}\index{\texttt{compile/1}}
     \item \texttt{debug}\index{\texttt{debug/0}}
     \item \texttt{exit}\index{\texttt{exit/0}} 
-    \item \texttt{garbage\_collect(Size)}\index{\texttt{garbage\_collect/1}} 
     \item \texttt{garbage\_collect}\index{\texttt{garbage\_collect/0}} 
+    \item \texttt{garbage\_collect(Size)}\index{\texttt{garbage\_collect/1}} 
     \item \texttt{halt}\index{\texttt{halt/0}} 
     \item \texttt{initialize\_table}\index{\texttt{initialize\_table/0}}
     \item \texttt{load($File$)}\index{\texttt{load/1}}
@@ -766,8 +775,8 @@ January 14, 2013 \\
     \item \texttt{nospy}\index{\texttt{nospy}}
     \item \texttt{notrace}\index{\texttt{notrace}}
     \item \texttt{spy $Functor$}\index{\texttt{spy/1}}
-    \item \texttt{statistics($Name$,$Value$)}\index{\texttt{statistics/2}} (nondet) 
     \item \texttt{statistics}\index{\texttt{statistics/0}}
+    \item \texttt{statistics($Name$,$Value$)}\index{\texttt{statistics/2}} (nondet) 
     \item \texttt{time($Goal$)}\index{\texttt{time/1}}
     \item \texttt{time2($Goal$)} \index{\texttt{time2/1}}
     \item \texttt{time\_out($Goal$,$Limit$,$Res$)}\index{\texttt{time\_out/3}}

@@ -74,7 +74,7 @@ int b_SAT_GET_INC_VAR_NUM_f(BPLONG Num){
     if (num_threads > 0 && sat_nvars > sat_nvars_limit){
         plgl_resize_dyn_arrays();
     }
-#endif	
+#endif  
     return BP_TRUE;
 }
 
@@ -157,7 +157,7 @@ int b_SAT_ADD_CL_c(BPLONG cl){
             }
             PSAT_ADD(0);            
         } 
-		else {
+        else {
             for (ptr = local_top; ptr != lit_ptr; ptr--){
                 SAT_ADD(INTVAL(*ptr));
             }
@@ -177,9 +177,9 @@ int c_sat_init(){
     sat_nvars =  sat_nvars_limit = (int)INTVAL(NVars);
   
     if (num_threads > 0){  /* use plingeling */ /* or multisolver for glucose */
-		PSAT_INIT(num_threads);
+        PSAT_INIT(num_threads);
     } else {
-		SAT_INIT;
+        SAT_INIT;
     }
     return BP_TRUE;
 }
@@ -195,10 +195,10 @@ int c_sat_start(){
     //  printf("=>sat_start "); write_term(lst); printf("\n");
         
     if (num_threads > 0){
-		res = PSAT_START;
+        res = PSAT_START;
     } else {
-		res = SAT_START;
-	}
+        res = SAT_START;
+    }
     //  printf("<= solver\n");
     if (SAT_SATISFIABLE){
         BPLONG_PTR ptr;
@@ -213,7 +213,7 @@ int c_sat_start(){
                 varNum = fast_get_attr(sv_ptr,et_NUMBER);
                 DEREF(varNum);
                 varNum = INTVAL(varNum);
-				unify(var,SAT_GET_BINDING(varNum));
+                unify(var,SAT_GET_BINDING(varNum));
             }
             lst = FOLLOW(ptr+1); DEREF(lst);
         }

@@ -32,7 +32,7 @@ Picat is a dynamically-typed language, in which type checking occurs at runtime.
 
 A primitive value\index{primitive value} can be an integer\index{integer}, a real number\index{number}, or an atom\index{atom}. A character can be represented as a single-character atom\index{atom}.  An atom\index{atom} name is an identifier that begins with a lower-case letter or a single-quoted sequence of characters. 
 
-A compound value\index{compound value} can be a \emph{list}\index{list} in the form \texttt{[$t_1$,$\ldots$,$t_{n}$]} or a \emph{structure}\index{structure} in the form \texttt{\$$s$($t_1$,$\ldots$,$t_{n}$)} where $s$ stands for a structure\index{structure} name, $n$ is called the \emph{arity}\index{arity} of the structure\index{structure}, and each $t_i$ ($1\le i \le n$) is a \emph{term}\index{term} which is a variable or a value. The preceding dollar symbol is used to distinguish a structure\index{structure} from a function\index{function} call. Strings\index{string}, arrays\index{array}, and maps\index{map} are special compound values\index{compound value}. A \emph{string}\index{string} is a list\index{list} of single-character atoms\index{atom}. An \emph{array}\index{array} takes the form \texttt{\{$t_1$,$\ldots$,$t_{n}$\}}, which is a special structure\index{structure} with the name \texttt{'\{\}'}. A \emph{map}\index{map} is a hash-table represented as a structure\index{structure} that contains a set of key-value pairs.
+A compound value\index{compound value} can be a \emph{list}\index{list} in the form \texttt{[$t_1$,$\ldots$,$t_{n}$]} or a \emph{structure}\index{structure} in the form \texttt{\$$s$($t_1$,$\ldots$,$t_{n}$)} where $s$ stands for a structure\index{structure} name, $n$ is called the \emph{arity}\index{arity} of the structure\index{structure}, and each $t_i$ ($1\le i \le n$) is a \emph{term}\index{term} which is a variable or a value. The preceding dollar symbol is used to distinguish a structure\index{structure} from a function\index{function} call. \emph{Strings}\index{string}, \emph{arrays}\index{array}, \emph{maps}\index{map}, \emph{sets}\index{set}, and \emph{heaps}\index{heap} are special compound values\index{compound value}. A \emph{string}\index{string} is a list\index{list} of single-character atoms\index{atom}. An \emph{array}\index{array} takes the form \texttt{\{$t_1$,$\ldots$,$t_{n}$\}}, which is a special structure\index{structure} with the name \texttt{'\{\}'}. A \emph{map}\index{map} is a hash-table represented as a structure\index{structure} that contains a set of key-value pairs. A \emph{set}\index{set} is a special map where only keys are used.  A \emph{heap}\index{heap} is a complete binary tree represented as an array. A heap can be a \emph{min-heap}\index{min-heap} or a \emph{max-heap}\index{max-heap}.
 
 The function \texttt{new\_struct($Name,IntOrList$)}\index{\texttt{new\_struct/2}} returns a structure\index{structure}. The function \texttt{new\_map($S$)}\index{\texttt{new\_map/1}} returns a map\index{map} that initially contains the pairs in list $S$, where each pair has the form $Key\ =\ Val$. The function \texttt{new\_set($S$)}\index{\texttt{new\_set/1}} returns a \emph{map set} that initially contains the elements in list $S$. A \emph{map-set} \index{map-set} is a map in which every key is mapped to the atom \texttt{not\_a\_value}. The function \texttt{new\_array($I_1,I_2,\ldots,I_{n}$)}\index{\texttt{new\_array}} returns an n-dimensional array\index{array}, where each $I_i$ is an integer expression specifying the size of a dimension. An n-dimensional array\index{array} is a one-dimensional array\index{array} where the arguments are (n-1)-dimensional arrays\index{array}. 
 
@@ -151,7 +151,7 @@ One = 1
 Picat> M = new_set(), put(M,one), has_key(M,one).
 \end{verbatim}
 
-Picat also allows OOP notations for accessing attributes and for calling predicates\index{predicate} and functions\index{function}. The notation \texttt{$A_1.f(A_2,\ldots,A_k)$} is the same as \texttt{$f(A_1,A_2,\ldots,A_k)$}, unless $A_1$ is an atom, in which case $A_1$ must be a module qualifier for $f$.  The notation $A.Attr$, where $Attr$ is not in the form $f(\ldots)$, is the same as the function call \texttt{get$(A,Attr)$}\index{\texttt{get/2}}. A structure\index{structure} is assumed to have two attributes called \texttt{name}\index{\texttt{name/1}} and \texttt{length}\index{\texttt{length/1}}.
+Picat also allows OOP notations for calling predicates\index{predicate} and functions\index{function}. The notation \texttt{$A_1.f(A_2,\ldots,A_k)$} is the same as \texttt{$f(A_1,A_2,\ldots,A_k)$}, unless $A_1$ is an atom, in which case $A_1$ must be a module qualifier for $f$.  The notation $A.f$, where $f$ is an atom, is the same as the call \texttt{$A.f()$}. 
 
 \subsection*{Example}
 \begin{verbatim}
@@ -161,7 +161,7 @@ X = ['1','0','1']
 Picat> X = 5.to_binary_string().length
 X = 3
 
-Picat> X.put(one,1), One = X.one
+Picat> X.put(one,1), One = X.get(one)
 One = 1
 
 Picat> X = math.pi

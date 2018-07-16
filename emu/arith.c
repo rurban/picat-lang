@@ -2159,9 +2159,10 @@ BPLONG bp_float_round(op1)
     } else {
         int sign;
         f = floatval(op1);
-		f = roundl(f);
-		/*
-        if (f<0.0){
+#ifdef M64BITS
+        f = roundl(f);
+#else
+        if (f < 0.0){
             f = -f+0.5;
             sign = -1;
         } else {
@@ -2170,9 +2171,9 @@ BPLONG bp_float_round(op1)
         }
         TEST_NAN(f,op1);
         modf(f,&f);
-		*/
+#endif
         if (BP_IN_1W_INT_RANGE(f)){
-		    return MAKEINT((BPLONG)f);
+            return MAKEINT((BPLONG)f);
         } else {
             return bp_double_to_bigint(f);
         }
@@ -2907,27 +2908,27 @@ int c_MUL_MOD_cccf(){
     if (ISINT(x) && ISINT(y) && ISINT(z)) {
         x = INTVAL(x); y = INTVAL(y); z = INTVAL(z);
 
-		if (z == 0){
-		  exception = divide_by_zero;
-		  return BP_ERROR;
-		}
-		if (z > 0){
-		  if (y > z) y = y%z;
-		  if (x > z) x = x%z;
-		}
+        if (z == 0){
+            exception = divide_by_zero;
+            return BP_ERROR;
+        }
+        if (z > 0){
+            if (y > z) y = y%z;
+            if (x > z) x = x%z;
+        }
         if (x == 0 || y == 0){
-		  res0 = BP_ZERO;
+            res0 = BP_ZERO;
         } else {
-		  res0 = x*y;
-		  if (res0/x != y) {
-			BPLONG_PTR heap_top0 = heap_top;
-			res0 = bp_mul_bigint_bigint(bp_int_to_bigint(x),bp_int_to_bigint(y));
-			res0 = bp_mod_bigint_bigint(res0,bp_int_to_bigint(z));
-			heap_top = heap_top0;
-		  } else {
-			res0 = res0 % z;
-			res0 = MAKEINT(res0);
-		  }
+            res0 = x*y;
+            if (res0/x != y) {
+                BPLONG_PTR heap_top0 = heap_top;
+                res0 = bp_mul_bigint_bigint(bp_int_to_bigint(x),bp_int_to_bigint(y));
+                res0 = bp_mod_bigint_bigint(res0,bp_int_to_bigint(z));
+                heap_top = heap_top0;
+            } else {
+                res0 = res0 % z;
+                res0 = MAKEINT(res0);
+            }
         }
     } else {
         if (ISINT(x)){

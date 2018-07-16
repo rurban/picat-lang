@@ -148,7 +148,7 @@ prolog2java(JNIEnv *env, BPLONG arg) {
     double PvalueOfReal();
     char *PnumberToStr();
 
-	//	printf("prolog2java "); write_term(arg); printf("\n");
+    //  printf("prolog2java "); write_term(arg); printf("\n");
     DEREF(arg);
     if (PisInt(arg)) {
         if (PisLong(arg)) {
@@ -191,7 +191,7 @@ prolog2java(JNIEnv *env, BPLONG arg) {
         return (*env)->NewStringUTF(env, str);
     } else if (PisCompound(arg)) {
         int len = ParityOfCompound(arg);
-		//		printf(" PisCompound %d ",len); write_term(arg); printf("\n");
+        //              printf(" PisCompound %d ",len); write_term(arg); printf("\n");
         jref array = (*env)->NewObjectArray(env, len, class_Object, 0);
         int i;
         for(i=0; i<len; i++) {
@@ -210,7 +210,7 @@ prolog2javaArray(JNIEnv *env, BPLONG arg) {
     BPLONG_PTR top;
 
     DEREF(arg);
-	//	printf("prolog2javaArray "); write_term(arg); printf("\n");
+    //  printf("prolog2javaArray "); write_term(arg); printf("\n");
     if (PisCompound(arg)) result = prolog2java(env,arg);
     else result = (*env)->NewObjectArray(env, 0, class_Object, 0);
     return result;
@@ -328,7 +328,7 @@ int
 javaMethod1(BPLONG obj, BPLONG method, BPLONG result) {
     JNIEnv *env = Env;
     const char *functor = (const char*)PascOfFunc(method);
-	// printf("functor = %s\n", functor);
+    // printf("functor = %s\n", functor);
     /* !!! */
     jstring funcname = (*env)->NewStringUTF(env,functor);
     jref args = prolog2javaArray(env,method);

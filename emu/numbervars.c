@@ -281,6 +281,61 @@ int c_COPY_TERM(){
     return unify(cterm,temp);
 }
 
+/* for a compound term, only copy the skelton, not the arguments */
+
+int c_COPY_TERM_SHALLOW(){
+    BPLONG term,cterm,temp;
+
+    term = ARG(1,2); cterm = ARG(2,2);
+    DEREF(term);
+
+copy_term_shallow:
+    switch (TAG(term)){
+    case REF:
+        NDEREF(term, copy_term_shallow);
+        return BP_TRUE;
+            
+    case ATM:
+        return unify(cterm,term);
+            
+    case LST: {
+        BPLONG_PTR ptr;
+          
+        ptr = heap_top;
+        if (heap_top+2 >= local_top){
+            myquit(STACK_OVERFLOW,"cp");
+        }
+        NEW_HEAP_FREE;
+        NEW_HEAP_FREE;
+        return unify(cterm,ADDTAG(ptr,LST));
+    }
+
+    case STR:{
+        BPLONG_PTR term_ptr, ptr;
+        SYM_REC_PTR sym_ptr;
+        BPLONG  i, arity;
+          
+        if (IS_SUSP_VAR(term)){
+            return BP_TRUE;
+        }
+        term_ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
+        sym_ptr = (SYM_REC_PTR)FOLLOW(term_ptr);
+        arity = GET_ARITY(sym_ptr);
+        ptr = heap_top;
+        if (heap_top+arity >= local_top){
+            myquit(STACK_OVERFLOW,"cp");
+        }
+        NEW_HEAP_NODE((BPLONG)sym_ptr);
+        for (i = 1; i <= arity; i++){
+            NEW_HEAP_FREE;
+        }
+        return unify(cterm,ADDTAG(ptr,STR));
+    }
+
+    default:
+        return(0);      /* impossible to come here */
+    }
+}
 
 BPLONG copy_term(term)
     BPLONG term;

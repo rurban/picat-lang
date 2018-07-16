@@ -212,7 +212,8 @@ int debugging_susp = 0;
 
 BPLONG main_args;
 
-BPLONG     lastc = ' ';    /* previous character */
+BPLONG  eolcom_flag = 1;
+BPLONG  lastc = ' ';    /* previous character */
 
 /* for threads */
 SYM_REC_PTR thread_psc;

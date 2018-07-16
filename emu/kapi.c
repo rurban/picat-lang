@@ -76,7 +76,7 @@ BPLONG PargOfCompound(term, n)
     BPLONG term;
     BPLONG n;
 {
-  return picat_get_arg(n+1,term);
+    return picat_get_arg(n+1,term);
 }
 
 /* Return functors as strings*/

@@ -14,6 +14,6 @@
 #include "term.h"
 
 #define PICAT_FALSE 0
-
 #define PICAT_TRUE 1
+#define PICAT_ERROR -1
 #endif

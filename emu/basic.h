@@ -19,6 +19,16 @@ extern int exec_trace[];
 */
 #include <stdio.h>
 #include <math.h>
+#ifdef M64BITS
+#define BP_NEG_1 -1LL
+#define BP_MAXINT_1W 72057594037927935LL
+#define BP_MININT_1W -BP_MAXINT_1W
+#else
+#define BP_NEG_1 -1
+#define BP_MAXINT_1W 268435455   
+#define BP_MININT_1W -BP_MAXINT_1W
+#endif
+
 /*
 #define TOAM_LOCAL_REGS
 */
@@ -29,7 +39,7 @@ extern int exec_trace[];
 #define WRITEFLAG     1
 #define READFLAG      0
 #define BUCKET_CHAIN  65536
-#define BP_ERROR -1L
+#define BP_ERROR -1
 #define BP_FALSE 0
 #define BP_TRUE 1
 #define MAXTRIGGERS   150000 /* maximum number of events that can be raised at one time. overflow not checked! */
@@ -52,14 +62,6 @@ extern int exec_trace[];
 #define LARGE_MARGIN 125000 
 
 /* maximum and minimum integers that are represented in one word */
-#ifdef M64BITS
-#define BP_MAXINT_1W 72057594037927935LL
-#define BP_MININT_1W -BP_MAXINT_1W
-#else
-#define BP_MAXINT_1W 268435455   
-#define BP_MININT_1W -BP_MAXINT_1W
-#endif
-
 #define MAX_CHARS_IN_POOL 10000
 
 #define BP_BIGINT_BASE 268435456
@@ -482,6 +484,8 @@ extern BPLONG main_args;
 
 extern BPLONG  lastc;
 
+extern BPLONG  eolcom_flag;
+
 /* for threads */
 extern SYM_REC_PTR thread_psc;
 extern SYM_REC_PTR thread_start_psc;
@@ -508,7 +512,7 @@ extern BPLONG addr_top_bit;
 #define BP_MALLOC(ptr,size){							\
 	ptr = (BPLONG_PTR)(malloc(size*sizeof(BPLONG)));	\
 	if (ptr!=NULL){										\
-	  if (addr_top_bit == -1LL){						\
+	  if (addr_top_bit == BP_NEG_1){						\
 		addr_top_bit = ((BPLONG)ptr & TOP_BIT);			\
 	  } else {											\
 		if (addr_top_bit!=((BPLONG)ptr & TOP_BIT)){		\

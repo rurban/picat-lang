@@ -20,16 +20,16 @@
  *  in luck: it is almost identical to the VMS character set.
  */
 #define TOKEN_CHECK_EXCEPTION() {               \
-	if (exception != (BPLONG)NULL){				\
-	  return BP_ERROR;							\
-	}											\
-  }
+        if (exception != (BPLONG)NULL){         \
+            return BP_ERROR;                    \
+        }                                       \
+    }
 
 #define TOKEN_CHECK_EXCEPTION_STRING() {        \
-	if (exception != (BPLONG)NULL){				\
-	  return BP_ERROR;							\
-	}											\
-  }
+        if (exception != (BPLONG)NULL){         \
+            return BP_ERROR;                    \
+        }                                       \
+    }
 
 #define StrCpy(dst, src) (void)strcpy(dst, src)
 #define Printf           (void)printf
@@ -300,70 +300,70 @@ int next_token_index = 0;
 
 #ifdef BPSOLVER
 #define BP_GETC_STRING(c){                      \
-	c = *string_in;								\
-	if (c != 0){								\
-	  string_in++;								\
-	}											\
-  }
+        c = *string_in;                         \
+        if (c != 0){                            \
+            string_in++;                        \
+        }                                       \
+    }
 
 #define BP_UNGETC_STRING {                      \
-	string_in--;								\
-  }
+        string_in--;                            \
+    }
 
 #define BP_GETC(card,c){                        \
-	c = getc(card);								\
-  }
+        c = getc(card);                         \
+    }
   
 #define BP_UNGETC(c,card){                      \
-	ungetc((char)c,card);						\
-  }
+        ungetc((char)c,card);                   \
+    }
 #else
 #define BP_GETC_STRING(c){                                              \
-	c = *string_in;														\
-	if (c != 0){														\
-	  string_in++;														\
-	  if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
-	}																	\
-  }
+        c = *string_in;                                                 \
+        if (c != 0){                                                    \
+            string_in++;                                                \
+            if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
+        }                                                               \
+    }
 
 #define BP_UNGETC_STRING {                      \
-	string_in--;								\
-	chars_pool_index--;							\
-  }
+        string_in--;                            \
+        chars_pool_index--;                     \
+    }
 
 #define BP_GETC(card,c){                                                \
-	c = getc(card);														\
-	if (c>=0){															\
-	  if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
-	}																	\
-  }
+        c = getc(card);                                                 \
+        if (c>=0){                                                      \
+            if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
+        }                                                               \
+    }
   
 #define BP_UNGETC(c,card){                      \
-	ungetc((char)c,card);						\
-	chars_pool_index--;							\
-  }
+        ungetc((char)c,card);                   \
+        chars_pool_index--;                     \
+    }
 #endif
 
 /* convert a code point to char array s, which has n remaining slots */
-#define UTF8_CODEPOINT_TO_STR(code,s,n){		\
-	if (code <= 127){							\
-	  n--;										\
-	  if (n < 0){								\
-		printAtomStr(tok2long);                 \
-	  } else {									\
-		*s++ = (BYTE)code;                      \
-	  }											\
-	} else {									\
-	  if (n < 4){								\
-		printAtomStr(tok2long);                 \
-	  } else {									\
-		CHAR_PTR  s1;                           \
-		s1 = utf8_codepoint_to_str(code,s);     \
-		n -= (s1-s);                            \
-		s = s1;                                 \
-	  }											\
-	}											\
-  }
+#define UTF8_CODEPOINT_TO_STR(code,s,n){                \
+        if (code <= 127){                               \
+            n--;                                        \
+            if (n < 0){                                 \
+                printAtomStr(tok2long);                 \
+            } else {                                    \
+                *s++ = (BYTE)code;                      \
+            }                                           \
+        } else {                                        \
+            if (n < 4){                                 \
+                printAtomStr(tok2long);                 \
+            } else {                                    \
+                CHAR_PTR  s1;                           \
+                s1 = utf8_codepoint_to_str(code,s);     \
+                n -= (s1-s);                            \
+                s = s1;                                 \
+            }                                           \
+        }                                               \
+    }
 
 CHAR    AtomStr[MAX_STR_LEN];
 BPLONG    list_p;
@@ -1351,9 +1351,11 @@ START:
             *s = 0;
             lastc = ' ';
             return ENDCL;
-        } else if (c == intab.eolcom) {
+#ifndef BPSOLVER
+        } else if (eolcom_flag == 1 && c == intab.eolcom) {
             c = com0plain(card, intab.endeol);
             goto START;
+#endif                  
         }
         *s++ = (BYTE)c;
         *s = 0;
@@ -1366,9 +1368,11 @@ START:
             *s = 0;
             lastc = ' ';
             return ENDCL;
-        } else if (c == intab.eolcom) {
+#ifndef BPSOLVER
+        } else if (eolcom_flag == 1 && c == intab.eolcom) {
             c = com0plain(card, intab.endeol);
             goto START;
+#endif                  
         }
         BP_GETC(card,d); 
         if (c == intab.begcom && d == intab.astcom)
@@ -1750,9 +1754,11 @@ START:
         if (c == intab.termin) {
             *s = 0;
             goto end_of_clause;
-        } else if (c == intab.eolcom) {
+#ifndef BPSOLVER
+        } else if (eolcom_flag == 1 && c == intab.eolcom) {
             c = com0plain_string(intab.endeol);
             goto START;
+#endif                  
         }
         *s++ = (char)c;
         *s = 0;
@@ -1764,9 +1770,11 @@ START:
         if (c == intab.termin) {
             *s = 0;
             goto end_of_clause;
-        } else if (c == intab.eolcom) {
+#ifndef BPSOLVER
+        } else if (eolcom_flag == 1 && c == intab.eolcom) {
             c = com0plain_string(intab.endeol);
             goto START;
+#endif
         }
         BP_GETC_STRING(d);
         if (c == intab.begcom && d == intab.astcom)
@@ -2094,7 +2102,7 @@ int c_report_syntax_error(){
     if (NTokensBefore == 0) here_out = 1;
     for (i = term_start_pool_index; i< chars_pool_index; i++){
         if (NTokensBefore != 0 && i == token_start_pos[NTokensBefore]){
-#ifndef WIN32 		  
+#ifndef WIN32             
             fputs("\033\[31m <<HERE>> \033\[39m\n",stderr);
 #else
             fputs(" <<HERE>> \n",stderr);

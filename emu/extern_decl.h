@@ -1189,7 +1189,8 @@ extern BPLONG unnumberVarTerm(BPLONG term,BPLONG_PTR varVector,BPLONG_PTR maxVar
 extern void Cboot_numbervars(void);
 extern int c_NUMBER_VARS(void);	
 extern int aux_number_vars__3(BPLONG op1,BPLONG n0);								
-extern int c_COPY_TERM(void);	
+extern int c_COPY_TERM(void);
+extern int c_COPY_TERM_SHALLOW(void);	
 extern BPLONG copy_term(BPLONG term);
 extern int c_VARS_SET(void);	
 extern int c_VARS_SET_INTERSECT(void);

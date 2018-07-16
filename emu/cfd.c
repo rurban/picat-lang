@@ -78,7 +78,7 @@ void domain_set_true_bv(dv_ptr,elm)
   
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
-    mask = (0x1ULL << offset);
+    mask = ((BPULONG)0x1 << offset);
     if (w & mask) return; /* already on */
     FOLLOW(w_ptr) = (w | mask);
     DV_size(dv_ptr) += 1;

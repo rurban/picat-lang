@@ -757,6 +757,14 @@ int bp_call_term_catch(term)
     return res;
 }
 
+int c_set_eolcom_flag(){
+    BPLONG flag = ARG(1,1);
+
+    DEREF(flag);
+    eolcom_flag = INTVAL(flag);
+    return BP_TRUE;
+}
+
 int c_set_bp_exception(){
     BPLONG ex = ARG(1,1);
 
@@ -1080,6 +1088,7 @@ void Cboot() {
     insert_cpred("c_format_retrieve_codes",2,c_format_retrieve_codes);
 
     insert_cpred("c_COPY_TERM",2,c_COPY_TERM);
+    insert_cpred("c_COPY_TERM_SHALLOW",2,c_COPY_TERM_SHALLOW);  
     insert_cpred("c_DECREMENTARG",2,c_DECREMENTARG);
     insert_cpred("c_END_TRACE",0,c_END_TRACE);
     insert_cpred("c_INCREMENTARG",2,c_INCREMENTARG);
@@ -1181,6 +1190,8 @@ void Cboot() {
     insert_cpred("c_IS_SMALL_INT_c",1,c_IS_SMALL_INT_c);
 
     insert_cpred("c_MUL_MOD_cccf",4,c_MUL_MOD_cccf);
+
+    insert_cpred("c_set_eolcom_flag",1,c_set_eolcom_flag);
 
     /* insert_cpred("show_susp_frames",0,show_susp_frames); */
 

@@ -894,7 +894,7 @@ int b_IS_BOOLEAN_VAR_CONSTR(coes_type)
 {
     DEREF_NONVAR(coes_type);
     coes_type = INTVAL(coes_type);
-    if (coes_type & 0x1LL) return BP_TRUE; return BP_FALSE;
+    if (coes_type & 0x1) return BP_TRUE; return BP_FALSE;
 }
 
 /* Install the coefficients and variables on to the stack so that

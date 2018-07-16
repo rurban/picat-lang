@@ -92,10 +92,10 @@ extern BPLONG global_mask_size;
 	BPLONG_PTR word_ptr = global_mask_ptr+offset/NBITS_IN_LONG;		\
 	BPULONG word = *word_ptr;										\
 	BPULONG bitPosition = offset % NBITS_IN_LONG;					\
-	*(word_ptr) = (word | (0x1ULL << bitPosition));					\
+	*(word_ptr) = (word | ((BPULONG)0x1 << bitPosition));			\
   }
 
-#define MARK_FRAME(f)  AR_AR(f) = ADDTAG3(AR_AR(f),0x1ULL)
-#define FRAME_IS_MARKED(f) (AR_AR(f) & 0x1ULL)
+#define MARK_FRAME(f)  AR_AR(f) = ADDTAG3(AR_AR(f),0x1)
+#define FRAME_IS_MARKED(f) (AR_AR(f) & 0x1)
 #define UNMARK_FRAME(f)  AR_AR(f) = UNTAGGED3(AR_AR(f))
 

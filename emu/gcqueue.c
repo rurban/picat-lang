@@ -185,6 +185,6 @@ int gcIsMarked(addr,base)
     BPLONG_PTR word_ptr = global_mask_ptr+offset/NBITS_IN_LONG; 
     BPULONG word = FOLLOW(word_ptr);
     BPLONG bitPosition = offset % NBITS_IN_LONG;
-    BPULONG mask = (0x1ULL << bitPosition);
+    BPULONG mask = ((BPULONG)0x1 << bitPosition);
     if ((mask & word) == mask) return 1; else return 0;
 }

@@ -579,8 +579,9 @@ int single_quote_needed(name_ptr,length)
     switch (ch) {
     case '!': if (ch=='!'){if (length==1) return 0; else return 1;}
     case ';': if (ch==';'){if (length==1) return 0; else return 1;}
-    case '/': if (length>=2 && *(name_ptr+1)=='*') return 1;
-    case '.': if (ch=='.' && length==1) return 1;
+    case '/': if (length>=2 && *(name_ptr+1)=='*') return 1; else return 0;
+        //    case '.': if (ch=='.' && length==1) return 1;
+    case '.': if (ch=='.' && length==2) return 0; else return 1;
     case '#':
     case '$':
     case '&':
@@ -819,7 +820,7 @@ int bp_write_int_update_pos(op)
     len = strlen(bp_buf);
     line_position += len;
     if (format_output_dest==0){
-	  fprintf(curr_out, BPLONG_FMT_STR, op);
+        fprintf(curr_out, BPLONG_FMT_STR, op);
     } else {
         CHECK_CHARS_POOL_OVERFLOW(len);
         strcpy((chars_pool+chars_pool_index),bp_buf);
@@ -2004,6 +2005,7 @@ void file_init(){
     file_table[0].mode = READ_MODE;
     file_table[0].name_atom = user_input_word;
     file_table[0].fdes  = stdin;
+    file_table[0].lastc  = ' '; 
     file_table[0].line_no = 1;
     file_table[0].type = STREAM_TYPE_TEXT;
     file_table[0].eos = STREAM_NOT_EOS;
@@ -2538,7 +2540,7 @@ int write_term(op)
                       sym_ptr = GET_ATM_SYM_REC(op);
                       bp_write_pname(GET_NAME(sym_ptr));
                   }
-				else fprintf(curr_out,BPLONG_FMT_STR,INTVAL(op));},
+                  else fprintf(curr_out,BPLONG_FMT_STR,INTVAL(op));},
 
               {if (IsNumberedVar(op)){fprintf(curr_out,"$V(" BPULONG_FMT_STR ")",INTVAL(op));} else { fprintf(curr_out,"["); write_list(op);}},
 
@@ -2613,7 +2615,7 @@ int write_image(op)
         if (ISATOM(op))
             fprintf(curr_out,"atom     " BPULONG_FMT_STR "\n",UNTAGGED_ADDR(op));
         else 
-		  fprintf(curr_out,"int      " BPLONG_FMT_STR "\n",INTVAL(op));
+            fprintf(curr_out,"int      " BPLONG_FMT_STR "\n",INTVAL(op));
         break;
     case STR:
         fprintf(curr_out,"str      " BPULONG_FMT_STR "\n",UNTAGGED_ADDR(op));
@@ -3339,12 +3341,12 @@ int c_PICAT_GET_CWD_f(){
 
 int b_GET_NEXT_PICAT_TOKEN_cff(BPLONG FDIndex, BPLONG TokenType, BPLONG TokenVal){
     FILE *in_fptr;
-    CHAR tmp_lastc;
+    CHAR tmp_lastc = ' ';
     int tmp_line_no,res;
 
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
 #ifdef BPSOLVER
-    if (FDIndex!=in_file_i){
+    if (FDIndex != in_file_i){
         curr_in = file_table[FDIndex].fdes;
         lastc = file_table[FDIndex].lastc;
     }
@@ -3354,7 +3356,7 @@ int b_GET_NEXT_PICAT_TOKEN_cff(BPLONG FDIndex, BPLONG TokenType, BPLONG TokenVal
         exception = input_stream_expected;
         return BP_ERROR;
     }
-    if (FDIndex!=in_file_i){
+    if (FDIndex != in_file_i){
         in_fptr = curr_in;
         tmp_lastc = lastc;
         tmp_line_no = curr_line_no;
@@ -3364,10 +3366,10 @@ int b_GET_NEXT_PICAT_TOKEN_cff(BPLONG FDIndex, BPLONG TokenType, BPLONG TokenVal
         curr_line_no = file_table[FDIndex].line_no;
     }
 #endif
-    
+
     res = b_NEXT_TOKEN_ff(TokenType,TokenVal);
 
-    if (FDIndex!=in_file_i){
+    if (FDIndex != in_file_i){
         file_table[FDIndex].lastc = lastc;
         file_table[FDIndex].line_no = curr_line_no;
 

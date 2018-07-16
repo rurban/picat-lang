@@ -7,16 +7,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
+#define EPSILON           1.0e-8
+
+#ifdef M64BITS
 #define REF               0x0ULL   /* 00 */
 #define LST               0x3ULL   /* 11 */
 #define STR               0x1ULL   /* 01 */
 #define ATM               0x2ULL   /* 10 */
-#define EPSILON           1.0e-8
 #define MASK2             0x2ULL
-
 #define MASK_LOW28        0xfffffffULL
-
-#ifdef M64BITS
 #define SUSP              0x8000000000000001ULL
 #define TOP_BIT_MASK      0x8000000000000000ULL
 #define TOP_BIT           0x8000000000000000ULL
@@ -30,7 +29,14 @@
 #define MASK_7F           0x7fffffffffffffffULL
 #define HASH_BITS         0x000000000fffffffULL
 #define MASK_LOW16        0x000000000000ffffULL
+#define BP_MONE           MAKEINT(-1LL)
 #else
+#define REF               0x0   /* 00 */
+#define LST               0x3   /* 11 */
+#define STR               0x1   /* 01 */
+#define ATM               0x2   /* 10 */
+#define MASK2             0x2
+#define MASK_LOW28        0xfffffff
 #define SUSP              0x80000001UL
 #define TOP_BIT_MASK      0x80000000UL
 #define TOP_BIT           0x80000000UL
@@ -44,6 +50,7 @@
 #define MASK_7F           0x7fffffffUL
 #define HASH_BITS         0x0fffffffUL
 #define MASK_LOW16        0x0000ffffUL
+#define BP_MONE           MAKEINT(-1)
 #endif
 
 /****************************************************************************/
@@ -80,7 +87,7 @@
 #define BP_ONE  MAKEINT(1)
 #define BP_TWO  MAKEINT(2)
 #define BP_THREE  MAKEINT(3)
-#define BP_MONE  MAKEINT(-1LL)
+
 
 #define ADDTAG3(op,tag)    ((BPLONG)(op) | tag)
 #define UNTAGGED3(op)      (((BPLONG)(op)) & VAL_MASK1)     /* fffffffc */
@@ -540,8 +547,8 @@
 
 
 #define  NEXT_IN_ELM(elm,w,offset,mask){						\
-    while ((w & (0xffULL << offset))==0){offset += 8; elm += 8;}	\
-    mask = (0x1ULL << offset);									\
+    while ((w & ((BPULONG)0xff << offset))==0){offset += 8; elm += 8;}	\
+    mask = ((BPULONG)0x1 << offset);									\
     while (!(w & mask)){										\
       elm++;													\
       mask <<= 1;												\
@@ -568,7 +575,7 @@
   }
 
 #define  PREV_IN_ELM(elm,w,offset,mask){		\
-	mask = (0x1ULL << offset);					\
+	mask = ((BPULONG)0x1 << offset);					\
 	while ((w & mask) ==0){						\
 	  elm--;									\
 	  mask >>= 1;								\

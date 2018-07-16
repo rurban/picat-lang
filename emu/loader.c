@@ -20,11 +20,15 @@
 
 #define MAXSYMS BUCKET_CHAIN
 
+#ifdef M64BITS
 void inline IGUR(int i) {}  /* Ignore GCC Unused Result */
 void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
+#define READ_DATA_ONLY(x,y) IGUR( fread(x, sizeof(*x), y, fp))
+#else
+#define READ_DATA_ONLY(x,y) fread(x, sizeof(*x), y, fp)
+#endif
 
 #define READ_DATA(x,y)  (y - fread(x, sizeof(*x), y, fp))
-#define READ_DATA_ONLY(x,y) IGUR( fread(x, sizeof(*x), y, fp))
 #define RELOC_ADDR(offset) ((BPLONG_PTR)curr_fence + offset)
 #define BUILTIN 1
 
@@ -1805,10 +1809,14 @@ typedef struct {
 #ifdef PB_PICAT
 #include "pb_picat_bc.h"
 #else
+#ifdef XCSP_PICAT
+#include "xcsp_picat_bc.h"
+#else
 #ifdef PICAT
 #include "picat_bc.h"
 #else
 #include "bp_bc.h"
+#endif
 #endif
 #endif
 #endif

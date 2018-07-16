@@ -23,6 +23,7 @@ static int dg_undo_mode = 0;
 /* ---------------------------------------------  */
 /*  |repeat | skip | leap | creep | spy | debug | */
 /* ---------------------------------------------  */
+#ifdef M64BITS
 #define DG_FLAG_DEBUG 0x1LL
 #define DG_FLAG_SPY 0x2LL
 #define DG_FLAG_SPY_DEBUG 0x3LL
@@ -30,6 +31,15 @@ static int dg_undo_mode = 0;
 #define DG_FLAG_L 0x8LL
 #define DG_FLAG_S 0x10LL
 #define DG_FLAG_R 0x20LL
+#else
+#define DG_FLAG_DEBUG 0x1
+#define DG_FLAG_SPY 0x2
+#define DG_FLAG_SPY_DEBUG 0x3
+#define DG_FLAG_C 0x4
+#define DG_FLAG_L 0x8
+#define DG_FLAG_S 0x10
+#define DG_FLAG_R 0x20
+#endif
 
 int c_init_dg_flag()
 {
@@ -67,7 +77,7 @@ int c_remove_spy_point(){
         GET_SPY(sym_ptr) = 0;
         number_of_spy_points--;
         if (number_of_spy_points==0){
-            dg_flag_word &= ~DG_FLAG_SPY;
+		  dg_flag_word &= ~((UW16)DG_FLAG_SPY);
         }
         return BP_TRUE;
     }  else 
@@ -140,7 +150,7 @@ int c_remove_spy_points(){
         }
     }
     number_of_spy_points = 0;
-    dg_flag_word &= ~DG_FLAG_SPY;
+    dg_flag_word &= ~((UW16)DG_FLAG_SPY);
   
     return BP_TRUE;
 }
