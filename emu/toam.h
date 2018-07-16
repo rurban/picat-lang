@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : toam.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -757,14 +757,14 @@ extern BPLONG no_gcs;
 */
 
 #define INVOKE_GC_NONDET {												\
-    if (LOCAL_TOP -H > MIN_AVAIL_WORDS && H < heap_water_mark && LOCAL_TOP > stack_water_mark){ \
+    if (LOCAL_TOP - H > MIN_AVAIL_WORDS && H < heap_water_mark && LOCAL_TOP > stack_water_mark){ \
 	} else {															\
-      if (bp_gc && ((gc_b != B) || LOCAL_TOP -H <= MIN_AVAIL_WORDS)){	\
+      if (bp_gc && ((gc_b != B) || LOCAL_TOP - H <= MIN_AVAIL_WORDS)){	\
 		SAVE_AR;SAVE_TOP;												\
 		gc_b = B;														\
 		if (garbage_collector()==BP_ERROR){								\
 		  exception = et_OUT_OF_MEMORY_STACK;							\
-		  fprintf(stderr,"%% error: OUT OF MEMORY\n");						\
+		  fprintf(stderr,"%% error: OUT OF MEMORY\n");					\
 		  goto interrupt_handler;										\
 		}																\
 		RESTORE_AR;RESTORE_TOP;											\

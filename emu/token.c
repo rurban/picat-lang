@@ -606,7 +606,7 @@ void SyntaxError(message)
 int handleEndInQuoted()
 {
     exception = c_syntax_error(et_IN_CHARACTER);
-    return -1;
+    return BP_ERROR;
 }
 
 /*  read_utf8_character(FILE* card, BYTE q)
@@ -802,7 +802,7 @@ int handleEolInQuoted2()
 {
     lastc = '\0';
     exception = c_syntax_error(et_IN_CHARACTER);
-    return -1;
+    return BP_ERROR;
 }
 
 int read_utf8_character_string(int q){

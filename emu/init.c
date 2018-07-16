@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : init.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -89,7 +89,7 @@ void init_toam(argc, argv)
                     print_picat_usage();
                     exit(0);
                 } else if (*(str+2) == 'v' || strcmp(str+2,"version")==0){
-                    printf("Picat version 2.0#1\n");
+                    printf("Picat version 2.1#3\n");
                     exit(0);
                 }
                                 
@@ -297,7 +297,7 @@ int init_loading(argc, argv)
     BPLONG i;
 
 #ifdef PICAT
-    b_GLOBAL_SET_ccc(ADDTAG(insert_sym("_$picat_log", 11, 0),ATM),MAKEINT(0),MAKEINT(0));
+    b_GLOBAL_SET_ccc(ADDTAG(picat_log_psc,ATM),MAKEINT(0),MAKEINT(0));
 #endif
 
     i = 1;
@@ -314,10 +314,12 @@ int init_loading(argc, argv)
                 break;
             case 'l':
                 if (strcmp(str+1,"log")==0){  /* enable log printing */
-                    b_GLOBAL_SET_ccc(ADDTAG(insert_sym("_$picat_log", 11, 0),ATM),MAKEINT(0),MAKEINT(1));
+                    b_GLOBAL_SET_ccc(ADDTAG(picat_log_psc,ATM),MAKEINT(0),MAKEINT(1));
                 } else {
                     use_gl_getline = 0; 
                 }
+                break;
+            case 'v':
                 break;
             case 's':
                 i++;

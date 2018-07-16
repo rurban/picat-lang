@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : toam.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
  *   Purpose: Emulator of ATOAM
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -30,7 +30,7 @@
 extern Builtins builtins[];                                                                                             //branch
 extern BPLONG_PTR *asp_rel_mins,*asp_rel_sizes;
 extern char *eventNoNameTable[];                                                                                        //branch
-
+  
 BPLONG interrupt_sym;        /* the atom 'interrupt' */
 SYM_REC_PTR ball_psc;      /* the global var '$ball' */
 BPLONG_PTR  sreg;            /* current build or unify field */
@@ -556,3 +556,4 @@ trigger_on_handler:{
   return 0;
   }
 */
+

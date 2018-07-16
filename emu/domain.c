@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : domain.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
  *   Purpose: Primitives on finite domains
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -314,7 +314,7 @@ void it_to_bv_with_hole(dv_ptr,elm)
 
     offset = elm-from*NBITS_IN_LONG;
   
-    FOLLOW(heap_top++) = from*NBITS_IN_LONG;  /* BV_low_val */
+    FOLLOW(heap_top++) = from*NBITS_IN_LONG;        /* BV_low_val */
     FOLLOW(heap_top++) = (to+1)*NBITS_IN_LONG-1;    /* BV_up_val */
 
     size = to-from+1;
@@ -2922,8 +2922,8 @@ x_is_int:
         if (a != 0 && a != 1 && a != -1 && IS_SUSP_VAR(Y) && IS_SUSP_VAR(Z)){
             dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
             dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
-            if (IS_SMALL_DOMAIN(dv_ptr_z)){
-                minZ = DV_first(dv_ptr_z); maxZ = DV_last(dv_ptr_z);
+			minZ = DV_first(dv_ptr_z); maxZ = DV_last(dv_ptr_z);
+            if (minZ >= -500 && maxZ <= 500){                        // IS_SMALL_DOMAIN(dv_ptr_z)){
                 for (;;){
                     BPLONG elm = minZ/a;
                     if (a*elm == minZ && dm_true(dv_ptr_y,elm)) {

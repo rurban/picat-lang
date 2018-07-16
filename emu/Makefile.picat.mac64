@@ -18,7 +18,7 @@ OBJ = dis.o init.o init_sym.o loader.o inst_inf.o main.o toam.o unify.o \
 	builtins.o mic.o numbervars.o cpreds.o univ.o assert.o findall.o clause.o \
     delay.o clpfd.o clpfd_libs.o event.o toamprofile.o \
     kapi.o getline.o table.o gcstack.o gcheap.o gcqueue.o debug.o \
-    expand.o bigint.o sapi.o sat_bp.o lglbnr.o lglib.o lglmain.o glpk_bp.o espresso_bp.o 
+    expand.o bigint.o sapi.o sat_bp.o lglbnr.o lglib.o lglmain.o espresso_bp.o 
 
 ESP = espresso/
 
@@ -107,8 +107,6 @@ gQueue.o : gcqueue.c gc.h term.h basic.h bapi.h frame.h
 	$(CC) $(CFLAGS) gcqueue.c 
 expand.o : expand.c gc.h term.h basic.h bapi.h frame.h
 	$(CC) $(CFLAGS) expand.c 
-glpk_bp.o : glpk_bp.c term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) -Iglpk glpk_bp.c
 espresso_bp.o : espresso_bp.c term.h basic.h bapi.h frame.h
 	$(CC) $(CFLAGS) -Iespresso espresso_bp.c
 sapi.o : sapi.c sapi.h term.h basic.h bapi.h frame.h

@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : mic.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
  *   Purpose: miscellaneous functions
  *            Includes MurmurHash by Austin Appleby
 
@@ -37,7 +37,9 @@
 #include "frame.h"
 #include "event.h"
 
-#define BP_COMPARE_VALS(val1,val2)    ((val1 == val2) ? 0 : ((val1 > val2) ? 1 : -1))
+#define BP_COMPARE_VALS(val1,val2)    (((BPLONG)val1 == (BPLONG)val2) ? 0 : (((BPLONG)val1 > (BPLONG)val2) ? 1 : -1))
+
+#define BP_COMPARE_UNSIGNED_VALS(val1,val2)    (((BPULONG)val1 == (BPULONG)val2) ? 0 : (((BPULONG)val1 > (BPULONG)val2) ? 1 : -1))
 
 #define GLOBALIZE_VAR(term){                                    \
         DEREF(term);                                            \
@@ -261,7 +263,7 @@ int bp_compare(BPLONG val1, BPLONG val2)
 l_start:
     DEREF(val2);
     SWITCH_OP(val1,lcompare1,
-              {if (ISREF(val2)) return BP_COMPARE_VALS(val1,val2); else return -1L;},
+              {if (ISREF(val2)) return BP_COMPARE_UNSIGNED_VALS(val1,val2); else return -1L;},
             
               {SWITCH_OP(val2,lcompare2,
                          {return 1;}, 
@@ -296,11 +298,11 @@ l_start:
                             {return 1;});},
 
               {SWITCH_OP(val2,lcompare4,
-                         {return (val1-val2);},
+                         {return BP_COMPARE_UNSIGNED_VALS(val1,val2);},
                          {return -1L;},
                          {return -1L;},
                          {return -1L;},
-                         {return (val1-val2);});});
+                         {return BP_COMPARE_UNSIGNED_VALS(val1,val2);});});
 
 compare_atom_atom:
     if (ISINT(val1)){

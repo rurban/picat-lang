@@ -2,8 +2,8 @@
 #ifdef SAT
 /********************************************************************
  *   File   : espresso_bp.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
- *   Purpose: Interface with Espresso for B-Prolog
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Purpose: Interface with Espresso for Picat
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -25,9 +25,9 @@ void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA);
 /************************************************************************************************** 
    call_espresso(BNs,InFlag,Vals,Cls,ClsR):
 
-   BNs      : A vector of Boolean variable numbers, v(BN0,BN1,...,BN(n-1)), where BNi is ignored if -1.
+   BNs      : A vector of Boolean variable numbers, v(BN0,BN1,...,BN(n-1)), where BNi is ignored if f.
    Vals     : A sorted list of values or intervals. All the values must be non-negative.
-   InFlag   : 1 or 0, indicating if it's a in or not_in domain constraint.
+   InFlag   : 1 or 0, indicating if it's a 'X :: D' or 'X notin D' domain constraint.
    Cls-ClsR : A list of clauses to be returned.
 
    Let V be the variable encoded by BNs (log-encoding), Vals be {a1,a2,...,an}. If InFlag=1, then Cls encodes 
@@ -81,11 +81,11 @@ void prep_espresso(){
     srandom(314973);
 #endif
     debug = 0;                      /* default -d: no debugging info */
-    verbose_debug = FALSE;      /* default -v: not verbose */
-    print_solution = FALSE;     /* default -x: print the solution (!) */
+    verbose_debug = FALSE;          /* default -v: not verbose */
+    print_solution = FALSE;         /* default -x: print the solution (!) */
     summary = FALSE;                /* default -s: no summary */
     trace = FALSE;                  /* default -t: no trace information */
-    remove_essential = TRUE;    /* default -e: */
+    remove_essential = TRUE;        /* default -e: */
     force_irredundant = TRUE;
     unwrap_onset = TRUE;
     single_expand = FALSE;
@@ -156,7 +156,7 @@ pPLA init_PLA(int n){
 
 /* 
    Add each domain value as a cube into PLA. Since CNF is needed, 
-   the output of an in-value is 0 and the output of an out-value is 1.
+   the output of an in-value is 0, and the output of an out-value is 1.
 */
 void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA){
     int needs_dcset, needs_offset;
@@ -254,23 +254,32 @@ void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA){
 BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNVect, register pset c)
 {
     register int i, var;
-    BPLONG_PTR tail_ptr;
+    BPLONG_PTR tail_ptr, heap_top0;
     BPLONG lst,elm;
-  
+
+    heap_top0 = heap_top;
     tail_ptr = &lst;
 
     for(var = 0; var < cube.num_binary_vars; var++) {
         int lit = GETINPUT(c, var);
         elm = FOLLOW(ptrBNVect+var+1);
-        if (lit == 1 || lit == 2){  /* 3 means don't care */
-            if (lit == 2) {
-                DEREF_NONVAR(elm); elm = INTVAL(elm);
-                elm = MAKEINT(-elm);
+        DEREF_NONVAR(elm);
+        if (ISINT(elm)) {             
+            if (lit == 1 || lit == 2){  /* 3 means don't care */
+                if (lit == 2) {
+                    elm = INTVAL(elm);
+                    elm = MAKEINT(-elm);
+                }
+                FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
+                FOLLOW(heap_top++) = elm;
+                tail_ptr = heap_top++;
             }
-            FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
-            FOLLOW(heap_top++) = elm;
-            tail_ptr = heap_top++;
-        }
+        } else {                      /* elm can be 'f' or 't' */
+            if ((lit == 1 && elm == t_atom) || (lit == 2 && elm == f_atom)){
+                heap_top = heap_top0;
+                return BP_TRUE;           /* this clause is already true because the literal is true */
+            }                           /* else this literal is false, and need not be added */
+        }                             
     }
     FOLLOW(tail_ptr) = nil_sym;
     return lst;
@@ -285,10 +294,12 @@ void retrieve_pla_cubes(BPLONG_PTR ptrBNVect, pPLA PLA, BPLONG Cls, BPLONG ClsR)
     tail_ptr = &lst;
     foreach_set(PLA->F, last, p) {
         BPLONG cell = retrieve_pla_cube(ptrBNVect, p);
-        FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
-        FOLLOW(heap_top++) = cell;
-        tail_ptr = heap_top++;
-        LOCAL_OVERFLOW_CHECK("espresso");
+        if (cell != BP_TRUE) {  /* if cell = BP_TRUE, then the clause is already tree */
+            FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
+            FOLLOW(heap_top++) = cell;
+            tail_ptr = heap_top++;
+            LOCAL_OVERFLOW_CHECK("espresso");
+        }
     }
     if (tail_ptr == &lst){ /* empty, false */
         unify(Cls,ClsR);
@@ -440,11 +451,11 @@ void setup_PLA_element(BPLONG IV_K, BPLONG ElmsVect, pPLA PLA){
 
   Use Espresso to find a CNF for the table constraint table_in(VarsVect,Table) or table_notin(VarsVect,Table)
 
-  InFlag  : 1 means the constraint is table_in and 0 means it is table_notin.
+  InFlag  : 1 means the constraint is table_in, and 0 means it is table_notin.
   VarsVect: {V1,V2,...,}, only V1 and V2 are dvars and all other elements are integers.
   K1      : the number of Boolean variables used for V1.
   HTable  : a hashtable built from Table
-  BNVect : The Boolean variable numbers used for V1 and V2
+  BNVect : The Boolean variables' numbers of V1 and V2
 */
 int c_call_espresso_table(){
     pPLA PLA;

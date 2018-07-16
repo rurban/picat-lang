@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : basicd.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -141,6 +141,7 @@ SYM_REC_PTR register_event_listener;
 
 /* $addr(int) */
 SYM_REC_PTR c_object_ref_sym; 
+SYM_REC_PTR picat_log_psc;
 
 BPLONG windows_atom;
 BPLONG cygwin_atom;
@@ -149,6 +150,8 @@ BPLONG unix_atom;
 BPLONG unknown_exception;
 BPLONG eof_atom;
 BPLONG true_atom;
+BPLONG t_atom;
+BPLONG f_atom;
 BPLONG dec_ref_atom;
 BPLONG dec_retr_atom;
 BPLONG dummy_event_object;

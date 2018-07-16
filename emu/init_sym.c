@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : init_sym.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -57,7 +57,8 @@ void init_sym(){
     u_eq_uc_arc = BP_NEW_SYM("u_eq_uc_ARC",5);
     plan_psc = BP_NEW_SYM("_$plan",2);
     register_event_listener = BP_NEW_SYM("registerEventListener",2);
-  
+    picat_log_psc = BP_NEW_SYM("_$picat_log",0);
+        
     windows_atom = ADDTAG(insert_sym("windows",7,0),ATM);
     cygwin_atom = ADDTAG(insert_sym("cygwin",6,0),ATM);
     unix_atom = ADDTAG(insert_sym("unix",4,0),ATM);
@@ -82,6 +83,8 @@ void init_sym(){
 
     eof_atom = ADDTAG(BP_NEW_SYM("end_of_file",0),ATM);
     true_atom = ADDTAG(BP_NEW_SYM("true",0),ATM);
+    t_atom = ADDTAG(BP_NEW_SYM("t",0),ATM);
+    f_atom = ADDTAG(BP_NEW_SYM("f",0),ATM);             
     dec_ref_atom = ADDTAG(BP_NEW_SYM("_$dec_ref",0),ATM);
     dec_retr_atom = ADDTAG(BP_NEW_SYM("_$dec_retr",0),ATM);
     dots_atom = ADDTAG(BP_NEW_SYM("...",0),ATM);

@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : arith.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
  *   Purpose: arithmetic functions 
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -1489,7 +1489,7 @@ int equal_to(op1,op2)
         if (op2 == BP_ERROR) return BP_ERROR;
     }
   
-	/*	printf("compre  %x %x",op1,op2); write_term(op1); printf(" "); write_term(op2); printf("\n"); */
+    /*  printf("compre  %x %x",op1,op2); write_term(op1); printf(" "); write_term(op2); printf("\n"); */
 
     if (ISINT(op1)){
         if (ISINT(op2)){
@@ -1790,7 +1790,7 @@ BPLONG bp_math_pow(op1,op2)
             }
         }
     }
-	errno = 0;
+    errno = 0;
     res = pow(f1,f2);
     if (errno > 0){
         exception = c_domain_error(et_NUMBER, make_struct2("**", encodefloat1(f1), encodefloat1(f2)));
@@ -2387,19 +2387,19 @@ int prettymuch_equal(op1, op2)
     double min, diff;
 
     if ((op1 <= -EPSILON && op2 >= EPSILON) || (op2 <= -EPSILON && op1 >= EPSILON))
-	  return 0;
+        return 0;
     if (op1 < 0.0)
         op1 = -op1;
     if (op2 < 0.0)
         op2 = -op2;
     diff = op1 - op2;
     if (diff < 0.0)
-	  diff = -diff;
+        diff = -diff;
     min = (op1 < op2) ? op1 : op2;
     if (min == 0.0)
-	  return (op1 == op2);
+        return (op1 == op2);
     else
-	  return ((diff/min) < EPSILON) ? 1 : 0;
+        return ((diff/min) < EPSILON) ? 1 : 0;
 }
 
 BPLONG bp_access_array(arr,indexes)

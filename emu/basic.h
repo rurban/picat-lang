@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : basic.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -395,6 +395,7 @@ extern SYM_REC_PTR uu_eq_c_arc;
 extern SYM_REC_PTR u_eq_uc_arc;
 extern SYM_REC_PTR c_object_ref_sym;
 extern SYM_REC_PTR register_event_listener;
+extern SYM_REC_PTR picat_log_psc;
 
 extern BPLONG windows_atom;
 extern BPLONG cygwin_atom;
@@ -403,6 +404,8 @@ extern BPLONG unix_atom;
 extern BPLONG unknown_exception;
 extern BPLONG eof_atom;
 extern BPLONG true_atom;
+extern BPLONG t_atom;
+extern BPLONG f_atom;
 extern BPLONG dec_ref_atom;
 extern BPLONG dec_retr_atom;
 extern BPLONG dummy_event_object;

@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : cpreds.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
  *   Purpose: Non-inline built-ins in C
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -1062,7 +1062,11 @@ int c_MININT_f(){
     return unify(v,MAKEINT(BP_MININT_1W));
 }
 
-extern int c_MININT_f(void);
+int c_IS_SMALL_INT_c(){
+    BPLONG v = ARG(1,1);
+	DEREF(v);
+	return (ISINT(v)) ? BP_TRUE : BP_FALSE;
+}
 
 void Cboot() {
     insert_cpred("c_format_set_dest",1,c_format_set_dest);
@@ -1168,6 +1172,7 @@ void Cboot() {
 
     insert_cpred("c_MAXINT_f",1,c_MAXINT_f);
     insert_cpred("c_MININT_f",1,c_MININT_f);
+    insert_cpred("c_IS_SMALL_INT_c",1,c_IS_SMALL_INT_c);
 
     insert_cpred("c_MUL_MOD_cccf",4,c_MUL_MOD_cccf);
 
@@ -1187,17 +1192,20 @@ void Cboot() {
     Cboot_cplex();
 #endif
 
+	/*
 #ifdef GLPK
     Cboot_glpk();
 #endif
-
+	*/
     insert_cpred("c_sat_start_dump",0,c_sat_start_dump);
     insert_cpred("c_sat_stop_dump",0,c_sat_stop_dump);
-    insert_cpred("c_sat_start_count",0,c_sat_start_count);
+    insert_cpred("c_sat_start_count",1,c_sat_start_count);
     insert_cpred("c_sat_stop_count",1,c_sat_stop_count);
+    insert_cpred("c_sat_propagate_dom_bits",2,c_sat_propagate_dom_bits);
 
     insert_cpred("c_REDUCE_DOMAINS_IC_EQ",2,c_REDUCE_DOMAINS_IC_EQ);
     insert_cpred("c_REDUCE_DOMAINS_IC_GE",2,c_REDUCE_DOMAINS_IC_GE);
+	//	insert_cpred("c_REDUCE_DOMAIN_AC_ADD",3,c_REDUCE_DOMAIN_AC_ADD);
     insert_cpred("c_TA_TOP_f",1,c_TA_TOP_f);
 
     Cboot_sat();

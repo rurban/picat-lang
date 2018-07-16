@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : builtins.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
  *   Purpose: Inline built-ins
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -11,7 +11,7 @@
 #include "basic.h"
 #include "term.h"
 #include "bapi.h"
-#define MAXBS 315
+#define MAXBS 317
 
 Builtins builtins[MAXBS];
 
@@ -339,6 +339,8 @@ void init_builtins(void){
     INITIALIZE_BUILTIN2(312,b_PICAT_GLOBAL_MAP_VALS_cf);
     INITIALIZE_BUILTIN2(313,b_PICAT_GLOBAL_MAP_LIST_cf);
     INITIALIZE_BUILTIN1(314,b_PLANNER_UPDATE_EXPLORED_DEPTH_c);
+    INITIALIZE_BUILTIN3(315,b_SAT_RETRIEVE_BNUM_cff);
+    INITIALIZE_BUILTIN1(316,b_SAT_GET_INC_VAR_NUM_f);
 }
 
 /*

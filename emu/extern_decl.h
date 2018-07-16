@@ -385,8 +385,7 @@ extern int b_PROP_MAX_c(BPLONG n);
 extern int b_PROP_MIN_c(BPLONG n);
 extern int b_BOOL_OR_c(BPLONG n);
 extern int b_BOOL_AND_c(BPLONG n);
-
-
+// extern int c_REDUCE_DOMAIN_AC_ADD();
 
 //
 //	cpreds.c prototypes
@@ -1366,13 +1365,16 @@ extern int c_sat_stop_dump();
 extern int c_sat_start_count();
 extern int c_sat_stop_count();
 extern int b_SAT_ADD_CL_c(BPLONG lit);
+extern int b_SAT_RETRIEVE_BNUM_cff(BPLONG BV, BPLONG Num, BPLONG MNum);
+extern int b_SAT_GET_INC_VAR_NUM_f(BPLONG Num);
 extern int c_sat_start();
-
+extern int c_sat_propagate_dom_bits();
+  
 extern int c_call_espresso();
 extern int c_call_espresso_element();
 extern int c_call_espresso_table();
 extern int c_call_espresso_pb();
-
+  
 //
 // others
 //
