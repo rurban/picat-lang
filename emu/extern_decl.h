@@ -1426,4 +1426,6 @@ extern void plc_sup();
 // others
 //
 extern void Cboot_sat();
+extern void bp4p_register_preds();
+extern int fann_cpreds();
 
