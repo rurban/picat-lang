@@ -53,11 +53,10 @@ An \emph{attributed variable}\index{attributed variable} is a variable that has 
 \item \texttt{dvar($Term$)}\index{\texttt{dvar/1}}: This predicate is true if $Term$ is an attributed domain variable.
 \item \texttt{bool\_dvar($Term$)}\index{\texttt{bool\_dvar/1}}: This predicate is true if $Term$ is an attributed domain variable whose lower bound is 0 and whose upper bound is 1.
 \item \texttt{dvar\_or\_int($Term$)}\index{\texttt{dvar\_or\_int/1}}: This predicate is true if $Term$ is an attributed domain variable or an integer.
-\item \texttt{get($X$, $Key$) = $Val$}\index{\texttt{get/2}}: This function returns the \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} that is attached to \texttt{$X$}. It throws an error if \texttt{$X$} has no attribute named $Key$.
-\item \texttt{has\_key($X$, $Key$)}\index{\texttt{has\_key/2}}: This predicate is true if $X$ has an attribute named $Key$. 
-\item \texttt{keys($X$) = $List$}\index{\texttt{keys/1}}: This function returns the list\index{list} of names of the attributes of $X$.
-\item \texttt{put($X$, $Key$, $Val$)}\index{\texttt{put/3}}: This predicate attaches the key-value pair \texttt{$Key$$=$$Val$} to \texttt{$X$}, where \texttt{$Key$} is a non-variable term, and \texttt{$Val$} is any term. 
-\item \texttt{put($X$, $Key$)}\index{\texttt{put/2}}: This predicate call is the same as \texttt{put($X$, $Key$,not\_a\_value)}.
+\item \texttt{get\_attr($X$, $Key$) = $Val$}\index{\texttt{get\_attr/2}}: This function returns the \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} that is attached to \texttt{$X$}. It throws an error if \texttt{$X$} has no attribute named $Key$.
+\item \texttt{get\_attr($X$, $Key$, $DefaultVal$) = $Val$}\index{\texttt{get\_attr/3}}: This function returns \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} that is attached to \texttt{$X$}. It returns $DefaultVal$ if $X$ does not have the attribute named $Key$.
+\item \texttt{put\_attr($X$, $Key$, $Val$)}\index{\texttt{put\_attr/3}}: This predicate attaches the key-value pair \texttt{$Key$$=$$Val$} to \texttt{$X$}, where \texttt{$Key$} is a non-variable term, and \texttt{$Val$} is any term. 
+\item \texttt{put\_attr($X$, $Key$)}\index{\texttt{put/2}}: This predicate call is the same as \texttt{put\_attr($X$, $Key$,not\_a\_value)}.
 \end{itemize}
 
 \section{Atoms}
@@ -146,7 +145,8 @@ In addition to the numeric operators, the \texttt{basic} module also provides th
 \item \texttt{to\_hex\_string($Int$) = $String$}\index{\texttt{to\_hex\_string/1}}: This function returns the hexadecimal representation of the integer\index{integer} $Int$ as a string\index{string}.
 \item \texttt{to\_int($ANS$) = $Int$}\index{\texttt{to\_int/1}}: This function is the same as \texttt{truncate($ANS$)}\index{\texttt{truncate/1}} in the \texttt{math} module if $ANS$ is a number, the same as \texttt{ord($ANS$)-ord('0')} if $ANS$ is a digit character, and the same as \texttt{parse\_term($ANS$)} if $ANS$ is a string.
 \item \texttt{to\_integer($ANS$) = $Int$}\index{\texttt{to\_integer/1}}: This function is the same as \texttt{to\_int($ANS$)}.
-\item \texttt{to\_oct\_string($Int$) = $String$}\index{\texttt{to\_oct\_string/1}}:  This function returns the octal representation of the integer\index{integer} $Int$ as a string\index{string}.
+\item \texttt{to\_oct\_string($Int$) = $String$}\index{\texttt{to\_oct\_string/1}}:  This function returns the octal representation of the integer $Int$ as a string\index{string}.
+\item \texttt{to\_radix\_string($Int$,$Base$) = $String$}\index{\texttt{to\_radix\_string/2}}:  This function returns the representation of the integer $Int$ of the numeral $Base$ as a string\index{string}, where $Base$ must be greater than 1 and less than 37. The call \texttt{to\_oct\_string($Int$)} is the same as \texttt{to\_radix\_string($Int$,8)}.
 \item \texttt{to\_real($NS$) = $Real$}\index{\texttt{to\_real/1}}: This function is the same as \texttt{to\_float($NS$)}.
 \end{itemize}
 The \texttt{math} module provides more numeric functions.  See Appendix \ref{chapter:math}.
@@ -332,7 +332,7 @@ Note that many of the overloaded built-ins for arrays are not implemented effici
 \end{verbatim}
 
 \subsection{Maps}
-A \emph{map}\index{map} is a hash-table that is represented as a structure\index{structure} that contains a set of key-value pairs. The functor\index{functor} of the structure\index{structure} that is used for a map\index{map} is not important.  An implementation may ban access to the name and the arity\index{arity} of the structure\index{structure} of a map\index{map}. Maps\index{map} must be created with the built-in function \texttt{new\_map}\index{\texttt{new\_map/1}}. In addition to the built-ins for structures\index{structure}, the following built-ins are provided for maps\index{map}:
+A \emph{map}\index{map} is a hash-table that is represented as a structure\index{structure} that contains a set of key-value pairs. The functor\index{functor} of the structure\index{structure} that is used for a map\index{map} is not important.  An implementation may ban access to the name and the arity\index{arity} of the structure\index{structure} of a map\index{map}. Maps\index{map} must be created with the built-in function \texttt{new\_map}\index{\texttt{new\_map/1}}, unless they are prebuilt (see Section \ref{prebuiltmaps}). In addition to the built-ins for structures\index{structure}, the following built-ins are provided for maps\index{map}:
 \begin{itemize}
 \item \texttt{clear($Map$)}\index{\texttt{clear/1}}: This predicate clears the map $Map$. It throws an error if $Map$ is not a map.
 \item \texttt{get($Map$, $Key$) = $Val$}\index{\texttt{get/2}}: This function returns \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} in \texttt{$Map$}. It throws an error if $Map$ does not contain the key $Key$.
@@ -445,6 +445,7 @@ A predicate\index{predicate} or function\index{function} is said to be \emph{hig
 \item \texttt{ground($Term$)}\index{\texttt{ground/1}}: This predicate is true if $Term$ is ground\index{ground}.  A \emph{ground}\index{ground} term does not contain any variables.
 \item \texttt{list\_to\_and($List$) = $Conj$}\index{\texttt{list\_to\_and/1}}: This function converts $List$ in the form \texttt{[$a_1$,$\ldots$,$a_n$]} into a term in the form \texttt{($a_1$,$\ldots$,$a_n$)}.
 \item \texttt{number\_vars($Term$, $N_0$) = $N_1$}\index{\texttt{number\_vars/2}}: This function numbers the variables in $Term$ by using the integers starting from $N_0$.  $N_1$ is the next integer that is available after $Term$ is numbered.  Different variables receive different numberings, and the occurrences of the same variable all receive the same numbering.
+\item \texttt{parse\_radix\_string($String$, $Base$) = $Int$}\index{\texttt{parse\_radix\_string/2}}: This function converts a radix $String$ of $Base$ into a decimal integer $Int$, where $Base$ must be greater than 1 and less than 37. For example, \texttt{parse\_radix\_string("101",2)} returns 5, which is the same as \texttt{parse\_term("0b101")}.
 \item \texttt{parse\_term($String$, $Term$, $Vars$)}\index{\texttt{parse\_term/3}}: This predicate uses the Picat parser to extract a term $Term$ from $String$. $Vars$ is a list of pairs, where each pair has the form $Name$=$Var$. 
 \item \texttt{parse\_term($String$) = $Term$}\index{\texttt{parse\_term/1}}: This function converts $String$ to a term.
 \item \texttt{second($Compound$) = $Term$}\index{\texttt{second/1}}: This function returns the second argument of the compound term $Compound$.  

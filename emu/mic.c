@@ -356,8 +356,7 @@ int bp_compare(BPLONG val1, BPLONG val2)
    return c;
  }
 
-int compare_bigint_float(val1,val2)
-     BPLONG val1,val2;
+int compare_bigint_float(BPLONG val1, BPLONG val2)
 {
   double f1,f2;
   f1 = bp_bigint_to_double(val1);
@@ -365,8 +364,7 @@ int compare_bigint_float(val1,val2)
   COMPARE_FLOAT_FLOAT(f1,f2);
 }
 
-int compare_float_unknown(val1,val2)
-     BPLONG val1,val2;
+int compare_float_unknown(BPLONG val1, BPLONG val2)
 {
   double f1,f2;
 
@@ -2847,8 +2845,12 @@ void Cboot_mic()
 #endif
 
 #define	ROTL32(x,r) (x << r) | (x >> (32 - r))
-    
+
+#if defined(_MSC_VER)
 FORCE_INLINE UW32 fmix ( UW32 h )
+#else
+FORCE_INLINE inline UW32 fmix ( UW32 h )
+#endif
 {
   h ^= h >> 16;
   h *= 0x85ebca6b;

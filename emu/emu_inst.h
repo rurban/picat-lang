@@ -6624,7 +6624,6 @@ switch (*P++){
 #endif
  lab_catch_clean_up: 
     if (B==AR){ /*  a catcher frame is in the form of p(Flag,Cleanup,Calll,Exception,Recovery,...) */
-        BPLONG cleanup;
         B = (BPLONG_PTR)AR_B(B);
         HB = (BPLONG_PTR)AR_H(B);
         CONTCASE;
@@ -8208,7 +8207,7 @@ switch (*P++){
             TOAM_KILL_SUSP_FRAME; 
             op2 = tmp_op - INTVAL(op2);
         unify_dvar_value:
-            if (ISINT(op1)) if (INTVAL(op1)==op2) CONTCASE; else BACKTRACK;
+            if (ISINT(op1)){if (INTVAL(op1)==op2) CONTCASE; else BACKTRACK;}
             top = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op1);
             if (op2 < DV_first(top) || op2 > DV_last(top)) BACKTRACK; 
             if (IS_IT_DOMAIN(top)) ; 

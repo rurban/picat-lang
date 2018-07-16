@@ -384,7 +384,7 @@ int load_syms(file_type)
    public predicate and function symbols defined in the module 
 *************************************************************************/
 int c_GET_MODULE_SIGNATURE_cf(){
-    BPLONG File, Lst;
+    BPLONG File;
     CHAR_PTR file_name;
     SYM_REC_PTR sym_ptr;
     CHAR     name[256];
@@ -529,7 +529,7 @@ int load_text()
 
 int load_hashtab()
 {
-    BPLONG     hash_inst_addr,hash_reg,alt, clause_no, temp_len;
+    BPLONG     hash_inst_addr, alt, clause_no, temp_len;
     BPLONG     count = 0;
 
     CHECK_PCODE((CHAR_PTR)inst_addr,index_bytes);
@@ -541,7 +541,8 @@ int load_hashtab()
         hash_inst_addr = (BPLONG)RELOC_ADDR(hash_inst_addr);
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 10;
-        hash_reg = BB4(buf_for_read);
+		//        hash_reg = BB4(buf_for_read);
+        BB4(buf_for_read);
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 1;
         clause_no = BB4(buf_for_read);
@@ -1324,7 +1325,7 @@ CHAR_PTR namestring(sym_ptr, s)
     return s;
 }
 
-c_CURRENT_PREDICATE(){
+int c_CURRENT_PREDICATE(){
     BPLONG bucket_no,length;
     SYM_REC_PTR sym_ptr;
     BPLONG f,n;
@@ -1619,7 +1620,7 @@ void load_hashtab_fromlist(BCHashTabs)
 
     CHECK_PCODE((CHAR_PTR)inst_addr,index_bytes);
     while (ISLIST(BCHashTabs)){
-        BPLONG     hashtab, hash_inst_addr, hash_reg, alt, clause_no, temp_len, HashArgs;
+        BPLONG     hashtab, hash_inst_addr, hash_reg, alt, clause_no, HashArgs;
         BPLONG_PTR list_ptr, struct_ptr;
 
         list_ptr = (BPLONG_PTR)UNTAGGED_ADDR(BCHashTabs);
@@ -1649,8 +1650,6 @@ void get_index_tab_fromlist(HashArgs, clause_no)
     BPLONG     HashArgs, clause_no;
 {
     BPLONG     hashval, size, j;
-    BPLONG     count = 0;
-    BYTE     type;
     BPLONG     val,ttype;
     BPLONG_PTR label;
 
@@ -1878,7 +1877,7 @@ void load_text_from_c_array(){
 }
 
 void load_hashtab_from_c_array(){
-    BPLONG hash_inst_addr,hash_reg,alt, clause_no, temp_len;
+  BPLONG hash_inst_addr,alt, clause_no;
     BPLONG count,hash_array_size;
 
     BPLONG     hashval, size, j;
@@ -1895,7 +1894,8 @@ void load_hashtab_from_c_array(){
     while (count<hash_array_size){
         n_hashtabs++;
         hash_inst_addr = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
-        hash_reg = bc_indecies[count++];
+		//        hash_reg = bc_indecies[count++];
+        bc_indecies[count++];
         clause_no = bc_indecies[count++];
         alt = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
 

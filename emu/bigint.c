@@ -104,7 +104,7 @@
     }
 
   
-c_test_bigint(){
+int c_test_bigint(){
     BPLONG res;
   
     res = bp_mul_bigint_bigint(bp_int_to_bigint(-536870910),bp_int_to_bigint(1));
@@ -955,7 +955,7 @@ BPLONG bp_mod_bigint_bigint(BPLONG op1,BPLONG op2) {
     if (qsign== -1){
         bp_dec_ubig(&xsize, x);
     }
-    /* do this sinze x's magnitude is assumed to be greater than y's */
+    /* do this since x's magnitude is assumed to be greater than y's */
     if (xsize<ysize || (xsize==ysize && bp_compare_mag_mag(xsize,x,y)<0)){
         rsize = xsize; r = x;
     } else {

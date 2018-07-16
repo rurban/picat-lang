@@ -108,6 +108,7 @@ extern BPLONG bp_access_one_array(BPLONG arr,BPLONG index);
 extern BPLONG eval_arith(BPLONG ex);											
 extern int b_EVAL_ARITH_cf(BPLONG ex,BPLONG res);									
 extern int b_RAND_MAX_f(BPLONG rand_max);
+extern int c_MUL_MOD_cccf();
 
 //
 //	asp.c prototypes
@@ -132,6 +133,7 @@ extern int b_ASP_SELECT_REL_cff(BPLONG INOUTs,BPLONG IN,BPLONG OUT);
 //
 //	assert.c prototypes
 //
+extern void init_picat_global_maps();
 extern void initialize_free_records(void);										
 extern BPLONG total_free_records_size(void);										
 extern int c_print_pred_ref_count(void);										
@@ -246,7 +248,7 @@ extern BPLONG bp_updiv_bigint_bigint(BPLONG op1, BPLONG op2);
 extern BPLONG bp_lowdiv_bigint_bigint(BPLONG op1, BPLONG op2);								
 extern BPLONG bp_gcd_bigint_bigint(BPLONG i1,BPLONG i2);								
 extern BPLONG bp_pow_bigint_int(BPLONG op1,BPLONG op2);								
-extern int bp_write_bigint_to_strf(BPLONG op, char *buf, int buf_size);
+extern int bp_write_bigint_to_str(BPLONG op, char *buf, int buf_size);
 extern void bp_print_bigint(BPLONG op);											
 extern int b_BUILD_56B_INT_ccf(BPLONG w1, BPLONG w0, BPLONG v);
 extern BPLONG bp_bigint_to_native_long(BPLONG op);
@@ -1022,10 +1024,16 @@ extern int c_CURRENT_PREDICATES(void);
 extern SYM_REC_PTR look_for_sym_with_entrance(BPLONG_PTR p);								
 extern int c_LOAD_BYTE_CODE_FROM_BPLISTS();
 extern int c_GET_MODULE_SIGNATURE_cf();
+extern int load_byte_code_from_c_array();
+extern BPLONG bp_prime(BPLONG numentry);
+extern SYM_REC_PTR look_for_sym_with_entrance(BPLONG_PTR p);								
+extern int c_LOAD_BYTE_CODE_FROM_BPLISTS();
+extern int c_GET_MODULE_SIGNATURE_cf();
 
 //
 //	mic.c prototypes
 //
+extern int compare_bigint_float(BPLONG val1, BPLONG val2);
 extern int c_ref_equal(void);												
 extern int c_NEXT_PRIME(void);												
 extern int c_set_debugging_susp(void);											
@@ -1062,8 +1070,7 @@ extern int c_TABLE_BLOCKS(void);
 extern int b_HASHVAL_cf(BPLONG op1,BPLONG op2); /* op1 a term, op2 the hash value of op1 */		
 extern BPLONG bp_hashval(BPLONG op);
 extern BPLONG bp_hashval_list(BPLONG term);
-extern int b_HASHVAL1_cf(BPLONG op1,BPLONG op2); /* op1 a term,					
-								      op2 the hash value of the main functor of op1 */	
+extern int b_HASHVAL1_cf(BPLONG op1,BPLONG op2); /* op1 a term, op2 the hash value of the main functor of op1 */	
 extern BPLONG hashval1(BPLONG op);										
 extern int b_HASHTABLE_GET_ccf(BPLONG table,BPLONG key,BPLONG value);							
 extern int hashtable_contains_key(BPLONG table,BPLONG key);								
@@ -1318,10 +1325,13 @@ extern int c_update_term_start_line_no(void);
 extern int c_report_syntax_error(void);											
 extern int utf8_getc(FILE *curr_in, int c);
 extern char *utf8_codepoint_to_str(int code, CHAR_PTR s);
+extern int utf8_char_to_codepoint(CHAR_PTR *s_ptr);
+extern int utf8_nchars(char *s);
 
 //
 //	unify.c prototypes
 //
+extern int bp_identical(BPLONG op1, BPLONG op2);
 extern int unify(BPLONG op1, BPLONG op2);								
 extern void unify_nsv_v(BPLONG op1,BPLONG op2);							
 extern int unify_lst_lst(BPLONG op1,BPLONG op2);							
@@ -1361,3 +1371,9 @@ extern int c_call_espresso();
 extern int c_call_espresso_element();
 extern int c_call_espresso_table();
 extern int c_call_espresso_pb();
+
+//
+// others
+//
+extern void Cboot_sat();
+

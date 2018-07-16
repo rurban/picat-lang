@@ -23,7 +23,7 @@ module util.
 % matrix_multi(A,B) = matrix_multi(A,B).
 % nextto(X,Y,List) => nextto(X,Y,List).
 % permutation(Xs,Ys) => permutation(Xs,Ys).
-% permutations(Xs) => permutations(Xs).
+% permutations(Xs) = permutations(Xs).
 % power_set(Set) = power_set(Set).
 % replace(Term,Old,New) = replace(Term,Old,New).
 % replace_at(Compound,I,NewArg) = replace_at(Compound,I,NewArg).

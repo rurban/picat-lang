@@ -1169,6 +1169,8 @@ void Cboot() {
     insert_cpred("c_MAXINT_f",1,c_MAXINT_f);
     insert_cpred("c_MININT_f",1,c_MININT_f);
 
+    insert_cpred("c_MUL_MOD_cccf",4,c_MUL_MOD_cccf);
+
     /* insert_cpred("show_susp_frames",0,show_susp_frames); */
 
     Cboot_numbervars();

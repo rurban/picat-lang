@@ -136,14 +136,19 @@ January 14, 2013 \\
     \item \texttt{float($Term$)}\index{\texttt{float/1}} 
     \item \texttt{fold($F$,$ACC$,$List$) = $Res$} \index{\texttt{fold/3}}
     \item \texttt{freeze($X$,$Goal$)}\index{\texttt{freeze/2}}
-    \item \texttt{get($MapOrAttrVar$,$Key$) = $Val$}\index{\texttt{get/2}}
-    \item \texttt{get($MapOrAttrVar$,$Key$,$Default$)=$Val$} \index{\texttt{get/3}}
+    \item \texttt{get($Map$,$Key$) = $Val$}\index{\texttt{get/2}}
+    \item \texttt{get($Map$,$Key$,$DefaultVal$)=$Val$} \index{\texttt{get/3}}
+    \item \texttt{get\_attr($AttrVar$,$Key$) = $Val$}\index{\texttt{get\_attr/2}}
+    \item \texttt{get\_attr($AttrVar$,$Key$,$DefaultVal$)=$Val$} \index{\texttt{get\_attr/3}}
+    \item \texttt{get\_global\_map($ID$) = $Map$}\index{\texttt{get\_global\_map/1}}
     \item \texttt{get\_global\_map() = $Map$}\index{\texttt{get\_global\_map/0}}
+    \item \texttt{get\_heap\_map($ID$) = $Map$}\index{\texttt{get\_heap\_map/1}} 
     \item \texttt{get\_heap\_map() = $Map$}\index{\texttt{get\_heap\_map/0}} 
+    \item \texttt{get\_table\_map($ID$) = $Map$}\index{\texttt{get\_table\_map/1}} 
     \item \texttt{get\_table\_map() = $Map$}\index{\texttt{get\_table\_map/0}} 
     \item \texttt{ground($Term$)}\index{\texttt{ground/1}} 
     \item \texttt{handle\_exception($Term$,$Term$)}\index{\texttt{handle\_exception/2}} 
-    \item \texttt{has\_key($MapOrAttrVar$,$Key$)}\index{\texttt{has\_key/2}} 
+    \item \texttt{has\_key($Map$,$Key$)}\index{\texttt{has\_key/2}} 
     \item \texttt{hash\_code($Term$) = $Int$}\index{\texttt{hash\_code/1}} 
     \item \texttt{head($List$) = $Term$}\index{\texttt{head/1}} 
     \item \texttt{insert($List$,$Index$,$Elm$) = $ResList$}\index{\texttt{insert/3}} 
@@ -153,7 +158,7 @@ January 14, 2013 \\
     \item \texttt{int($Term$)}\index{\texttt{int/1}} 
     \item \texttt{integer($Term$)}\index{\texttt{integer/1}} 
     \item \texttt{is($Exp$,$Exp$)}\index{\texttt{is/2}} 
-    \item \texttt{keys($MapOrAttrVar$) = $List$}\index{\texttt{keys/1}} 
+    \item \texttt{keys($Map$) = $List$}\index{\texttt{keys/1}} 
     \item \texttt{last($Compound$) = $Term$}\index{\texttt{last/1}} 
     \item \texttt{len($Term$) = $Len$}\index{\texttt{length/1}} 
     \item \texttt{length($Term$) = $Len$}\index{\texttt{length/1}} 
@@ -189,14 +194,15 @@ January 14, 2013 \\
     \item \texttt{new\_struct($Name$,$IntOrList$) = $Struct$}\index{\texttt{new\_struct/2}} 
     \item \texttt{nonvar($Term$)}\index{\texttt{nonvar/1}} 
     \item \texttt{not $Call$}\index{\texttt{not/1}}
-    \item \texttt{nth($I$,$List$,$Val$)}\index{\texttt{nth/3}} (nondet)
+    \item \texttt{nth($I$,$ListOrArray$,$Val$)}\index{\texttt{nth/3}} (nondet)
     \item \texttt{number($Term$)}\index{\texttt{number/1}} 
     \item \texttt{number\_chars($Num$) = $String$}\index{\texttt{number\_chars/1}} 
     \item \texttt{number\_codes($Num$) = $List$}\index{\texttt{number\_codes/1}} 
     \item \texttt{number\_vars($Term$,$N_0$) = $N_1$}\index{\texttt{number\_vars/2}}
     \item \texttt{once $Call$}\index{\texttt{once/1}}
     \item \texttt{ord($Char$) = $Int$}\index{\texttt{ord/1}} 
-    \item \texttt{parse\_term($String$) = $Term$)}\index{\texttt{parse\_term/1}}
+    \item \texttt{parse\_radix\_string($String$,$Base$) = $Int$}\index{\texttt{parse\_radix\_string/2}}
+    \item \texttt{parse\_term($String$) = $Term$}\index{\texttt{parse\_term/1}}
     \item \texttt{parse\_term($String$,$Term$,$Vars$)}\index{\texttt{parse\_term/3}}
     \item \texttt{post\_event($X$,$Event$)}\index{\texttt{post\_event/2}}
     \item \texttt{post\_event\_any($X$,$Event$)}\index{\texttt{post\_event\_any/2}}
@@ -204,8 +210,10 @@ January 14, 2013 \\
     \item \texttt{post\_event\_dom($X$,$Event$)}\index{\texttt{post\_event\_dom/2}}
     \item \texttt{post\_event\_ins($X$)}\index{\texttt{post\_event\_ins/1}}
     \item \texttt{prod($ListOrArray$) = $Val$}\index{\texttt{prod/1}}
-    \item \texttt{put($MapOrAttrVar$,$Key$,$Val$)}\index{\texttt{put/3}} 
-    \item \texttt{put($MapOrAttrVar$,$Key$)}\index{\texttt{put/2}} 
+    \item \texttt{put($Map$,$Key$,$Val$)}\index{\texttt{put/3}} 
+    \item \texttt{put($Map$,$Key$)}\index{\texttt{put/2}} 
+    \item \texttt{put\_attr($Var$,$Key$,$Val$)}\index{\texttt{put\_attr/3}} 
+    \item \texttt{put\_attr($Var$,$Key$)}\index{\texttt{put\_attr/2}} 
     \item \texttt{real($Term$)}\index{\texttt{real/1}} 
     \item \texttt{reduce($ListOrFun$,$FunOrList$) = $Value$}\index{\texttt{reduce/2}} 
     \item \texttt{reduce($ListOrFun$,$FunOrList$,$InitVal$) = $Value$}\index{\texttt{reduce/3}} 
@@ -244,12 +252,13 @@ January 14, 2013 \\
     \item \texttt{to\_list($Struct$) = $List$}\index{\texttt{to\_list/1}} 
     \item \texttt{to\_lowercase($String$) = $LString$}\index{\texttt{to\_lowercase/1}}
     \item \texttt{to\_oct\_string($Int$) = $String$}\index{\texttt{to\_oct\_string/1}}    
+    \item \texttt{to\_radix\_string($Int$,$Base$) = $String$}\index{\texttt{to\_radix\_string/2}}
     \item \texttt{to\_real($NumOrStr$) = $Real$}\index{\texttt{to\_real/1}} 
     \item \texttt{to\_string($Term$) = $String$}\index{\texttt{to\_string/1}}        
     \item \texttt{to\_uppercase($String$) = $UString$}\index{\texttt{to\_uppercase/1}}
     \item \texttt{true}\index{\texttt{true}}
     \item \texttt{uppercase($Char$)}\index{\texttt{uppercase/1}} 
-    \item \texttt{values($MapOrAttrVar$) = $List$}\index{\texttt{values/1}} 
+    \item \texttt{values($Map$) = $List$}\index{\texttt{values/1}} 
     \item \texttt{var($Term$)}\index{\texttt{var/1}} 
     \item \texttt{variant($Term_1$,$Term_2$)}\index{\texttt{variant/2}}
     \item \texttt{vars($Term$) = $Vars$}\index{\texttt{vars/1}}
@@ -285,6 +294,7 @@ January 14, 2013 \\
    \item \texttt{odd($Int$)} \index{\texttt{odd/1}}
    \item \texttt{pi() = 3.14159265358979323846}\index{\texttt{pi}} 
    \item \texttt{pow($X$,$Y$) = $Val$}\index{\texttt{pow/2}}
+   \item \texttt{pow\_mod($X$,$Y$,$Z$) = $Val$}\index{\texttt{pow\_mod/3}}
    \item \texttt{prime($Int$)} \index{\texttt{prime/1}}
    \item \texttt{primes($Int$) = $List$} \index{\texttt{primes/1}}
    \item \texttt{rand\_max() = $Val$}\index{\texttt{rand\_max/0}} 
@@ -558,7 +568,9 @@ January 14, 2013 \\
 \item \texttt{solve($Vars$)}\index{\texttt{solve/1}} (nondet)
 \item \texttt{solve\_all($Options$,$Vars$) = $List$}\index{\texttt{solve\_all/2}}
 \item \texttt{solve\_all($Vars$) = $List$}\index{\texttt{solve\_all/1}}
-\item \texttt{subcircuit($FDVars$)}\index{\texttt{subcircuit/1}} (cp only)
+\item \texttt{solve\_suspended}\index{\texttt{solve\_suspended/0}} (cp only)
+\item \texttt{solve\_suspended($Options$)}\index{\texttt{solve\_suspended/1}} (cp only)
+\item \texttt{subcircuit($FDVars$)}\index{\texttt{subcircuit/1}} 
 \item \texttt{table\_in($DVars$,$R$)}\index{\texttt{table\_in/2}}
 \item \texttt{table\_notin($DVars$,$R$)}\index{\texttt{table\_notin/2}}
 \end{itemize}

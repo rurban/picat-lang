@@ -135,11 +135,7 @@ static void     search_forw();          /* look forw for current string */
 
 
 #ifdef __unix__
-#ifndef __convexc__
-extern int      read();
-extern int      kill();
-extern int      ioctl();
-#endif /* not __convexc__ */
+#include <unistd.h>
 #ifdef POSIX            /* use POSIX interface */
 #include <termios.h>
 struct termios  new_termios, old_termios;
@@ -1195,8 +1191,8 @@ int c_GET_NONEMPTY_LINE(){
     return BP_TRUE;
 }
 
-getline_is_spaces(s)
-char *s;
+int getline_is_spaces(s)
+	 char *s;
 {
     while (*s!='\0'){
         if (*s == ' ' || *s == '\t')

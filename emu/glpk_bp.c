@@ -52,8 +52,8 @@ extern double floatval();
         FREE_IF_NOT_NULL(rmatval);              \
     }
 
-glpk_error(error_msg)
-char *error_msg;
+int glpk_error(error_msg)
+	 char *error_msg;
 {
     fprintf(stderr, "GLPK ERROR: %s\n ", error_msg);
     return BP_FALSE;
@@ -61,7 +61,7 @@ char *error_msg;
 
 void dummy_print(const char *fmt, ...) {};
 
-c_lp_solve(){
+int c_lp_solve(){
     BPLONG NCols,NRows,NNZs,VarAttrs,ObjVector,ObjSense,Constrs,Sol;
     BPLONG_PTR top,ptr;
     BPLONG temp,lst;
@@ -283,7 +283,7 @@ exit_glpk:
     return BP_TRUE;
 }
 
-Cboot_glpk(){
+void Cboot_glpk(){
     insert_cpred("c_lp_solve",8,c_lp_solve);
 }
 #endif

@@ -178,6 +178,9 @@ typedef NUMBERED_TERM_AREA_RECORD *NUMBERED_TERM_AREA_RECORD_PTR;
 
 /* for global and table maps */
 
+#define NUM_PICAT_TABLE_MAPS 97
+#define NUM_PICAT_GLOBAL_MAPS 97
+
 typedef struct {
   BPLONG key;
   BPLONG val;

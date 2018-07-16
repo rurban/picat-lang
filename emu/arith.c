@@ -254,6 +254,7 @@ BPLONG bp_math_mul(op1,op2)
     BPLONG op1,op2;
 {
     BPLONG_PTR top;
+	BPLONG op3;
 
     DEREF(op1); DEREF(op2);  
     if (!ISNUM(op1)) {
@@ -284,12 +285,19 @@ BPLONG bp_math_mul(op1,op2)
                 if (BP_IN_28B_INT_RANGE(d1)){
 				    res = (BPLONG)d1;
                     return MAKEINT(res);
-                } else {
-				  return bp_double_to_bigint(d1);
-				}
+                } 
 #endif
             }
-            return (op1==0 || op2==0)  ? BP_ZERO : bp_mul_bigint_bigint(bp_int_to_bigint(op1),bp_int_to_bigint(op2));
+			if (op1 == 0 || op2 == 0) return BP_ZERO;
+			op3 = op1*op2;
+			if (op3/op2 != op1) {
+			  return bp_mul_bigint_bigint(bp_int_to_bigint(op1),bp_int_to_bigint(op2));
+			} 
+			if (BP_IN_1W_INT_RANGE(op3)){
+			  return MAKEINT(op3);
+			} else {
+			  return bp_int_to_bigint(op3);
+			}
         } else if (IS_FLOAT_PSC(op2)) {
             return encodefloat1(((double)op1) * floatval(op2));
         } else {
@@ -2865,3 +2873,73 @@ int b_EVAL_ARITH_cf(ex,res)
     ASSIGN_sv_heap_term(res,res1);
     return BP_TRUE;
 }
+
+/* res = x*y mod z */
+int c_MUL_MOD_cccf(){
+  BPLONG x, y, z, res;
+  BPLONG res0;
+  BPLONG_PTR top;
+   
+  x = ARG(1,4); DEREF(x);
+  y = ARG(2,4); DEREF(y); 
+  z = ARG(3,4); DEREF(z); 
+  res = ARG(4,4);
+  
+  if (ISINT(x) && ISINT(y) && ISINT(z)) {
+	x = INTVAL(x); y = INTVAL(y); z = INTVAL(z);
+
+	if (x == 0 || y == 0){
+	  res0 = BP_ZERO;
+	} else {
+	  if (z == 0){
+		exception = divide_by_zero;
+		return BP_ERROR;
+	  }
+
+	  if (z > 0){
+		if (y > z) y = y%z;
+		if (x > z) x = x%z;
+	  }
+
+	  res0 = x*y;
+	  if (res0/x != y) {
+		BPLONG_PTR heap_top0 = heap_top;
+		res0 = bp_mul_bigint_bigint(bp_int_to_bigint(x),bp_int_to_bigint(y));
+		res0 = bp_mod_bigint_bigint(res0,bp_int_to_bigint(z));
+		heap_top = heap_top0;
+	  } else {
+		res0 = res0 % z;
+		res0 = MAKEINT(res0);
+	  }
+	}
+  } else {
+	if (ISINT(x)){
+	  x = INTVAL(x); x = bp_int_to_bigint(x);
+	} else if (!IS_BIGINT(x)){
+	  exception = integer_expected;
+	  return BP_ERROR;
+	}
+	if (ISINT(y)){
+	  y = INTVAL(y); y = bp_int_to_bigint(y);
+	} else if (!IS_BIGINT(y)){
+	  exception = integer_expected;
+	  return BP_ERROR;
+	}
+	if (ISINT(z)){
+	  z = INTVAL(z);
+	  if (z == 0){
+		exception = divide_by_zero;
+		return BP_ERROR;
+	  }
+	  z = bp_int_to_bigint(z);
+	} else if (!IS_BIGINT(z)){
+	  exception = integer_expected;
+	  return BP_ERROR;
+	}
+	res0 = bp_mul_bigint_bigint(x,y);
+	res0 = bp_mod_bigint_bigint(res0,z);
+  }
+  return unify(res,res0);
+}
+
+

@@ -38,6 +38,9 @@ static BPLONG_PTR table_free_cells_ptr = NULL;
 NUMBERED_TERM_AREA_RECORD ta_record; /* table area record that holds the pointers */
 NUMBERED_TERM_AREA_RECORD_PTR ta_record_ptr;
 
+BPLONG_PTR picat_table_maps[NUM_PICAT_TABLE_MAPS];
+BPLONG picat_table_map_ids[NUM_PICAT_TABLE_MAPS];
+
 /* used for hash-consing for the table area */
 /*
   typedef struct {
@@ -115,7 +118,6 @@ int table_area_num_expansions(){
 
 int c_INITIALIZE_TABLE(){
     BPLONG_PTR low_addr,prev_low_addr;
-    int i,success;
 	void init_picat_table_maps();
 
     exception = (BPLONG)NULL;
@@ -224,7 +226,6 @@ void init_subgoal_table(){
    both t1 and t2 are numbered terms in the table area.
 */
 int identicalTabledTerms(BPLONG t1, BPLONG t2){
-    BPLONG_PTR top;
     BPLONG i,arity,op1,op2;
   
 beginning:
@@ -257,6 +258,7 @@ beginning:
         t2 = *((BPLONG_PTR)t2+arity);
         goto beginning;
     }
+	return 0;
 }
 
 void match_term_tabledTerm(BPLONG t1,BPLONG t2){
@@ -362,8 +364,8 @@ BPLONG unnumberVarTabledTerm(BPLONG term){
 
 /******************* SUBGOAL TABLE ********************/
 void expandSubgoalTable(){
-    BPLONG new_htable_size,old_htable_size,i,index,arity;
-    BPLONG_PTR new_htable,old_htable,subgoal_entry,next_subgoal_entry,subgoal_arg_ptr,ptr;
+    BPLONG new_htable_size,old_htable_size,i,index;
+    BPLONG_PTR new_htable,old_htable,next_subgoal_entry;
   
     old_htable_size = subgoalTableBucketSize;
     old_htable = subgoalTable;
@@ -393,10 +395,10 @@ void expandSubgoalTable(){
 
 BPLONG_PTR lookupSubgoalTable(BPLONG_PTR stack_arg_ptr, int arity, SYM_REC_PTR sym_ptr, int mode_bits, int nt_last_arg){
     BPLONG_PTR entryPtrPtr0,entryPtr,thisEntryPtr;
-    BPLONG_PTR subgoal_arg_ptr,this_subgoal_arg_ptr,des_ptr,src_ptr;
+    BPLONG_PTR subgoal_arg_ptr,this_subgoal_arg_ptr;
     BPLONG i,arity1;
     BPLONG hcode0,hcode,subgoal_record_size;
-    BPLONG_PTR trail_top0,ptr,top,old_table_top;
+    BPLONG_PTR trail_top0,old_table_top;
     BPLONG initial_diff0;
     BPULONG tmp_mode_bits;
 	//    void printSubgoalTableEntry();
@@ -704,11 +706,9 @@ void gterms_table_statistics(GTERMS_HTABLE_PTR gterms_htable_ptr, int *nTerms, i
 }
 
 BPLONG gterms_htable_num_of_occupied_slots(GTERMS_HTABLE_PTR gterms_htable_ptr){
-    BPLONG_PTR htable;
-    BPLONG i,size,count;
-
     return gterms_htable_ptr->size;
 	/*
+	BPLONG i,size, count;
     count = 0;
     size = gterms_htable_ptr->size;
     htable = gterms_htable_ptr->htable;
@@ -737,7 +737,7 @@ void allocate_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr, int size){
    is 1, then the term is ground.
 */
 BPLONG register_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr,BPLONG term,BPLONG hcode){
-    BPLONG bucket_no,term_in_table;
+    BPLONG term_in_table;
     BPLONG_PTR term_ptr,slot_addr;
     BPLONG tag_hcode;
 
@@ -1107,7 +1107,7 @@ BPLONG_PTR addFirstTableAnswer(BPLONG_PTR stack_arg_ptr, int arity){
 }
 
 BPLONG_PTR allocateAnswerTable(BPLONG_PTR first_answer, int arity){
-    BPLONG i,index,size;
+    BPLONG i,index;
     BPLONG_PTR answer_table,bucket_ptr;
 
     answer_table = (BPLONG_PTR)malloc(ANSWERTABLE_RECORD_SIZE*sizeof(BPLONG));
@@ -1148,7 +1148,7 @@ BPLONG_PTR allocateAnswerTable(BPLONG_PTR first_answer, int arity){
 int addTableAnswer(BPLONG_PTR stack_arg_ptr, int arity, BPLONG_PTR subgoal_entry){
     BPLONG_PTR answer_table, this_answer,answer,last_answer,bucket_ptr,this_table_arg_ptr,table_arg_ptr,entryPtr;
     BPLONG_PTR trail_top0,old_table_top;
-    BPLONG i, answer_record_size, bucket_size,hcode,initial_diff0;
+    BPLONG i, answer_record_size, bucket_size,hcode;
 
     answer_table = (BPLONG_PTR)GT_ANSWER_TABLE(subgoal_entry);
     //  initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
@@ -1254,8 +1254,8 @@ void expandAnswerTable(BPLONG_PTR answer_table,int arity){
 */
 int addTableOptimalAnswer(BPLONG_PTR stack_arg_ptr, int arity, BPLONG_PTR subgoal_entry,int opt_arg_index,int maximize,int table_card){
     BPLONG_PTR answer_table, this_answer,answer,last_answer,bucket_ptr,this_table_arg_ptr,table_arg_ptr,entryPtr;
-    BPLONG_PTR trail_top0,old_table_top;
-    BPLONG bucket_size,hcode,initial_diff0;
+    BPLONG_PTR old_table_top;
+    BPLONG bucket_size,hcode;
     int i,answer_record_size;
 
     answer_table = (BPLONG_PTR)GT_ANSWER_TABLE(subgoal_entry);
@@ -1576,7 +1576,6 @@ beginning:
 
 int term_subsume_term(BPLONG op1, BPLONG op2){
     int i;
-    BPLONG maxVarNo= -1;
     BPLONG_PTR trail_top0;
     BPLONG initial_diff0;
 
@@ -1624,7 +1623,7 @@ BPLONG_PTR lookupSubgoalTableNoCopy(BPLONG_PTR stack_arg_ptr, int arity, SYM_REC
     BPLONG term;
     BPLONG i;
     BPLONG hcode,this_hcode;
-    BPLONG_PTR trail_top0,ptr,top;
+    BPLONG_PTR trail_top0;
     BPLONG initial_diff0;
   
     initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
@@ -1895,15 +1894,15 @@ int table_statistics(){
         subgoal_count += count;
         /*    if (count != 0) fprintf(curr_out,"socket#%d(chainsize%d)\n",i,count); */
     }
-    fprintf(curr_out,"number_of_subgoals=%d\t\t\n",subgoal_count);
-    fprintf(curr_out,"max_number_of_answers=%d\t\t\n",max_ans_count);
-    fprintf(curr_out,"number_of_zero_answer_subgoals=%d\t\t\n",zero_ans_count);
+    fprintf(curr_out,"number_of_subgoals=%ld\t\t\n",subgoal_count);
+    fprintf(curr_out,"max_number_of_answers=%ld\t\t\n",max_ans_count);
+    fprintf(curr_out,"number_of_zero_answer_subgoals=%ld\t\t\n",zero_ans_count);
     fprintf(curr_out,"average_number_of_answers=%.2f\t\t\n",(float)total_ans_count/subgoal_count);
-    fprintf(curr_out,"max_iterations=%d\t\t\n",max_its_count);
+    fprintf(curr_out,"max_iterations=%ld\t\t\n",max_its_count);
     fprintf(curr_out,"average_iterations=%.2f\t\t\n",(float)total_its_count/(float)subgoal_count);
-    fprintf(curr_out,"number_of_scc_nodes=%d\n",scc_nodes_count);
+    fprintf(curr_out,"number_of_scc_nodes=%ld\n",scc_nodes_count);
     /*
-      fprintf(curr_out,"%d & %d & %.2f & %d & %.2f \\\\\n",subgoal_count,max_ans_count,(float)total_ans_count/subgoal_count,max_ans_access_count,(float)total_ans_access_count/subgoal_count);
+      fprintf(curr_out,"%ld & %ld & %.2f & %ld & %.2f \\\\\n",subgoal_count,max_ans_count,(float)total_ans_count/subgoal_count,max_ans_access_count,(float)total_ans_access_count/subgoal_count);
     */
     return 1;
 }
@@ -1943,7 +1942,7 @@ int b_PLANNER_CURR_RPC_fff(BPLONG Amount, BPLONG Plan, BPLONG Cost){
 }
 
 /* check if a call '_$planner'(S,_) has been tabled */
-b_IS_PLANNER_STATE_c(BPLONG state){
+int b_IS_PLANNER_STATE_c(BPLONG state){
     BPLONG_PTR stack_arg_ptr;
 
     stack_arg_ptr = local_top;
@@ -2050,11 +2049,9 @@ void myWriteList(term)
 }
 */
 
-#define NUM_PICAT_TABLE_MAPS 97
-BPLONG_PTR picat_table_maps[NUM_PICAT_TABLE_MAPS];
-BPLONG picat_table_map_ids[NUM_PICAT_TABLE_MAPS];
-
 /*  defined in basic.h, also see global_maps in assert.c
+
+#define NUM_PICAT_TABLE_MAPS 97
 
 typedef struct {
   BPLONG key;
@@ -2097,6 +2094,7 @@ int b_GET_PICAT_TABLE_MAP_cf(BPLONG map_id, BPLONG map_num){
   PREPARE_NUMBER_TERM(0);
   this_ground_flag = TOP_BIT;
   map_id_cp = numberVarCopyToTableArea(ta_record_ptr,map_id,&this_hcode,&this_ground_flag);
+
   if (map_id_cp == BP_ERROR) return BP_ERROR;
   if (this_ground_flag == 0){
 	exception = ground_expected;
@@ -2155,9 +2153,8 @@ void expand_picat_table_map(MAP_RECORD_PTR mr_ptr){
     new_htable_size = 3*old_htable_size;
     new_htable_size = bp_hsize(new_htable_size);
 
-	//	printf("table_map expand %d\n",new_htable_size);
-
     new_htable = (BPLONG_PTR)malloc(sizeof(BPLONG_PTR)*new_htable_size);
+
     if (new_htable == NULL) return; /* stop expanding */
     for (i=0; i<new_htable_size; i++){
 	  new_htable[i] = (BPLONG)NULL;
@@ -2235,11 +2232,10 @@ int b_PICAT_TABLE_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
 }
 
 int b_PICAT_TABLE_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val){
-  BPLONG i, key_cp, val_cp, this_hcode, this_ground_flag;
-  BPLONG_PTR trail_top0, kvp_ptr_ptr;
+  BPLONG this_hcode;
+  BPLONG_PTR kvp_ptr_ptr;
   MAP_RECORD_PTR mr_ptr;
   KEY_VAL_PAIR_PTR kvp_ptr;
-  BPLONG initial_diff0;
 
   DEREF(key);
   if (ISREF(key)){
@@ -2359,6 +2355,7 @@ int b_PICAT_TABLE_MAP_LIST_cf(BPLONG map_num, BPLONG pairs){
   lst = nil_sym;
   DEREF_NONVAR(map_num);
   map_num = INTVAL(map_num);
+
   mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
 
   for (i = 0; i < mr_ptr->size; i++){

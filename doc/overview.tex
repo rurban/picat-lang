@@ -32,7 +32,7 @@ Picat is a dynamically-typed language, in which type checking occurs at runtime.
 
 A primitive value\index{primitive value} can be an integer\index{integer}, a real number\index{number}, or an atom\index{atom}. A character can be represented as a single-character atom\index{atom}.  An atom\index{atom} name is an identifier that begins with a lower-case letter or a single-quoted sequence of characters. 
 
-A compound value\index{compound value} can be a \emph{list}\index{list} in the form \texttt{[$t_1$,$\ldots$,$t_{n}$]} or a \emph{structure}\index{structure} in the form \texttt{\$$s$($t_1$,$\ldots$,$t_{n}$)} where $s$ stands for a structure\index{structure} name, $n$ is called the \emph{arity}\index{arity} of the structure\index{structure}, and each $t_i$ ($1\le i \le n$) is a \emph{term}\index{term} which is a variable or a value. The preceeding dollar symbol is used to distinguish a structure\index{structure} from a function\index{function} call. Strings\index{string}, arrays\index{array}, and maps\index{map} are special compound values\index{compound value}. A \emph{string}\index{string} is a list\index{list} of single-character atoms\index{atom}. An \emph{array}\index{array} takes the form \texttt{\{$t_1$,$\ldots$,$t_{n}$\}}, which is a special structure\index{structure} with the name \texttt{'\{\}'}. A \emph{map}\index{map} is a hash-table represented as a structure\index{structure} that contains a set of key-value pairs.
+A compound value\index{compound value} can be a \emph{list}\index{list} in the form \texttt{[$t_1$,$\ldots$,$t_{n}$]} or a \emph{structure}\index{structure} in the form \texttt{\$$s$($t_1$,$\ldots$,$t_{n}$)} where $s$ stands for a structure\index{structure} name, $n$ is called the \emph{arity}\index{arity} of the structure\index{structure}, and each $t_i$ ($1\le i \le n$) is a \emph{term}\index{term} which is a variable or a value. The preceding dollar symbol is used to distinguish a structure\index{structure} from a function\index{function} call. Strings\index{string}, arrays\index{array}, and maps\index{map} are special compound values\index{compound value}. A \emph{string}\index{string} is a list\index{list} of single-character atoms\index{atom}. An \emph{array}\index{array} takes the form \texttt{\{$t_1$,$\ldots$,$t_{n}$\}}, which is a special structure\index{structure} with the name \texttt{'\{\}'}. A \emph{map}\index{map} is a hash-table represented as a structure\index{structure} that contains a set of key-value pairs.
 
 The function \texttt{new\_struct($Name,IntOrList$)}\index{\texttt{new\_struct/2}} returns a structure\index{structure}. The function \texttt{new\_map($S$)}\index{\texttt{new\_map/1}} returns a map\index{map} that initially contains the pairs in list $S$, where each pair has the form $Key\ =\ Val$. The function \texttt{new\_set($S$)}\index{\texttt{new\_set/1}} returns a \emph{map set} that initially contains the elements in list $S$. A \emph{map-set} \index{map-set} is a map in which every key is mapped to the atom \texttt{not\_a\_value}. The function \texttt{new\_array($I_1,I_2,\ldots,I_{n}$)}\index{\texttt{new\_array}} returns an n-dimensional array\index{array}, where each $I_i$ is an integer expression specifying the size of a dimension. An n-dimensional array\index{array} is a one-dimensional array\index{array} where the arguments are (n-1)-dimensional arrays\index{array}. 
 
@@ -103,8 +103,9 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \> \> \texttt{to\_array([$T$ : $E_1$ \texttt{in} $D_1$, $Cond_1$, $\ldots$, $E_n$ in $D_n$, $Cond_n$])} 
 \end{tabbing}
 
-The predicate \texttt{put($X,Key,Val$)}\index{\texttt{put/3}} attaches the key-value pair \texttt{$Key$$=$$Val$} to \texttt{$X$}, where \texttt{$X$} is either a variable or a map\index{map}, \texttt{$Key$} is a non-variable term\index{term}, and \texttt{$Val$} is any term\index{term}. An attributed variable\index{attributed variable} has a map\index{map} attached to it. The function \texttt{get($X,Key$)}\index{\texttt{get/2}} returns \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} attached to \texttt{$X$}. The predicate \texttt{has\_key($X,Key$)}\index{\texttt{has\_key/2}} returns true iff $X$ contains a pair with the given key.
+The predicate \texttt{put($Map,Key,Val$)}\index{\texttt{put/3}} attaches the key-value pair \texttt{$Key$$=$$Val$} to the map \texttt{$Map$}, where \texttt{$Key$} is a non-variable term\index{term}, and \texttt{$Val$} is any term\index{term}. The function \texttt{get($Map,Key$)}\index{\texttt{get/2}} returns \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} attached to \texttt{$Map$}. The predicate \texttt{has\_key($Map,Key$)}\index{\texttt{has\_key/2}} returns true iff $Map$ contains a pair with the given key.
 
+An attributed variable\index{attributed variable} has a map\index{map} attached to it. The predicate \texttt{put\_attr($X,Key,Val$)}\index{\texttt{put\_attr/3}} attaches the key-value pair \texttt{$Key$$=$$Val$} to \texttt{$X$}. The function \texttt{get\_attr($X,Key$)}\index{\texttt{get\_attr/2}} returns \texttt{$Val$} of the key-value pair \texttt{$Key$$=$$Val$} attached to \texttt{$X$}. 
 
 \subsection*{Example}
 \begin{verbatim}
@@ -132,7 +133,7 @@ X = b
 Picat> L = [(A,I) : A in [a,b], I in 1..2].
 L = [(a,1),(a,2),(b,1),(b,2)]
 
-Picat> put(X,one,1), One = get(X,one)  % attributed variable
+Picat> put_attr(X,one,1), One = get_attr(X,one)  % attributed var
 One = 1
 
 Picat> S = new_struct(point,3), Name = name(S), Len = length(S)
@@ -665,44 +666,44 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \end{tabbing}
 The built-in function \texttt{this\_thread()}\index{\texttt{this\_thread/0}} returns the executing thread\index{thread} of the function call. In this example, the \texttt{EchoThread} installs an actor\index{action rule}, and then loops until \texttt{Flag} becomes a non-variable; the \texttt{SenderThread} sends \texttt{hello} to \texttt{EchoThread} three times, and then sends \texttt{done} to \texttt{EchoThread}, causing it to kill itself. After sending the messages, the \texttt{SenderThread} terminates.
 }
-\section{Prebuilt Maps}
-Three maps are prebuilt: a {\it heap} map, a {\it global} map, and a {\it table} map. The heap map \index{heap map} is created on the heap immediately after the system is started. The built-in function \texttt{get\_heap\_map()}\index{\texttt{get\_heap\_map/0}} returns the heap map. The heap map is like a normal map. Users use \texttt{put}\index{\texttt{put/3}} to add key-value pairs into the map\index{map}. Users use \texttt{get}\index{\texttt{get/2}} to retrieve a value that is associated with a key in the map\index{map}. Changes to the map\index{map} up to a choice point are undone when execution backtracks to that choice point.
+\section{\label{prebuiltmaps}Prebuilt Maps}
+Picat has three kinds of prebuilt maps: {\it heap} maps, {\it global} maps, and {\it table} maps. Prebuilt heap maps \index{heap map} are created on the heap immediately after the system is started. The built-in function \texttt{get\_heap\_map($ID$)}\index{\texttt{get\_heap\_map/1}} returns the heap map that is associated with $ID$, where $ID$ must be a ground term. If no heap map is associated with $ID$, then this function establishes an association between $ID$ and an unused heap map, and returns the map. A heap map is like a normal map. Users use \texttt{put}\index{\texttt{put/3}} to add key-value pairs into the map\index{map}. Users use \texttt{get}\index{\texttt{get/2}} to retrieve a value that is associated with a key in the map\index{map}. Changes to a heap map up to a choice point are undone when execution backtracks to that choice point. The built-in function \texttt{get\_heap\_map()}\index{\texttt{get\_heap\_map/0}} returns the heap map that is associated with a system-generated default identifier. There are an unlimited number of prebuilt heap maps.
 
-The global map \index{global map} is created in the global area when the Picat system is started. The built-in function \texttt{get\_global\_map()}\index{\texttt{get\_global\_map/0}} returns this map. A big difference between this global map and a heap map is that changes to the global map are not undone upon backtracking. When a key-value pair is added into the global map, the variables in the value term are numbered before they are copied to the global area. If the value term contains attributed variables, then the attributes of the variables are not copied, and are therefore lost. When retrieving a value that is associated with a key, the value term in the global area is copied back to the heap after all of the numbered variables are unnumbered.
+Global maps \index{global map} are created in the global area when the Picat system is started. The built-in function \texttt{get\_global\_map($ID$)}\index{\texttt{get\_global\_map/1}} returns the global map that is associated with $ID$, where $ID$ must be a ground term. If no global map is associated with $ID$, then this function establishes an association between $ID$ and an unused global map, and returns the map. A big difference between a global map and a heap map is that changes to the global map are not undone upon backtracking. When a key-value pair is added into the global map, the variables in the value term are numbered before they are copied to the global area. If the value term contains attributed variables, then the attributes of the variables are not copied, and are therefore lost. When retrieving a value that is associated with a key, the value term in the global area is copied back to the heap after all of the numbered variables are unnumbered. The built-in function \texttt{get\_global\_map()}\index{\texttt{get\_global\_map/0}} returns the global map that is associated with a system-generated default identifier. The number of prebuilt global maps is 97, and the system halts if a program requests more than 97 global maps.
 
-The table map \index{table map} is created in the table area when the Picat system is started. The built-in function \texttt{get\_table\_map()}\index{\texttt{get\_table\_map/0}} returns this map. Like the global map, changes to the table map are not undone upon backtracking. Unlike the global map, however, keys and values are {\it hash-consed} so that common ground sub-terms are not replicated in the table area.
+Table maps \index{table map} are created in the table area when the Picat system is started. The built-in function \texttt{get\_table\_map($ID$)}\index{\texttt{get\_table\_map/1}} returns the table map that is associated with $ID$, where $ID$ must be a ground term. If no table map is associated with $ID$, then this function establishes an association between $ID$ and an unused table map, and returns the map. Like the global map, changes to a table map are not undone upon backtracking. Unlike the global map, however, keys and values are {\it hash-consed} so that common ground sub-terms are not replicated in the table area. The built-in function \texttt{get\_table\_map()}\index{\texttt{get\_table\_map/0}} returns the table map that is associated with a system-generated default identifier. The number of prebuilt table maps is 97, and the system halts if a program requests more than 97 table maps.
 
-The advantage of using global maps\index{global map} is that data can be accessed everywhere without being passed as arguments, and the disadvantage is that it affects locality of data and thus the readability of programs. In tabled\index{tabling} programs, using global maps\index{global map} is discouraged because it may cause unanticipated effects.
+The advantage of using prebuilt maps\index{prebuilt map} is that data can be accessed everywhere without being passed as arguments, and the disadvantage is that it affects locality of data and thus the readability of programs. In tabled\index{tabling} programs, using prebuilt maps\index{global map} is discouraged because it may cause unanticipated effects.
 
 \subsection*{Example}
 \begin{verbatim}
 go ?=>
-    get_heap_map().put(one,1),
-    get_global_map().put(one,1),
-    get_table_map().put(one,1),
+    get_heap_map(h1).put(one,1),
+    get_global_map(g1).put(one,1),
+    get_table_map(t1).put(one,1),
     fail.
 go =>
-    if (get_heap_map().has_key(one)) then 
-       writef("heap map has key%n") 
+    if (get_heap_map(h1).has_key(one)) then 
+       writef("heap map h1 has key%n") 
     else 
-       writef("heap map has no key%n")
+       writef("heap map h1 has no key%n")
     end,
-    if (get_global_map().has_key(one)) then 
-       writef("global map has key%n") 
+    if (get_global_map(g1).has_key(one)) then 
+       writef("global map g1 has key%n") 
     else 
-       writef("global map has no key%n")
+       writef("global map g1 has no key%n")
     end,
-    if (get_table_map().has_key(one)) then 
-       writef("table map has key%n") 
+    if (get_table_map(t1).has_key(one)) then 
+       writef("table map t1 has key%n") 
     else 
-       writef("table map has no key%n")
+       writef("table map t1 has no key%n")
     end.
 \end{verbatim}
 For the call \texttt{go}, the output is:
 \begin{verbatim}
-heap map has no key
-global map has key
-table map has key
+heap map h1 has no key
+global map g1 has key
+table map t1 has key
 \end{verbatim}
 The \texttt{fail}\index{\texttt{fail}} call in the first rule causes execution to backtrack to the second rule. After backtracking, the pair added to the heap map by the first rule is lost, but the pair added to the global map and the pair added to the table map remain.
 

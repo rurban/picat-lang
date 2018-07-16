@@ -52,7 +52,6 @@ void init_toam(argc, argv)
     char *argv[];
 {
     BPLONG     i; 
-    CHAR      c;
     CHAR_PTR  str;
     int success = 0;
 
@@ -73,8 +72,8 @@ void init_toam(argc, argv)
                         print_picat_usage();
                         exit(0);
                     } else {
-                        int j;
                         /*
+						  int j;
                           printf("setenv %s\n",argv[i]);
                           for (j=i+1; j<argc; j++){
                           printf("      %s\n",argv[j]);
@@ -286,7 +285,6 @@ int init_loading(argc, argv)
     int  argc;
     char *argv[];
 {
-    CHAR c;
     CHAR_PTR str;
     BPLONG i;
 

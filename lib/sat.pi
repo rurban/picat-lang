@@ -465,7 +465,7 @@ nvalue(N,L) => bp.'$nvalue'(N,L).
 %% The following constraints are proposed and implemented by Hakan Kjellerstrand
 matrix_element(M,I,J,MIJ) =>
     cp_check_matrix(M,NRows,NCols),
-    matrix_element(M,NRows,NCols,I,J,MIJ,cp).
+    matrix_element(M,NRows,NCols,I,J,MIJ,sat).
 
 %
 % Scalar product of the list A and X
@@ -555,7 +555,7 @@ increasing_list([]) => true.
 increasing_list([_]) => true.
 increasing_list([X|T@[Y|_]]) => 
     X #=< Y,
-	increasing_list(T).
+    increasing_list(T).
 
 increasing_strict(FDVars),array(FDVars) =>
    foreach(I in 2..length(FDVars)) FDVars[I-1] #< FDVars[I] end.
@@ -568,7 +568,7 @@ increasing_strict_list([]) => true.
 increasing_strict_list([_]) => true.
 increasing_strict_list([X|T@[Y|_]]) => 
     X #< Y,
-	increasing_strict_list(T).
+    increasing_strict_list(T).
 
 %
 % Ensure that FDVars is decreasing
@@ -584,7 +584,7 @@ decreasing_list([]) => true.
 decreasing_list([_]) => true.
 decreasing_list([X|T@[Y|_]]) => 
     X #>= Y,
-	decreasing_list(T).
+    decreasing_list(T).
 
 decreasing_strict(FDVars),array(FDVars) =>
    foreach(I in 2..length(FDVars)) FDVars[I-1] #> FDVars[I] end.
@@ -597,4 +597,4 @@ decreasing_strict_list([]) => true.
 decreasing_strict_list([_]) => true.
 decreasing_strict_list([X|T@[Y|_]]) => 
     X #> Y,
-	decreasing_strict_list(T).
+    decreasing_strict_list(T).

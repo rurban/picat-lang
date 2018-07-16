@@ -16,10 +16,6 @@
 % best_plan_unbounded(S,Plan,PlanCost) => best_plan_unbounded(S,Plan,PlanCost).
 % best_plan_unbounded(S,Limit,Plan,PlanCost) => best_plan_unbounded(S,Limit,Plan,PlanCost).
 % best_plan_unbounded(S,Plan) => best_plan_unbounded(S,Plan).
-% best_plan_upward(S,Limit,Plan) => best_plan_upward(S,Limit,Plan).
-% best_plan_upward(S,Plan,PlanCost) => best_plan_upward(S,Plan,PlanCost).
-% best_plan_upward(S,Limit,Plan,PlanCost) => best_plan_upward(S,Limit,Plan,PlanCost).
-% best_plan_upward(S,Plan) => best_plan_upward(S,Plan).
 % current_plan() = current_plan().
 % current_resource() = current_resource().
 % current_resource_plan(Amount,Plan) => current_resource_plan(Amount,Plan).
@@ -186,24 +182,6 @@ loop_best_plan_bb(S,_Limit,Plan,PlanCost) =>
     Map.has_key($current_best_plan(S)),
     Map.get($current_best_plan(S)) = Plan,
     Map.get($current_best_plan_cost(S)) = PlanCost.
-
-%%%
-best_plan_upward(S,Plan),var(Plan) =>
-    best_plan_upward(S,268435455,Plan,_).
-best_plan_upward(_S,Plan) =>
-    throw_plan_arg_error(1,Plan,_,best_plan_upward).
-
-best_plan_upward(S,Limit,Plan),var(Plan),integer(Limit),Limit>=0 =>
-    best_plan_upward(S,Limit,Plan,_PlanCost).
-best_plan_upward(S,Plan,PlanCost),var(Plan),var(PlanCost) =>
-    best_plan_upward(S,268435455,Plan,PlanCost).
-best_plan_upward(_S,Limit,Plan) =>
-    throw_plan_arg_error(Limit,Plan,_,best_plan_upward).
-
-best_plan_upward(S,Limit,Plan,PlanCost),var(Plan),var(PlanCost),integer(Limit),Limit>=0 =>
-    loop_best_plan_bb(S,Limit,Plan,PlanCost).
-best_plan_upward(_S,Limit,Plan,PlanCost) =>
-    throw_plan_arg_error(Limit,Plan,PlanCost,best_plan_upward).
 
 call_picat_plan(S,Limit) =>
     not not call_picat_plan_aux(S,Limit).  % discard exception catchers created by picat_plan

@@ -22,6 +22,7 @@ modf(X) = modf(X).
 odd(X) => odd(X).
 pi = 3.14159265358979323846.
 pow(X,Y) = pow(X,Y).
+pow_mod(X,Y,Z) = pow(X,Y,Z).
 prime(X) => prime(X).
 primes(N)=primes(N).
 rand_max() = rand_max().
@@ -34,3 +35,4 @@ sin(X) = sin(X).
 sqrt(X) = sqrt(X).
 tan(X) = tan(X).
 truncate(X) = truncate(X).
+

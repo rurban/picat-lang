@@ -61,6 +61,9 @@ BPLONG free_record_count[MAX_FREE_RECORD_SIZE+1];
 #define INTERPRETED_PRED_PTR(pred) (InterpretedPredPtr)UNTAGGED_ADDR(FOLLOW((BPLONG_PTR)UNTAGGED_ADDR(pred)+1))
 #define IS_INTERPRETED_PRED(pred) (ISSTRUCT(pred) && GET_STR_SYM_REC(pred)==c_object_ref_sym)
 
+BPLONG_PTR picat_global_maps[NUM_PICAT_GLOBAL_MAPS];
+BPLONG picat_global_map_ids[NUM_PICAT_GLOBAL_MAPS];
+
 /***************************************************************************/
 /* actually slots indexed 0 and 1 are never used */
 void initialize_free_records(){
@@ -1076,10 +1079,6 @@ typedef struct {
 typedef MAP_RECORD *MAP_RECORD_PTR;
 */
 
-#define NUM_PICAT_GLOBAL_MAPS 97
-BPLONG_PTR picat_global_maps[NUM_PICAT_GLOBAL_MAPS];
-BPLONG picat_global_map_ids[NUM_PICAT_GLOBAL_MAPS];
-
 void init_picat_global_maps(){
   BPLONG i;
   
@@ -1363,6 +1362,7 @@ int b_PICAT_GLOBAL_MAP_LIST_cf(BPLONG map_num, BPLONG pairs){
   lst = nil_sym;
   DEREF_NONVAR(map_num);
   map_num = INTVAL(map_num);
+
   mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
 
   for (i = 0; i < mr_ptr->size; i++){

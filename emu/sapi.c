@@ -16,6 +16,9 @@
 
 /* extern char *malloc();*/
 
+BPLONG SP_list_len(SP_term_ref t);
+int SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *s);
+
 char *SP_error_message(BPLONG errno){
     quit("Not implemented \n");
 }
@@ -34,11 +37,8 @@ char *SP_string_from_atom(unsigned long a){
     return GET_NAME((SYM_REC_PTR)a);
 }
 
-SP_atom_length(unsigned long a){
+UW16 SP_atom_length(unsigned long a){
     return GET_LENGTH((SYM_REC_PTR)a);
-}
-
-SP_register_atom(unsigned long a){
 }
 
 void SP_put_term(SP_term_ref to, SP_term_ref from){
@@ -48,7 +48,7 @@ void SP_put_term(SP_term_ref to, SP_term_ref from){
 /*
   Assigns to t a new Prolog variable.                                       
 */
-SP_put_variable(SP_term_ref t){
+int SP_put_variable(SP_term_ref t){
     SP_term_ref op;
     NEW_VAR(op);
     FOLLOW(t) = op;
@@ -58,7 +58,7 @@ SP_put_variable(SP_term_ref t){
 /*
   Assigns to t a Prolog integer from a C long integer. 
 */
-SP_put_integer(SP_term_ref t, long l){
+int SP_put_integer(SP_term_ref t, long l){
     FOLLOW(t) = MAKEINT(l);
     return SP_SUCCESS;
 }
@@ -66,7 +66,7 @@ SP_put_integer(SP_term_ref t, long l){
 /*
   Assigns to t a Prolog oat from a C double. 
 */
-SP_put_float(SP_term_ref t, double d){
+int SP_put_float(SP_term_ref t, double d){
     FOLLOW(t) = encodefloat1(d);
     return SP_SUCCESS;
 }
@@ -75,7 +75,7 @@ SP_put_float(SP_term_ref t, double d){
   Assigns to t a Prolog atom from a, which must be the canonical representation
   of a Prolog atom. 
 */
-SP_put_atom(SP_term_ref t, unsigned long a){
+int SP_put_atom(SP_term_ref t, unsigned long a){
     FOLLOW(t) = ADDTAG(a,ATM);
     return SP_SUCCESS;
 }
@@ -83,7 +83,7 @@ SP_put_atom(SP_term_ref t, unsigned long a){
 /*
   Assigns to t a Prolog atom from a encoded C string 
 */
-SP_put_string(SP_term_ref t, char *name){
+int SP_put_string(SP_term_ref t, char *name){
     FOLLOW(t) = ADDTAG(insert_sym(name,strlen(name),0),ATM);
     return SP_SUCCESS;
 }
@@ -91,7 +91,7 @@ SP_put_string(SP_term_ref t, char *name){
 /*
   Assigns to t a Prolog integer from a C pointer. 
 */
-SP_put_address(SP_term_ref t, void *pointer){
+int SP_put_address(SP_term_ref t, void *pointer){
     FOLLOW(t) = ADDTAG((long)pointer,INT_TAG);
     return SP_SUCCESS;
 }
@@ -100,7 +100,7 @@ SP_put_address(SP_term_ref t, void *pointer){
   Assigns to t a Prolog list of the character codes represented by the encoded
   string s, prepended to the value of tail.
 */
-SP_put_list_chars(SP_term_ref t, SP_term_ref tail, char *s){
+int SP_put_list_chars(SP_term_ref t, SP_term_ref tail, char *s){
     BPLONG i,len=strlen(s);
 
     for (i = 0; i < len; i++) {
@@ -116,7 +116,7 @@ SP_put_list_chars(SP_term_ref t, SP_term_ref tail, char *s){
   Assigns to t a Prolog list of the character codes represented by the frst n bytes
   in encoded string s, prepended in front of the value of tail.
 */
-SP_put_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, char *s){
+int SP_put_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, char *s){
     BPLONG i,len;
     len = strlen(s);
     len = (len > n ? n : len);
@@ -132,7 +132,7 @@ SP_put_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, char *s){
 /*
   Assigns to t a Prolog number by parsing the string in s.
 */
-SP_put_number_chars(SP_term_ref t, char *s){
+int SP_put_number_chars(SP_term_ref t, char *s){
     BPLONG vars;
     SP_term_ref term;
 
@@ -149,7 +149,7 @@ SP_put_number_chars(SP_term_ref t, char *s){
   to t. This is similar to calling functor/3 with the frst argument unbound and
   the second and third arguments bound to an atom and an integer, respectively.
 */
-SP_put_functor(SP_term_ref t, unsigned long name, BPLONG arity){
+int SP_put_functor(SP_term_ref t, unsigned long name, BPLONG arity){
     SP_term_ref term;
     NEW_VAR(term);
     cfunctor1(term,ADDTAG(name,ATM),MAKEINT(arity));
@@ -160,7 +160,7 @@ SP_put_functor(SP_term_ref t, unsigned long name, BPLONG arity){
 /*
   Assigns to t a Prolog list whose head and tail are both unbound variables.
 */
-SP_put_list(SP_term_ref t){
+int SP_put_list(SP_term_ref t){
     FOLLOW(t) = ADDTAG(heap_top,LST);
     NEW_HEAP_FREE;
     NEW_HEAP_FREE;
@@ -171,7 +171,7 @@ SP_put_list(SP_term_ref t){
   This is similar to calling =../2 with the first argument unbound and the
   second argument bound.
 */
-SP_cons_functor(SP_term_ref t, unsigned long name, BPLONG arity, ...){
+int SP_cons_functor(SP_term_ref t, unsigned long name, BPLONG arity, ...){
     va_list ap;
     SP_term_ref arg;
     BPLONG i;
@@ -197,7 +197,7 @@ SP_cons_functor(SP_term_ref t, unsigned long name, BPLONG arity, ...){
 /*
   Assigns to t a Prolog list whose head and tail are the values of head and tail.
 */
-SP_cons_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
+int SP_cons_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
     BPLONG_PTR top;
     FOLLOW(t) = ADDTAG(heap_top,LST);
     BUILD_VALUE(head,bp_cons_list1);
@@ -209,7 +209,7 @@ SP_cons_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
 /*
   Assigns to *l the C long corresponding to a Prolog number.
 */
-SP_get_integer(SP_term_ref t, long *l){
+int SP_get_integer(SP_term_ref t, long *l){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISINT(t)){
@@ -223,7 +223,7 @@ SP_get_integer(SP_term_ref t, long *l){
 /*
   Assigns to *d the C double corresponding to a Prolog number.
 */
-SP_get_float(SP_term_ref t, double *d){
+int SP_get_float(SP_term_ref t, double *d){
     double temp_d, floatval();
     BPLONG_PTR top;
     DEREF(t);
@@ -242,7 +242,7 @@ SP_get_float(SP_term_ref t, double *d){
 /*
   Assigns to *a the canonical representation of a Prolog atom.
 */
-SP_get_atom(SP_term_ref t, unsigned long *a){
+int SP_get_atom(SP_term_ref t, unsigned long *a){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISATOM(t)){
@@ -256,7 +256,7 @@ SP_get_atom(SP_term_ref t, unsigned long *a){
 /* Assigns to *name a pointer to the encoded string representing the name of a
    Prolog atom. 
 */
-SP_get_string(SP_term_ref t, char **name){
+int SP_get_string(SP_term_ref t, char **name){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISATOM(t)){
@@ -272,7 +272,7 @@ SP_get_string(SP_term_ref t, char **name){
    Assigns to *pointer a C pointer from a Prolog term. The term should be an
    integer whose value should be a valid second argument to SP_put_address()
 */
-SP_get_address(SP_term_ref t, void **pointer){
+int SP_get_address(SP_term_ref t, void **pointer){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISINT(t)){
@@ -289,7 +289,7 @@ SP_get_address(SP_term_ref t, void **pointer){
   reuse by other support functions, so if the value is going to be used on a more
   than temporary basis, it must be moved elsewhere.
 */
-SP_get_list_chars(SP_term_ref t, char **s){
+int SP_get_list_chars(SP_term_ref t, char **s){
     BPLONG_PTR top;
     BPLONG n;
     BPLONG w;
@@ -313,7 +313,7 @@ SP_get_list_chars(SP_term_ref t, char **s){
   actually written is assigned to *w. tail is set to the remainder of the list. The
   array s must have room for at least n bytes.
 */
-SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *s){
+int SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *s){
     BPLONG_PTR top;
     BPLONG i, len;
     BPLONG code;
@@ -341,7 +341,7 @@ SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *s){
     return SP_SUCCESS;
 }
 
-SP_list_len(SP_term_ref t){
+BPLONG SP_list_len(SP_term_ref t){
     BPLONG_PTR top;
     BPLONG len = 0;
     DEREF(t);
@@ -359,10 +359,10 @@ SP_list_len(SP_term_ref t){
   support functions, so if the value is going to be used on a more than temporary
   basis, it must be moved elsewhere.
 */
-SP_get_number_chars(SP_term_ref t, char **s){
+int SP_get_number_chars(SP_term_ref t, char **s){
     BPLONG_PTR top;
     char buf[80];
-    double floatval(), temp_d;
+    double floatval();
     char *ptr;
     DEREF(t);
     if (ISINT(t)){
@@ -387,7 +387,7 @@ SP_get_number_chars(SP_term_ref t, char **s){
   calling functor/3 with the first argument bound to a compound term or an
   atom and the second and third arguments unbound.
 */
-SP_get_functor(SP_term_ref t, unsigned long *name, BPLONG *arity){
+int SP_get_functor(SP_term_ref t, unsigned long *name, BPLONG *arity){
     BPLONG_PTR top;
     BPLONG func;
     BPLONG n;
@@ -408,7 +408,7 @@ SP_get_functor(SP_term_ref t, unsigned long *name, BPLONG *arity){
 /*
   Assigns to head and tail the head and tail of a Prolog list.
 */
-SP_get_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
+int SP_get_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISLIST(t)){
@@ -426,7 +426,7 @@ SP_get_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
   to calling arg/3 with the third argument unbound.
 */
 
-SP_get_arg(BPLONG i, SP_term_ref t, SP_term_ref arg){
+void SP_get_arg(BPLONG i, SP_term_ref t, SP_term_ref arg){
     BPLONG_PTR top;
     BPLONG temp;
     NEW_VAR(temp);
@@ -440,7 +440,7 @@ SP_get_arg(BPLONG i, SP_term_ref t, SP_term_ref arg){
   Depending on the type of the term t, one of SP_TYPE_VARIABLE, SP_TYPE_
   INTEGER, SP_TYPE_FLOAT, SP_TYPE_ATOM, or SP_TYPE_COMPOUND is returned.
 */
-SP_term_type(SP_term_ref t){
+int SP_term_type(SP_term_ref t){
     BPLONG_PTR top;
 
     SWITCH_OP(t, SP_term_type_1,
@@ -458,7 +458,7 @@ SP_term_type(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog variable, zero otherwise.
 */
-SP_is_variable(SP_term_ref t){
+int SP_is_variable(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return (ISREF(t) || IS_SUSP_VAR(t));
@@ -467,7 +467,7 @@ SP_is_variable(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog integer, zero otherwise.
 */
-SP_is_integer(SP_term_ref t){
+int SP_is_integer(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return ISINT(t);
@@ -476,7 +476,7 @@ SP_is_integer(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog oat, zero otherwise.
 */
-SP_is_float(SP_term_ref t){
+int SP_is_float(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return ISFLOAT(t);
@@ -485,7 +485,7 @@ SP_is_float(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog atom, zero otherwise.
 */
-SP_is_atom(SP_term_ref t){
+int SP_is_atom(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return ISATOM(t);
@@ -494,7 +494,7 @@ SP_is_atom(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog compound term, zero otherwise.
 */
-SP_is_compound(SP_term_ref t){
+int SP_is_compound(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return ISCOMPOUND(t);
@@ -503,7 +503,7 @@ SP_is_compound(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog list, zero otherwise.
 */
-SP_is_list(SP_term_ref t){
+int SP_is_list(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return ISLIST(t);
@@ -512,7 +512,7 @@ SP_is_list(SP_term_ref t){
 /*
   Returns nonzero if the term is an atomic Prolog term, zero otherwise.
 */
-SP_is_atomic(SP_term_ref t){
+int SP_is_atomic(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return (ISATOM(t) || ISNUM(t));
@@ -521,20 +521,20 @@ SP_is_atomic(SP_term_ref t){
 /*
   Returns nonzero if the term is a Prolog number, zero otherwise.
 */
-SP_is_number(SP_term_ref t){
+int SP_is_number(SP_term_ref t){
     BPLONG_PTR top;
     DEREF(t);
     return ISNUM(t);
 }
 
-SP_unify(SP_term_ref x, SP_term_ref y){
+int SP_unify(SP_term_ref x, SP_term_ref y){
     return unify(x,y);
 }
 
 /*
   Returns -1 if x @< y, 0 if x == y and 1 if x @> y
 */
-SP_compare(SP_term_ref x, SP_term_ref y){
+int SP_compare(SP_term_ref x, SP_term_ref y){
     return bp_compare(x,y);
 }
 
@@ -556,7 +556,7 @@ void SP_free(void *ptr){
     free(ptr);
 }
 
-SP_chdir(const char *path){
+int SP_chdir(const char *path){
     chdir(path);
     return SP_SUCCESS;
 }
@@ -577,7 +577,7 @@ SP_pred_ref SP_pred(unsigned long name_atom,long arity,unsigned long module_atom
     return SP_predicate(GET_NAME(sym_ptr),arity,NULL);
 }
   
-SP_query(SP_pred_ref predicate, ...){
+int SP_query(SP_pred_ref predicate, ...){
     SYM_REC_PTR sym_ptr;
     va_list ap;
     SP_term_ref arg;
@@ -606,7 +606,7 @@ SP_query(SP_pred_ref predicate, ...){
     return bp_call_term(query);
 }
 
-SP_query_cut_fail(SP_pred_ref predicate, ...){
+void SP_query_cut_fail(SP_pred_ref predicate, ...){
     quit("SP_query_cut_fail not implemented\n");
 }
 

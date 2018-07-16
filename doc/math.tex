@@ -66,6 +66,7 @@ IF = (3.0 , 0.2)
 The following functions provide exponentiation, root, and logarithmic functions.  Note that, in the logarithmic functions, if $X \le 0$, then an error is thrown.
 \begin{itemize}
 \item \texttt{pow($X$, $Y$) = $Val$}\index{\texttt{pow/2}}:  This function returns $X^Y$.  It does the same thing as $X ** Y$.
+\item \texttt{pow\_mod($X$, $Y$, $Z$) = $Val$}\index{\texttt{pow\_mod/3}}:  This function returns \texttt{$X^Y$ mod $Z$}.  All of the arguments must be integers, and $Y$ must not be negative.
 \item \texttt{exp($X$) = $Val$}\index{\texttt{exp/1}}:  This function returns $e^X$.
 \item \texttt{sqrt($X$) = $Val$}\index{\texttt{sqrt/1}}: This function returns the square root of $X$.  Note that the \texttt{math} module does not support imaginary numbers.  Therefore, if $X < 0$, then this function throws an error.
 %\item \texttt{cbrt($X$) = $Val$}\index{\texttt{cbrt/1}}: This function returns the cube root of $X$.

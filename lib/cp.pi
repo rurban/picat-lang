@@ -58,6 +58,7 @@ import common_sat_cp.
 % solve(Vars) => solve(Vars).
 % solve_all(Options,Vars) = solve_all(Options,Vars).
 % solve_all(Vars) = solve_all(Vars).
+% solve_suspended => solve_suspended.
 % subcircuit(FDVars) => subcircuit(FDVars).
 % table_in(Vars, Tuples) => table_in(Vars, Tuples).
 % table_notin(Vars, Tuples) => table_notin(Vars, Tuples).
@@ -115,19 +116,19 @@ solve(Options,Vars) =>
     (select($report(ReportCall),Options,Options1) ->
         MetaCalls = [$report('$dyna_eval_pred'(['$picat_top_level'],ReportCall))]
     ;
-	    Options1 = Options,
+        Options1 = Options,
         MetaCalls = []
     ),
     (select($label(LabelPred),Options1,Options2) ->
         (atom(LabelPred) -> true; handle_exception(invalid_label_option,LabelPred)),
-		(bp.'$dyna_resolve_name'(['$picat_top_level'],LabelPred,1,pred,MLabelPred) ->
-		    true
-		;
-		    bp.module_qualified_pred_name(glb,LabelPred,MLabelPred)
-		),
+        (bp.'$dyna_resolve_name'(['$picat_top_level'],LabelPred,1,pred,MLabelPred) ->
+            true
+        ;
+            bp.module_qualified_pred_name(glb,LabelPred,MLabelPred)
+        ),
         MetaCalls1 = [$label(MLabelPred)|MetaCalls]
     ;
-	    Options2 = Options1,
+        Options2 = Options1,
         MetaCalls1 = MetaCalls
     ),
     bp.labeling(MetaCalls1 ++ Options2,VList).    
@@ -139,6 +140,14 @@ solve_all(Vars) =
 % solve_all(Options,Vars) = solve_all(Options,Vars).
 solve_all(Options,Vars) =
     findall(Vars,solve(Options,Vars)).
+
+% solve_suspended => solve_suspended.
+solve_suspended => solve_suspended([]).
+
+solve_suspended(Options) =>
+    bp.frozen(FL),
+    FVars = [FVar : FVar in vars(FL), dvar(FVar)],
+    solve(Options,FVars).
 
 % all_different(FDVars) => all_different(FDVars).
 all_different(FDVars) =>
@@ -298,7 +307,7 @@ fd_min(FDVar) = Min => (dvar_or_int(FDVar)->bp.domain_min_max(FDVar,Min,_);handl
 % fd_min_max(FDVar,Min,Max) => fd_min_max(FDVar,Min,Max).
 fd_min_max(FDVar,Min,Max) => 
     (dvar_or_int(FDVar)->
-	    bp.domain_min_max(FDVar,Min,Max)
+        bp.domain_min_max(FDVar,Min,Max)
     ;
         handle_exception($dvar_expected(FDVar),fd_min_max)
     ).
@@ -589,7 +598,7 @@ increasing_list([]) => true.
 increasing_list([_]) => true.
 increasing_list([X|T@[Y|_]]) => 
     X #=< Y,
-	increasing_list(T).
+    increasing_list(T).
 
 increasing_strict(FDVars),array(FDVars) =>
    foreach(I in 2..length(FDVars)) FDVars[I-1] #< FDVars[I] end.
@@ -602,7 +611,7 @@ increasing_strict_list([]) => true.
 increasing_strict_list([_]) => true.
 increasing_strict_list([X|T@[Y|_]]) => 
     X #< Y,
-	increasing_strict_list(T).
+    increasing_strict_list(T).
 
 %
 % Ensure that FDVars is decreasing
@@ -618,7 +627,7 @@ decreasing_list([]) => true.
 decreasing_list([_]) => true.
 decreasing_list([X|T@[Y|_]]) => 
     X #>= Y,
-	decreasing_list(T).
+    decreasing_list(T).
 
 decreasing_strict(FDVars),array(FDVars) =>
    foreach(I in 2..length(FDVars)) FDVars[I-1] #> FDVars[I] end.
@@ -631,4 +640,4 @@ decreasing_strict_list([]) => true.
 decreasing_strict_list([_]) => true.
 decreasing_strict_list([X|T@[Y|_]]) => 
     X #> Y,
-	decreasing_strict_list(T).
+    decreasing_strict_list(T).

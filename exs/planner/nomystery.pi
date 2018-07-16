@@ -15,7 +15,7 @@
 import planner.
 
 main =>
-   test1.
+   test.
 
 asp(Facts),
     cl_facts(Facts, $[fuelcost(-,+,-), at(+,-)]),

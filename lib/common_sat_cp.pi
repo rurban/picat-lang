@@ -97,7 +97,7 @@ matrix_element_for_regular(M,NRows,NCols,I,J,MIJ,Solver) =>
         bp.'$table_in'(VarTuple,Table)
     ).
 
-matrix_element(M,NRows,NCols,I,J,MIJ,Solver) =>
+matrix_element(M,NRows,NCols,I,J,MIJ,Solver),ground(M),var(MIJ) =>
     bp.domain(I,1,NRows),
     bp.domain(J,1,NCols),
     (bp.dvar_or_int(MIJ) -> true; bp.fd_new_var(MIJ)),
@@ -118,6 +118,8 @@ matrix_element(M,NRows,NCols,I,J,MIJ,Solver) =>
     ;        
         bp.'$table_in'(VarTuple,Table)
     ).
+matrix_element(M,NRows,NCols,I,J,MIJ,Solver) =>
+    bp.bp_matrix_element(M,NRows,NCols,I,J,MIJ,Solver).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % StateVect is a vector of state variables created for the automaton. For each 

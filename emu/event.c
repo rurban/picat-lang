@@ -657,19 +657,22 @@ DWORD WINAPI timerThread(LPVOID timer_no){
     }
  
     int c_kill_timer(){
-        BPLONG timer,tmp;
+        BPLONG timer;
         BPLONG_PTR ptr;
 
+		/*
 #ifdef _WIN32
         BPLONG pid;
 #else
         pthread_t pid;
 #endif
+		*/
 
         timer = ARG(1,1); DEREF(timer); 
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(timer);
         PUSHTRAIL_H_ATOMIC(GET_TIMER_STATUS_ADDR(ptr),GET_TIMER_STATUS(ptr));
         GET_TIMER_STATUS(ptr) = MAKEINT(TIMER_STATUS_DEAD);
+
         /*
           tmp = GET_TIMER_PID(ptr); DEREF(tmp);
           tmp = VALOF_INT_OR_BIGINT(tmp);
