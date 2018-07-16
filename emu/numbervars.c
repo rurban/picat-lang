@@ -404,7 +404,6 @@ start:
         term = FOLLOW(struct_ptr+arity);
         goto start;
     } else {
-        BPLONG_PTR ptr;
         BPLONG_PTR susp_var_ptr;
 
         susp_var_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(term);

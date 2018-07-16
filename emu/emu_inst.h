@@ -5002,15 +5002,15 @@ switch (*P++){
  lab_unify_cons_ww: 
     op1 = NextOperandYC;
     SWITCH_OP_LST(op1,rr_unify_cons_ww, 
-                  {rr_unify_cons_ww_var:
+                  {rr_unify_cons_ww_var: /* UNUSED */
                       PUSHTRAIL(op1);
                       FOLLOW(op1) = ADDTAG(H,LST); 
                       FOLLOW(H) = (BPLONG)H; H++;
                       FOLLOW(H) = (BPLONG)H; H++;
                       CONTCASE;},
-                  {rr_unify_cons_ww_lst:
+                  {rr_unify_cons_ww_lst: /* UNUSED */
                       CONTCASE;},
-                  {rr_unify_cons_ww_susp:
+                  {rr_unify_cons_ww_susp: /* UNUSED */
                       op2 = ADDTAG(H,LST);
                       FOLLOW(H) = (BPLONG)H; H++;
                       FOLLOW(H) = (BPLONG)H; H++;
@@ -6624,7 +6624,6 @@ switch (*P++){
 #endif
  lab_catch_clean_up: 
     if (B==AR){ /*  a catcher frame is in the form of p(Flag,Cleanup,Calll,Exception,Recovery,...) */
-        BPLONG cleanup;
         B = (BPLONG_PTR)AR_B(B);
         HB = (BPLONG_PTR)AR_H(B);
         CONTCASE;
@@ -8208,7 +8207,7 @@ switch (*P++){
             TOAM_KILL_SUSP_FRAME; 
             op2 = tmp_op - INTVAL(op2);
         unify_dvar_value:
-            if (ISINT(op1)) if (INTVAL(op1)==op2) CONTCASE; else BACKTRACK;
+            if (ISINT(op1)) { if (INTVAL(op1)==op2) CONTCASE; else BACKTRACK; }
             top = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op1);
             if (op2 < DV_first(top) || op2 > DV_last(top)) BACKTRACK; 
             if (IS_IT_DOMAIN(top)) ; 
@@ -8498,8 +8497,9 @@ switch (*P++){
     */
     {
         BPLONG_PTR master_ar,ptr;
-        BPLONG answer_table,mode_bits,nt_last_arg,last_arg,limit,old_limit;
-            
+        BPLONG answer_table,mode_bits,nt_last_arg,limit,old_limit;
+        BPLONG last_arg = 0;
+
         op1 = *P++; /* arity */
         op2 = *P++; /* frame size */
         sym_ptr = (SYM_REC_PTR)*P++; /* Predicate symbol */

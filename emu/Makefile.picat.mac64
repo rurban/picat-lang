@@ -1,4 +1,4 @@
-CC     = /usr/local/bin/gcc -DGCC -DPICAT -DSAT -DGLPK -DM64BITS
+CC     = gcc-mp-7 -DGCC -DPICAT -DSAT -DGLPK -DM64BITS
 #CC     = cc
 
 #CFLAGS = -c  -O4 -Dunix -DGC -DBSD             #SunOS
@@ -132,3 +132,9 @@ lglib.o : lingeling/lglib.c
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/lglib.c
 lglmain.o : lingeling/lglmain.c 
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/lglmain.c
+
+# emacs flymake-mode
+check-syntax:
+	test -n "$(CHK_SOURCES)" && \
+	  nice $(CC) $(CFLAGS) -O0 -o /dev/null -S $(CHK_SOURCES)
+.PHONY: check-syntax

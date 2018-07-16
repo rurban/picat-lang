@@ -384,7 +384,7 @@ int load_syms(file_type)
    public predicate and function symbols defined in the module 
 *************************************************************************/
 int c_GET_MODULE_SIGNATURE_cf(){
-    BPLONG File, Lst;
+    BPLONG File;
     CHAR_PTR file_name;
     SYM_REC_PTR sym_ptr;
     CHAR     name[256];
@@ -415,7 +415,7 @@ int c_GET_MODULE_SIGNATURE_cf(){
     }
     /* printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); */
 
-    READ_DATA(&magic, 1);
+    READ_DATA_ONLY(&magic, 1);
     if (load_bytecode_header()==BP_ERROR)
         return BP_ERROR;
 
@@ -549,7 +549,7 @@ int load_hashtab()
             return 1;
         alt = BB4(buf_for_read);
         alt = (BPLONG)RELOC_ADDR(alt);
-        if (eof_flag = get_index_tab(clause_no, &temp_len))
+        if ((eof_flag = get_index_tab(clause_no, &temp_len)))
             return eof_flag;
         inst_addr = gen_index(hash_inst_addr,clause_no,alt);
         count += (16 + temp_len);
@@ -1010,7 +1010,9 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
     u.ptr = key;
     if (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0)) {
         const UW32 *k = (const UW32 *)key;         /* read 32-bit chunks */
+#ifdef VALGRIND
         const BYTE  *k8;
+#endif
 
         /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */
         while (length > 12)
@@ -1619,7 +1621,7 @@ void load_hashtab_fromlist(BCHashTabs)
 
     CHECK_PCODE((CHAR_PTR)inst_addr,index_bytes);
     while (ISLIST(BCHashTabs)){
-        BPLONG     hashtab, hash_inst_addr, hash_reg, alt, clause_no, temp_len, HashArgs;
+        BPLONG     hashtab, hash_inst_addr, hash_reg, alt, clause_no, HashArgs;
         BPLONG_PTR list_ptr, struct_ptr;
 
         list_ptr = (BPLONG_PTR)UNTAGGED_ADDR(BCHashTabs);
@@ -1649,8 +1651,6 @@ void get_index_tab_fromlist(HashArgs, clause_no)
     BPLONG     HashArgs, clause_no;
 {
     BPLONG     hashval, size, j;
-    BPLONG     count = 0;
-    BYTE     type;
     BPLONG     val,ttype;
     BPLONG_PTR label;
 
@@ -1878,7 +1878,7 @@ void load_text_from_c_array(){
 }
 
 void load_hashtab_from_c_array(){
-    BPLONG hash_inst_addr,hash_reg,alt, clause_no, temp_len;
+    BPLONG hash_inst_addr,hash_reg,alt, clause_no;
     BPLONG count,hash_array_size;
 
     BPLONG     hashval, size, j;

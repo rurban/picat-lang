@@ -624,6 +624,7 @@ beginning:
                          }
                          return 1;
                      });
+    return 0;
 }
 
 int c_SAME_ADDR(){

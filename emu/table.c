@@ -112,7 +112,6 @@ int table_area_num_expansions(){
 
 int c_INITIALIZE_TABLE(){
     BPLONG_PTR low_addr,prev_low_addr;
-    int i,success;
 
     exception = (BPLONG)NULL;
     in_critical_region = 0;
@@ -218,7 +217,6 @@ void init_subgoal_table(){
    both t1 and t2 are numbered terms in the table area.
 */
 int identicalTabledTerms(BPLONG t1, BPLONG t2){
-    BPLONG_PTR top;
     BPLONG i,arity,op1,op2;
   
 beginning:
@@ -356,8 +354,8 @@ BPLONG unnumberVarTabledTerm(BPLONG term){
 
 /******************* SUBGOAL TABLE ********************/
 void expandSubgoalTable(){
-    BPLONG new_htable_size,old_htable_size,i,index,arity;
-    BPLONG_PTR new_htable,old_htable,subgoal_entry,next_subgoal_entry,subgoal_arg_ptr,ptr;
+    BPLONG new_htable_size,old_htable_size,i,index;
+    BPLONG_PTR new_htable,old_htable,next_subgoal_entry;
   
     old_htable_size = subgoalTableBucketSize;
     old_htable = subgoalTable;
@@ -387,10 +385,10 @@ void expandSubgoalTable(){
 
 BPLONG_PTR lookupSubgoalTable(BPLONG_PTR stack_arg_ptr, int arity, SYM_REC_PTR sym_ptr, int mode_bits, int nt_last_arg){
     BPLONG_PTR entryPtrPtr0,entryPtr,thisEntryPtr;
-    BPLONG_PTR subgoal_arg_ptr,this_subgoal_arg_ptr,des_ptr,src_ptr;
+    BPLONG_PTR subgoal_arg_ptr,this_subgoal_arg_ptr;
     BPLONG i,arity1;
     BPLONG hcode0,hcode,subgoal_record_size;
-    BPLONG_PTR trail_top0,ptr,top,old_table_top;
+    BPLONG_PTR trail_top0,old_table_top;
     BPLONG initial_diff0;
     BPULONG tmp_mode_bits;
 	//    void printSubgoalTableEntry();

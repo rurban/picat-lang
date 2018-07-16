@@ -1126,6 +1126,7 @@ BPLONG bp_hashval(BPLONG op){
 			  return (hcode_sum & HASH_BITS);
 			},
 			{return 0;});
+  return 0;
 }
 
 int b_HASHVAL1_cf(op1,op2)  /* op1 a term, op2 the hash value of the main functor of op1*/
@@ -2225,6 +2226,7 @@ int b_PICAT_LENGTH_cf(term,len)
 	}
 	return BP_TRUE;
   }
+  return BP_ERROR;
 }
 
 /* len > 0 */

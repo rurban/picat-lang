@@ -497,7 +497,7 @@ int get_file_name(BPLONG op){
     } else {
         picat_str_to_c_str(op, s1, MAX_STR_LEN-1);
     }
-    get_file_name_aux(s1);
+    return get_file_name_aux(s1);
 }
 #else
 int get_file_name(op)
@@ -507,7 +507,7 @@ int get_file_name(op)
   
     DEREF(op); 
     namestring(GET_SYM_REC(op),s1);
-    get_file_name_aux(s1);
+    return get_file_name_aux(s1);
 }
 #endif
 
@@ -1503,7 +1503,6 @@ int b_GET0_f(op)
     BPLONG op;
 {
     BPLONG n;
-    BPLONG_PTR top;
 
     n = getc(curr_in);
 
@@ -1519,7 +1518,6 @@ int b_PEEK_BYTE_f(op)
     BPLONG op;
 {
     BPLONG n;
-    BPLONG_PTR top;
   
     if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
@@ -1547,7 +1545,6 @@ int b_PEEK_CODE_f(op)
     BPLONG op;
 {
     BPLONG n;
-    BPLONG_PTR top;
   
     if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
@@ -1598,7 +1595,6 @@ int c_UNGETC()
 int b_GET_f(op)
     BPLONG op;
 {
-    BPLONG_PTR top;
     BPLONG n;
 
     do {
@@ -1614,7 +1610,6 @@ int b_GET_f(op)
 
 int c_rm_file() {
     BPLONG op;
-    char *f_name;
   
     op = ARG(1,1);
     if (check_file_term(op)!=BP_TRUE) return BP_ERROR;
@@ -1644,7 +1639,7 @@ int c_cp_file() {
     strcat(bp_buf,f_name2);
 
     CHANGE_FILE_SEPARATOR(bp_buf);
-    res = system(bp_buf);
+    res = system(bp_buf); //TODO store res somewhere
     return BP_TRUE;
 }
 
@@ -2453,9 +2448,7 @@ int c_rename(){
 
 int c_chdir(){
     BPLONG dir = ARG(1,1);
-    SYM_REC_PTR sym_ptr;
     BPLONG_PTR top;
-    char *s;
   
     DEREF(dir);
     if (check_file_term(dir)!=BP_TRUE) return BP_ERROR;
@@ -2985,7 +2978,7 @@ int b_GET_LINE_POS_cf(Index,pos)
 int c_FORMAT_PRINT_INTEGER(){
     BPLONG control,arg,number,len;
     BPLONG_PTR top;
-    char format[20];
+    char format[22];
 
     control = ARG(1,3); DEREF(control);control=INTVAL(control);
     arg = ARG(2,3); DEREF(arg);
@@ -3017,7 +3010,7 @@ int c_FORMAT_PRINT_FLOAT(){
     BPLONG control,arg,number,len;
     BPLONG_PTR top;
     double val;
-    char format[20];
+    char format[22];
 
     control = ARG(1,3); DEREF(control);control=INTVAL(control);
     arg = ARG(2,3); DEREF(arg);
@@ -3138,7 +3131,6 @@ int print_term_to_buf(BPLONG term){
             sprintf(bp_buf,"%.15lf", floatval(term));
             bp_trim_trailing_zeros(bp_buf);
         } else if (IS_BIGINT(term)){
-            CHAR_PTR ch_ptr;
             int j, i = bp_write_bigint_to_str(term,bp_buf,MAX_STR_LEN);  /* stored in bp_buf from index i to MAX_STR_LEN-1 */
             if (i==BP_ERROR) return BP_ERROR;
             j = 0;
@@ -3296,7 +3288,7 @@ int c_PICAT_FORMAT_TO_STRING_ccff(){
 
 int c_PICAT_GETENV_cf(){
     BPLONG EnvVarName,EnvValStr;
-    CHAR_PTR env_name, env_val;
+    CHAR_PTR env_val;
 
     EnvVarName = ARG(1,2);DEREF(EnvVarName);
     EnvValStr = ARG(2,2);
@@ -3479,7 +3471,7 @@ int b_READ_CHAR_cf(BPLONG FDIndex, BPLONG Ch){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
+            unsigned char c = (unsigned char)b;
             //      b = ADDTAG(insert_sym(&c,1,0),ATM);
             b = char_sym_table[c];
         }

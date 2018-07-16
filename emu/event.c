@@ -657,13 +657,13 @@ DWORD WINAPI timerThread(LPVOID timer_no){
     }
  
     int c_kill_timer(){
-        BPLONG timer,tmp;
+        BPLONG timer /*,tmp */;
         BPLONG_PTR ptr;
 
 #ifdef _WIN32
         BPLONG pid;
 #else
-        pthread_t pid;
+        /*pthread_t pid;*/
 #endif
 
         timer = ARG(1,1); DEREF(timer); 
