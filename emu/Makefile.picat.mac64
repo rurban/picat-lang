@@ -1,4 +1,4 @@
-CC     = /usr/local/bin/gcc -DGCC -DPICAT -DSAT -DM64BITS
+CC     = gcc-mp-7 -DGCC -DPICAT -DSAT -DM64BITS
 #CC     = cc
 
 #CFLAGS = -c  -O4 -Dunix -DGC -DBSD             #SunOS
