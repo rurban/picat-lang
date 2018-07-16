@@ -51,13 +51,13 @@ int nary_interval_consistent_eq(n)
     coe_ptr = var_ptr+n;
     c = INTVAL(FOLLOW(coe_ptr)); /* c+a1*x1+...+ak*xk where x1,...,xk are integers */
     type = INTVAL(FOLLOW(coe_ptr+1)); 
-    /*
+	/*
       printf("c = %d type=%d\n",c,type);
       for (i = 1; i<=n; i++){
       write_term(FOLLOW(coe_ptr-i)); printf("*"); write_term(FOLLOW(var_ptr-i)); printf(" ");
       }
       printf("\n");
-    */
+	*/
 
     switch (type) {
     case 0:{ /* general case, overflow may occur */
@@ -416,12 +416,20 @@ int nary_interval_consistent_ge(n)
     BPLONG first0,last0,dv_ptr_first,dv_ptr_last,size,temp_i,c;
     int k;
     BPLONG type;
-  
+
     var_ptr = arreg+n+1;
     coe_ptr = var_ptr+n;
     c = INTVAL(FOLLOW(coe_ptr)); /* c+a1*x1+...+ak*xk where x1,...,xk are integers */
     type = INTVAL(FOLLOW(coe_ptr+1)); 
-  
+
+	/*  
+		printf("c = %d type=%d\n",c,type);
+		for (i = 1; i<=n; i++){
+		write_term(FOLLOW(coe_ptr-i)); printf("*"); write_term(FOLLOW(var_ptr-i)); printf(" ");
+		}
+		printf("\n");
+	*/
+	
     /*  printf("ge n= %d type =%d\n",n,type); */
     switch (type){
     case 0: /* general case, overflow may occur */

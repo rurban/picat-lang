@@ -111,7 +111,7 @@ new_dvar() = FDVar =>
 
 %%
 notin(Vars,Domain) =>
-    bp.'_$_picat_notin'(Vars,Domain).
+    bp.'_$_picat_notin'(sat,Vars,Domain).
 
 % fd_dom(FDVar) = fd_dom(FDVar).
 fd_dom(FDVar) = List,integer(FDVar) => List=[FDVar].

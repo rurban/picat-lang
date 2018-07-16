@@ -106,6 +106,7 @@ BPLONG      exception;
 BPLONG      foreign_exception = (BPLONG) NULL;
 SYM_REC_PTR  list_psc;
 SYM_REC_PTR  equal_psc;
+SYM_REC_PTR  planner_explored_depth_psc;
 BPLONG list_psc_int;
 BPLONG list_psc_hashcode;
 SYM_REC_PTR  error_psc;

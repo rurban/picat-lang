@@ -92,7 +92,7 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 
 A real number\index{number} consists of an optional integer part\index{integer}, an optional decimal fraction preceded by a decimal point, and an optional exponent. If an integer part\index{integer} exists, then it must be followed by either a fraction or an exponent in order to distinguish the real number\index{number} from an integer literal\index{integer}. For example, the following are valid real numbers\index{number}.
 \begin{verbatim}
-    12.345   .123   12-e10   0.12E10
+    12.345   0.123   12-e10   0.12E10
 \end{verbatim}
 
 Table \ref{tab:arithdef} gives the meaning of each of the numeric operators in Picat, from the operator with the highest precedence (\verb+**+) to the one with the lowest precedence (\verb+..+). Except for the power operator \verb+**+, which is right-associative, all of the arithmetic operators are left-associative. 
@@ -135,7 +135,9 @@ In addition to the numeric operators, the \texttt{basic} module also provides th
 \item \texttt{int($Term$)}\index{\texttt{int/1}}: This predicate is true if $Term$ is an integer.
 \item \texttt{integer($Term$)}\index{\texttt{integer/1}}: The same as \texttt{int($Term$)}.
 \item \texttt{max($X$, $Y$) = $Val$}\index{\texttt{max/2}}: This function returns the maximum of $X$ and $Y$, where $X$ and $Y$ are terms.
+\item \texttt{maxint\_small() = $Int$}\index{\texttt{maxint\_small/0}}: This function returns the maximum integer that is represented in one word. All integers that are greater than this integer are represented as \textit{big integers}.
 \item \texttt{min($X$, $Y$) = $Val$}\index{\texttt{min/2}}: This function returns the minimum of $X$ and $Y$, where $X$ and $Y$ are terms.
+\item \texttt{minint\_small() = $Int$}\index{\texttt{minint\_small/0}}: This function returns the minimum integer that is represented in one word. All integers that are smaller than this integer are represented as \textit{big integers}.
 \item \texttt{number($Term$)}\index{\texttt{number/1}}: This predicate is true if $Term$ is a number\index{number}.
 \item \texttt{number\_chars($Num$) = $String$}\index{\texttt{number\_chars/1}}: This function returns a list\index{list} of characters of $Num$. This function is the same as \texttt{to\_fstring("\%d",$Num$)}\index{\texttt{to\_fstring/2}} if $Num$ is an integer\index{integer}, and the same as \texttt{to\_fstring("\%f",$Num$)}\index{\texttt{to\_fstring/2}} if $Num$ is a real number\index{number}.
 \item \texttt{number\_codes($Num$) = $List$}\index{\texttt{number\_codes/1}}: This function returns a list\index{list} of codes of the characters of $Num$. It is the same as \texttt{number\_chars($Num$).to\_codes()}\index{\texttt{number\_chars/1}}\index{\texttt{to\_codes/1}}.

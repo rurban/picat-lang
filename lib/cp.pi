@@ -64,7 +64,7 @@ import common_sat_cp.
 % table_notin(Vars, Tuples) => table_notin(Vars, Tuples).
 
 '::'(Vars,Domain) =>
-    bp.'_$_picat_in'(Vars,Domain).
+    bp.'_$_picat_in'(cp,Vars,Domain).
 
 % '#='(X,Y) => '#='(X,Y) 
 '#='(X,Y) => bp.'#='(X,Y).
@@ -277,7 +277,7 @@ table_in(Vars,Tuples) =>
 
 %%
 notin(Vars,Domain) =>
-    bp.'_$_picat_notin'(Vars,Domain).
+    bp.'_$_picat_notin'(cp,Vars,Domain).
 
 %%
 table_notin(Vars,Tuples) =>
@@ -351,17 +351,30 @@ fd_vector_min_max(Min,Max) =>
     bp.fd_vector_min_max(Min,Max).
 
 /************************************************************************* 
-    regular(L,Q,S,M,Q0,Fs)
+    regular(W,Q,S,M,Q0,Fs)
 
-  L : A sentence (an IntVar array or list)
+  W : A sentence (an IntVar array or list)
   Q : number of states
   S : input_max, inputs are from 1 to S
   M : transition matrix (the entry M[I,J] is a list of outgoing states for NFA)
   Q0: initial state
   Fs : accepting states
+
+  This is a translation of MiniZinc's regular constraint (defined in
+  lib/zinc/globals.mzn), via the Comet code refered above.
+  by Hakan Kjellerstrand, 2014, improved by N.F. Zhou
+
+  The following comments are adapted from the MiniZinc code:
+
+  regular(array[int] of var int: W, int: Q, int: S, array[int,int] of int: M, int: Q0, set of int: F)
+  The sequence of values in array W (which must all be in the range 1..S)
+  is accepted by the FA of Q states with input 1..S and transition
+  M (which maps (1..Q, 1..S) -> 0..Q)) and initial state Q0
+  (which must be in 1..Q) and accepting states 'Fs' (which all must be in
+  1..Q).  State 0 is reserved for the failing state.
 ***************************************************************************/
-regular(L,Q,S,M,Q0,F) =>
-    regular(L,Q,S,M,Q0,F,cp).   % defined in "common_sat_cp.pi"
+regular(L, Q, S, M, Q0, Fs) =>
+    regular_cpsat(L, Q, S, M, Q0, Fs, cp).
 
 %%
 %% lex_le(L1,L2): collection L1 is lexicographically less than or equal to L2
@@ -507,7 +520,7 @@ nvalue(N,L) => bp.nvalue(N,L).
 
 %% The following constraints are proposed and implemented by Hakan Kjellerstrand
 matrix_element(M,I,J,MIJ) =>
-    cp_check_matrix(M,NRows,NCols),
+    check_matrix(M,NRows,NCols),
     matrix_element(M,NRows,NCols,I,J,MIJ,cp).
 
 %

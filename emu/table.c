@@ -1951,6 +1951,15 @@ int b_IS_PLANNER_STATE_c(BPLONG state){
     return (lookupSubgoalTableNoCopy(stack_arg_ptr,2,thashtable_psc) != NULL) ? BP_TRUE : BP_FALSE; 
 }
 
+int b_PLANNER_UPDATE_EXPLORED_DEPTH_c(BPLONG depth){
+  BPLONG cur_depth = (BPLONG)GET_EP(planner_explored_depth_psc);
+  
+  DEREF_NONVAR(depth);
+  if (INTVAL(depth) < INTVAL(cur_depth))
+	GET_EP(planner_explored_depth_psc) = (int (*)(void))depth;
+  return BP_TRUE;
+}
+
 /* retrieve ta_record_ptr->top */
 int c_TA_TOP_f(){
     BPLONG op = ARG(1,1);

@@ -217,13 +217,15 @@ int b_CFD_TRANSFORM_TUPLES(Arity,Tuples,Mins)
     return BP_TRUE;
 }
   
-/* b_CFD_BUILD_TRIES_IN(CompVars,Tuples,A2Tries) converts tuples into tries.
+/* b_CFD_BUILD_TRIES_IN(Maxes,Tuples,A2Tries) converts tuples into tries.
 
    Maxs=t(M1,...,Mn),
+
    Tuples=[t(a11,...,a1n),...,t(am1,...,amn)],
+
    A2Tries=t(t(_,T12,...,T1n),
-   ...,
-   t(Tn1,Tn2,...,Tn(n-1),_)) 
+             ...,
+			 t(Tn1,Tn2,...,Tn(n-1),_)) 
    
    Tij takes the form trie(Sij0,...,Sijk,...) where Sijk denotes k's supports (fd var) in Vj
    (k is an element in Vi's domain).
@@ -231,7 +233,7 @@ int b_CFD_TRANSFORM_TUPLES(Arity,Tuples,Mins)
    For each tuple t(a1,...,an) and for each pair (i j) (1=<i<j<=n), 
    add aj as a support of ai and add ai as a support of aj.
 
-   Note that the tuples have been normalized.
+   Note that the tuples have been normalized such that the minimum is 0.
 */
 int b_CFD_BUILD_TRIES_IN(Maxs,Tuples,A2Tries)
     BPLONG Maxs,Tuples,A2Tries;
@@ -660,7 +662,7 @@ int exclude_ac_unsupported_from_fd(X,Y,trie_xy_ptr)
 }
 
 /* For each element in each domain, exclude the element from the domain 
-   if it has not support in the domain of any of the connected variables. */
+   if it has no support in the domain of any of the connected variables. */
 int b_CFD_REMOVE_AC_UNSUPPORTED(CompVars,Tries)
     BPLONG CompVars,Tries;
 {

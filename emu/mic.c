@@ -3063,6 +3063,46 @@ int b_INSERT_ORDERED_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
   return BP_TRUE;
 }
 
+/* insert t into lst if t is not included in lst, and bind ret_lst to the resulting list */
+int b_INSERT_ORDERED_NO_DUP_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
+  BPLONG lst_cp, lst0;
+  BPLONG_PTR heap_top0;
+  BPLONG_PTR tail_ptr = &lst_cp;
+  
+  DEREF(lst); 
+  lst0 = lst; heap_top0 = heap_top;
+  while (ISLIST(lst)){
+    BPLONG_PTR list_ptr;
+	BPLONG t1;
+	int res;
+    list_ptr = (BPLONG_PTR)UNTAGGED_ADDR(lst);
+    t1 = FOLLOW(list_ptr); 
+	res = bp_compare(t,t1);
+    if (res < 0){
+	  break; /* exit the while loop */
+	} if (res == 0){
+	  ASSIGN_v_heap_term(ret_lst,lst0);
+	  heap_top = heap_top0;
+	  return BP_TRUE;
+	} else {
+	  FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
+	  NEW_HEAP_NODE(t1);
+	  tail_ptr = heap_top++;
+	  lst = FOLLOW(list_ptr+1); DEREF(lst);
+	}
+  }
+  if (!ISNIL(lst) && !ISLIST(lst)){
+	exception = c_type_error(et_LIST,lst);
+	return BP_ERROR;
+  }
+  FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
+  NEW_HEAP_NODE(t);
+  NEW_HEAP_NODE(lst);
+  ASSIGN_v_heap_term(ret_lst,lst_cp);
+
+  return BP_TRUE;
+}
+
 /* insert t into lst and bind ret_lst to the resulting list */
 int b_INSERT_ORDERED_DOWN_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
   BPLONG lst_cp;
@@ -3076,6 +3116,47 @@ int b_INSERT_ORDERED_DOWN_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
     t1 = FOLLOW(list_ptr); 
     if (bp_compare(t,t1)>=0){
 	  break; /* exit the while loop */
+	} else {
+	  FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
+	  NEW_HEAP_NODE(t1);
+	  tail_ptr = heap_top++;
+	  lst = FOLLOW(list_ptr+1); DEREF(lst);
+	}
+  }
+  if (!ISNIL(lst) && !ISLIST(lst)){
+	exception = c_type_error(et_LIST,lst);
+	return BP_ERROR;
+  }
+  FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
+  NEW_HEAP_NODE(t);
+  NEW_HEAP_NODE(lst);
+  ASSIGN_v_heap_term(ret_lst,lst_cp);
+
+  return BP_TRUE;
+}
+
+/* insert t into lst if t is not included in lst, and bind ret_lst to the resulting list */
+int b_INSERT_ORDERED_DOWN_NO_DUP_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
+  BPLONG lst_cp, lst0;
+  BPLONG_PTR heap_top0;
+  BPLONG_PTR tail_ptr = &lst_cp;
+
+  DEREF(lst); 
+  lst0 = lst; heap_top0 = heap_top;
+  while (ISLIST(lst)){
+    BPLONG_PTR list_ptr;
+	BPLONG t1;
+	int res;
+
+    list_ptr = (BPLONG_PTR)UNTAGGED_ADDR(lst);
+    t1 = FOLLOW(list_ptr); 
+	res = bp_compare(t,t1);
+    if (res > 0){
+	  break; /* exit the while loop */
+	} else if (res == 0) {
+	  ASSIGN_v_heap_term(ret_lst,lst0);
+	  heap_top = heap_top0;
+	  return BP_TRUE;
 	} else {
 	  FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
 	  NEW_HEAP_NODE(t1);
@@ -3130,3 +3211,6 @@ int b_INSERT_STATE_LIST_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
   ASSIGN_v_heap_term(ret_lst,lst_cp);
   return BP_TRUE;
 }
+
+  
+  

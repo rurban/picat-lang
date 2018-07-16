@@ -1802,10 +1802,14 @@ typedef struct {
 #ifdef FZN_PICAT_MIP
 #include "fzn_picat_mip_bc.h"
 #else
+#ifdef PB_PICAT
+#include "pb_picat_bc.h"
+#else
 #ifdef PICAT
 #include "picat_bc.h"
 #else
 #include "bp_bc.h"
+#endif
 #endif
 #endif
 #endif

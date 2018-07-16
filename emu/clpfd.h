@@ -179,7 +179,7 @@
 		size = CALL_COUNT_DOMAIN_ELMS(dv_ptr,max+1,dv_ptr_last-1);		\
 		size = DV_size(dv_ptr)-size-1;									\
 	  }																	\
-	  if (size == 1){													\
+      if (size == 1){													\
         dv_ptr_last = dv_ptr_first;										\
         ASSIGN_DVAR(dv_ptr,MAKEINT(dv_ptr_first));						\
 	  } else {															\
@@ -1129,7 +1129,7 @@
       dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(x);					\
       dv_ptr_first = DV_first(dv_ptr);								\
       dv_ptr_last = DV_last(dv_ptr);								\
-      if (last<dv_ptr_last) CALL_DOMAIN_REGION_MAX(dv_ptr,last);	\
+      if (last<dv_ptr_last) CALL_DOMAIN_REGION_MAX(dv_ptr,last);		\
       first = l2+dv_ptr_first;										\
     } else {														\
       x = INTVAL(x);												\

@@ -42,21 +42,21 @@ int c_call_espresso()
 {
     pPLA PLA;
     BPLONG n;
-    BPLONG BNsVect,Vals,InFlag,Cls,ClsR;
-    BPLONG_PTR ptrBNsVect;
+    BPLONG BNVect,Vals,InFlag,Cls,ClsR;
+    BPLONG_PTR ptrBNVect;
 
     SYM_REC_PTR sym_ptr;
 
     prep_espresso();
 
-    BNsVect = ARG(1,5); DEREF_NONVAR(BNsVect);
+    BNVect = ARG(1,5); DEREF_NONVAR(BNVect);
     Vals = ARG(2,5); DEREF_NONVAR(Vals);
     InFlag = ARG(3,5); DEREF_NONVAR(InFlag);
     Cls = ARG(4,5);
     ClsR = ARG(5,5);
 
-    ptrBNsVect = (BPLONG_PTR)UNTAGGED_ADDR(BNsVect);
-    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNsVect);
+    ptrBNVect = (BPLONG_PTR)UNTAGGED_ADDR(BNVect);
+    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNVect);
     n = GET_ARITY(sym_ptr);  /* n bits (Boolean variables) */
     PLA = init_PLA(n);
 
@@ -68,7 +68,7 @@ int c_call_espresso()
     run_espresso(PLA);
 
     /* Output the solution */
-    retrieve_pla_cubes(ptrBNsVect,PLA,Cls,ClsR);
+    retrieve_pla_cubes(ptrBNVect,PLA,Cls,ClsR);
     //  EXECUTE(fprint_pla(stdout, PLA, F_type), WRITE_TIME, PLA->F, cost);
 
     stop_espresso(PLA);
@@ -251,7 +251,7 @@ void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA){
     after_setup_pla(needs_dcset, needs_offset, PLA);
 }
 
-BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNsVect, register pset c)
+BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNVect, register pset c)
 {
     register int i, var;
     BPLONG_PTR tail_ptr;
@@ -261,7 +261,7 @@ BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNsVect, register pset c)
 
     for(var = 0; var < cube.num_binary_vars; var++) {
         int lit = GETINPUT(c, var);
-        elm = FOLLOW(ptrBNsVect+var+1);
+        elm = FOLLOW(ptrBNVect+var+1);
         if (lit == 1 || lit == 2){  /* 3 means don't care */
             if (lit == 2) {
                 DEREF_NONVAR(elm); elm = INTVAL(elm);
@@ -276,7 +276,7 @@ BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNsVect, register pset c)
     return lst;
 }
 
-void retrieve_pla_cubes(BPLONG_PTR ptrBNsVect, pPLA PLA, BPLONG Cls, BPLONG ClsR){
+void retrieve_pla_cubes(BPLONG_PTR ptrBNVect, pPLA PLA, BPLONG Cls, BPLONG ClsR){
     int num;
     register pcube last, p;
     BPLONG_PTR tail_ptr;
@@ -284,7 +284,7 @@ void retrieve_pla_cubes(BPLONG_PTR ptrBNsVect, pPLA PLA, BPLONG Cls, BPLONG ClsR
   
     tail_ptr = &lst;
     foreach_set(PLA->F, last, p) {
-        BPLONG cell = retrieve_pla_cube(ptrBNsVect, p);
+        BPLONG cell = retrieve_pla_cube(ptrBNVect, p);
         FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
         FOLLOW(heap_top++) = cell;
         tail_ptr = heap_top++;
@@ -300,33 +300,33 @@ void retrieve_pla_cubes(BPLONG_PTR ptrBNsVect, pPLA PLA, BPLONG Cls, BPLONG ClsR
 }
 
 /*
-  c_call_espresso_element(IV_K,ElmsVect,BNsVect,Cls,ClsR).    
+  c_call_espresso_element(IV_K,ElmsVect,BNVect,Cls,ClsR).    
   Use Espresso to find a CNF for the global constraint element(IV,ElmsVect,V).
   IV_K     : the number of Boolean variables used for IV.
-  BNsVect : The Boolean variable numbers used for IV and V
+  BNVect : The Boolean variable numbers used for IV and V
 */
 int c_call_espresso_element()
 {
     pPLA PLA;
     BPLONG n;
-    BPLONG ElmsVect,IV_K,BNsVect,Cls,ClsR;
-    BPLONG_PTR ptrBNsVect;
+    BPLONG ElmsVect,IV_K,BNVect,Cls,ClsR;
+    BPLONG_PTR ptrBNVect;
     SYM_REC_PTR sym_ptr;
 
     prep_espresso();
   
     IV_K = ARG(1,5); DEREF_NONVAR(IV_K);
     ElmsVect = ARG(2,5); DEREF_NONVAR(ElmsVect);
-    BNsVect = ARG(3,5); DEREF_NONVAR(BNsVect);
+    BNVect = ARG(3,5); DEREF_NONVAR(BNVect);
     Cls = ARG(4,5);
     ClsR = ARG(5,5);
 
-    ptrBNsVect = (BPLONG_PTR)UNTAGGED_ADDR(BNsVect);
-    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNsVect);
+    ptrBNVect = (BPLONG_PTR)UNTAGGED_ADDR(BNVect);
+    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNVect);
     n = GET_ARITY(sym_ptr);  /* n bits (Boolean variables) */
     PLA = init_PLA(n);
 
-    //  printf("=>element n = %d IV_K=%d\n",n, INTVAL(IV_K)); // write_term(BNsVect); write_term(ElmsVect); printf("\n");
+    //  printf("=>element n = %d IV_K=%d\n",n, INTVAL(IV_K)); // write_term(BNVect); write_term(ElmsVect); printf("\n");
 
   
     setup_PLA_element(INTVAL(IV_K),ElmsVect,PLA);
@@ -335,7 +335,7 @@ int c_call_espresso_element()
     run_espresso(PLA);
 
     /* Output the solution */
-    retrieve_pla_cubes(ptrBNsVect,PLA,Cls,ClsR);
+    retrieve_pla_cubes(ptrBNVect,PLA,Cls,ClsR);
     //  printf("<=element "); write_term(Cls); printf("\n");
     //  EXECUTE(fprint_pla(stdout, PLA, F_type), WRITE_TIME, PLA->F, cost);
 
@@ -436,7 +436,7 @@ void setup_PLA_element(BPLONG IV_K, BPLONG ElmsVect, pPLA PLA){
 }
 
 /*
-  c_call_espresso_table(InFlag,VarsVect,K1,HTable,BNsVect,Cls,ClsR):
+  c_call_espresso_table(InFlag,VarsVect,K1,HTable,BNVect,Cls,ClsR):
 
   Use Espresso to find a CNF for the table constraint table_in(VarsVect,Table) or table_notin(VarsVect,Table)
 
@@ -444,13 +444,13 @@ void setup_PLA_element(BPLONG IV_K, BPLONG ElmsVect, pPLA PLA){
   VarsVect: {V1,V2,...,}, only V1 and V2 are dvars and all other elements are integers.
   K1      : the number of Boolean variables used for V1.
   HTable  : a hashtable built from Table
-  BNsVect : The Boolean variable numbers used for V1 and V2
+  BNVect : The Boolean variable numbers used for V1 and V2
 */
 int c_call_espresso_table(){
     pPLA PLA;
     BPLONG n;
-    BPLONG InFlag,VarsVect,K1,HTable,BNsVect,Cls,ClsR;
-    BPLONG_PTR ptrBNsVect;
+    BPLONG InFlag,VarsVect,K1,HTable,BNVect,Cls,ClsR;
+    BPLONG_PTR ptrBNVect;
     SYM_REC_PTR sym_ptr;
 
     prep_espresso();
@@ -459,13 +459,13 @@ int c_call_espresso_table(){
     VarsVect = ARG(2,7); DEREF_NONVAR(VarsVect);
     K1 = ARG(3,7); DEREF_NONVAR(K1);
     HTable = ARG(4,7); DEREF_NONVAR(HTable);
-    BNsVect = ARG(5,7); DEREF_NONVAR(BNsVect);
+    BNVect = ARG(5,7); DEREF_NONVAR(BNVect);
     Cls = ARG(6,7);
     ClsR = ARG(7,7);
 
 
-    ptrBNsVect = (BPLONG_PTR)UNTAGGED_ADDR(BNsVect);
-    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNsVect);
+    ptrBNVect = (BPLONG_PTR)UNTAGGED_ADDR(BNVect);
+    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNVect);
     n = GET_ARITY(sym_ptr);  /* n bits (Boolean variables) */
     PLA = init_PLA(n);
 
@@ -477,7 +477,7 @@ int c_call_espresso_table(){
     run_espresso(PLA);
 
     /* Output the solution */
-    retrieve_pla_cubes(ptrBNsVect,PLA,Cls,ClsR);
+    retrieve_pla_cubes(ptrBNVect,PLA,Cls,ClsR);
     //  printf("<=element "); write_term(Cls); printf("\n");
     //  EXECUTE(fprint_pla(stdout, PLA, F_type), WRITE_TIME, PLA->F, cost);
 
@@ -601,19 +601,19 @@ void setup_PLA_table(BPLONG InFlag, BPLONG VarsVect, BPLONG K1, BPLONG HTable, p
 }
 
 /*
-  c_call_espresso_pb(Coes,Rel,Const,BNsVect,Cls,ClsR).
+  c_call_espresso_pb(Coes,Rel,Const,BNVect,Cls,ClsR).
 
   Use Espresso to find a CNF for the Pseudo Boolean constraint scalar_product(Coes,Vs) Rel Const.
 
   Coes    : Coefficients of the PB expression.
   Rel     : 0 (eq), 1 (ge), and 2 (neq)
-  BNsVect : The numbers of the Boolean variables Vs.
+  BNVect : The numbers of the Boolean variables Vs.
 */
 int c_call_espresso_pb(){
     pPLA PLA;
     BPLONG n;
-    BPLONG Coes,Rel,Const,BNsVect,Cls,ClsR;
-    BPLONG_PTR ptrBNsVect;
+    BPLONG Coes,Rel,Const,BNVect,Cls,ClsR;
+    BPLONG_PTR ptrBNVect;
     SYM_REC_PTR sym_ptr;
 
     prep_espresso();
@@ -621,16 +621,16 @@ int c_call_espresso_pb(){
     Coes = ARG(1,6); DEREF_NONVAR(Coes);
     Rel = ARG(2,6); DEREF_NONVAR(Rel);
     Const = ARG(3,6); DEREF_NONVAR(Const);
-    BNsVect = ARG(4,6); DEREF_NONVAR(BNsVect);
+    BNVect = ARG(4,6); DEREF_NONVAR(BNVect);
     Cls = ARG(5,6);
     ClsR = ARG(6,6);
 
-    ptrBNsVect = (BPLONG_PTR)UNTAGGED_ADDR(BNsVect);
-    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNsVect);
+    ptrBNVect = (BPLONG_PTR)UNTAGGED_ADDR(BNVect);
+    sym_ptr = (SYM_REC_PTR)FOLLOW(ptrBNVect);
     n = GET_ARITY(sym_ptr);  /* n bits (Boolean variables) */
     PLA = init_PLA(n);
 
-    //  printf("=>espresso_pb n = %d ",n); write_term(Coes); write_term(BNsVect);printf("\n");
+    //  printf("=>espresso_pb n = %d ",n); write_term(Coes); write_term(BNVect);printf("\n");
   
     setup_PLA_pb(Coes,INTVAL(Rel),INTVAL(Const),PLA);
     //  fprint_pla(curr_out,PLA, FD_type);
@@ -638,7 +638,7 @@ int c_call_espresso_pb(){
     run_espresso(PLA);
 
     /* Output the solution */
-    retrieve_pla_cubes(ptrBNsVect,PLA,Cls,ClsR);
+    retrieve_pla_cubes(ptrBNVect,PLA,Cls,ClsR);
     //  printf("<=element "); write_term(Cls); printf("\n");
     //  EXECUTE(fprint_pla(stdout, PLA, F_type), WRITE_TIME, PLA->F, cost);
 

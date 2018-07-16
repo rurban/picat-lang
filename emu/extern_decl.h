@@ -1142,7 +1142,7 @@ extern int b_sort_int_list(BPLONG lst,BPLONG sorted);
 extern int c_sort_int_list(void);											
 extern int b_DEREF_c(BPLONG T);												
 extern int c_set_exception(void);											
-
+  
 /**/
 extern int b_IS_STRUCT_c(BPLONG term);
 extern int b_IS_COMPOUND_c(BPLONG term);
@@ -1170,7 +1170,9 @@ extern int c_bp_exit();
 extern int b_PICAT_ARG_ccf(BPLONG Index,BPLONG Comp,BPLONG Arg);
 extern int b_PICAT_SETARG_ccc(BPLONG Index,BPLONG Comp,BPLONG Arg);
 extern int b_INSERT_ORDERED_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst);
+extern int b_INSERT_ORDERED_NO_DUP_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst);
 extern int b_INSERT_ORDERED_DOWN_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst);
+extern int b_INSERT_ORDERED_DOWN_NO_DUP_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst);
 extern int b_INSERT_STATE_LIST_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst);
 extern int  b_PICAT_LENGTH_cf(BPLONG term, BPLONG len);
 
@@ -1280,6 +1282,7 @@ extern int b_PLANNER_CURR_RPC_fff(BPLONG,BPLONG,BPLONG);
 extern int b_TABLE_MAP_PUT_cc(BPLONG,BPLONG);
 extern int b_TABLE_MAP_GET_cf(BPLONG,BPLONG);
 extern int b_IS_PLANNER_STATE_c(BPLONG state);
+extern int b_PLANNER_UPDATE_EXPLORED_DEPTH_c(BPLONG depth);
 extern int c_TA_TOP_f();
 extern int b_GET_PICAT_TABLE_MAP_cf(BPLONG map_id, BPLONG map_num);
 extern int b_PICAT_TABLE_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val);

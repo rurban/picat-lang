@@ -21,7 +21,7 @@
 #include "event.h"
 
 BPLONG  stack_size_limit = 100000000;
-BPLONG  stack_size    = 2000000;  
+BPLONG  stack_size    = 8000000;  
 BPLONG  parea_size = 2000000;
 BPLONG  trail_size  = 1000000;
 BPLONG  table_size = 1000000;

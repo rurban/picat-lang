@@ -74,6 +74,7 @@ void init_sym(){
     interrupt_sym = ADDTAG(BP_NEW_SYM("interrupt",0),ATM);
     ball_psc = BP_NEW_SYM("$ball",0);
     equal_psc = BP_NEW_SYM("=",2);
+	planner_explored_depth_psc = BP_NEW_SYM("_$planner_explored_depth",0);
 
     eof_atom = ADDTAG(BP_NEW_SYM("end_of_file",0),ATM);
     true_atom = ADDTAG(BP_NEW_SYM("true",0),ATM);

@@ -22,6 +22,6 @@ maxflow(CapM,Source,Sink) =>
     end,
     Total #= sum([M[Source,I] : I in 1..N]),
     Total #= sum([M[I,Sink] : I in 1..N]),
-    solve(M),
+    solve([$max(Total)],M),
     writeln(Total),
     writeln(M).

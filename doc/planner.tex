@@ -35,7 +35,7 @@ Depth-bounded search amounts to exploring the search space, taking into account 
 
 \item \texttt{plan($S$,$Plan$)}\index{\texttt{plan/2}}: This predicate is the same as the \texttt{plan/4} predicate, except that the limit is assumed to be 268435455, and that the plan's cost is not returned.
 
-\item \texttt{best\_plan($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan/4}}: This predicate finds an optimal plan by using the {\it downward} algorithm.  It first calls {\tt plan/4} to find a plan of 0 cost. If no plan is found, then it increases the cost by 1. In this way, the first plan that is found is guaranteed to be optimal. 
+\item \texttt{best\_plan($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan/4}}: This predicate finds an optimal plan by using the following algorithm:  It first calls {\tt plan/4} to find a plan of 0 cost. If no plan is found, then it increases the cost limit to 1 or double the cost limit. Once a plan is found, the algorithm uses binary search to find an optimal plan.
 
 \item \texttt{best\_plan($S$,$Limit$,$Plan$)}: If the second argument is an integer, then this predicate is the same as the \texttt{best\_plan/4} predicate, except that the plan's cost is not returned. 
 
@@ -51,17 +51,13 @@ Depth-bounded search amounts to exploring the search space, taking into account 
 
 \item \texttt{best\_plan\_nondet($S$,$Plan$)}\index{\texttt{best\_plan\_nondet/2}}: This predicate is the same as the \texttt{best\_plan\_nondet/4} predicate, except that the limit is assumed to be 268435455, and that the plan's cost is not returned.
 
-\item \texttt{best\_plan\_upward($S$,$Limit$,$Plan$,$Cost$)} (deprecated)\index{\texttt{best\_plan\_upward/4}}: 
 \item \texttt{best\_plan\_bb($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_bb/4}}: 
-This predicate, if it succeeds, binds $Plan$ to an optimal plan that can transform state $S$ to a final state. $Cost$ is the cost of $Plan$, which cannot exceed $Limit$, which is a given non-negative integer. The following branch-and-bound algorithm is used to find an optimal plan: First, call \texttt{plan/4} to find a plan. Then, try to find a better plan by imposing a stricter limit. This step is repeated until no better plan can be found. Finally, return the last plan that was found.
+This predicate, if it succeeds, binds $Plan$ to an optimal plan that can transform state $S$ to a final state. $Cost$ is the cost of $Plan$, which cannot exceed $Limit$, which is a given non-negative integer. The branch-and-bound algorithm is used to find an optimal plan.
 
-\item \texttt{best\_plan\_upward($S$,$Limit$,$Plan$)} (deprecated)
 \item \texttt{best\_plan\_bb($S$,$Limit$,$Plan$)}: If the second argument is an integer, then this predicate is the same as the \texttt{best\_plan\_bb/4} predicate, except that the plan's cost is not returned. 
 
-\item \texttt{best\_plan\_upward($S$,$Plan$,$PlanCost$)} (deprecated)\index{\texttt{best\_plan\_upward/3}}
 \item \texttt{best\_plan\_bb($S$,$Plan$,$PlanCost$)}\index{\texttt{best\_plan\_bb/3}}: If the second argument is a variable, then this predicate is the same as the \texttt{best\_plan\_bb/4} predicate, except that the limit is assumed to be 268435455.
 
-\item \texttt{best\_plan\_upward($S$,$Plan$)} (deprecated) \index{\texttt{best\_plan\_upward/2}}
 \item \texttt{best\_plan\_bb($S$,$Plan$)}\index{\texttt{best\_plan\_bb/2}}: 
 This predicate is the same as the \texttt{best\_plan\_bb/4} predicate, except that the limit is assumed to be 268435455, and that the plan's cost is not returned.
 

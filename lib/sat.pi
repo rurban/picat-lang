@@ -55,7 +55,7 @@ import common_sat_cp.
 % table_notin(Vars, Tuples) => table_notin(Vars, Tuples).
 
 '::'(Vars,Domain) =>
-    bp.'_$_picat_in'(Vars,Domain).
+    bp.'_$_picat_in'(sat,Vars,Domain).
 
 % '#='(X,Y) => X #= Y.
 '#='(X,Y) => bp.'$='(X,Y).
@@ -197,7 +197,7 @@ table_in(Vars,Tuples) =>
 
 %%
 notin(Vars,Domain) =>
-    bp.'_$_picat_notin'(Vars,Domain).
+    bp.'_$_picat_notin'(sat,Vars,Domain).
 
 %%
 table_notin(Vars,Tuples) =>
@@ -288,6 +288,35 @@ circuit(L) =>
 circuit_aux(A) =>
     N=length(A),
     A :: 1..N,
+    M = new_array(N,N),
+    foreach(I in 1..N) M[I,I] = 0 end,          % not reflexive
+    M :: 0..1,
+    foreach(I in 1..N, J in 1..N, I !== J)
+        M[I,J] #<=> (A[I] #= J)
+    end,
+    foreach (J in 1..N)                         % all_different(A)
+        sum([M[I,J] : I in 1..N]) #= 1
+    end,
+    %
+    OrderM = new_array(N,N),                    % order the nodes, starting at 1, then A[1], ...
+    foreach(I in 1..N) OrderM[I,I] = 0 end,     % not reflexive
+    foreach (I in 2..N)
+        OrderM[1,I] = 1,
+        OrderM[I,1] = 0
+    end,
+    OrderM :: 0..1,
+    foreach (I in 1..N, J in 1..N, I !== J)
+        (J !== 1 -> M[I,J] #=> OrderM[I,J]; true),
+        OrderM[I,J]+OrderM[J,I] #= 1,
+        foreach (K in 1..N, K !== I, K !== J)   % transitive
+            OrderM[I,K] #/\ OrderM[K,J] #=> OrderM[I,J]
+        end
+    end.
+
+/* this is based on MiniZinc's decomposer, not efficient for SAT
+circuit_aux(A) =>
+    N=length(A),
+    A :: 1..N,
     all_different(A),
     foreach(I in 1..N) A[I] #!= I end,          % not reflexive
     %
@@ -307,6 +336,7 @@ circuit_aux(A) =>
     foreach(I in 2..N, J in 2..N, I !== J)
         A[I] #= J #<=> OrderArr[J] #= OrderArr[I]+1
     end.
+*/
 
 global_cardinality(List,Pairs) =>
     (bp.check_pairs(Pairs) -> true; handle_exception($pairs_expected(Pairs),global_cardinality)),
@@ -324,15 +354,47 @@ serialized(Starts,Durations) =>
 subcircuit(L):  L is a list or an array of variables X1,X2,...,Xn.
 L forms a subcircuit where Xi = j (j \= i) means that j is the successor of i 
 and Xi = i means that i is not in the circuit. No sub-cycles are allowed.
-Based on the Minizinc implementation.
 *************************************************************************/
 subcircuit(L),list(L) =>
-    subcircuit_aux(L,L.to_array()).
+    subcircuit_aux(L.to_array()).
 subcircuit(A),array(A) =>
-    subcircuit_aux(A.to_list(),A).
+    subcircuit_aux(A).
 subcircuit(L) =>
     handle_exception($array_or_list_expected(L),subcircuit).
 
+subcircuit_aux(A) =>
+    A.length = N,
+    A :: 1..N,
+    M = new_array(N,N),                         % M[I,I] = 1 means node I is not in the circuit
+    M :: 0..1,
+    foreach(I in 1..N, J in 1..N)
+        M[I,J] #<=> (A[I] #= J)
+    end,
+    foreach (J in 1..N)                         % all_different(A)
+        sum([M[I,J] : I in 1..N]) #= 1
+    end,
+    %
+    FirstIn = new_array(N),                     
+    FirstIn :: 0..1,
+    sum(FirstIn) #=< 1,                         % no node is first if the circuit is empty
+    %
+    OrderM = new_array(N,N),                    % order the nodes in the circuit, starting at I for which FirstIn[I]=1
+    foreach(I in 1..N) OrderM[I,I] = 0 end,     % not reflexive
+    OrderM :: 0..1,
+    foreach (I in 1..N)
+        FirstIn[I] #=> #~ M[I,I],
+        FirstIn[I] #=> sum([OrderM[J,I] : J in 1..N, J !== I]) #= 0,
+        foreach (J in 1..N, I !== J)
+            M[I,J] #/\ #~ FirstIn[J] #=> OrderM[I,J],
+            OrderM[I,J]+OrderM[J,I] #=< 1,
+            foreach (K in 1..N, K !== I, K !== J)
+                OrderM[I,K] #/\ OrderM[K,J] #=> OrderM[I,J]
+            end
+        end
+    end.
+
+/*
+% this is based on MiniZinc's decomposer, not efficient for SAT
 subcircuit_aux(L,A) =>
     A.length = N,
     L :: 1..N,
@@ -354,6 +416,7 @@ subcircuit_aux(L,A) =>
                           (OrderA[I] #!= Card #=> OrderA[J] #= OrderA[I]+1)
         end
     end.                         
+*/
 
 /************************************************************************* 
     regular(L,Q,S,M,Q0,Fs)
@@ -361,12 +424,97 @@ subcircuit_aux(L,A) =>
   L : A sentence (an IntVar array or list)
   Q : number of states
   S : input_max, inputs are from 1 to S
-  M : transition matrix (the entry M[I,J] is a list of outgoing states for NFA)
+  M : transition matrix (the entry M[I,J] is a list of outgoing states for NFA, 0 means an error)
   Q0: initial state
   F : accepting states
 ***************************************************************************/
-regular(L, Q, S, M, Q0, Fs) =>
-    regular(L, Q, S, M, Q0, Fs, sat).  % defined in "common_sat_cp.pi"
+regular(L, Q, S, M, Q0, Fs), list(L) =>
+    W = to_array(L),
+    regular_aux(W, Q, S, M, Q0, Fs).
+regular(L, Q, S, M, Q0, Fs), array(L) =>
+    regular_aux(L, Q, S, M, Q0, Fs).
+regular(L, _Q, _S, _M, _Q0, _Fs) =>
+    handle_exception($list_or_array_expected(L),regular).
+    
+regular_aux({}, _Q, _S, _M, Q0, Fs) =>
+    element(_,Fs,Q0).
+regular_aux(W, Q, S, M, Q0, Fs) =>
+    check_regular_args(Q, S, M, Q0, Fs, Matrix, FsLst),
+    W :: 1..S,
+    N = len(W),
+    Symbols = new_array(Q,Q),    % Symbols[I,J] : possible symbols that can be generated by the transition I -> J
+    foreach (I in 1..Q, J in 1..Q)
+        Symbs = [],
+        foreach (Input in 1..S)
+            Entry = Matrix[I,Input],
+            if list(Entry) then
+                if membchk(J, Entry) then Symbs := [Input|Symbs] end
+            else
+                if Entry == J then Symbs := [Input|Symbs] end
+            end
+        end,
+        Symbols[I,J] = Symbs
+    end,
+    %
+    Visited = new_array(Q,N+1),                        % Visited[I,T] is true if I is visited at time T
+    Visited[Q0,1] = 1,                                 % Q0 is the starting state
+    foreach (I in 1..Q)
+        if I !== Q0 then
+            Visited[I,1] = 0                           % there is only one starting state
+        end,
+        if not membchk(I,FsLst) then
+            Visited[I,N+1] = 0
+        end
+    end,
+    preprocess_regular_sat(Q,S,Matrix,Q0,FsLst,Visited,N),
+    %
+    Visited :: 0..1,
+    %
+    foreach (T in 2..N)                                % exactly one state is visited at each time
+        sum([Visited[I,T] : I in 1..Q]) #= 1
+    end,
+    sum([Visited[I,N+1] : I in FsLst]) #= 1,           % at time N+1, one of the final states is visited          
+    %
+    Neibs = new_array(Q),                              % Neibs[I] : neighboring states that are directly reachable from state I
+    foreach (I in 1..Q)
+        Neibs[I] = [J : J in 1..Q, Symbols[I,J] !== []]
+    end,
+    %
+    ReifTab = new_map(),
+    foreach (I in 1..Q, T in 1..N, Visited[I,T] !== 0)          % constrain output symbols
+        Visited[I,T] #=> sum([Visited[J,T+1] : J in Neibs[I]]) #>= 1,  % ge (not eq) is ok since only one state is visited at each time
+        foreach (J in Neibs[I], Visited[J,T+1] !== 0)
+            Symbs = Symbols[I,J],
+            Key = (T,Symbs),
+            if ReifTab.has_key(Key) then
+                B = ReifTab.get(Key)
+            else
+                B #<=> W[T] :: Symbs,
+                ReifTab.put(Key,B)
+            end,
+            #~Visited[I,T] #\/ #~Visited[J,T+1] #\/ B           % I -> J is a valid transition
+        end
+    end.
+    
+preprocess_regular_sat(Q,S,Matrix,Q0,FsLst,Visited,N) =>
+    MaxSteps = N,                                             % consider up to MaxSteps steps
+    ReachFromQ0 = new_array(Q,MaxSteps),                      % ReachFromQ0[I,K] is 1 if state I can be reached from Q0 in K steps
+    fa_reachable(Q0,1,MaxSteps,S,Matrix,ReachFromQ0),         % forward from Q0, defined in common_sat_cp.pi
+    %      
+    transport_trans_matrix(Matrix,TMatrix),
+    ReachFromF = new_array(Q,MaxSteps),                       % ReachFromF[I,K] is 1 if state I can be reached from a final state in K steps backward
+    foreach (F in FsLst)
+         fa_reachable(F,1,MaxSteps,S,TMatrix,ReachFromF)      % backward from a final state, 
+    end,
+    %
+    foreach (T in 2..MaxSteps, State in 1..Q)
+        if var(ReachFromQ0[State,T]) then                     % State cannot be reached from Q0 in T steps (Q0 is reachable in 1 step)
+            Visited[State,T] = 0
+        end,
+        if var(ReachFromF[State,T]) then                      % State cannot be reached from any F in T steps (F is reachable in 1 step)
+            Visited[State,N-T+2] = 0
+        end
+    end.
 
 %%
 %% lex_le(L1,L2): collection L1 is lexicographically less than or equal to L2
@@ -464,7 +612,7 @@ nvalue(N,L) => bp.'$nvalue'(N,L).
 
 %% The following constraints are proposed and implemented by Hakan Kjellerstrand
 matrix_element(M,I,J,MIJ) =>
-    cp_check_matrix(M,NRows,NCols),
+    check_matrix(M,NRows,NCols),
     matrix_element(M,NRows,NCols,I,J,MIJ,sat).
 
 %

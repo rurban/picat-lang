@@ -73,6 +73,9 @@ int b_DM_CREATE_DVAR(Var,From,To)
         //    printf("%%  WARNING: upper bound changed to: %ld\n",BP_MAXINT_1W);
         To = BP_MAXINT_1W;
     }
+	if (From == To){
+	  return unify(Var,MAKEINT(From));
+	}
     return aux_create_domain_var(Var,From,To);
 }
 
@@ -2492,86 +2495,91 @@ int b_EXCLUDE_NOGOOD_INTERVAL_ccc(Var,Low,Up)
   where List is a sorted list of integers and integer intervals.
 */
 int c_integers_intervals_list(){
-    BPLONG List,Min,Max,Unsorted;
-    BPLONG elm,low,up,min0,max0;
-    BPLONG_PTR top,ptr,interval_ptr;
+  BPLONG List,Min,Max,Unsorted;
+  BPLONG elm,low,up,min0,max0;
+  BPLONG_PTR top,ptr,interval_ptr;
 
-    List = ARG(1,4); DEREF(List);
-    Min = ARG(2,4);
-    Max = ARG(3,4);
-    Unsorted = ARG(4,4);
+  List = ARG(1,4); DEREF(List);
+  Min = ARG(2,4);
+  Max = ARG(3,4);
+  Unsorted = ARG(4,4);
 
-    if (ISLIST(List)){
-        ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
-        elm = FOLLOW(ptr);DEREF(elm);
-        List = FOLLOW(ptr+1);DEREF(List);
-        if (ISINT(elm)){
-            min0 = max0 = INTVAL(elm);
-        } else if ISSTRUCT(elm) {
-                interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
-                if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
-                    return BP_FALSE;
-                }
-                min0 = FOLLOW(interval_ptr+1);DEREF(min0);
-                max0 = FOLLOW(interval_ptr+2);DEREF(max0);
-                if (!ISINT(min0) || !ISINT(max0)){
-				  //  exception = illegal_arguments;
-				  //  return BP_ERROR;
-				  return BP_FALSE;
-                }
-                min0=INTVAL(min0);
-                max0=INTVAL(max0);
-                if (min0>max0){
-				  // exception = illegal_arguments;
-                  // return BP_ERROR;
-				  return BP_FALSE;
-                }
-            } else return BP_FALSE;
-    }
-    while (ISLIST(List)){
-        ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
-        elm = FOLLOW(ptr);DEREF(elm);
-        List = FOLLOW(ptr+1);DEREF(List);
-        if (ISINT(elm)){
-            elm = INTVAL(elm);
-            if (elm<=max0){
-                unify(Unsorted,MAKEINT(1));
-            }
-            max0 = elm;
-        } else if ISSTRUCT(elm) {
-                interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
-                if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
-                    return BP_FALSE;
-                }
-                low = FOLLOW(interval_ptr+1);DEREF(low);
-                up = FOLLOW(interval_ptr+2);DEREF(up);
-                if (!ISINT(low) || !ISINT(up)){
-				  return BP_FALSE;
-				  // exception = illegal_arguments;
-				  // return BP_ERROR;
-                }
-                low=INTVAL(low);
-                up=INTVAL(up);
-                if (low>up){
-				  return BP_FALSE;
-				  // exception = illegal_arguments;
-				  // return BP_ERROR;
-                }
-                if (low<=max0){
-                    unify(Unsorted,MAKEINT(1));
-                }
-                max0 = up;
-            } else return BP_FALSE;
-    }
-    if (!ISNIL(List)){
-	  return BP_FALSE;
-	  // exception = illegal_arguments;
-	  // return BP_ERROR;
-    }
+  if (ISLIST(List)){
+	ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
+	elm = FOLLOW(ptr);DEREF(elm);
+	List = FOLLOW(ptr+1);DEREF(List);
+	if (ISINT(elm)){
+	  min0 = max0 = INTVAL(elm);
+	} else if ISSTRUCT(elm) {
+		interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
+		if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
+		  return BP_FALSE;
+		}
+		min0 = FOLLOW(interval_ptr+1);DEREF(min0);
+		max0 = FOLLOW(interval_ptr+2);DEREF(max0);
+		if (!ISINT(min0) || !ISINT(max0)){
+		  //  exception = illegal_arguments;
+		  //  return BP_ERROR;
+		  return BP_FALSE;
+		}
+		min0=INTVAL(min0);
+		max0=INTVAL(max0);
+		if (min0 > max0){
+		  // exception = illegal_arguments;
+		  // return BP_ERROR;
+		  return BP_FALSE;
+		}
+	  } else return BP_FALSE;
+  }
+  while (ISLIST(List)){
+	ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
+	elm = FOLLOW(ptr);DEREF(elm);
+	List = FOLLOW(ptr+1);DEREF(List);
+	if (ISINT(elm)){
+	  elm = INTVAL(elm);
+	  if (elm <= max0){
+		unify(Unsorted,MAKEINT(1));
+		if (elm < min0) min0 = elm;
+	  } else {
+		max0 = elm;
+	  }
+	} else if ISSTRUCT(elm) {
+		interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
+		if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
+		  return BP_FALSE;
+		}
+		low = FOLLOW(interval_ptr+1);DEREF(low);
+		up = FOLLOW(interval_ptr+2);DEREF(up);
+		if (!ISINT(low) || !ISINT(up)){
+		  return BP_FALSE;
+		  // exception = illegal_arguments;
+		  // return BP_ERROR;
+		}
+		low = INTVAL(low);
+		up = INTVAL(up);
+		if (low > up){
+		  return BP_FALSE;
+		  // exception = illegal_arguments;
+		  // return BP_ERROR;
+		}
+		if (low <= max0){
+		  unify(Unsorted,MAKEINT(1));
+		  if (low < min0) min0 = low;
+		  if (up > max0) max0 = up;
+		} else {
+		  if (up > max0) max0 = up;
+		}
+	  } else return BP_FALSE;
+  }
+  if (!ISNIL(List)){
+	return BP_FALSE;
+	// exception = illegal_arguments;
+	// return BP_ERROR;
+  }
 
-    unify(Min,MAKEINT(min0));
-    unify(Max,MAKEINT(max0));
-    return BP_TRUE;
+  unify(Min,MAKEINT(min0));
+  unify(Max,MAKEINT(max0));
+  return BP_TRUE;
 }
 
 int b_VAR_IN_D_cc(X,List)
@@ -2937,7 +2945,7 @@ x_is_int:
     }
     /* come here if both X and Y are dvar */
 
-    //  printf("=> multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
+	// printf("=> multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
 
     dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
@@ -3044,6 +3052,7 @@ x_is_int:
             if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;      
         }
     }
+	// printf("<= multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
 
     return BP_TRUE;
 }

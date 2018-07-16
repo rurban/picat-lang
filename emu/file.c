@@ -1503,7 +1503,6 @@ int b_GET0_f(op)
     BPLONG op;
 {
     BPLONG n;
-    BPLONG_PTR top;
 
     n = getc(curr_in);
 
@@ -1519,7 +1518,6 @@ int b_PEEK_BYTE_f(op)
     BPLONG op;
 {
     BPLONG n;
-    BPLONG_PTR top;
   
     if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
@@ -1547,7 +1545,6 @@ int b_PEEK_CODE_f(op)
     BPLONG op;
 {
     BPLONG n;
-    BPLONG_PTR top;
   
     if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
@@ -1625,7 +1622,6 @@ int c_rm_file() {
 
 int c_cp_file() {
     char *f_name1,*f_name2;
-    BPLONG res;
   
     f_name1 = (char *)bp_get_atom_name(ARG(1,2));
     f_name2 = (char *)bp_get_atom_name(ARG(2,2));
@@ -1644,7 +1640,7 @@ int c_cp_file() {
     strcat(bp_buf,f_name2);
 
     CHANGE_FILE_SEPARATOR(bp_buf);
-    res = system(bp_buf);
+    system(bp_buf);
     return BP_TRUE;
 }
 
@@ -2235,7 +2231,7 @@ int c_file_type(){
 }
 
 int c_directory_list(){
-    BPLONG Name,List,lst;
+    BPLONG Name,List;
 
     Name = ARG(1,2);
     List = ARG(2,2);
@@ -2453,9 +2449,7 @@ int c_rename(){
 
 int c_chdir(){
     BPLONG dir = ARG(1,1);
-    SYM_REC_PTR sym_ptr;
     BPLONG_PTR top;
-    char *s;
   
     DEREF(dir);
     if (check_file_term(dir)!=BP_TRUE) return BP_ERROR;
@@ -3269,14 +3263,14 @@ int b_TO_CODES_cff(BPLONG term, BPLONG lst, BPLONG lstr){
 int c_PICAT_FORMAT_TO_STRING_ccff(){
     BPLONG Format,Val,Str,StrR;
 
-    char format_str[100];
+    char format_str[1000];
   
     Format = ARG(1,4); DEREF(Format);
     Val = ARG(2,4); DEREF(Val);
     Str = ARG(3,4);  DEREF(Str);
     StrR = ARG(4,4); DEREF(StrR);
 
-    picat_str_to_c_str(Format, format_str, 100);
+    picat_str_to_c_str(Format, format_str, 1000);
     //  printf("format=%s\n",format_str);
     if (ISINT(Val)){
         sprintf(bp_buf,format_str,INTVAL(Val));
@@ -3296,7 +3290,7 @@ int c_PICAT_FORMAT_TO_STRING_ccff(){
 
 int c_PICAT_GETENV_cf(){
     BPLONG EnvVarName,EnvValStr;
-    CHAR_PTR env_name, env_val;
+    CHAR_PTR env_val;
 
     EnvVarName = ARG(1,2);DEREF(EnvVarName);
     EnvValStr = ARG(2,2);

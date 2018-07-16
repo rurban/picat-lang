@@ -8589,11 +8589,12 @@ switch (*P++){
         ptr = GT_ARG_ADDR(subgoal_entry);
         ptr += (op1-1); /* pointer to the last argument of the tabled subgoal */
         old_limit = FOLLOW(ptr);
+
         if (INTVAL(limit)>INTVAL(old_limit)){
             FOLLOW(ptr) = limit;
             GT_TOP_AR(subgoal_entry) = (BPLONG)AR; 
-            GT_SCC_ELMS(subgoal_entry) = (BPLONG)NULL;                  \
-            GT_SCC_ROOT(subgoal_entry) = (BPLONG)subgoal_entry;            \
+            GT_SCC_ELMS(subgoal_entry) = (BPLONG)NULL;
+            GT_SCC_ROOT(subgoal_entry) = (BPLONG)subgoal_entry;   
             SUBGOAL_START_NORMAL(subgoal_entry);
             CONTCASE;
         } else {
