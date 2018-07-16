@@ -1,0 +1,8 @@
+GPATH
+GRTAGS
+GTAGS
+emu/Makefile
+emu/*.o
+emu/espresso/*.o
+emu/glpk/*.o
+emu/picat_*
