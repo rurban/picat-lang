@@ -10,7 +10,7 @@
 #include <windows.h>
 #endif
 #include <stdlib.h>
-#ifdef unix
+#if defined(unix) || defined(DARWIN)
 #include <unistd.h>
 #endif
 #include "bprolog.h"
@@ -89,7 +89,7 @@ void init_toam(argc, argv)
                     print_picat_usage();
                     exit(0);
                 } else if (*(str+2) == 'v' || strcmp(str+2,"version")==0){
-                    printf("Picat version 2.4#4\n");
+                    printf("Picat version 2.4#4_1\n");
                     exit(0);
                 }
                                 
@@ -99,7 +99,7 @@ void init_toam(argc, argv)
                 break;
 
             case 's': i++;
-                sscanf(argv[i], "%ld", &stack_size);
+                sscanf(argv[i], BPLONG_FMT_STR, &stack_size);
                 if (stack_size<1000000) stack_size=1000000; 
                 break;
                                 
@@ -107,7 +107,7 @@ void init_toam(argc, argv)
             case 'T': 
             case 't': 
                 i++;
-                sscanf(argv[i], "%ld", &table_size);
+                sscanf(argv[i], BPLONG_FMT_STR, &table_size);
                 if (table_size<1000000) table_size=1000000;  
                 break;
 

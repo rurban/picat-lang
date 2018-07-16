@@ -5002,15 +5002,15 @@ switch (*P++){
  lab_unify_cons_ww: 
     op1 = NextOperandYC;
     SWITCH_OP_LST(op1,rr_unify_cons_ww, 
-                  {rr_unify_cons_ww_var:
+                  {rr_unify_cons_ww_var: /* UNUSED */
                       PUSHTRAIL(op1);
                       FOLLOW(op1) = ADDTAG(H,LST); 
                       FOLLOW(H) = (BPLONG)H; H++;
                       FOLLOW(H) = (BPLONG)H; H++;
                       CONTCASE;},
-                  {rr_unify_cons_ww_lst:
+                  {rr_unify_cons_ww_lst: /* UNUSED */
                       CONTCASE;},
-                  {rr_unify_cons_ww_susp:
+                  {rr_unify_cons_ww_susp: /* UNUSED */
                       op2 = ADDTAG(H,LST);
                       FOLLOW(H) = (BPLONG)H; H++;
                       FOLLOW(H) = (BPLONG)H; H++;
@@ -8499,8 +8499,9 @@ switch (*P++){
     */
     {
         BPLONG_PTR master_ar,ptr;
-        BPLONG answer_table,mode_bits,nt_last_arg,last_arg,limit,old_limit;
-            
+        BPLONG answer_table,mode_bits,nt_last_arg,limit,old_limit;
+        BPLONG last_arg = 0;
+
         op1 = *P++; /* arity */
         op2 = *P++; /* frame size */
         sym_ptr = (SYM_REC_PTR)*P++; /* Predicate symbol */

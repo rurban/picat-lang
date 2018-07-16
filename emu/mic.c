@@ -1091,6 +1091,7 @@ BPLONG bp_hashval(BPLONG op){
                   return (hcode_sum & HASH_BITS);
               },
               {return 0;});
+  return 0;
 }
 
 int b_HASHVAL1_cf(op1,op2)  /* op1 a term, op2 the hash value of the main functor of op1*/
@@ -2178,7 +2179,7 @@ start:
         ASSIGN_f_atom(len,MAKEINT(i));
         return BP_TRUE;
     case STR:
-    {
+      {
         SYM_REC_PTR sym_ptr;
 
         if (IS_SUSP_VAR(term)){
@@ -2192,9 +2193,9 @@ start:
         }
         ASSIGN_f_atom(len,MAKEINT(GET_ARITY(sym_ptr)));
         return BP_TRUE;
+      }
     }
     return BP_TRUE;
-    }
 }
 
 /* len > 0 */

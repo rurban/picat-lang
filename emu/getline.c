@@ -144,7 +144,7 @@ static void     search_forw();          /* look forw for current string */
 #endif
 
 
-#ifdef __unix__
+#if defined(__unix__) || defined(DARWIN)
 #include <unistd.h>
 #ifdef POSIX            /* use POSIX interface */
 #include <termios.h>
