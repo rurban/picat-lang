@@ -20,7 +20,7 @@ OBJ = dis.o init.o init_sym.o loader.o inst_inf.o main.o toam.o unify.o \
 	builtins.o mic.o numbervars.o cpreds.o univ.o assert.o findall.o clause.o \
     delay.o clpfd.o clpfd_libs.o event.o toamprofile.o \
     kapi.o getline.o table.o gcstack.o gcheap.o gcqueue.o debug.o \
-    expand.o bigint.o sapi.o sat_bp.o lglbnr.o lglib.o lglmain.o espresso_bp.o 
+    expand.o bigint.o sapi.o sat_bp.o lglbnr.o lglib.o plglib.o espresso_bp.o 
 
 ESP = espresso/
 
@@ -119,8 +119,8 @@ lglbnr.o : lingeling/lglbnr.c
 	$(CC) $(CFLAGS) $(LGLFLAG) -Ilingeling lingeling/lglbnr.c
 lglib.o : lingeling/lglib.c 
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/lglib.c
-lglmain.o : lingeling/lglmain.c 
-	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/lglmain.c
+plglib.o : lingeling/plglib.c 
+	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/plglib.c
 
 
 

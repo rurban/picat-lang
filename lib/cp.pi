@@ -1,5 +1,5 @@
 module cp.
-import common_sat_cp.
+import common_constr.
 
 % '#!='(X,Y) => X #!= Y.
 % '#/\\'(X,Y) => X #/\ Y.
@@ -16,9 +16,11 @@ import common_sat_cp.
 % '#>='(X,Y) => X #>= Y.
 %  '::'(Vars,Domain) => '::'(Vars,Domain).
 % all_different(FDVars) => all_different(FDVars).
-% all_distinct(FDVars) => all_distinct(FDVars).
 % all_different_except_0(Xs) => all_different_except_0(Xs).
+% all_distinct(FDVars) => all_distinct(FDVars).
 % assignment(FDVars1,FDVars2) => assignment(FDVars1,FDVars2).
+% at_most(N,X,V) => at_most(N,X,V).
+% at_least(N,X,V) => at_least(N,X,V).
 % circuit(FDVars) => circuit(FDVars).
 % count(V,FDVars,Rel,N) => count(V,FDVars,Rel,N).
 % cumulative(Starts,Durations,Resources,Limit) => cumulative(Starts,Durations,Resources,Limit).
@@ -27,6 +29,7 @@ import common_sat_cp.
 % diffn(RectangleList) => diffn(RectangleList).
 % disjunctive_tasks(Tasks) => disjunctive_tasks(Tasks).
 % element(I,Terms,V) => element(I,Terms,V).
+% exactly(N, X, V) => exactly(N, X, V).
 % fd_degree(FDVar) = fd_degree(FDVar).
 % fd_disjoint(DVar1,DVar2) => fd_disjoint(DVar1,DVar2).
 % fd_dom(FDVar) = fd_dom(FDVar).
@@ -45,14 +48,16 @@ import common_sat_cp.
 % increasing_strict(FDVars) => increasing_strict(FDVars).
 % indomain(Var) => indomain(Var).
 % indomain_down(Var) => indomain_down(Var).
+% lex_le(L1,L2) = > lex_le(L1,L2).
+% lex_lt(L1,L2) = > lex_lt(L1,L2).
+% matrix_element(M,I,J,MIJ) => matrix_element(M,I,J,MIJ).
 % neqs(Neqs) => neqs(Neqs).
 % new_dvar() = new_dvar().
 % new_fd_var() = new_fd_var().
 % notin(VarOrVars,D) => notin(VarOrVars,D).
-% lex_lt(L1,L2) = > lex_lt(L1,L2).
-% lex_le(L1,L2) = > lex_le(L1,L2).
 % nvalue(N,L) => nvalue(N,L).
 % regular(X, Q, S, D, Q0, Fs) => regular(X, Q, S, D, Q0, Fs).
+% scalar_product(A, X, Product) => scalar_product(A, X, Product).
 % serialized(Starts,Durations) => serialized(Starts,Durations).
 % solve(Options,Vars) => solve(Options,Vars)
 % solve(Vars) => solve(Vars).
@@ -120,7 +125,7 @@ solve(Options,Vars) =>
         MetaCalls = []
     ),
     (select($label(LabelPred),Options1,Options2) ->
-        (atom(LabelPred) -> true; handle_exception(atom_expected(LabelPred),solve)),
+        (atom(LabelPred) -> true; handle_exception($atom_expected(LabelPred),solve)),
         (bp.'$dyna_resolve_name'(['$picat_top_level'],LabelPred,1,pred,MLabelPred) ->
             true
         ;
@@ -176,6 +181,9 @@ count(V,FDVars,'#!=',N) =>
 count(V,FDVars,Rel,N) =>
     (array(FDVars) -> to_list(FDVars)=List; List=FDVars),
     bp.count(V,List,Rel,N).
+
+count(V,FDVars,N) =>
+    count(V,FDVars,'#=',N).
 
 % cumulative(Starts,Durations,Resources,Limit) => cumulative(Starts,Durations,Resources,Limit).
 cumulative(Starts,Durations,Resources,Limit) =>
@@ -247,10 +255,6 @@ neqs(Neqs) =>
     (array(Neqs) -> to_list(Neqs)=List; List=Neqs),    
     check_neqs_args(List,List1),
     bp.post_neqs(List1).
-
-check_neqs_args([],List) => List=[].
-check_neqs_args([X #!= Y|Neqs],List) => List=['#\\='(X,Y)|ListR],check_neqs_args(Neqs,ListR).
-check_neqs_args([Neq|_],_) => handle_exception($neq_constraint_expected(Neq),neqs).
 
 % serialized(Starts,Durations) => serialized(Starts,Durations).
 serialized(Starts,Durations) =>
@@ -374,7 +378,61 @@ fd_vector_min_max(Min,Max) =>
   1..Q).  State 0 is reserved for the failing state.
 ***************************************************************************/
 regular(L, Q, S, M, Q0, Fs) =>
-    regular_cpsat(L, Q, S, M, Q0, Fs, cp).
+    regular_cp(L, Q, S, M, Q0, Fs, cp).
+
+regular_cp(L, Q, S, M, Q0, Fs, Solver), list(L) =>
+    regular_cp_aux(L, Q, S, M, Q0, Fs, Solver).
+regular_cp(L, Q, S, M, Q0, Fs ,Solver), array(L) =>
+    regular_cp_aux(to_list(L), Q, S, M, Q0, Fs ,Solver).
+regular_cp(L, _Q, _S, _M, _Q0, _Fs, _Solver) =>
+    handle_exception($list_or_array_expected(L),regular).
+
+% W is a list
+regular_cp_aux(W, Q, S, M, Q0, Fs, Solver) =>
+    % If W has index set 1..n, then Visited[1] is the initial state
+    % (Q0), and Visited[i+1] holds the state we're in after  processing
+    % W[i].  If Visited[n+1] is in Fs, then we succeed (ie. accept the string).
+    check_regular_args(Q, S, M, Q0, Fs, Matrix, FsLst),   
+    N = len(W),
+    Visited = new_array(N+1),            % states
+    bp.domain(to_list(Visited),1,Q),
+    bp.domain(W,1,S),
+    Visited[1] = Q0,                    % initial state
+    bp.'::'(Visited[N+1],FsLst),
+    %    
+    preprocess_regular_cp(Q,S,Matrix,Q0,FsLst,Visited,N),
+    matrix_element_table(Matrix,Q,S,Table),
+    post_matrix_element_for_regular(W,1,Visited,Table,Solver),
+    if Solver==cp then 
+        bp.wait_to_check_regular(Matrix,Q0,FsLst,W)      % needed for NFA
+    end.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Visited is a vector of state variables created for the automaton. For each 
+% state variable Visited[T] (T=2..MaxSteps), a state cannot be a possible value
+% if it cannot be reached from Q0 in T steps. Similarly, for each state variable
+% Visited[N-T+2], a state cannot be a possible value either if it cannot be
+% reached from any final state in T steps.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+preprocess_regular_cp(Q,S,Matrix,Q0,FsLst,Visited,N) =>
+    MaxSteps = N,                                             % consider up to MaxSteps steps
+    ReachFromQ0 = new_array(Q,MaxSteps),                      % ReachFromQ0[I,K] is 1 if state I can be reached from Q0 in K steps
+    fa_reachable(Q0,1,MaxSteps,S,Matrix,ReachFromQ0),         % forward from Q0, defined in common_sat_cp.pi
+    %      
+    transport_trans_matrix(Matrix,TMatrix),
+    ReachFromF = new_array(Q,MaxSteps),                       % ReachFromF[I,K] is 1 if state I can be reached from a final state in K steps backward
+    foreach (F in FsLst)
+         fa_reachable(F,1,MaxSteps,S,TMatrix,ReachFromF)      % backward from a final state. 
+    end,
+    %
+    foreach (T in 2..MaxSteps, State in 1..Q)
+        if var(ReachFromQ0[State,T]) then                     % State cannot be reached from Q0 in T steps (Q0 is reachable in 1 step)
+            bp.domain_set_false(Visited[T],State)
+        end,
+        if var(ReachFromF[State,T]) then                      % State cannot be reached from any F in T steps (F is reachable in 1 step)
+            bp.domain_set_false(Visited[N-T+2],State)
+        end
+    end.
 
 %%
 %% lex_le(L1,L2): collection L1 is lexicographically less than or equal to L2

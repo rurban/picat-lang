@@ -490,7 +490,7 @@ int get_file_name_aux(char *s1){
 #ifdef PICAT
 int get_file_name(BPLONG op){
     CHAR s1[MAX_STR_LEN];
-  
+
     DEREF(op); 
     if (ISATOM(op)){
         namestring(GET_SYM_REC(op),s1);
@@ -3184,10 +3184,13 @@ void  c_str_to_picat_str(CHAR_PTR str, BPLONG lst, BPLONG lstr){
 }
 
 /* change Picat string (lst) to a C string (buf) */
-void picat_str_to_c_str(BPLONG lst, char *buf, int buf_size){
+void picat_str_to_c_str(BPLONG lst, char *buf, BPLONG buf_size){
     CHAR_PTR ch_ptr = buf;
     CHAR_PTR s;
     int j, len, i = 0;
+    BPLONG lst0 = lst;
+
+    //  printf("=>picat_str_to_c_str "); write_term(lst); printf("\n");
 
     while (ISLIST(lst)){ 
         BPLONG_PTR lst_ptr;
@@ -3201,6 +3204,8 @@ void picat_str_to_c_str(BPLONG lst, char *buf, int buf_size){
         s = GET_NAME(sym_ptr);
         len = GET_LENGTH(sym_ptr);
         if (i+len >= buf_size){
+            printf("hreg = %lx local_top = %lx buf_size = %x \n", heap_top, local_top, buf_size);
+            write_term(lst0); printf("\n");
             quit("buf overfolow in picat_str_to_c_str");
         }
         for (j=0; j<len; j++){
@@ -3280,7 +3285,7 @@ int c_PICAT_FORMAT_TO_STRING_ccff(){
         sprintf(bp_buf,format_str,bp_bigint_to_int(Val));
     } else { /* Val must be a Picat string */
         char *str = (CHAR_PTR)heap_top;
-        picat_str_to_c_str(Val, str, (BPULONG)local_top-(BPULONG)heap_top);
+        picat_str_to_c_str(Val, str, sizeof(BPULONG)*((BPULONG)local_top-(BPULONG)heap_top));
         sprintf(bp_buf,format_str,str);
     }
     //  printf("bp_buf=%s\n",bp_buf);
@@ -4078,3 +4083,7 @@ int b_SET_STRING_TO_PARSE_c(BPLONG Str){
     return BP_TRUE;
 }
 
+void print_cnf_header(int nvars, int ncls){
+    fseek(curr_out, 0, SEEK_SET);
+    fprintf(curr_out,"p cnf %d %d", nvars, ncls);
+}

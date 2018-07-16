@@ -460,9 +460,9 @@ extern BPLONG no_gcs;
    1. If the choice point is an incomplete tabled frame, the AR field of the subgoal table entry is set to NULL;
    2. If the choice point is a call_cleanup frame (Flag,Cleanup,Call,Exception,Recovery,...), call Cleanup
 */
-#define  ROLL_CHOICE_POINTS(to_b) {										\
+#define  ROLL_CHOICE_POINTS(to_b) {									\
 	  BPLONG_PTR b,btm_ptr,gtable;										\
-	  if (B<to_b){														\
+	  if (B < to_b){													\
 		b = B;															\
 		do {															\
 		  if (IS_CATCHER_OR_TABLE_FRAME(b)){							\
@@ -481,7 +481,7 @@ extern BPLONG no_gcs;
 			}															\
 		  }																\
 		  b = (BPLONG_PTR)AR_B(b);										\
-		} while (b<to_b);												\
+		} while (b < to_b);												\
 	  }																	\
 	}
 
@@ -736,7 +736,7 @@ extern BPLONG no_gcs;
 */
 
 #define INVOKE_GC {										\
-    if (LOCAL_TOP -H <= MIN_AVAIL_WORDS){				\
+    if (LOCAL_TOP - H <= MIN_AVAIL_WORDS){				\
       if (bp_gc){										\
 		SAVE_AR;SAVE_TOP;								\
 		if (garbage_collector()==BP_ERROR){				\
@@ -756,7 +756,8 @@ extern BPLONG no_gcs;
   #define INVOKE_GC_NONDET INVOKE_GC_UNCOND 	
 */
 
-#define INVOKE_GC_NONDET {												\
+/*
+#define INVOKE_GC_NONDET {											\
     if (LOCAL_TOP - H > MIN_AVAIL_WORDS && H < heap_water_mark && LOCAL_TOP > stack_water_mark){ \
 	} else {															\
       if (bp_gc && ((gc_b != B) || LOCAL_TOP - H <= MIN_AVAIL_WORDS)){	\
@@ -774,7 +775,22 @@ extern BPLONG no_gcs;
 	  toam_LOCAL_OVERFLOW_CHECK(5);										\
 	}																	\
   }
-
+*/
+#define INVOKE_GC_NONDET {												\
+    if (bp_gc && ((LOCAL_TOP - H <= MIN_AVAIL_WORDS) || (H >= heap_water_mark) || (LOCAL_TOP < stack_water_mark))){ \
+	  SAVE_AR;SAVE_TOP;													\
+	  if (garbage_collector()==BP_ERROR){								\
+		exception = et_OUT_OF_MEMORY_STACK;								\
+		fprintf(stderr,"%% error: OUT OF MEMORY\n");					\
+		goto interrupt_handler;											\
+	  }																	\
+	  RESTORE_AR;RESTORE_TOP;											\
+	  EXPAND_STACK(MIN_AVAIL_WORDS+LARGE_MARGIN);						\
+	  RESET_WATER_MARKS;												\
+	}																	\
+	toam_LOCAL_OVERFLOW_CHECK(5);										\
+  }
+  
 #define REAL_INITIALIZE_STACK_VARS(N){			\
     top = AR-N;									\
     while (top>LOCAL_TOP){						\
@@ -798,12 +814,11 @@ extern BPLONG no_gcs;
     }																	\
   } 
 
-
 #define RESET_SUBGOAL_AR(f){											\
     if (IS_TABLE_FRAME(f)){												\
       BPLONG_PTR subgoal_entry = (BPLONG_PTR)GET_AR_SUBGOAL_TABLE(f);	\
-      if (subgoal_entry!=NULL && !SUBGOAL_IS_COMPLETE(subgoal_entry)){	\
-		GT_TOP_AR(subgoal_entry)=(BPLONG)NULL;							\
+      if (subgoal_entry != NULL && GT_TOP_AR(subgoal_entry) != SUBGOAL_COMPLETE){ \
+		GT_TOP_AR(subgoal_entry) = (BPLONG)NULL;						\
       }																	\
     }																	\
   }

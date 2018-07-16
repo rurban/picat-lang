@@ -1353,7 +1353,7 @@ BPLONG bp_pow_bigint_int(BPLONG base,BPLONG ex){
 /* write a bigint into a string buffer whose size is buf_size, and return the starting index. 
    op must be a bigint.
 */
-int bp_write_bigint_to_str(BPLONG op, char *buf, int buf_size) {
+int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size) {
     UBIGINT x,y,q,r,tempBuff;
     BPLONG sign,size,dLst,qsize,rsize;
     char loc_buf[10];

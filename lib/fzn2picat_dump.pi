@@ -472,9 +472,6 @@ post(bool_or(X,Y,Z)) =>
 post(bool_xor(X,Y,Z)) =>
     Z #<=> (X #^ Y).   
 %
-post(int_pow(X,Y,Z)) =>
-    writeln($pow(X,Y,Z)),
-    Z #= X**Y.
 post(int_negate(X,Z)) =>
     Z #= -X.
 post(int_plus(X,Y,Z)) =>
@@ -580,12 +577,6 @@ post(alldifferent_except_0(Vec)) =>
     all_different_except_0(List).
 post(inverse(Vec1,Vec2)) =>
     assignment(Vec1,Vec2).
-post(global_cardinality(Vec,KeyVec,CardVec)) =>
-    List = to_list(Vec),
-	KeyL = to_list(KeyVec),
-	CardL = to_list(CardVec),
-	Pairs = [$(Key-Card) : {Key,Card} in zip(KeyL,CardL)],
-    global_cardinality(List,Pairs).
 post(count_reif(Vec,V,N,B)) =>
     List = to_list(Vec),
     Ni :: 0..length(Vec),
@@ -761,7 +752,7 @@ output_num_vars(OutS,[V|Vs],VNo) =>
     V.put_attr(number,VNo),
     fd_min_max(V,Min,Max),
 	printf(OutS,"    V%d :: ",VNo),
-    ((Min =< -268435455 || Max >= 268435455 || Max-Min+1 == fd_size(V)) ->
+    ((Min== -268435455 || Max== 268435455 || Max-Min+1 == fd_size(V)) ->
 	    printf(OutS,"%i..%i",Min,Max)
 	;
 	    Dom = fd_dom(V),
@@ -1036,10 +1027,10 @@ output_res(OutS,[V|Vs],Count) =>
     printf(OutS,"print(\" V%d\" = ",VNo),
     output_item(OutS,V),
     (Count==5 ->
-	    printf(OutS,"), print(','),\n    "),
+	    printf(OutS,"),\n    "),
 		Count1 = 0
 	;
-	    printf(OutS,"), print(','), "),
+	    printf(OutS,"), "),
 		Count1 = Count+1
     ),
     output_res(OutS,Vs,Count1).

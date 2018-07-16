@@ -261,7 +261,7 @@ take(L,N) = Taken, list(L), integer(N), take_aux(L,N,Taken) => true.
 
 private
 take_aux([H|T],N,Taken),N>0 => Taken=[H|TakenR], take_aux(T,N-1,TakenR).
-take_aux(List,_N,Taken) => Taken = [].
+take_aux(_List,_N,Taken) => Taken = [].
 
 drop(L,N) = Taken, list(L), integer(N), drop_aux(L,N,Taken) => true.
 

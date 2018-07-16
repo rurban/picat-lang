@@ -1966,96 +1966,138 @@ int c_TA_TOP_f(){
     ASSIGN_f_atom(op,ADDTAG((BPLONG)ta_record_ptr->top,INT_TAG));
     return BP_TRUE;
 }
-/*  
-    void printSubgoalTableEntry(ptr)
-    BPLONG_PTR ptr;
-    {
-    BPLONG arity;
-    BPLONG_PTR answer,answerTable;
-    SYM_REC_PTR sym_ptr;
-    void printAnswer();
 
-    sym_ptr = (SYM_REC_PTR)GT_SYM(ptr);
-    arity = GET_ARITY(sym_ptr);
-  
-    fprintf(curr_out,"%s(",GET_NAME(sym_ptr));
-    printAnswer(GT_ARG_ADDR(ptr),arity);
-    answerTable = (BPLONG_PTR)GT_ANSWER_TABLE(ptr);
-    if (answerTable==NULL) return;
-    answer = (BPLONG_PTR)ANSWERTABLE_FIRST(answerTable);
-    fprintf(curr_out,"OLD\n");
-    answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer);
-    while (answer!=NULL){
-    fprintf(curr_out,"%x     (",answer);printAnswer(ANSWER_ARG_ADDR(answer),arity);
-    answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer); 
-    }
-    }
-
-    void printAnswer(ptr,arity)
-    BPLONG_PTR ptr;
-    BPLONG arity;
-    {
+void set_temp_complete_subgoal_entries(){
     BPLONG i;
-    BPLONG term;
-    void myWriteTerm();
+    BPLONG_PTR subgoal_entry;
+  
+    for (i=0;i<subgoalTableBucketSize;i++){
+        subgoal_entry = (BPLONG_PTR)FOLLOW(subgoalTable+i);
+        while (subgoal_entry != NULL) {
+            if (GT_TOP_AR(subgoal_entry) == SUBGOAL_TEMP_COMPLETE)
+                GT_TOP_AR(subgoal_entry) = (BPLONG)NULL;
+            subgoal_entry = (BPLONG_PTR)GT_NEXT(subgoal_entry);
+        }
+    }
+}
+  
+/*
+  void printTable(){
+  void printSubgoalTableEntry(BPLONG_PTR);
+  
+  BPLONG i,count,subgoal_count,total_ans_count,max_ans_count,zero_ans_count,total_ans_access_count,max_ans_access_count,total_its_count,max_its_count,scc_nodes_count;
+  BPLONG_PTR subgoal_entry,ptr;
+  subgoal_count = 0;
+  total_ans_access_count=0;
+  max_ans_access_count=0;
+  total_its_count=0;
+  max_its_count=0;
+  total_ans_count=0;
+  max_ans_count=0;
+  zero_ans_count=0;
+  scc_nodes_count = 0;
+  
+  for (i=0;i<subgoalTableBucketSize;i++){
+  subgoal_entry = (BPLONG_PTR)FOLLOW(subgoalTable+i);
+  while (subgoal_entry != NULL) {
+  printSubgoalTableEntry(subgoal_entry);
+  subgoal_entry = (BPLONG_PTR)GT_NEXT(subgoal_entry);
+  }
+  }
+  }
 
-    for (i=0;i<arity;i++){
-    term = FOLLOW(ptr+i);
-    myWriteTerm(term);
-    if (i!=arity-1) fprintf(curr_out,",");
-    }
-    fprintf(curr_out,"). ");
-    }
+  void printSubgoalTableEntry(ptr)
+  BPLONG_PTR ptr;
+  {
+  BPLONG arity;
+  BPLONG_PTR answer,answerTable;
+  SYM_REC_PTR sym_ptr;
+  void printAnswer();
 
-    void myWriteTerm(term)
-    BPLONG term;
-    {
-    BPLONG_PTR top;
-    DEREF(term);
+  sym_ptr = (SYM_REC_PTR)GT_SYM(ptr);
+  arity = GET_ARITY(sym_ptr);
 
-    if (ISREF(term)) fprintf(curr_out,"_%x",term); 
-    else if (TAG(term)==ATM) write_term(term);
-    else if (TAG(term)==LST) {
-    if (IsNumberedVar(term)) fprintf(curr_out,"n%x ",term);
-    else {
-    fprintf(curr_out,"[");
-    myWriteList(term);
-    fprintf(curr_out,"]");
-    }
-    } else {
-    SYM_REC_PTR sym_ptr;
-    BPLONG arity,i;
-    UNTAG_ADDR(term);
-    sym_ptr = (SYM_REC_PTR)FOLLOW(term);
-    bp_write_pname(GET_NAME(sym_ptr));
-    if (GET_ARITY(sym_ptr)>0) {
-    fprintf(curr_out,"(");
-    arity = GET_ARITY(sym_ptr);
-    for (i=1;i<=arity;i++) {
-    myWriteTerm(*((BPLONG_PTR)term+i));
-    if (i<arity)
-    fprintf(curr_out,",");
-    }
-    fprintf(curr_out,")");
-    }
-    }
-    }
+  
+  fprintf(curr_out,"%x %s(",ptr, GET_NAME(sym_ptr));
+  //  printAnswer(GT_ARG_ADDR(ptr),arity);
+  fprintf(curr_out,"(%x)\n",GT_TOP_AR(ptr));
+  answerTable = (BPLONG_PTR)GT_ANSWER_TABLE(ptr);
+  if (answerTable==NULL) return;
+  answer = (BPLONG_PTR)ANSWERTABLE_FIRST(answerTable);
+  fprintf(curr_out,"OLD\n");
+  answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer);
+  while (answer!=NULL){
+  fprintf(curr_out,"%x     (",answer);printAnswer(ANSWER_ARG_ADDR(answer),arity);
+  answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer); 
+  }
+  }
 
-    void myWriteList(term)
-    BPLONG term;
-    {
-    BPLONG car,cdr;
-    BPLONG_PTR top;
+  void printAnswer(ptr,arity)
+  BPLONG_PTR ptr;
+  BPLONG arity;
+  {
+  BPLONG i;
+  BPLONG term;
+  void myWriteTerm();
 
-    UNTAG_ADDR(term);
-    car = FOLLOW((BPLONG_PTR)term);
-    cdr = FOLLOW((BPLONG_PTR)term+1);DEREF(cdr);
-    myWriteTerm(car);
-    if (ISLIST(cdr)){
-    fprintf(curr_out,",");
-    myWriteList(cdr);
-    }
-    }
+  for (i=0;i<arity;i++){
+  term = FOLLOW(ptr+i);
+  myWriteTerm(term);
+  if (i!=arity-1) fprintf(curr_out,",");
+  }
+  fprintf(curr_out,"). ");
+  }
+
+  void myWriteTerm(term)
+  BPLONG term;
+  {
+  BPLONG_PTR top;
+  DEREF(term);
+
+  if (ISREF(term)) fprintf(curr_out,"_%x",term); 
+  else if (TAG(term)==ATM) write_term(term);
+  else if (TAG(term)==LST) {
+  if (IsNumberedVar(term)) fprintf(curr_out,"n%x ",term);
+  else {
+  fprintf(curr_out,"[");
+  myWriteList(term);
+  fprintf(curr_out,"]");
+  }
+  } else {
+  SYM_REC_PTR sym_ptr;
+  BPLONG arity,i;
+  UNTAG_ADDR(term);
+  sym_ptr = (SYM_REC_PTR)FOLLOW(term);
+  bp_write_pname(GET_NAME(sym_ptr));
+  if (GET_ARITY(sym_ptr)>0) {
+  fprintf(curr_out,"(");
+  arity = GET_ARITY(sym_ptr);
+  for (i=1;i<=arity;i++) {
+  myWriteTerm(*((BPLONG_PTR)term+i));
+  if (i<arity)
+  fprintf(curr_out,",");
+  }
+  fprintf(curr_out,")");
+  }
+  }
+  }
+
+  void myWriteList(term)
+  BPLONG term;
+  {
+  BPLONG car,cdr;
+  BPLONG_PTR top;
+
+  UNTAG_ADDR(term);
+  car = FOLLOW((BPLONG_PTR)term);
+  cdr = FOLLOW((BPLONG_PTR)term+1);DEREF(cdr);
+  myWriteTerm(car);
+  if (ISLIST(cdr)){
+  fprintf(curr_out,",");
+  myWriteList(cdr);
+  }
+  }
+
 */
 
 /*  defined in basic.h, also see global_maps in assert.c

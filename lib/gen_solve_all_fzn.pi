@@ -10,7 +10,7 @@ gen(Dir) =>
     Files = listdir(Dir),
 	foreach (File in Files, append(_,".fzn",File))
 	    printf("echo solving %s\n",File),
-		printf("/cygdrive/c/BProlog/Emulator/fzn_picat_sat.exe %s\n",File)
+		printf("time timeout -k 900 900 /cygdrive/c/BProlog/Emulator/fzn_picat_sat.exe %s\n",File)
 	end.
 
 		

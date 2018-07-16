@@ -1,4 +1,24 @@
-module common_sat_cp.
+module common_constr.
+
+preprocess_regular_sat_mip(Q,S,Matrix,Q0,FsLst,Visited,N) =>
+    MaxSteps = min(N,Q),                                      % consider up to MaxSteps steps
+    ReachFromQ0 = new_array(Q,MaxSteps),                      % ReachFromQ0[I,K] is 1 if state I can be reached from Q0 in K steps
+    fa_reachable(Q0,1,MaxSteps,S,Matrix,ReachFromQ0),         % forward from Q0, defined in common_sat_cp.pi
+    %      
+    transport_trans_matrix(Matrix,TMatrix),
+    ReachFromF = new_array(Q,MaxSteps),                       % ReachFromF[I,K] is 1 if state I can be reached from a final state in K steps backward
+    foreach (F in FsLst)
+         fa_reachable(F,1,MaxSteps,S,TMatrix,ReachFromF)      % backward from a final state, 
+    end,
+    %
+    foreach (T in 2..MaxSteps, State in 1..Q)
+        if var(ReachFromQ0[State,T]) then                     % State cannot be reached from Q0 in T steps (Q0 is reachable in 1 step)
+            Visited[State,T] = 0
+        end,
+        if var(ReachFromF[State,T]) then                      % State cannot be reached from any F in T steps (F is reachable in 1 step)
+            Visited[State,N-T+2] = 0
+        end
+    end.
 
 % Here is MiniZinc's infamous matrix element
 %     a[i+1] = d[a[i], x[i]]
@@ -152,3 +172,8 @@ check_scalars(A,X) =>
 
 list_or_array(A), list(A) => true.
 list_or_array(A), array(A) => true.
+
+check_neqs_args([],List) => List=[].
+check_neqs_args([X #!= Y|Neqs],List) => List=['#\\='(X,Y)|ListR],check_neqs_args(Neqs,ListR).
+check_neqs_args([Neq|_],_) => handle_exception($neq_constraint_expected(Neq),neqs).
+

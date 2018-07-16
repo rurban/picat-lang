@@ -2922,7 +2922,7 @@ x_is_int:
         if (a != 0 && a != 1 && a != -1 && IS_SUSP_VAR(Y) && IS_SUSP_VAR(Z)){
             dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
             dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
-			minZ = DV_first(dv_ptr_z); maxZ = DV_last(dv_ptr_z);
+            minZ = DV_first(dv_ptr_z); maxZ = DV_last(dv_ptr_z);
             if (minZ >= -500 && maxZ <= 500){                        // IS_SMALL_DOMAIN(dv_ptr_z)){
                 for (;;){
                     BPLONG elm = minZ/a;

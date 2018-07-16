@@ -1276,9 +1276,9 @@ int b_PROP_MIN_c(BPLONG n){
    For each ex in X's domain, if ex is not supported, then remove ex from X's domain.
 */
 /*
-#define NUM_MARK_WORDS 3200
+  #define NUM_MARK_WORDS 3200
 
-int c_REDUCE_DOMAIN_AC_ADD(){
+  int c_REDUCE_DOMAIN_AC_ADD(){
   BPLONG X, Y, Z, ex, min_x, max_x, ey, min_y, max_y, ez, min_z, max_z, size;
   BPLONG_PTR dv_ptr_x, dv_ptr_y, dv_ptr_z, tmp_dv_ptr;
   int i, flag = 0;
@@ -1292,93 +1292,93 @@ int c_REDUCE_DOMAIN_AC_ADD(){
   
   DEREF_NONVAR(Z);
   if (IS_SUSP_VAR(Z)){
-	dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
-	if (!IS_SMALL_DOMAIN(dv_ptr_z)) return BP_TRUE;
-	if (!IS_IT_DOMAIN(dv_ptr_z)) flag = 1;	
-	min_z = DV_first(dv_ptr_z);  max_z = DV_last(dv_ptr_z);
+  dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
+  if (!IS_SMALL_DOMAIN(dv_ptr_z)) return BP_TRUE;
+  if (!IS_IT_DOMAIN(dv_ptr_z)) flag = 1;        
+  min_z = DV_first(dv_ptr_z);  max_z = DV_last(dv_ptr_z);
   } else {
-	dv_ptr_z = NULL;
-	min_z = max_z = INTVAL(Z);
+  dv_ptr_z = NULL;
+  min_z = max_z = INTVAL(Z);
   }
   DEREF_NONVAR(X);
   if (IS_SUSP_VAR(X)){
-	dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
-	if (!IS_IT_DOMAIN(dv_ptr_x)) flag = 1;
-	min_x = DV_first(dv_ptr_x); max_x = DV_last(dv_ptr_x);
+  dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
+  if (!IS_IT_DOMAIN(dv_ptr_x)) flag = 1;
+  min_x = DV_first(dv_ptr_x); max_x = DV_last(dv_ptr_x);
   } else {
-	dv_ptr_x = NULL;
-	min_x = max_x = INTVAL(X);
+  dv_ptr_x = NULL;
+  min_x = max_x = INTVAL(X);
   }
   DEREF_NONVAR(Y);
   if (IS_SUSP_VAR(Y)){
-	dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
-	if (!IS_IT_DOMAIN(dv_ptr_y)) flag = 1;	
-	min_y = DV_first(dv_ptr_y); max_y = DV_last(dv_ptr_y);
+  dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
+  if (!IS_IT_DOMAIN(dv_ptr_y)) flag = 1;        
+  min_y = DV_first(dv_ptr_y); max_y = DV_last(dv_ptr_y);
   } else {
-	dv_ptr_y = NULL;
-	min_y = max_y = INTVAL(Y);
+  dv_ptr_y = NULL;
+  min_y = max_y = INTVAL(Y);
   }
   if (flag == 0) return BP_TRUE;                     // none of the domains is a bit-vector domain 
 
   if (dv_ptr_z != NULL && IS_IT_DOMAIN(dv_ptr_z))
-	goto lab_ac_on_z;
+  goto lab_ac_on_z;
   if (dv_ptr_x != NULL && IS_IT_DOMAIN(dv_ptr_x))
-	goto lab_ac_on_x;
+  goto lab_ac_on_x;
   if (dv_ptr_y != NULL && IS_IT_DOMAIN(dv_ptr_y)) {  // swap X with Y 
-	tmp_dv_ptr = dv_ptr_x; dv_ptr_x = dv_ptr_y; dv_ptr_y = tmp_dv_ptr;
-	min_y = min_x; max_y = max_x;
-	min_x = DV_first(dv_ptr_x); max_x = DV_last(dv_ptr_x);
-	goto lab_ac_on_x;
+  tmp_dv_ptr = dv_ptr_x; dv_ptr_x = dv_ptr_y; dv_ptr_y = tmp_dv_ptr;
+  min_y = min_x; max_y = max_x;
+  min_x = DV_first(dv_ptr_x); max_x = DV_last(dv_ptr_x);
+  goto lab_ac_on_x;
   }
   return BP_TRUE;                                    // none of the domains is interval 
 
- lab_ac_on_x:  
+  lab_ac_on_x:  
   size = max_x - min_x + 1;
   if (size > NUM_MARK_WORDS) return BP_TRUE;         // no enough space for marking 
 
   for (i = 0; i < size; i++){
-	mark_words[i] = 0;                               // initialize the marks, no value is supported 
+  mark_words[i] = 0;                               // initialize the marks, no value is supported 
   }
   
   for (ez = min_z; ez <= max_z; ez++){
-	if (dv_ptr_z != NULL && !dm_true(dv_ptr_z, ez)) continue;
-	for (ey = min_y; ey <= max_y; ey++){
-	  if (dv_ptr_y != NULL && !dm_true(dv_ptr_y, ey)) continue;
-	  ex = ez-ey;
-	  mark_words[ex - min_x] = 1;
-	}
+  if (dv_ptr_z != NULL && !dm_true(dv_ptr_z, ez)) continue;
+  for (ey = min_y; ey <= max_y; ey++){
+  if (dv_ptr_y != NULL && !dm_true(dv_ptr_y, ey)) continue;
+  ex = ez-ey;
+  mark_words[ex - min_x] = 1;
+  }
   }
   for (ex = min_x+1; ex < max_x; ex++){
-	if (mark_words[ex - min_x] == 0){
-	  domain_set_false_noint(dv_ptr_x, ex);
-	}
+  if (mark_words[ex - min_x] == 0){
+  domain_set_false_noint(dv_ptr_x, ex);
+  }
   }
   printf("<= AC_ADD "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
   return BP_TRUE;
   
- lab_ac_on_z:
+  lab_ac_on_z:
   size = max_z - min_z + 1;
   if (size > NUM_MARK_WORDS) return BP_TRUE;         // no enough space for marking 
 
   for (i = 0; i < size; i++){
-	mark_words[i] = 0;                               // initialize the marks, no value is supported 
+  mark_words[i] = 0;                               // initialize the marks, no value is supported 
   }
   
   for (ex = min_x; ex <= max_x; ex++){
-	if (dv_ptr_x != NULL && !dm_true(dv_ptr_x, ex)) continue;
-	for (ey = min_y; ey <= max_y; ey++){
-	  if (dv_ptr_y != NULL && !dm_true(dv_ptr_y, ey)) continue;
-	  ez = ex+ey;
-	  mark_words[ez - min_z] = 1;
-	}
+  if (dv_ptr_x != NULL && !dm_true(dv_ptr_x, ex)) continue;
+  for (ey = min_y; ey <= max_y; ey++){
+  if (dv_ptr_y != NULL && !dm_true(dv_ptr_y, ey)) continue;
+  ez = ex+ey;
+  mark_words[ez - min_z] = 1;
+  }
   }
   for (ez = min_z+1; ez < max_z; ez++){
-	if (mark_words[ez - min_z] == 0){
-	  domain_set_false_noint(dv_ptr_z, ez);
-	}
+  if (mark_words[ez - min_z] == 0){
+  domain_set_false_noint(dv_ptr_z, ez);
+  }
   }
   printf("<= AC_ADD "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
   return BP_TRUE;
-}
-*/	
+  }
+*/      
 

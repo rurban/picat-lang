@@ -278,7 +278,7 @@ BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNVect, register pset c)
             if ((lit == 1 && elm == t_atom) || (lit == 2 && elm == f_atom)){
                 heap_top = heap_top0;
                 return BP_TRUE;           /* this clause is already true because the literal is true */
-            }                           /* else this literal is false, and need not be added */
+            }                             /* else this literal is false, and need not be added */
         }                             
     }
     FOLLOW(tail_ptr) = nil_sym;

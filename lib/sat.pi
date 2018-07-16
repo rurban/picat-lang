@@ -1,5 +1,5 @@
 module sat.
-import common_sat_cp.
+import common_constr.
 
 % '#!='(X,Y) =>  X #!= Y.
 % '#/\\'(X,Y) =>  X #/\ Y.
@@ -16,16 +16,20 @@ import common_sat_cp.
 % '#~'(X) =>  #~ X.
 %  '::'(Vars,Domain) => '::'(Vars,Domain).
 % all_different(FDVars) => all_different(FDVars).
-% all_distinct(FDVars) => all_distinct(FDVars).
 % all_different_except_0(Xs) => all_different_except_0(Xs).
+% all_distinct(FDVars) => all_distinct(FDVars).
 % assignment(FDVars1,FDVars2) => assignment(FDVars1,FDVars2).
+% at_most(N,X,V) => at_most(N,X,V).
+% at_least(N,X,V) => at_least(N,X,V).
 % circuit(L) => circuit(L).
 % count(V,FDVars,Rel,N) => count(V,FDVars,Rel,N).
 % cumulative(Starts,Durations,Resources,Limit) => cumulative(Starts,Durations,Resources,Limit).
 % decreasing(FDVars) => decreasing(FDVars).
 % decreasing_strict(FDVars) => decreasing_strict(FDVars).
 % diffn(RectangleList) => diffn(RectangleList).
+% disjunctive_tasks(Tasks) => disjunctive_tasks(Tasks).
 % element(I,FDVars,V) => element(I,FDVars,V).
+% exactly(N, X, V) => exactly(N, X, V).
 % fd_disjoint(DVar1,DVar2) => fd_disjoint(DVar1,DVar2).
 % fd_dom(FDVar) = fd_dom(FDVar).
 % fd_false(FDVar,Elm) => fd_false(FDVar,Elm).
@@ -40,17 +44,22 @@ import common_sat_cp.
 % global_cardinality(FDVars,Pairs) => global_cardinality(FDVars,Pairs).
 % increasing(FDVars) => increasing(FDVars).
 % increasing_strict(FDVars) => increasing_strict(FDVars).
-% lex_lt(L1,L2) = > lex_lt(L1,L2).
 % lex_le(L1,L2) = > lex_le(L1,L2).
+% lex_lt(L1,L2) = > lex_lt(L1,L2).
+% matrix_element(M,I,J,MIJ) => matrix_element(M,I,J,MIJ).
+% neqs(Neqs) => neqs(Neqs).
 % new_dvar() = new_dvar().
 % new_fd_var() = new_fd_var().
 % notin(VarOrVars,D) => notin(VarOrVars,D).
+% nvalue(N,L) => nvalue(N,L).
 % regular(L, Q, S, M, Q0, Fs) => regular(L, Q, S, M, Q0, Fs).
+% scalar_product(A, X, Product) => scalar_product(A, X, Product).
 % serialized(Starts,Durations) => serialized(Starts,Durations).
 % solve(Options,Vars) => solve(Options,Vars)
 % solve(Vars) => solve(Vars).
-% solve_all(Vars) = solve_all(Vars).
 % solve_all(Options,Vars) = solve_all(Options,Vars).
+% solve_all(Vars) = solve_all(Vars).
+% subcircuit(FDVars) => subcircuit(FDVars).
 % table_in(Vars, Tuples) => table_in(Vars, Tuples).
 % table_notin(Vars, Tuples) => table_notin(Vars, Tuples).
 
@@ -105,11 +114,22 @@ all_different(FDVars) =>
 all_distinct(FDVars) =>
     all_different(FDVars).
 
+%
+% Requires that all non-zero values in Xs be distinct.
+%
+alldifferent_except_0(Xs) =>
+    all_different_except_0(Xs).
+
+all_different_except_0(Xs) =>
+    foreach(I in 1..Xs.length, J in 1..I-1)
+        Xs[I] #= 0 #\/ Xs[J] #= 0 #\/ Xs[I] #!= Xs[J]
+    end.
+
 % element(I,FDVars,V) => element(I,FDVars,V).
 element(I,FDVars,V) =>
     (array(FDVars) -> to_list(FDVars)=List; List=FDVars),
     (bp.dvar_or_int_list(List) -> true; handle_exception($dvar_or_int_list_expected(List),element)),
-    bp.'$element'(I,List,V).
+    bp.'$element'(I,List,V,sat).
 
 % fd_disjoint(DVar1,DVar2) => fd_disjoint(DVar1,DVar2).
 fd_disjoint(DVar1,DVar2),dvar_or_int(DVar1),dvar_or_int(DVar2) => bp.b_DM_DISJOINT_cc(DVar1,DVar2).
@@ -138,6 +158,9 @@ count_aux(Bs,'#<',N) => sum(Bs) #< N.
 count_aux(Bs,'#=<',N) => sum(Bs) #=< N.
 count_aux(Bs,'#<=',N) => sum(Bs) #=< N.
 
+count(V,FDVars,N) =>
+    count(V,FDVars,'#=',N).
+
 % cumulative(Starts,Durations,Resources,Limit) => cumulative(Starts,Durations,Resources,Limit).
 cumulative(Starts,Durations,Resources,Limit) =>
     (array(Starts) -> to_list(Starts)=SList; SList=Starts),    
@@ -149,6 +172,18 @@ cumulative(Starts,Durations,Resources,Limit) =>
 diffn(RectangleList) =>
     (array(RectangleList) -> to_list(RectangleList)=RList; RList=RectangleList),
     bp.bp_diffn(RList,sat).
+
+% disjunctive_tasks(Tasks) => disjunctive_tasks(Tasks).
+disjunctive_tasks(Tasks) =>
+    (array(Tasks) -> to_list(Tasks)=TList; TList=Tasks),    
+    disjunctive_tasks_aux(TList).
+
+disjunctive_tasks_aux([]) => true.
+disjunctive_tasks_aux([disj_tasks(S1,D1,S2,D2)|Tasks]) =>
+    S1+D1 #=< S2 #\/ S2+D2 #=< S1,
+	disjunctive_tasks_aux(Tasks).
+disjunctive_tasks_aux(Tasks) =>
+    handle_exception($invalid_tasks(Tasks),disjunctive_tasks).
 
 % assignment(FDVars1,FDVars2) => assignment(FDVars1,FDVars2).
 assignment(FDVars1,FDVars2) =>
@@ -164,7 +199,16 @@ solve(Vars) => solve([],Vars).
 
 % solve(Options,Vars) => solve(Options,Vars)
 solve(Options,Vars) =>
-    (bp.dvar_or_int_list(Vars) -> VList = Vars; vars(Vars) = VList),
+    (bp.dvar_or_int_list(Vars) ->
+        VList = Vars
+    ;
+        VList = vars(Vars),
+        (bp.dvar_or_int_list(VList) ->
+            true
+        ;
+            handle_exception($free_var_not_allowed(Vars),solve)
+        )
+    ),
     (select($report(Call),Options,Options1) ->
         Options2 = [$report('$dyna_eval_pred'(['$picat_top_level'],Call))|Options1]
     ;
@@ -295,7 +339,8 @@ circuit_aux(A) =>
         M[I,J] #<=> (A[I] #= J)
     end,
     foreach (J in 1..N)                         % all_different(A)
-        sum([M[I,J] : I in 1..N]) #= 1
+        sum([M[I,J] : I in 1..N]) #= 1,
+        sum([M[J,I] : I in 1..N]) #= 1        
     end,
     %
     OrderM = new_array(N,N),                    % order the nodes, starting at 1, then A[1], ...
@@ -305,10 +350,12 @@ circuit_aux(A) =>
         OrderM[I,1] = 0
     end,
     OrderM :: 0..1,
-    foreach (I in 1..N, J in 1..N, I !== J)
-        (J !== 1 -> M[I,J] #=> OrderM[I,J]; true),
+    foreach (I in 2..N, J in 2..N, I !== J)
+        M[1,I] #=> OrderM[I,J],
+        M[I,1] #=> OrderM[J,I],
+        M[I,J] #=> OrderM[I,J],
         OrderM[I,J]+OrderM[J,I] #= 1,
-        foreach (K in 1..N, K !== I, K !== J)   % transitive
+        foreach (K in 2..N, K !== I, K !== J)   % transitive
             OrderM[I,K] #/\ OrderM[K,J] #=> OrderM[I,J]
         end
     end.
@@ -340,9 +387,32 @@ circuit_aux(A) =>
 
 global_cardinality(List,Pairs) =>
     (bp.check_pairs(Pairs) -> true; handle_exception($pairs_expected(Pairs),global_cardinality)),
-    foreach($Key-V in Pairs) 
-         sum([B : E in List, B #<=> (E#=Key)]) #= V
+    N = len(List),
+    Cards = [Card : $(_-Card) in Pairs],
+    (bp.dvar_or_int_list(Cards) ->
+        LB = sum([fd_min(Card) : Card in Cards]),
+        SumCards :: LB..N,
+        SumCards #= sum(Cards),
+        Keys = [Key : $(Key-_) in Pairs],        
+        (LB == N, ground(Keys) ->
+            List :: Keys
+        ;
+            true
+        )
+    ;
+        true
+    ),
+    foreach($(Key-Card) in Pairs) 
+         sum([B : E in List, B #<=> (E#=Key)]) #= Card
     end.
+
+% neqs(Neqs) => neqs(Neqs).
+neqs(Neqs) =>
+    (array(Neqs) -> to_list(Neqs)=List; List=Neqs),    
+    check_neqs_args(List,List1),
+    foreach ('#\\='(X,Y) in List1)
+	    X #!= Y
+	end.
 
 % serialized(Starts,Durations) => serialized(Starts,Durations).
 serialized(Starts,Durations) =>
@@ -371,7 +441,8 @@ subcircuit_aux(A) =>
         M[I,J] #<=> (A[I] #= J)
     end,
     foreach (J in 1..N)                         % all_different(A)
-        sum([M[I,J] : I in 1..N]) #= 1
+        sum([M[I,J] : I in 1..N]) #= 1,
+        sum([M[J,I] : I in 1..N]) #= 1        
     end,
     %
     FirstIn = new_array(N),                     
@@ -426,7 +497,7 @@ subcircuit_aux(L,A) =>
   S : input_max, inputs are from 1 to S
   M : transition matrix (the entry M[I,J] is a list of outgoing states for NFA, 0 means an error)
   Q0: initial state
-  F : accepting states
+  Fs : accepting states
 ***************************************************************************/
 regular(L, Q, S, M, Q0, Fs), list(L) =>
     W = to_array(L),
@@ -442,20 +513,6 @@ regular_aux(W, Q, S, M, Q0, Fs) =>
     check_regular_args(Q, S, M, Q0, Fs, Matrix, FsLst),
     W :: 1..S,
     N = len(W),
-    Symbols = new_array(Q,Q),    % Symbols[I,J] : possible symbols that can be generated by the transition I -> J
-    foreach (I in 1..Q, J in 1..Q)
-        Symbs = [],
-        foreach (Input in 1..S)
-            Entry = Matrix[I,Input],
-            if list(Entry) then
-                if membchk(J, Entry) then Symbs := [Input|Symbs] end
-            else
-                if Entry == J then Symbs := [Input|Symbs] end
-            end
-        end,
-        Symbols[I,J] = Symbs
-    end,
-    %
     Visited = new_array(Q,N+1),                        % Visited[I,T] is true if I is visited at time T
     Visited[Q0,1] = 1,                                 % Q0 is the starting state
     foreach (I in 1..Q)
@@ -466,8 +523,7 @@ regular_aux(W, Q, S, M, Q0, Fs) =>
             Visited[I,N+1] = 0
         end
     end,
-    preprocess_regular_sat(Q,S,Matrix,Q0,FsLst,Visited,N),
-    %
+    preprocess_regular_sat_mip(Q,S,Matrix,Q0,FsLst,Visited,N),
     Visited :: 0..1,
     %
     foreach (T in 2..N)                                % exactly one state is visited at each time
@@ -475,44 +531,42 @@ regular_aux(W, Q, S, M, Q0, Fs) =>
     end,
     sum([Visited[I,N+1] : I in FsLst]) #= 1,           % at time N+1, one of the final states is visited          
     %
-    Neibs = new_array(Q),                              % Neibs[I] : neighboring states that are directly reachable from state I
-    foreach (I in 1..Q)
-        Neibs[I] = [J : J in 1..Q, Symbols[I,J] !== []]
+    SymbolArr = new_array(Q,Q),                        % SymbolArr[I,J] : possible symbols that can be generated by the transition I -> J
+    foreach (I in 1..Q, J in 1..Q)
+        Symbs = [],
+        foreach (Input in 1..S)
+            Entry = Matrix[I,Input],
+            if list(Entry) then
+                if membchk(J, Entry) then Symbs := [Input|Symbs] end
+            else
+                if Entry == J then Symbs := [Input|Symbs] end
+            end
+        end,
+        SymbolArr[I,J] = Symbs
     end,
     %
-    ReifTab = new_map(),
+    Neibs = new_array(Q),                              % Neibs[I] : neighboring states that are directly reachable from state I
+    foreach (I in 1..Q)
+        Neibs[I] = [J : J in 1..Q, SymbolArr[I,J] !== []]
+    end,
+    %
+    ReifMapArr = new_array(N),
+    foreach (T in 1..N) ReifMapArr[T] = new_map() end,
     foreach (I in 1..Q, T in 1..N, Visited[I,T] !== 0)          % constrain output symbols
         Visited[I,T] #=> sum([Visited[J,T+1] : J in Neibs[I]]) #>= 1,  % ge (not eq) is ok since only one state is visited at each time
         foreach (J in Neibs[I], Visited[J,T+1] !== 0)
-            Symbs = Symbols[I,J],
-            Key = (T,Symbs),
-            if ReifTab.has_key(Key) then
-                B = ReifTab.get(Key)
+            Symbs = SymbolArr[I,J],
+            if ReifMapArr[T].has_key(Symbs) then
+                B = ReifMapArr[T].get(Symbs)
             else
-                B #<=> W[T] :: Symbs,
-                ReifTab.put(Key,B)
+                if Symbs = [Symb] then
+                    B #<=> (W[T] #= Symb)
+                else
+                    B #<=> (W[T] :: Symbs)
+                end,
+                ReifMapArr[T].put(Symbs,B)
             end,
             #~Visited[I,T] #\/ #~Visited[J,T+1] #\/ B           % I -> J is a valid transition
-        end
-    end.
-    
-preprocess_regular_sat(Q,S,Matrix,Q0,FsLst,Visited,N) =>
-    MaxSteps = N,                                             % consider up to MaxSteps steps
-    ReachFromQ0 = new_array(Q,MaxSteps),                      % ReachFromQ0[I,K] is 1 if state I can be reached from Q0 in K steps
-    fa_reachable(Q0,1,MaxSteps,S,Matrix,ReachFromQ0),         % forward from Q0, defined in common_sat_cp.pi
-    %      
-    transport_trans_matrix(Matrix,TMatrix),
-    ReachFromF = new_array(Q,MaxSteps),                       % ReachFromF[I,K] is 1 if state I can be reached from a final state in K steps backward
-    foreach (F in FsLst)
-         fa_reachable(F,1,MaxSteps,S,TMatrix,ReachFromF)      % backward from a final state, 
-    end,
-    %
-    foreach (T in 2..MaxSteps, State in 1..Q)
-        if var(ReachFromQ0[State,T]) then                     % State cannot be reached from Q0 in T steps (Q0 is reachable in 1 step)
-            Visited[State,T] = 0
-        end,
-        if var(ReachFromF[State,T]) then                      % State cannot be reached from any F in T steps (F is reachable in 1 step)
-            Visited[State,N-T+2] = 0
         end
     end.
 
@@ -653,17 +707,6 @@ scalar_product(A, X, '#=<', Product) =>
 scalar_product(A, X, '#<', Product) => 
    check_scalars(A,X),
    sum([A[I]*X[I] : I in 1..A.length]) #< Product.
-
-%
-% Requires that all non-zero values in Xs be distinct.
-%
-all_different_except_0(Xs) =>
-    alldifferent_except_0(Xs).
-
-alldifferent_except_0(Xs) =>
-  foreach(I in 1..Xs.length, J in 1..I-1)
-     (Xs[I] #!= 0 #/\ Xs[J] #!= 0) #=> (Xs[I] #!= Xs[J])
-   end.
 
 %
 % exactly(?N,?X,?V)

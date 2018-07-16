@@ -1064,8 +1064,8 @@ int c_MININT_f(){
 
 int c_IS_SMALL_INT_c(){
     BPLONG v = ARG(1,1);
-	DEREF(v);
-	return (ISINT(v)) ? BP_TRUE : BP_FALSE;
+    DEREF(v);
+    return (ISINT(v)) ? BP_TRUE : BP_FALSE;
 }
 
 void Cboot() {
@@ -1192,12 +1192,12 @@ void Cboot() {
     Cboot_cplex();
 #endif
 
-	/*
-#ifdef GLPK
-    Cboot_glpk();
-#endif
-	*/
-    insert_cpred("c_sat_start_dump",0,c_sat_start_dump);
+    /*
+      #ifdef GLPK
+      Cboot_glpk();
+      #endif
+    */
+    insert_cpred("c_sat_start_dump",1,c_sat_start_dump);
     insert_cpred("c_sat_stop_dump",0,c_sat_stop_dump);
     insert_cpred("c_sat_start_count",1,c_sat_start_count);
     insert_cpred("c_sat_stop_count",1,c_sat_stop_count);
@@ -1205,14 +1205,15 @@ void Cboot() {
 
     insert_cpred("c_REDUCE_DOMAINS_IC_EQ",2,c_REDUCE_DOMAINS_IC_EQ);
     insert_cpred("c_REDUCE_DOMAINS_IC_GE",2,c_REDUCE_DOMAINS_IC_GE);
-	//	insert_cpred("c_REDUCE_DOMAIN_AC_ADD",3,c_REDUCE_DOMAIN_AC_ADD);
+    //  insert_cpred("c_REDUCE_DOMAIN_AC_ADD",3,c_REDUCE_DOMAIN_AC_ADD);
     insert_cpred("c_TA_TOP_f",1,c_TA_TOP_f);
-
+#ifdef SAT
     Cboot_sat();
     insert_cpred("c_call_espresso",5,c_call_espresso);
     insert_cpred("c_call_espresso_element",5,c_call_espresso_element);
     insert_cpred("c_call_espresso_table",7,c_call_espresso_table);
     insert_cpred("c_call_espresso_pb",6,c_call_espresso_pb);
+#endif
 
 #ifdef PRISM
     bp4p_register_preds();

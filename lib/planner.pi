@@ -143,7 +143,8 @@ best_plan_downward(S,_Level,_Limit,Plan,PlanCost,FinS),
     Map.get($current_best_plan_fin_state(S)) = FinS.
 best_plan_downward(S,Level,Limit,Plan,PlanCost,FinS) =>
     bp.global_get('_$planner_explored_depth',0,Depth),
-	(Depth == 268435455 -> Level1 = Level+1; Level1 = Depth),
+    (Depth == 268435455 -> Level1 = Level+1; Level1 = Depth),
+	Level1 =< Limit,
     best_plan_downward(S,Level1,Limit,Plan,PlanCost,FinS).
 
 %%% iterative deeping and binary search
@@ -187,8 +188,8 @@ loop_best_plan_downward_bin(S,_Level,_Limit,Plan,PlanCost,_FinS,Map),
     loop_best_plan_bin(S,Map,Lower,Upper,Plan,PlanCost).
 loop_best_plan_downward_bin(S,Level,Limit,Plan,PlanCost,FinS,Map) =>
     bp.global_get('_$planner_explored_depth',0,Depth),
-%	writeln(depth=Depth),
-	(Depth == 268435455 -> Lower = Level+1; Lower = Depth),
+%    writeln(depth=Depth),
+    (Depth == 268435455 -> Lower = Level+1; Lower = Depth),
     Map.put($current_lower_bound(S),Lower),
     Lower < Limit,
     Level1 = 2*Lower,

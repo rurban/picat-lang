@@ -86,6 +86,13 @@ frand() = V =>
    bp.b_RAND_MAX_f(Max),
    (_I,V) = modf(random()/Max).
 
+frand(Low,High) = V, number(Low), number(High), Low =< High => 
+    V = Low + (High - Low) * frand().
+frand(Low,High) = _V =>
+    (number(Low) -> true; handle_exception($number_expected(Low),frand)),
+    (number(High) -> true; handle_exception($number_expected(High),frand)),
+	handle_exception($empty_range(Low,High),frand).
+
 picat_path() = Path =>
     (bp.picat_getenv('PICATPATH',Path) -> true; handle_exception($existence_error('PICATPATH'),picat_path)).
 

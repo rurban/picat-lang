@@ -146,19 +146,21 @@ C = 0.5236
 T = 1.5708
 \end{verbatim}
 
-\ignore{
 \subsection{Hyperbolic Functions}
 The \texttt{math} module provides the following hyperbolic functions.
 \begin{itemize}
-\item \texttt{sinh($X$) = $Val$}\index{\texttt{sinh/1}}: This function returns the hyperbolic sine of $X$, where $X$ is given in radians.
-\item \texttt{cosh($X$) = $Val$}\index{\texttt{cosh/1}}: This function returns the hyperbolic cosine of $X$, where $X$ is given in radians.
-\item \texttt{tanh($X$) = $Val$}\index{\texttt{tanh/1}}: This function returns the hyperbolic tangent of $X$, where $X$ is given in radians.
-\item \texttt{sech($X$) = $Val$}\index{\texttt{sech/1}}: This function returns the hyperbolic secant of $X$, where $X$ is given in radians.  If $cosh(X)$ is $0$, then $sech(X)$ throws an error.
-\item \texttt{csch($X$) = $Val$}\index{\texttt{csch/1}}: This function returns the hyperbolic cosecant of $X$, where $X$ is given in radians.
-\item \texttt{coth($X$) = $Val$}\index{\texttt{coth/1}}: This function returns the hyperbolic cotangent of $X$, where $X$ is given in radians.  If $tanh(X)$ is $0$, then $coth(X)$ throws an error.
-\item \texttt{asinh($X$) = $Val$}\index{\texttt{asinh/1}}: This function returns the arc hyperbolic sine of $X$, in radians.
-\item \texttt{acosh($X$) = $Val$}\index{\texttt{acosh/1}}: This function returns the arc hyperbolic cosine of $X$, in radians.  If $X \le 1$, then this function throws an error.
-\item \texttt{atanh($X$) = $Val$}\index{\texttt{atanh/1}}: This function returns the arc hyperbolic tangent of $X$, in radians.  $X$ must be in the range ($-1$, $1$); otherwise, this function throws an error.
+\item \texttt{sinh($X$) = $Val$}\index{\texttt{sinh/1}}: This function returns the hyperbolic sine of $X$.
+\item \texttt{cosh($X$) = $Val$}\index{\texttt{cosh/1}}: This function returns the hyperbolic cosine of $X$.
+\item \texttt{tanh($X$) = $Val$}\index{\texttt{tanh/1}}: This function returns the hyperbolic tangent of $X$.
+\item \texttt{sech($X$) = $Val$}\index{\texttt{sech/1}}: This function returns the hyperbolic secant of $X$. 
+\item \texttt{csch($X$) = $Val$}\index{\texttt{csch/1}}: This function returns the hyperbolic cosecant of $X$.  If $X$ is $0$, then this function throws an error.
+\item \texttt{coth($X$) = $Val$}\index{\texttt{coth/1}}: This function returns the hyperbolic cotangent of $X$.  If $X$ is $0$, then this function throws an error.
+\item \texttt{asinh($X$) = $Val$}\index{\texttt{asinh/1}}: This function returns the arc hyperbolic sine of $X$.
+\item \texttt{acosh($X$) = $Val$}\index{\texttt{acosh/1}}: This function returns the arc hyperbolic cosine of $X$.  If $X < 1$, then this function throws an error.
+\item \texttt{atanh($X$) = $Val$}\index{\texttt{atanh/1}}: This function returns the arc hyperbolic tangent of $X$.  $X$ must be in the range ($-1$, $1$); otherwise, this function throws an error.
+\item \texttt{asech($X$) = $Val$}\index{\texttt{asech/1}}: This function returns the arc hyperbolic secant of $X$.  $X$ must be in the range ($0$, $1$]; otherwise, this function throws an error.
+\item \texttt{acsch($X$) = $Val$}\index{\texttt{acsch/1}}: This function returns the arc hyperbolic cosecant of $X$.  If $X$ is $0$, then this function throws an error.
+\item \texttt{acoth($X$) = $Val$}\index{\texttt{acoth/1}}: This function returns the arc hyperbolic cotangent of $X$.  $X$ must be in the range ($-\infty$, $-1$) or ($1$, $\infty$); otherwise, this function throws an error.
 \end{itemize}
 
 \subsection*{Example}
@@ -176,7 +178,7 @@ S = 0.0
 C = 0.0
 T = 0.0
 \end{verbatim}
-}
+
 \subsection{Random Numbers}
 The following functions provide access to a random number generator.
 \begin{itemize}
@@ -184,7 +186,9 @@ The following functions provide access to a random number generator.
 \item \texttt{random2() = $Val$}\index{\texttt{random2/0}}: This function returns a random integer, using an environment-dependent seed.
 \item \texttt{rand\_max() = $Val$}\index{\texttt{rand\_max/0}}: This function returns the maximum random integer.
 \item \texttt{random($Seed$) = $Val$}\index{\texttt{random/1}}: This function returns a random integer.  At the same time, it changes the seed of the random number generator.
-\item \texttt{frand() = $Val$}\index{\texttt{frand/0}}: This function returns a random real number between 0.0 and 1.0.
+\item \texttt{random($Low$, $High$) = $Val$}\index{\texttt{random/2}}: This function returns a random integer in the range $Low$..$High$.
+\item \texttt{frand() = $Val$}\index{\texttt{frand/0}}: This function returns a random real number between 0.0 and 1.0, inclusive.
+\item \texttt{frand($Low$, $High$) = $Val$}\index{\texttt{frand/2}}: This function returns a random real number between $Low$ and $High$, inclusive.
 
 %\item \texttt{randrange($From$, $To$) = $Val$}\index{\texttt{randrange/2}}: This function returns a random integer in the range [$From$, $To$).
 %\item \texttt{randrange($From$, $Step$, $To$) = $Val$}\index{\texttt{randrange/3}}: This function returns a random integer in the range [$From$, $To$).  The integer will be equal to $From + K * Step$, for some integer $K$.

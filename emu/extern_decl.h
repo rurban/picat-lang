@@ -248,7 +248,7 @@ extern BPLONG bp_updiv_bigint_bigint(BPLONG op1, BPLONG op2);
 extern BPLONG bp_lowdiv_bigint_bigint(BPLONG op1, BPLONG op2);								
 extern BPLONG bp_gcd_bigint_bigint(BPLONG i1,BPLONG i2);								
 extern BPLONG bp_pow_bigint_int(BPLONG op1,BPLONG op2);								
-extern int bp_write_bigint_to_str(BPLONG op, char *buf, int buf_size);
+extern int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size);
 extern void bp_print_bigint(BPLONG op);											
 extern int b_BUILD_56B_INT_ccf(BPLONG w1, BPLONG w0, BPLONG v);
 extern BPLONG bp_bigint_to_native_long(BPLONG op);
@@ -523,7 +523,7 @@ extern void Cboot_delay(void);
 //
 //	dis.c prototypes
 //
-extern void symbol_table_statistics(int *num_of_empty_buckets, int *len_of_longest_chain);
+// extern void symbol_table_statistics(int *num_of_empty_buckets, int *len_of_longest_chain);
 extern void dis(void);													
 extern void dis_data(void);												
 extern void dis_text(void);												
@@ -844,7 +844,7 @@ extern int c_FORMAT_PRINT_INTEGER(void);
 extern int c_FORMAT_PRINT_FLOAT(void);											
 extern char *format_comma_separated_int(BPLONG amt);									
 extern int b_NAME0_cf(BPLONG op1,BPLONG op2); /* op2 is made to be the string of the name of op1*/	 
-extern void picat_str_to_c_str(TERM lst, char *s, int len);
+extern void picat_str_to_c_str(TERM lst, char *s, BPLONG len);
 extern int c_PICAT_FORMAT_TO_STRING_ccff();
 extern int c_PICAT_GETENV_cf();
 extern int c_PICAT_GET_CWD_f();
@@ -875,6 +875,7 @@ extern int b_WRITE_CHAR_cc(BPLONG FDIndex, BPLONG op);
 extern void b_put_char_code(FILE *tmp_curr_out,BPLONG op);
 extern int b_WRITE_CHAR_CODE_cc(BPLONG FDIndex, BPLONG op);
 extern int c_CP_FILE_cc();
+extern void print_cnf_header(int sat_nvars, int num_cls);
 //
 //	float1.c prototypes
 //
@@ -1290,6 +1291,7 @@ extern int b_PICAT_TABLE_MAP_KEYS_cf(BPLONG map_num, BPLONG keys);
 extern int b_PICAT_TABLE_MAP_VALS_cf(BPLONG map_num, BPLONG vals);
 extern int b_PICAT_TABLE_MAP_LIST_cf(BPLONG map_num, BPLONG pairs);
 extern BPLONG table_maps_buckets_size();
+extern void set_temp_complete_subgoal_entries();
 
 //
 //	toam.c prototypes

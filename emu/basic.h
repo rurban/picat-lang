@@ -254,10 +254,14 @@ typedef int (*Builtins)();
 
 extern int curr_toam_status;
 
+#ifdef DEBUG
+#define INLINE
+#else
 #ifdef WIN32
 #define INLINE 
 #else
 #define INLINE inline
+#endif
 #endif
 
 #include "extern_decl.h"

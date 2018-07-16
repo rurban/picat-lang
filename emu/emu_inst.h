@@ -6643,15 +6643,16 @@ switch (*P++){
         BPLONG_PTR af = AR; /* ancestor frame */
         BPLONG_PTR b = B;
         while ((BPLONG)af != AR_AR(af)){
-            while (b<=af){
-                RESET_SUBGOAL_AR(b);
+		    while (b <= af){
+			    RESET_SUBGOAL_AR(b);
                 if (IS_CATCHER_FRAME(b)){
                     btm_ptr = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(b)); /* a catcher frame is in the form of p(Flag,Cleanup,Calll,Exception,Recovery,...) */
                     catch_all_flag = FOLLOW(btm_ptr); 
                     except = FOLLOW(btm_ptr-3); 
                     if ((catch_all_flag==BP_ONE || b==af) && is_UNIFIABLE(op1,except)){ /* this catcher catches the exception */
-                        FOLLOW(op2) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)b,INT_TAG);
-                        CONTCASE;
+					  FOLLOW(op2) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)b,INT_TAG);
+					  set_temp_complete_subgoal_entries();
+					  CONTCASE;
                     }
                 }
                 b = (BPLONG_PTR)AR_B(b);
@@ -6659,6 +6660,7 @@ switch (*P++){
             af = (BPLONG_PTR)AR_AR(af);
         }
         FOLLOW(op2) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)af,INT_TAG);
+		set_temp_complete_subgoal_entries();
         CONTCASE;
     }
 

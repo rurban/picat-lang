@@ -5,7 +5,7 @@ main =>
     compile_bp(io),
     compile_bp(cp),
     compile_bp(sat),
-    compile_bp(common_sat_cp),
+    compile_bp(common_constr),
     compile_bp(mip),
     compile_bp(mip_aux),	
     compile_bp(ordset),
