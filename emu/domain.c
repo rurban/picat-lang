@@ -502,7 +502,8 @@ int varorint_set_false(X,elm)
     BPLONG_PTR dv_ptr;
     DEREF_NONVAR(X);
     if (ISINT(X)){
-        if (INTVAL(X)==elm) return BP_FALSE; return BP_TRUE;
+        if (INTVAL(X)==elm) return BP_FALSE;
+        return BP_TRUE;
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     domain_set_false_noint(dv_ptr,elm);
@@ -2113,7 +2114,7 @@ int c_var_notin_ints(){
 int b_VAR_NOTIN_D_cc(X,List)
     BPLONG X,List;
 {
-    BPLONG elm,low,up,minX;
+    BPLONG elm,low,up;
     BPLONG_PTR lst_ptr,interval_ptr,dv_ptr;
 
     DEREF_NONVAR(X);
@@ -2122,7 +2123,7 @@ int b_VAR_NOTIN_D_cc(X,List)
         return check_var_notin_d(INTVAL(X),List);
     } 
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
-    minX = DV_first(dv_ptr);
+    /*minX = DV_first(dv_ptr);*/
     DEREF_NONVAR(List);
     while (ISLIST(List)){
         lst_ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
@@ -2836,10 +2837,9 @@ void exclude_unsupported_y_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
 
 /* X*Y = cz: Special attention needed when X=Y! */
 void exclude_unsupported_y_constr_xy_eq_c(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr_y, BPLONG cz){
-    BPLONG minX,maxX,eY,maxY,eX;
+    BPLONG eY,maxY,eX;
     int supported;
 
-    minX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
     eY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
 
     for (;;){ /* loop_Y: enumerate Y's domain */
@@ -3085,6 +3085,7 @@ x_is_int:
             z_includes_0 = 0;
         }
     } else if (ISINT(Z)) {
+        dv_ptr_z = 0;
         minZ = maxZ = INTVAL(Z);
         if (minZ>0 || maxZ < 0){
             z_includes_0 = 0;
@@ -3145,14 +3146,14 @@ x_is_int:
         if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         maxY = DV_last(dv_ptr_y);
     }
-    if (minX > 0 && maxX < BP_MAXINT_1W || maxX < 0 && minX > BP_MININT_1W){
+    if ((minX > 0 && maxX < BP_MAXINT_1W) || (maxX < 0 && minX > BP_MININT_1W)){
         lowY = min4(sound_low_div(minZ,minX), sound_low_div(minZ,maxX), sound_low_div(maxZ,minX), sound_low_div(maxZ,maxX));
         upY = max4(sound_up_div(minZ,minX), sound_up_div(minZ,maxX), sound_up_div(maxZ,minX), sound_up_div(maxZ,maxX));
         if (domain_region_noint(dv_ptr_y,lowY,upY)==BP_FALSE) return BP_FALSE;    
         if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
     }
-    if (minY > 0 &&  maxY < BP_MAXINT_1W  || maxY <0 && minY > BP_MININT_1W){
+    if ((minY > 0 &&  maxY < BP_MAXINT_1W)  || (maxY <0 && minY > BP_MININT_1W)){
         lowX = min4(sound_low_div(minZ,minY), sound_low_div(minZ,maxY), sound_low_div(maxZ,minY), sound_low_div(maxZ,maxY));
         upX = max4(sound_up_div(minZ,minY), sound_up_div(minZ,maxY), sound_up_div(maxZ,minY), sound_up_div(maxZ,maxY));
         if (domain_region_noint(dv_ptr_x,lowX,upX)==BP_FALSE) return BP_FALSE;    
