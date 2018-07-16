@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : arith.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: arithmetic functions 
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -2159,6 +2159,8 @@ BPLONG bp_float_round(op1)
     } else {
         int sign;
         f = floatval(op1);
+		f = roundl(f);
+		/*
         if (f<0.0){
             f = -f+0.5;
             sign = -1;
@@ -2168,10 +2170,11 @@ BPLONG bp_float_round(op1)
         }
         TEST_NAN(f,op1);
         modf(f,&f);
+		*/
         if (BP_IN_1W_INT_RANGE(f)){
-            return MAKEINT(sign*((BPLONG)f));
+		    return MAKEINT((BPLONG)f);
         } else {
-            return bp_double_to_bigint(sign*f);
+            return bp_double_to_bigint(f);
         }
     }
 }
@@ -2237,7 +2240,7 @@ BPLONG bp_float_ceiling(op1)
         f = floatval(op1);
         TEST_NAN(f,op1);
         modf(f,&intf);
-        if (f>intf){
+        if (f > intf){
             intf += 1;
         }
         if (BP_IN_1W_INT_RANGE(intf)){
@@ -2900,33 +2903,31 @@ int c_MUL_MOD_cccf(){
     y = ARG(2,4); DEREF(y); 
     z = ARG(3,4); DEREF(z); 
     res = ARG(4,4);
-  
+
     if (ISINT(x) && ISINT(y) && ISINT(z)) {
         x = INTVAL(x); y = INTVAL(y); z = INTVAL(z);
 
+		if (z == 0){
+		  exception = divide_by_zero;
+		  return BP_ERROR;
+		}
+		if (z > 0){
+		  if (y > z) y = y%z;
+		  if (x > z) x = x%z;
+		}
         if (x == 0 || y == 0){
-            res0 = BP_ZERO;
+		  res0 = BP_ZERO;
         } else {
-            if (z == 0){
-                exception = divide_by_zero;
-                return BP_ERROR;
-            }
-
-            if (z > 0){
-                if (y > z) y = y%z;
-                if (x > z) x = x%z;
-            }
-
-            res0 = x*y;
-            if (res0/x != y) {
-                BPLONG_PTR heap_top0 = heap_top;
-                res0 = bp_mul_bigint_bigint(bp_int_to_bigint(x),bp_int_to_bigint(y));
-                res0 = bp_mod_bigint_bigint(res0,bp_int_to_bigint(z));
-                heap_top = heap_top0;
-            } else {
-                res0 = res0 % z;
-                res0 = MAKEINT(res0);
-            }
+		  res0 = x*y;
+		  if (res0/x != y) {
+			BPLONG_PTR heap_top0 = heap_top;
+			res0 = bp_mul_bigint_bigint(bp_int_to_bigint(x),bp_int_to_bigint(y));
+			res0 = bp_mod_bigint_bigint(res0,bp_int_to_bigint(z));
+			heap_top = heap_top0;
+		  } else {
+			res0 = res0 % z;
+			res0 = MAKEINT(res0);
+		  }
         }
     } else {
         if (ISINT(x)){

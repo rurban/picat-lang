@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : domain.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Primitives on finite domains
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -177,7 +177,7 @@ BPLONG from,to;
         }
     } else if (ISINT(Var)){
         BPLONG v = INTVAL(Var);
-        return v>=from && v<=to;
+        return (v >= from && v <= to);
     } else {
         exception = illegal_arguments; return BP_ERROR;
     }
@@ -325,7 +325,7 @@ void it_to_bv_with_hole(dv_ptr,elm)
     for (i=from; i<=to; i++){
         *heap_top++ = MASK_FF;
     }
-    FOLLOW(w_ptr) = ~(1L<<(offset%NBITS_IN_LONG));
+    FOLLOW(w_ptr) = ~(1ULL<<(offset%NBITS_IN_LONG));
     INSERT_TRIGGER_dom(dv_ptr,MAKEINT(elm));
 
     size = DV_size(dv_ptr);
@@ -367,7 +367,7 @@ BPLONG interval_start,interval_end;
     w = (BPULONG)FOLLOW(w_ptr);
     offset = offset%NBITS_IN_LONG;
     for (i=interval_start;i<=interval_end;i++){
-        w  &= ~(1L<<offset);
+        w  &= ~(1ULL<<offset);
         INSERT_TRIGGER_dom(dv_ptr,MAKEINT(i));
         offset++;
         if (offset==NBITS_IN_LONG){
@@ -719,7 +719,7 @@ void exclude_inner_elm_bv(dv_ptr,elm)
 
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     w1 = (w & ~mask);
     if (w==w1) return; /* already out */
     PUSHTRAIL_H_ATOMIC(w_ptr,w);
@@ -790,7 +790,7 @@ int b_DM_NEXT_ccf(DVar,E,NextE)
         ASSIGN_f_atom(NextE,MAKEINT(elm));
         return BP_TRUE;
     } else if (elm >= DV_last(dv_ptr)){
-        return 0;
+        return BP_FALSE;
     }
     if (IS_IT_DOMAIN(dv_ptr))
         elm += 1;
@@ -948,7 +948,7 @@ int dm_true(dv_ptr,elm)
   
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     return ((w & mask) !=0);
 }
 
@@ -969,7 +969,7 @@ int dm_true_bv(dv_ptr,elm)
     }
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     return ((w & mask) !=0);
 }
 
@@ -984,7 +984,7 @@ int dm_true_bv_nbt(dv_ptr,elm)
 
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     return ((w & mask) !=0);
 }
 
@@ -1086,12 +1086,12 @@ BPLONG from,to;
     count = 0;
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,from,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     while (from<=to){
         if ((w & mask) != 0) count++;
         mask <<= 1;
         if (mask == 0){
-            mask = 0x1L; w_ptr++; w = FOLLOW(w_ptr);
+            mask = 0x1ULL; w_ptr++; w = FOLLOW(w_ptr);
         }
         from++;
     }
@@ -1110,7 +1110,7 @@ BPLONG from,to;
     count = 0;
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,from,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     while (from<=to){
         if ((w & mask) != 0){
             count++;
@@ -1118,7 +1118,7 @@ BPLONG from,to;
         }
         mask <<= 1;
         if (mask == 0){
-            mask = 0x1L; w_ptr++; w = FOLLOW(w_ptr);
+            mask = 0x1ULL; w_ptr++; w = FOLLOW(w_ptr);
         }
         from++;
     }
@@ -1928,7 +1928,7 @@ void print_domain(dv_ptr)
     last = DV_last(dv_ptr);
   
     if (IS_IT_DOMAIN(dv_ptr)){
-        fprintf(curr_out,"::[%ld..%ld]",first,last);
+        fprintf(curr_out,"::[" BPLONG_FMT_STR " .." BPLONG_FMT_STR "]",first,last);
     } else {
         low = first;
         i = first+1;
@@ -1937,15 +1937,15 @@ void print_domain(dv_ptr)
             while(i<last && dm_true(dv_ptr,i)) i++;
             if (i==last) break;
             high = i-1;
-            if (low==high) fprintf(curr_out,"%ld,",low);
-            else fprintf(curr_out,"%ld..%ld,",low,high);
+            if (low==high) fprintf(curr_out,BPLONG_FMT_STR ",",low);
+            else fprintf(curr_out,BPLONG_FMT_STR ".." BPLONG_FMT_STR ",",low,high);
             i++;
             while (!dm_true(dv_ptr,i) && i<last) i++;
             low = i;
         }
         high = last;
-        if (low==high) fprintf(curr_out,"%ld]",low);
-        else fprintf(curr_out,"%ld..%ld]",low,high);
+        if (low==high) fprintf(curr_out,BPLONG_FMT_STR "]",low);
+        else fprintf(curr_out,BPLONG_FMT_STR ".." BPLONG_FMT_STR "]",low,high);
     }
 }
 
@@ -2127,9 +2127,9 @@ int b_VAR_NOTIN_D_cc(X,List)
         } else {
             interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
             low = FOLLOW(interval_ptr+1);DEREF_NONVAR(low);
-            low=INTVAL(low);
+            low = INTVAL(low);
             up = FOLLOW(interval_ptr+2);DEREF_NONVAR(up);
-            up=INTVAL(up);
+            up = INTVAL(up);
             if (domain_exclude_interval_aux(dv_ptr,low,up)==0) return 0;
         }
         List = FOLLOW(lst_ptr+1);DEREF_NONVAR(List);
@@ -2648,7 +2648,7 @@ int check_var_in_d(x,List)
 
 void exclude_inner_interval_bv(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-BPLONG from,to;
+	BPLONG from,to;
 {
     BPULONG w,mask,offset; 
     BPLONG_PTR w_ptr,bv_ptr,last_trailed_addr;
@@ -2658,7 +2658,7 @@ BPLONG from,to;
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,from,w,w_ptr,offset); 
     while (from<=to){
-        mask = (0x1L << offset); 
+        mask = (0x1ULL << offset); 
         if (w & mask){
             if (last_trailed_addr!=w_ptr){ 
                 PUSHTRAIL_H_ATOMIC(w_ptr,w); 
@@ -2907,6 +2907,75 @@ void exclude_unsupported_z_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
     } /* end of loop_Z */
 }
 
+/* X+Y = Z, X is a bit-vector domain */
+int c_CLPFD_ADD_AC_ccc(){
+  BPLONG X,Y,Z,i,sizeZ;
+  BPLONG_PTR dv_ptr_x,dv_ptr_y,dv_ptr_z,ptr;
+  BPLONG elmX,maxX,elmY,minY,maxY,elmZ,minZ,maxZ;
+
+  X = ARG(1,3); DEREF_NONVAR(X);
+  Y = ARG(2,3); DEREF_NONVAR(Y);
+  Z = ARG(3,3); DEREF_NONVAR(Z);
+
+  //  printf("=> ADD_AC "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n"); 
+  
+  if (!IS_SUSP_VAR(Z)) return BP_TRUE;
+  dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
+  minZ = DV_first(dv_ptr_z);
+  maxZ = DV_last(dv_ptr_z);
+  sizeZ = maxZ-minZ+1;
+  if (local_top-heap_top <= sizeZ || DV_size(dv_ptr_z) > 100){
+	return BP_TRUE;  /* do not enforce AC on Z*/
+  }
+  ptr = local_top-sizeZ;
+  for (i = 1; i < sizeZ-1; i++){
+	*(ptr+i) = 0;                   /* 0 means unsupported, minZ and maxZ are supported */
+  }
+  dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
+  elmX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
+  if (IS_SUSP_VAR(Y)){
+	dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
+	minY = DV_first(dv_ptr_y);
+	maxY = DV_last(dv_ptr_y);
+	for (;;){                       /* iterate over X */
+	  if (IS_IT_DOMAIN(dv_ptr_y)){
+		for (elmY = minY; elmY <= maxY; elmY++){
+		  *(ptr+elmX+elmY-minZ) = 1;
+		}
+	  } else {
+		elmY = minY;
+		for (;;){                   /* iterate over Y */
+		  *(ptr+elmX+elmY-minZ) = 1;
+		  if (elmY == maxY) break;  /* exit loop of Y */
+		  elmY++;
+		  elmY = domain_next_bv(dv_ptr_y,elmY);
+		}
+	  }
+	  if (elmX == maxX) break;      /* exit loop of X */
+	  elmX++;
+	  elmX = domain_next_bv(dv_ptr_x,elmX);
+	}
+  } else {                          /* Y is an int */
+	elmY = INTVAL(Y);
+	for (;;){                       /* iterate over X */	
+	  *(ptr+elmX+elmY-minZ) = 1;
+	  if (elmX == maxX) break;      /* exit loop of X */
+	  elmX++;
+	  elmX = domain_next_bv(dv_ptr_x,elmX);
+	}
+  }
+
+  elmZ = minZ+1;
+  for (i = 1; i < sizeZ-1; i++){
+	if (*(ptr+i) == 0) {            /* elmZ is unsupported */
+	  domain_set_false_noint(dv_ptr_z,elmZ);
+	}
+	elmZ++;
+  }
+  //  printf("<= ADD_AC "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n"); 
+  return BP_TRUE;
+}
+
 /* X*Y = Z */
 int b_CLPFD_MULTIPLY_INT_ccc(X,Y,Z)
     BPLONG X,Y,Z;
@@ -2923,7 +2992,7 @@ x_is_int:
             dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
             dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
             minZ = DV_first(dv_ptr_z); maxZ = DV_last(dv_ptr_z);
-            if (minZ >= -500 && maxZ <= 500){                        // IS_SMALL_DOMAIN(dv_ptr_z)){
+            if (DV_size(dv_ptr_z) <= 100){                        // IS_SMALL_DOMAIN(dv_ptr_z)){
                 for (;;){
                     BPLONG elm = minZ/a;
                     if (a*elm == minZ && dm_true(dv_ptr_y,elm)) {
@@ -3198,6 +3267,7 @@ void Cboot_domain(){
 
     cpcon_k2_ptr = BP_NEW_SYM("k",2);
     insert_cpred("c_cpcon_decrement_counters",4,c_cpcon_decrement_counters);
+	insert_cpred("c_CLPFD_ADD_AC_ccc",3,c_CLPFD_ADD_AC_ccc);
 }
 
     

@@ -8,13 +8,13 @@ main =>
 
 gen(Dir) =>
     Files = listdir(Dir),
-	foreach (File in Files, File != ".", File != "..")
-	    if directory(File) then
-		    gen(Dir++"/"++File)
-		elseif append(MainFileStr,".pi",File) then
-		    printf("echo solving %s/%s\n",Dir,File),
-			printf("picat.exe %s/%s\n",Dir,File)
-		end
-	end.
+    foreach (File in Files, File != ".", File != "..")
+        if directory(File) then
+            gen(Dir ++ separator() ++ File)
+        elseif append(_,".pi",File) then
+            printf("echo solving %s/%s\n",Dir,File),
+            printf("picat %s/%s\n",Dir,File)
+        end
+    end.
 
-		
+        

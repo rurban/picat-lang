@@ -31,17 +31,6 @@ even(N) => N mod 2 == 0.
 get(M, Key, Default)=V =>
    if M.has_key(Key) then V= M.get(Key) else V=Default end.
 
-% higher-order map/2
-map(F,List) = map_list(F,List), list(List) => true.
-map(List,F) = map_list(F,List), list(List) => true.
-
-map_list(_F,[]) = [].
-map_list(F,[X|Xs])=[apply(F,X)|map_list(F,Xs)].
-
-% higher-order map/3
-map(_F,[],[]) = [].
-map(F,[X|Xs],[Y|Ys])=[apply(F,X,Y)|map(F,Xs,Ys)].
-
 odd(N) => N mod 2 == 1.
 
 prime(2) => true.
@@ -120,22 +109,6 @@ last(Struct)=Last, struct(Struct) => Last=Struct[Struct.length].
 private
 last_list([X],Last) => Last=X.
 last_list([_|T],Last) => last_list(T,Last).
-
-% python's reduce
-reduce(F,List)=Res,list(List),List!==[] =>
-    reduce_aux(F,List,Res).
-reduce(List,F)=Res,list(List),List!==[] =>
-    reduce_aux(F,List,Res).
-
-reduce(F,List,Res0)=Res,list(List) =>
-    reduce_aux(F,[Res0|List],Res).
-reduce(List,F,Res0)=Res,list(List) =>
-    reduce_aux(F,[Res0|List],Res).
-
-private
-reduce_aux(_F,[X],Res) => Res=X.
-reduce_aux(F,[X,Y|T],Res) => 
-    reduce_aux(F,[apply(F,X,Y)|T],Res).
 
 unzip([]) = [].
 unzip(L) = [L1,L2], L[1].length == 2, unzip2(L,L1,L2) => true.

@@ -166,8 +166,8 @@ January 14, 2013 \\
     \item \texttt{list($Term$)}\index{\texttt{list/1}} 
     \item \texttt{list\_to\_and($List$) = $Conj$}\index{\texttt{list\_to\_and/1}}
     \item \texttt{lowercase($Char$)}\index{\texttt{lowercase/1}} 
-    \item \texttt{map($F$,$List$) = $ListRes$} \index{\texttt{map/2}}
-    \item \texttt{map($F$,$ListA$,$ListB$) = $ListRes$} \index{\texttt{map/3}}
+    \item \texttt{map($FunOrList$,$ListOrFunc$) = $ResList$} \index{\texttt{map/2}}
+    \item \texttt{map($Fun$,$List1$,$List2$) = $ResList$} \index{\texttt{map/3}}
     \item \texttt{map($Term$)}\index{\texttt{map/1}} 
     \item \texttt{map\_to\_list($Map$) = $List$}\index{\texttt{map\_to\_list/1}} 
     \item \texttt{max($ListOrArray$) = $Val$}\index{\texttt{max/1}} 
@@ -218,8 +218,8 @@ January 14, 2013 \\
     \item \texttt{put\_attr($Var$,$Key$,$Val$)}\index{\texttt{put\_attr/3}} 
     \item \texttt{put\_attr($Var$,$Key$)}\index{\texttt{put\_attr/2}} 
     \item \texttt{real($Term$)}\index{\texttt{real/1}} 
-    \item \texttt{reduce($ListOrFun$,$FunOrList$) = $Value$}\index{\texttt{reduce/2}} 
-    \item \texttt{reduce($ListOrFun$,$FunOrList$,$InitVal$) = $Value$}\index{\texttt{reduce/3}} 
+    \item \texttt{reduce($FunOrList$,$ListOrFunc$) = $Value$}\index{\texttt{reduce/2}} 
+    \item \texttt{reduce($Fun$,$List$,$InitVal$) = $Value$}\index{\texttt{reduce/3}} 
     \item \texttt{remove\_dups($ListOrArray$) = $ResList$}\index{\texttt{remove\_dups/1}} 
     \item \texttt{repeat}\index{\texttt{repeat/0}} (nondet)
     \item \texttt{reverse($ListOrArray$) = $Res$}\index{\texttt{reverse/1}} 
@@ -602,21 +602,25 @@ January 14, 2013 \\
 \begin{scriptsize}
 \begin{itemize}
 \item \texttt{best\_plan($S$,$Limit$,$Plan$)}\index{\texttt{best\_plan/3}}
-\item \texttt{best\_plan($S$,$Plan$,$PlanCost$)}
 \item \texttt{best\_plan($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan/4}}
 \item \texttt{best\_plan($S$,$Plan$)}\index{\texttt{best\_plan/2}}
+\item \texttt{best\_plan($S$,$Plan$,$PlanCost$)}
 \item \texttt{best\_plan\_bb($S$,$Limit$,$Plan$)}\index{\texttt{best\_plan\_bb/3}}
-\item \texttt{best\_plan\_bb($S$,$Plan$,$PlanCost$)}
 \item \texttt{best\_plan\_bb($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_bb/4}}
 \item \texttt{best\_plan\_bb($S$,$Plan$)}\index{\texttt{best\_plan\_bb/2}}
+\item \texttt{best\_plan\_bb($S$,$Plan$,$PlanCost$)}
+\item \texttt{best\_plan\_bin($S$,$Limit$,$Plan$)}\index{\texttt{best\_plan\_bin/3}}
+\item \texttt{best\_plan\_bin($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_bin/4}}
+\item \texttt{best\_plan\_bin($S$,$Plan$)}\index{\texttt{best\_plan\_bin/2}}
+\item \texttt{best\_plan\_bin($S$,$Plan$,$PlanCost$)}
 \item \texttt{best\_plan\_nondet($S$,$Limit$,$Plan$)}\index{\texttt{best\_plan\_nondet/3}} (nondet)
-\item \texttt{best\_plan\_nondet($S$,$Plan$,$PlanCost$)} (nondet)
 \item \texttt{best\_plan\_nondet($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_nondet/4}} (nondet)
 \item \texttt{best\_plan\_nondet($S$,$Plan$)}\index{\texttt{best\_plan\_nondet/2}} (nondet)
+\item \texttt{best\_plan\_nondet($S$,$Plan$,$PlanCost$)} (nondet)
 \item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$)}\index{\texttt{best\_plan\_unbounded/3}}
-\item \texttt{best\_plan\_unbounded($S$,$Plan$,$PlanCost$)}
 \item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_unbounded/4}}
 \item \texttt{best\_plan\_unbounded($S$,$Plan$)}\index{\texttt{best\_plan\_unbounded/2}}
+\item \texttt{best\_plan\_unbounded($S$,$Plan$,$PlanCost$)}
 \item \texttt{current\_plan()=$Plan$}\index{\texttt{current\_plan/0}}
 \item \texttt{current\_resource()=$Amount$}\index{\texttt{current\_resource/0}}
 \item \texttt{current\_resource\_plan\_cost($Amount$,$Plan$,$Cost$)}\index{\texttt{current\_resource\_plan\_cost/3}}
@@ -625,9 +629,9 @@ January 14, 2013 \\
 \item \texttt{plan($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{plan/4}}
 \item \texttt{plan($S$,$Plan$)}\index{\texttt{plan/2}}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$)}\index{\texttt{plan\_unbounded/3}}
-\item \texttt{plan\_unbounded($S$,$Plan$,$PlanCost$)}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{plan\_unbounded/4}}
 \item \texttt{plan\_unbounded($S$,$Plan$)}\index{\texttt{plan\_unbounded/2}}
+\item \texttt{plan\_unbounded($S$,$Plan$,$PlanCost$)}
 \end{itemize}
 \end{scriptsize}
 

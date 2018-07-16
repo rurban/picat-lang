@@ -1,20 +1,20 @@
 /* Updated the arguments for these functions to so that they are valid prototypes for the system  branch */
-#include <time.h>													
-#include <signal.h>													
-#include <stdio.h>													
+#include <time.h>		
+#include <signal.h>		
+#include <stdio.h>		
 
 extern char *inst_name[];
-extern BPLONG foreign_exception;											
+extern BPLONG foreign_exception;
 extern void (*user_signal_action[NSIG])(int,void *);									
-extern void *user_signal_data[NSIG];											
-extern EVENT_FUNC event_func;												
+extern void *user_signal_data[NSIG];
+extern EVENT_FUNC event_func;	
 
 
 // Prototypes are listed by module where they are defined
 //
 //	arith.c prototypes
 //
-extern void init_arith_sym(void);											
+extern void init_arith_sym(void);
 extern BPLONG bp_math_add(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_math_sub(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_math_mul(BPLONG op1,BPLONG op2);									
@@ -31,17 +31,17 @@ extern BPLONG bp_bitwise_shiftl(BPLONG op1,BPLONG op2);
 extern BPLONG bp_bitwise_shiftr(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_bitwise_complement(BPLONG op1);									
 extern BPLONG bp_math_integer(BPLONG op1);										
-extern BPLONG bp_math_sign(BPLONG op1);											
+extern BPLONG bp_math_sign(BPLONG op1);
 extern int b_FLOAT_SIGN_cf(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_math_max(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_math_min(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_math_min1(BPLONG op1);											
-extern BPLONG bp_math_max1(BPLONG op1);											
-extern BPLONG bp_math_sum1(BPLONG op1);											
-extern BPLONG bp_math_prod1(BPLONG op1);											
+extern BPLONG bp_math_min1(BPLONG op1);
+extern BPLONG bp_math_max1(BPLONG op1);
+extern BPLONG bp_math_sum1(BPLONG op1);
+extern BPLONG bp_math_prod1(BPLONG op1);
 extern BPLONG bp_math_fract_part(BPLONG op1);										
 extern BPLONG bp_math_int_part(BPLONG op1);										
-extern BPLONG bp_math_random0(void);											
+extern BPLONG bp_math_random0(void);
 extern BPLONG bp_math_random1(BPLONG op1);										
 extern BPLONG bp_gcd_int_int(BPLONG i1,BPLONG i2);									
 extern BPLONG bp_math_gcd(BPLONG op1,BPLONG op2);									
@@ -50,7 +50,7 @@ extern int equal_to(BPLONG op1,BPLONG op2);
 extern int greater_than(BPLONG op1,BPLONG op2);										
 extern int greater_equal(BPLONG op1,BPLONG op2);									
 extern int b_FLOAT_MINUS_cf(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_float_log(BPLONG op1);											
+extern BPLONG bp_float_log(BPLONG op1);
 extern int b_FLOAT_LOG_cf(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_float_log2(BPLONG op1,BPLONG op2);									
 extern int b_FLOAT_LOG2_ccf(BPLONG op1,BPLONG op2,BPLONG op3);								
@@ -60,15 +60,15 @@ extern int b_FLOAT_POW_ccf(BPLONG op1,BPLONG op2,BPLONG op3);
 extern int b_REM_ccf(BPLONG op1,BPLONG op2,BPLONG op3);									
 extern BPLONG bp_float_sqrt(BPLONG op1);										
 extern int b_FLOAT_SQRT_cf(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_float_abs(BPLONG op1);											
+extern BPLONG bp_float_abs(BPLONG op1);
 extern int b_FLOAT_ABS_cf(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_float_exp(BPLONG op1);											
+extern BPLONG bp_float_exp(BPLONG op1);
 extern int b_FLOAT_EXP_cf(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_float_sin(BPLONG op1);											
+extern BPLONG bp_float_sin(BPLONG op1);
 extern int b_FLOAT_SIN_cf(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_float_cos(BPLONG op1);											
+extern BPLONG bp_float_cos(BPLONG op1);
 extern int b_FLOAT_COS_cf(BPLONG op1,BPLONG op2);									
-extern BPLONG bp_float_tan(BPLONG op1);											
+extern BPLONG bp_float_tan(BPLONG op1);
 extern int b_FLOAT_TAN_cf(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_float_atan(BPLONG op1);										
 extern int b_FLOAT_ATAN_cf(BPLONG op1,BPLONG op2);									
@@ -77,7 +77,7 @@ extern BPLONG bp_float_asin(BPLONG op1);
 extern int b_FLOAT_ASIN_cf(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_float_acos(BPLONG op1);										
 extern int b_FLOAT_ACOS_cf(BPLONG op1,BPLONG op2);									
-extern int b_FLOAT_WRITE_c(BPLONG op);											
+extern int b_FLOAT_WRITE_c(BPLONG op);
 extern BPLONG bp_float_floor(BPLONG op1);										
 extern int b_FLOAT_FLOOR_cf(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_float_float(BPLONG op1);										
@@ -90,9 +90,9 @@ extern BPLONG bp_float_ceiling(BPLONG op1);
 extern int b_FLOAT_CEILING_cf(BPLONG op1,BPLONG op2);									
 extern BPLONG bp_math_xor(BPLONG op1,BPLONG op2);									
 extern int b_XOR_ccf(BPLONG op1,BPLONG op2,BPLONG op3);									
-extern int b_FLOAT_PI_f(BPLONG op1);											
-extern int b_FLOAT_E_f(BPLONG op1);											
-extern int b_RANDOM_f(BPLONG op1);											
+extern int b_FLOAT_PI_f(BPLONG op1);
+extern int b_FLOAT_E_f(BPLONG op1);
+extern int b_RANDOM_f(BPLONG op1);
 extern int b_RANDOM_cf(BPLONG op1,BPLONG op2);										
 extern int b_MAX_ccf(BPLONG op1,BPLONG op2,BPLONG op3);									
 extern int b_MIN_ccf(BPLONG op1,BPLONG op2,BPLONG op3);									
@@ -105,7 +105,7 @@ extern int b_FLOAT_INT_PART_cf(BPLONG op1,BPLONG op2);
 extern int prettymuch_equal(double op1,double op2);									
 extern BPLONG bp_access_array(BPLONG arr,BPLONG indexes);								
 extern BPLONG bp_access_one_array(BPLONG arr,BPLONG index);								
-extern BPLONG eval_arith(BPLONG ex);											
+extern BPLONG eval_arith(BPLONG ex);
 extern int b_EVAL_ARITH_cf(BPLONG ex,BPLONG res);									
 extern int b_RAND_MAX_f(BPLONG rand_max);
 extern int c_MUL_MOD_cccf();
@@ -113,19 +113,19 @@ extern int c_MUL_MOD_cccf();
 //
 //	asp.c prototypes
 //
-extern void c_init_rel_num(void);											
+extern void c_init_rel_num(void);
 extern int b_ASP_TRUE_cc(BPLONG FDVar,BPLONG E);									
 extern int asp_domain_true(BPLONG_PTR dv_ptr,BPLONG elm);								
 extern int asp_domain_false(BPLONG_PTR dv_ptr,BPLONG elm);								
 extern void asp_domain_set_false(BPLONG_PTR dv_ptr,BPLONG elm);								
 extern int b_ASP_NEW_REL(BPLONG Arity,BPLONG MinSizeVect,BPLONG RelNo);							
-extern void print_rel_info(BPLONG rel);											
+extern void print_rel_info(BPLONG rel);
 extern int c_asp_get_rel_col_min_size(void);										
 extern int asp_is_indexed_tuple(BPLONG this_asp_rel_num,BPLONG code,BPLONG I,BPLONG Ai);				
-extern int c_asp_filter_indexed1(void);											
-extern int b_ASP_ADD_TUPLE(BPLONG n);											
+extern int c_asp_filter_indexed1(void);
+extern int b_ASP_ADD_TUPLE(BPLONG n);
 extern int b_ASP_ENCODE_TUPLE(BPLONG n);										
-extern int b_ASP_DECODE(BPLONG n);											
+extern int b_ASP_DECODE(BPLONG n);
 extern int b_ASP_CARD1_PROP_IN_TO_OUT(BPLONG OUT,BPLONG E);								
 extern int b_ASP_PROP_BASE_TO_INDEXED(BPLONG FDVar,BPLONG Code,BPLONG WhichBase);					
 extern int b_ASP_SELECT_REL_cff(BPLONG INOUTs,BPLONG IN,BPLONG OUT);							
@@ -164,11 +164,11 @@ extern int asserta_interpreted_pred(InterpretedPredPtr pred_ptr,BPLONG head,BPLO
 extern BPLONG_PTR assertz_clause_record(InterpretedPredBucketPtr bucket_ptr,BPLONG clause_record);			
 extern int assertz_interpreted_pred(InterpretedPredPtr pred_ptr,BPLONG head,BPLONG body);				
 extern BPLONG hashval_in_assert(InterpretedClausePtr clause_record_ptr);								
-extern int b_ASSERTABLE_c(BPLONG Head);											
+extern int b_ASSERTABLE_c(BPLONG Head);
 extern int b_RETRACTABLE_c(BPLONG Head);										
 extern int b_GET_PRED_PTR_cff(BPLONG Head,BPLONG PredPtr,BPLONG IsDynamic);						
 extern int b_GET_CLAUSES_cfff(BPLONG Head,BPLONG Clauses,BPLONG Key, BPLONG TimeStamp);								
-extern void Cboot_assert(void);												
+extern void Cboot_assert(void);	
 extern BPLONG numberVarCopyToParea(BPLONG term,BPLONG *varno);								
 extern BPLONG numberVarCopyListToParea(BPLONG term,BPLONG *varno);							
 extern BPLONG numberVarCopyCommaToParea(BPLONG term, BPLONG *varno);							
@@ -203,13 +203,13 @@ extern BPLONG numberVarCopyListToFindallArea(NUMBERED_TERM_AREA_RECORD_PTR area_
 //
 //	bigint.c
 //
-extern int c_test_bigint(void);												
+extern int c_test_bigint(void);	
 extern BPLONG bp_ubig_to_int(BPLONG size, UBIGINT x);									
 extern BPLONG bp_bigint_to_int(BPLONG op);										
 extern BPLONG bp_int_to_bigint(BPLONG a);										
 extern double bp_ubig_to_double(BPLONG size, UBIGINT x);								
 extern double bp_bigint_to_double(BPLONG op);										
-extern BPLONG bp_double_to_bigint(double a);												
+extern BPLONG bp_double_to_bigint(double a);	
 extern void bp_inc_ubig(BPLONG_PTR ysize_ptr, UBIGINT y);								
 extern void bp_add_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_PTR zsize_ptr, UBIGINT z);	
 extern void bp_dec_ubig(BPLONG_PTR ysize_ptr, UBIGINT y);								
@@ -228,10 +228,10 @@ extern void bp_twoscomplement_magnitude(BPLONG_PTR zsize_ptr, UBIGINT z);
 extern void bp_shiftr_twoscomplement_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR zsize_ptr, UBIGINT z);
 extern void bp_copy_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y);
 
-extern BPLONG bp_abs_bigint(BPLONG op);											
-extern BPLONG bp_neg_bigint(BPLONG op);											
-extern int bp_sign_bigint(BPLONG op);											
-extern int bp_size_bigint(BPLONG op);											
+extern BPLONG bp_abs_bigint(BPLONG op);
+extern BPLONG bp_neg_bigint(BPLONG op);
+extern int bp_sign_bigint(BPLONG op);
+extern int bp_size_bigint(BPLONG op);
 extern int bp_compare_mag_mag(BPLONG size, UBIGINT x, UBIGINT y);							
 extern BPLONG bp_add_bigint_bigint(BPLONG op1,BPLONG op2);								
 extern BPLONG bp_sub_bigint_bigint(BPLONG op1,BPLONG op2);								
@@ -249,16 +249,16 @@ extern BPLONG bp_lowdiv_bigint_bigint(BPLONG op1, BPLONG op2);
 extern BPLONG bp_gcd_bigint_bigint(BPLONG i1,BPLONG i2);								
 extern BPLONG bp_pow_bigint_int(BPLONG op1,BPLONG op2);								
 extern int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size);
-extern void bp_print_bigint(BPLONG op);											
+extern void bp_print_bigint(BPLONG op);
 extern int b_BUILD_56B_INT_ccf(BPLONG w1, BPLONG w0, BPLONG v);
 extern BPLONG bp_bigint_to_native_long(BPLONG op);
 
 //
 //	buildtins.c prototypes
 //
-//extern int (*builtins[MAXBS])(void);											
-extern void init_builtins(void);											
-extern int b_GET_ARCH_f(BPLONG arch);											
+//extern int (*builtins[MAXBS])(void);
+extern void init_builtins(void);
+extern int b_GET_ARCH_f(BPLONG arch);
 
 //
 //	cfd.c prototypes
@@ -285,7 +285,7 @@ extern void compute_supports_notin(BPLONG arg_no,BPLONG n,BPLONG_PTR htable_ptr,
 				   BPLONG_PTR MinArray,BPLONG_PTR MaxArray);						
 extern BPLONG_PTR  add_tuple_into_trie(BPLONG_PTR tuple_ptr,BPLONG i,BPLONG n,						
 				       BPLONG_PTR last_cell_ptr,BPLONG_PTR children_ptr);				
-extern int c_TUPLES_TO_TRIE(void);											
+extern int c_TUPLES_TO_TRIE(void);
 extern int exclude_ac_unsupported_from_fd(BPLONG X,BPLONG Y,BPLONG_PTR trie_xy_ptr);					
 extern int b_CFD_REMOVE_AC_UNSUPPORTED(BPLONG CompVars,BPLONG Tries);							
 extern int findSupport(BPLONG i,BPLONG n,BPLONG_PTR CompVarArray,BPLONG_PTR SupportArray,BPLONG Nodes);			
@@ -305,21 +305,21 @@ extern int clause_unify_head_arg(BPLONG head_arg,BPLONG cl_head_arg);
 //
 //	clpfd.c prototypes
 //
-extern int dvar_bv(BPLONG op);												
+extern int dvar_bv(BPLONG op);	
 extern int dvar_excludable_or_int(BPLONG op);										
 extern int b_EXCLUDABLE_LIST_c(BPLONG list);										
-extern int nondvar(BPLONG op);												
-extern int dvar(BPLONG op);												
-extern int dvar_or_int(BPLONG op);											
-extern int count_vars(BPLONG op);											
+extern int nondvar(BPLONG op);	
+extern int dvar(BPLONG op);	
+extern int dvar_or_int(BPLONG op);
+extern int count_vars(BPLONG op);
 extern int n_vars_gt(BPLONG count0,BPLONG op,BPLONG limit);								
-extern int trigger_vars_ins(BPLONG op);											
+extern int trigger_vars_ins(BPLONG op);
 extern int trigger_vars_minmax(BPLONG op);										
-extern int trigger_vars_dom(BPLONG op);											
+extern int trigger_vars_dom(BPLONG op);
 extern int trigger_vars_any_dom(BPLONG op);										
-extern int exclude_elm_dvars(void);											
+extern int exclude_elm_dvars(void);
 extern int b_EXCLUDE_ELM_DVARS(BPLONG P_elm,BPLONG P_list1,BPLONG P_list2);						
-extern int exclude_elm_vcs(void);											
+extern int exclude_elm_vcs(void);
 extern int b_EXCLUDE_ELM_VCS(BPLONG elm,BPLONG P_list);									
 extern int b_select_ff(BPLONG Vars,BPLONG BestVar);									
 extern int b_SELECT_FF_MIN_cf(BPLONG Vars,BPLONG BestVar);								
@@ -327,8 +327,8 @@ extern int b_SELECT_FF_MAX_cf(BPLONG Vars,BPLONG BestVar);
 extern int b_SELECT_MIN_cf(BPLONG Vars,BPLONG BestVar);									
 extern int b_SELECT_MAX_cf(BPLONG Vars,BPLONG BestVar);									
 extern int b_CONSTRAINTS_NUMBER_cf(BPLONG Var,BPLONG);								
-extern int count_cs_list(BPLONG list);											
-extern int c_fd_degree(void);												
+extern int count_cs_list(BPLONG list);
+extern int c_fd_degree(void);	
 extern int dvar_degree_count_connected_vars_cs(BPLONG cs);								
 extern int dvar_degree_count_connected_vars_frame(BPLONG_PTR f);							
 extern int dvar_degree_count_connected_vars_term(BPLONG term);								
@@ -336,17 +336,17 @@ extern void dvar_degree_reset_cs_tags_cs(BPLONG cs);
 extern void dvar_degree_reset_cs_tags_frame(BPLONG_PTR f);								
 extern void dvar_degree_reset_cs_tags_term(BPLONG term);								
 extern void display_constraint(BPLONG_PTR frame);									
-extern int display_constraints(void);											
-extern int c_VV_EQ_C_CON(void);												
+extern int display_constraints(void);
+extern int c_VV_EQ_C_CON(void);	
 extern int b_VV_EQ_C_CON_ccc(BPLONG X,BPLONG Y,BPLONG C);								
 extern int c_VV_EQ_C_CON_aux(BPLONG_PTR dv_ptr_x,BPLONG_PTR dv_ptr_y,BPLONG C);						
-extern int c_V_EQ_VC_CON(void);												
+extern int c_V_EQ_VC_CON(void);	
 extern int b_V_EQ_VC_CON_ccc(BPLONG X,BPLONG Y,BPLONG C);								
 extern int c_V_EQ_VC_CON_aux(BPLONG_PTR dv_ptr_x,BPLONG_PTR dv_ptr_y,BPLONG C);						
-extern int c_UU_EQ_C_CON(void);												
+extern int c_UU_EQ_C_CON(void);	
 extern int c_UU_EQ_C_CON_aux(BPLONG A,BPLONG_PTR dv_ptr_x,BPLONG B,BPLONG_PTR dv_ptr_y,BPLONG C);			
-extern void print_event_queue(void);											
-extern int c_U_EQ_UC_CON(void);												
+extern void print_event_queue(void);
+extern int c_U_EQ_UC_CON(void);	
 extern int c_U_EQ_UC_CON_aux(BPLONG A,BPLONG_PTR dv_ptr_x,BPLONG B,BPLONG_PTR dv_ptr_y,BPLONG C);			
 extern int b_CLPSET_CARD_BOUND_c(BPLONG SetTerm);									
 extern int b_CLPSET_LOW_UPDATED_c(BPLONG SetTerm);									
@@ -363,9 +363,9 @@ extern int b_MOD_CON_ccc(BPLONG X,BPLONG Y,BPLONG Z);
 extern int b_IDIV_CON_ccc(BPLONG X,BPLONG Y,BPLONG Z);									
 extern int b_ABS_DIFF_CON_ccc(BPLONG X,BPLONG Y,BPLONG);								
 extern int b_ABS_DIFF_X_TO_Y(BPLONG Ex);										
-extern int b_ABS_ABS_DIFF_NEQ(void);											
-extern int b_COMP_PROP_FAPP1(void);											
-extern int b_COMP_PROP_FAPP2(void);											
+extern int b_ABS_ABS_DIFF_NEQ(void);
+extern int b_COMP_PROP_FAPP1(void);
+extern int b_COMP_PROP_FAPP2(void);
 
 //
 //	clpfd_libs.c prototypes
@@ -391,55 +391,57 @@ extern int b_BOOL_AND_c(BPLONG n);
 //	cpreds.c prototypes
 //
 extern int bp_signal(int signo, void user_signal_handler(int, void *), void *userdata);					
-extern void *bp_get_address(BPLONG t);											
+extern void *bp_get_address(BPLONG t);
 extern BPLONG bp_build_address(void *address);										
 extern int identical_VAR_VAR(BPLONG t1,BPLONG t2);									
 //
 extern BPLONG bp_get_call_arg(BPLONG i,BPLONG arity);									
 extern BPLONG picat_get_call_arg(BPLONG i,BPLONG arity);									
 //
-extern int bp_is_var(BPLONG t);												
-extern int bp_is_atom(BPLONG t);											
-extern int bp_is_integer(BPLONG t);											
-extern int bp_is_float(BPLONG t);											
-extern int bp_is_nil(BPLONG t);												
-extern int bp_is_list(BPLONG t);											
-extern int bp_is_structure(BPLONG t);											
-extern int bp_is_compound(BPLONG t);											
+extern int bp_is_var(BPLONG t);	
+extern int bp_is_atom(BPLONG t);
+extern int bp_is_integer(BPLONG t);
+extern int bp_is_float(BPLONG t);
+extern int bp_is_nil(BPLONG t);	
+extern int bp_is_list(BPLONG t);
+extern int bp_is_structure(BPLONG t);
+extern int bp_is_compound(BPLONG t);
+extern int bp_is_array(BPLONG t);
 extern int bp_is_unifiable(BPLONG t1,BPLONG t2);									
 extern int bp_is_identical(BPLONG t1,BPLONG t2);									
 //
-extern int picat_is_var(BPLONG t);												
-extern int picat_is_attr_var(BPLONG t);												
-extern int picat_is_dvar(BPLONG t);												
-extern int picat_is_bool_dvar(BPLONG t);												
-extern int picat_is_atom(BPLONG t);											
-extern int picat_is_integer(BPLONG t);											
-extern int picat_is_float(BPLONG t);											
-extern int picat_is_nil(BPLONG t);												
-extern int picat_is_list(BPLONG t);											
-extern int picat_is_structure(BPLONG t);											
-extern int picat_is_compound(BPLONG t);											
+extern int picat_is_var(BPLONG t);	
+extern int picat_is_attr_var(BPLONG t);	
+extern int picat_is_dvar(BPLONG t);	
+extern int picat_is_bool_dvar(BPLONG t);	
+extern int picat_is_atom(BPLONG t);
+extern int picat_is_integer(BPLONG t);
+extern int picat_is_float(BPLONG t);
+extern int picat_is_nil(BPLONG t);	
+extern int picat_is_list(BPLONG t);
+extern int picat_is_structure(BPLONG t);
+extern int picat_is_compound(BPLONG t);
+extern int picat_is_array(BPLONG t);
 extern int picat_is_unifiable(BPLONG t1,BPLONG t2);									
 extern int picat_is_identical(BPLONG t1,BPLONG t2);									
-extern int picat_is_string(BPLONG t);											
-extern int picat_is_array(BPLONG t);											
+extern int picat_is_string(BPLONG t);
+extern int picat_is_array(BPLONG t);
 
 //
-extern long bp_get_integer(BPLONG t);											
-extern double bp_get_float(BPLONG t);											
-extern char  *bp_get_name(BPLONG t);											
-extern char  *bp_get_struct_name(BPLONG t);											
-extern int    bp_get_struct_arity(BPLONG t);											
-extern char  *bp_get_atom_name(BPLONG t);											
+extern long bp_get_integer(BPLONG t);
+extern double bp_get_float(BPLONG t);
+extern char  *bp_get_name(BPLONG t);
+extern char  *bp_get_struct_name(BPLONG t);
+extern int    bp_get_struct_arity(BPLONG t);
+extern char  *bp_get_atom_name(BPLONG t);
 
 //
-extern BPLONG picat_get_integer(BPLONG t);											
-extern double picat_get_float(BPLONG t);											
-extern char  *picat_get_name(BPLONG t);											
-extern char  *picat_get_struct_name(BPLONG t);											
-extern int    picat_get_struct_arity(BPLONG t);											
-extern char  *picat_get_atom_name(BPLONG t);											
+extern BPLONG picat_get_integer(BPLONG t);
+extern double picat_get_float(BPLONG t);
+extern char  *picat_get_name(BPLONG t);
+extern char  *picat_get_struct_name(BPLONG t);
+extern int    picat_get_struct_arity(BPLONG t);
+extern char  *picat_get_atom_name(BPLONG t);
 
 //
 extern int bp_unify(BPLONG t1,BPLONG t2);										
@@ -448,86 +450,86 @@ extern int picat_unify(BPLONG t1,BPLONG t2);
 //
 extern BPLONG bp_get_arg(BPLONG i,BPLONG t);										
 extern BPLONG picat_get_arg(BPLONG i,BPLONG t);										
-extern BPLONG bp_get_car(BPLONG t);											
-extern BPLONG bp_get_cdr(BPLONG t);											
-extern BPLONG picat_get_car(BPLONG t);											
-extern BPLONG picat_get_cdr(BPLONG t);											
+extern BPLONG bp_get_car(BPLONG t);
+extern BPLONG bp_get_cdr(BPLONG t);
+extern BPLONG picat_get_car(BPLONG t);
+extern BPLONG picat_get_cdr(BPLONG t);
 
 //
-extern BPLONG bp_build_var(void);											
+extern BPLONG bp_build_var(void);
 extern BPLONG bp_build_integer(BPLONG i);										
-extern BPLONG bp_build_float(double f);											
+extern BPLONG bp_build_float(double f);
 extern BPLONG bp_build_atom(const char *name);										
-extern BPLONG bp_build_list(void);											
-extern BPLONG bp_build_nil(void);											
+extern BPLONG bp_build_list(void);
+extern BPLONG bp_build_nil(void);
 extern BPLONG bp_build_structure(char *name,BPLONG arity);								
 
 //
-extern BPLONG picat_build_var(void);											
+extern BPLONG picat_build_var(void);
 extern BPLONG picat_build_integer(BPLONG i);										
-extern BPLONG picat_build_float(double f);											
+extern BPLONG picat_build_float(double f);
 extern BPLONG picat_build_atom(const char *name);										
-extern BPLONG picat_build_list(void);											
-extern BPLONG picat_build_nil(void);											
+extern BPLONG picat_build_list(void);
+extern BPLONG picat_build_nil(void);
 extern BPLONG picat_build_structure(char *name,BPLONG arity);								
 extern BPLONG picat_build_array(BPLONG n);
 
 //
-extern int atom_2_term(void);												
-extern int string_2_term(void);												
-extern int term_2_atom(void);												
-extern int term_2_string(void);												
+extern int atom_2_term(void);	
+extern int string_2_term(void);	
+extern int term_2_atom(void);	
+extern int term_2_string(void);	
 extern int bp_string_2_term(char *str, BPLONG term, BPLONG vars);							
-extern int bp_call_term(BPLONG term);											
+extern int bp_call_term(BPLONG term);
 extern int bp_call_term_once(BPLONG term);										
 extern int bp_call_term_catch(BPLONG term);										
-extern int c_set_bp_exception(void);											
-extern int bp_call_string(char *cmd);											
+extern int c_set_bp_exception(void);
+extern int bp_call_string(char *cmd);
 extern int bp_mount_query_string(char *cmd);										
 extern int bp_mount_query_term(BPLONG term);										
-extern int bp_next_solution(void);											
+extern int bp_next_solution(void);
 extern void initialize_bp_str_bag(void);										
-extern void expand_bp_str_bag(void);											
+extern void expand_bp_str_bag(void);
 extern void append_str_to_solution_bag(char *str,BPLONG len,BPLONG check_quote);					
 extern char *bp_term_2_string(BPLONG term);										
 extern void aux_term_2_string_term(BPLONG term);									
 extern void aux_term_2_string_list(BPLONG term);									
-extern void bp_write(BPLONG term);											
-extern void picat_write_term(BPLONG term);											
-extern int currentTime(void);												
-extern int test(void);													
-extern int c_CallBpFromC(void);												
-extern int c_START_TRACE(void);												
-extern int c_END_TRACE(void);												
+extern void bp_write(BPLONG term);
+extern void picat_write_term(BPLONG term);
+extern int currentTime(void);	
+extern int test(void);		
+extern int c_CallBpFromC(void);	
+extern int c_START_TRACE(void);	
+extern int c_END_TRACE(void);	
 
 extern int c_MAXINT_f(void);
 extern int c_MININT_f(void);
 
-extern void Cboot(void);												
-extern void Cboot_TP(void);												
+extern void Cboot(void);	
+extern void Cboot_TP(void);	
 
 //
 //	delay.c prototypes
 //
 extern BPLONG build_delayed_call_on_the_heap(BPLONG_PTR frame);								
-extern int c_frozen_cf(void);												
+extern int c_frozen_cf(void);	
 extern BPLONG_PTR frozen_cs(BPLONG_PTR cs,BPLONG_PTR Plist);								
-extern int c_frozen_f(void);												
+extern int c_frozen_f(void);	
 extern int b_SUSP_ATTACH_TERM_cc(BPLONG Var,BPLONG Term);								
 extern int b_SUSP_ATTACHED_TERM_cf(BPLONG Var,BPLONG Term);								
-extern int b_SUSP_VAR_c(BPLONG var);											
+extern int b_SUSP_VAR_c(BPLONG var);
 extern BPLONG next_alive_susp_call(BPLONG cs_list,BPLONG_PTR breg);							
-extern void print_cs(BPLONG cs_list);											
-extern void Cboot_delay(void);												
+extern void print_cs(BPLONG cs_list);
+extern void Cboot_delay(void);	
 
 //
 //	dis.c prototypes
 //
 // extern void symbol_table_statistics(int *num_of_empty_buckets, int *len_of_longest_chain);
-extern void dis(void);													
-extern void dis_data(void);												
-extern void dis_text(void);												
-extern void print_inst(FILE *filedes);											
+extern void dis(void);		
+extern void dis_data(void);	
+extern void dis_text(void);	
+extern void print_inst(FILE *filedes);
 extern void dis_addr(FILE *filedes,BPLONG operand);									
 extern void dis_y(FILE *filedes,BPLONG operand);									
 extern void dis_constant(FILE *filedes,BPLONG operand);									
@@ -540,21 +542,21 @@ extern void dis_zs(FILE *filedes,BPLONG n);
 //
 //	domain.c prototypes
 //
-extern int c_DM_CREATE_BV_DVAR(void);											
-extern int c_DM_CREATE_DVAR(void);											
+extern int c_DM_CREATE_BV_DVAR(void);
+extern int c_DM_CREATE_DVAR(void);
 extern int b_DM_CREATE_DVAR(BPLONG Var,BPLONG From,BPLONG To);								
-extern int c_DM_CREATE_DVARS(void);											
+extern int c_DM_CREATE_DVARS(void);
 extern int aux_create_domain_var(BPLONG Var,BPLONG from,BPLONG to);							
 extern int aux_create_bv_domain_var(BPLONG Var,BPLONG from,BPLONG to);							
 extern BPLONG_PTR dm_clone(BPLONG_PTR dv_ptr);										
-extern int c_create_susp_var(void);											
-extern int create_susp_var(BPLONG Var);											
-extern int fd_vector_min_max(void);											
+extern int c_create_susp_var(void);
+extern int create_susp_var(BPLONG Var);
+extern int fd_vector_min_max(void);
 extern void it_to_bv(BPLONG_PTR dv_ptr);										
 extern void it_to_bv_with_hole(BPLONG_PTR dv_ptr,BPLONG elm);								
 extern void it_to_bv_with_interval_holes(BPLONG_PTR dv_ptr,BPLONG interval_start,BPLONG interval_end);			
 extern int b_DM_DISJOINT_cc(BPLONG Var1,BPLONG Var2);									
-extern int c_DM_INCLUDE(void);												
+extern int c_DM_INCLUDE(void);	
 extern int b_DM_INCLUDE(BPLONG Var1,BPLONG Var2);									
 extern int domain_include_bv(BPLONG_PTR dv_ptr1,BPLONG_PTR dv_ptr2);							
 extern int varorint_set_false(BPLONG X,BPLONG elm);									
@@ -584,7 +586,7 @@ extern int b_DM_MAX_cf(BPLONG Var,BPLONG Max);
 extern int b_DM_COUNT_cf(BPLONG Var,BPLONG Count);									
 extern int count_domain_elms(BPLONG_PTR dv_ptr,BPLONG from,BPLONG to);							
 extern int exclude_domain_elms(BPLONG_PTR dv_ptr,BPLONG from,BPLONG to);						
-extern int c_reachability_test(void);											
+extern int c_reachability_test(void);
 extern int c_path_from_to_reachability_test(void);									
 extern int path_from_to_reachable(BPLONG from,BPLONG to,BPLONG_PTR var_vector,BPLONG_PTR visited);			
 extern int b_PATH_FROM_TO_REACHABLE(void);										
@@ -614,7 +616,7 @@ extern int b_DM_INTERSECT(BPLONG X,BPLONG Y);
 extern int dm_intersect(BPLONG_PTR dv_ptr_x,BPLONG_PTR dv_ptr_y);							
 extern int b_DM_INTERSECT2(BPLONG X,BPLONG Low,BPLONG Up);								
 extern int dm_disjoint(BPLONG_PTR dv_ptr1,BPLONG_PTR dv_ptr2);								
-extern int c_var_notin_ints(void);											
+extern int c_var_notin_ints(void);
 extern int b_VAR_NOTIN_D_cc(BPLONG X,BPLONG List);									
 extern int check_var_notin_d(BPLONG x,BPLONG List);									
 extern int b_TASKS_EXCLUDE_NOGOOD_INTERVAL_ccc(BPLONG start,BPLONG duration,BPLONG tasks);				
@@ -627,47 +629,48 @@ extern int check_var_in_d(BPLONG x,BPLONG List);
 extern void exclude_inner_interval_bv(BPLONG_PTR dv_ptr,BPLONG from,BPLONG to);						
 extern int domain_exclude_interval_aux(BPLONG_PTR dv_ptr,BPLONG from,BPLONG to);					
 extern int domain_exclude_interval_noint(BPLONG_PTR dv_ptr,BPLONG from,BPLONG to);					
+extern int c_CLPFD_ADD_AC_ccc();
 extern int b_CLPFD_MULTIPLY_INT_ccc(BPLONG X,BPLONG Y,BPLONG Z);							
 extern BPLONG con05_hashtable_get(BPLONG table,BPLONG key);								
 extern int c_cpcon_decrement_counters(void);										
 extern int cpcon_decrement_counter(BPLONG Counters,BPLONG J,BPLONG elm,BPLONG_PTR dv_ptr);				
 extern int b_BOOL_DVAR_c(BPLONG op);
-extern void Cboot_domain(void);												
+extern void Cboot_domain(void);	
 
 //
 //	debug.c prototypes
 //
-extern int c_init_dg_flag(void);											
-extern int c_set_dg_flag(void);												
-extern int c_get_dg_flag(void);												
-extern int c_remove_spy_point(void);											
-extern int c_is_spy_point(void);											
-extern int c_add_spy_point(void);											
-extern int c_get_spy_points(void);											
-extern int c_remove_spy_points(void);											
-extern int c_is_debug_mode(void);											
-extern int b_IS_DEBUG_MODE(void);											
-extern int c_is_spy_mode(void);												
+extern int c_init_dg_flag(void);
+extern int c_set_dg_flag(void);	
+extern int c_get_dg_flag(void);	
+extern int c_remove_spy_point(void);
+extern int c_is_spy_point(void);
+extern int c_add_spy_point(void);
+extern int c_get_spy_points(void);
+extern int c_remove_spy_points(void);
+extern int c_is_debug_mode(void);
+extern int b_IS_DEBUG_MODE(void);
+extern int c_is_spy_mode(void);	
 extern void set_global_call_number(BPLONG CallNo);									
 extern int c_set_global_call_number(void);										
 extern int c_next_global_call_number(void);										
-extern int c_set_skip_call_no(void);											
-extern int c_is_skip_call_no(void);											
-extern int c_backtrace(void);												
-extern int c_get_dg_print_depth(void);											
-extern int c_set_dg_print_depth(void);											
-extern int c_get_dg_choice_point(void);											
-extern int c_dg_in_undo_mode(void);											
-extern void Cboot_debug(void);												
+extern int c_set_skip_call_no(void);
+extern int c_is_skip_call_no(void);
+extern int c_backtrace(void);	
+extern int c_get_dg_print_depth(void);
+extern int c_set_dg_print_depth(void);
+extern int c_get_dg_choice_point(void);
+extern int c_dg_in_undo_mode(void);
+extern void Cboot_debug(void);	
 
 //
 //	event.c prototypes
 //
-extern int c_post_event(void);												
+extern int c_post_event(void);	
 extern int b_POST_EVENT_ccc(BPLONG x,BPLONG no,BPLONG e);								
-extern void cg_initialize(void);											
-extern int c_cg_is_component(void);											
-extern int cg_is_component(BPLONG op);											
+extern void cg_initialize(void);
+extern int c_cg_is_component(void);
+extern int cg_is_component(BPLONG op);
 extern void cg_init_sym(void); /* called init_sym */									
 extern int is_correct_event_source(BPLONG event_no,BPLONG source);							
 extern BPLONG event_handler_type(BPLONG_PTR frame);									
@@ -676,24 +679,24 @@ extern BPLONG cg_lookup_event_handler(BPLONG type,BPLONG comp_no);
 extern BPLONG cg_lookup_component(BPLONG type,BPLONG comp_no);								
 extern BPLONG register_event_source(BPLONG event_no,BPLONG source);							
 extern void attach_event_source(BPLONG list,BPLONG source,BPLONG source_no,BPLONG event_no);				
-extern int cg_get_default_window(void);											
-extern int c_cg_print_component(void);											
+extern int cg_get_default_window(void);
+extern int c_cg_print_component(void);
 extern void cg_print_component(BPLONG op);										
 extern BPLONG cg_get_component_no(BPLONG comp);										
-extern int c_timer(void);												
+extern int c_timer(void);	
 extern int c_kill_timer();
-extern int c_sleep(void);												
+extern int c_sleep(void);	
 extern void add_to_event_pool(BPLONG no,BPLONG type,void *event_object);						
-extern void post_event_pool(void);											
+extern void post_event_pool(void);
 extern void post_cg_event(BPLONG handler,BPLONG type,void *eo);								
-extern int c_global_set_bpp(void);											
-extern int c_global_get_bpp(void);											
+extern int c_global_set_bpp(void);
+extern int c_global_get_bpp(void);
 extern int b_GET_ATTACHED_AGENTS_ccf(BPLONG var,BPLONG port,BPLONG lists);						
 extern int b_AGENT_OCCUR_IN_CONJUNCTIVE_CHANNELS_cc(BPLONG frame_offset,BPLONG lists);					
 extern int b_AGENT_OCCUR_IN_DISJUNCTIVE_CHANNELS_cc(BPLONG frame_offset,BPLONG lists);					
 extern int c_start_critical_region(void);										
-extern int c_end_critical_region(void);											
-extern int c_in_critical_region(void);											
+extern int c_end_critical_region(void);
+extern int c_in_critical_region(void);
 
 //
 //	expand.c prototypes
@@ -726,7 +729,7 @@ extern int b_STREAM_IS_OPEN_c(BPLONG Index);
 extern int b_STREAM_SET_TYPE_cc(BPLONG Index,BPLONG Type);								
 extern int b_STREAM_SET_EOF_ACTION_cc(BPLONG Index,BPLONG Action);							
 extern int b_STREAM_ADD_ALIAS_cc(BPLONG Index,BPLONG Atom);								
-extern int b_STREAM_UPDATE_EOS(void);											
+extern int b_STREAM_UPDATE_EOS(void);
 extern int b_STREAM_GET_FILE_NAME_cf(BPLONG Index,BPLONG Name);								
 extern int b_STREAM_GET_MODE_cf(BPLONG Index,BPLONG Mode);								
 extern int b_STREAM_GET_ALIASES_cf(BPLONG Index,BPLONG Aliases);							
@@ -737,15 +740,15 @@ extern int b_STREAM_CHECK_CURRENT_TEXT_INPUT(void);
 extern int b_STREAM_CHECK_CURRENT_TEXT_OUTPUT(void);									
 extern void bp_trim_trailing_zeros(char *bp_buf);									
 extern void bp_write_insert_dot_zero_if_needed(char *bp_buf);								
-extern void bp_write_double(BPLONG op);											
+extern void bp_write_double(BPLONG op);
 extern int bp_write_double_update_pos(BPLONG op);									
-extern int bp_write_bigint(BPLONG op);											
+extern int bp_write_bigint(BPLONG op);
 extern int bp_write_bigint_update_pos(BPLONG op);									
 extern int check_file_term(BPLONG term);										
-extern int get_file_name(BPLONG op);											
+extern int get_file_name(BPLONG op);
 extern void bp_write_pname(CHAR_PTR name_ptr);
 extern int bp_write_pname_update_pos(CHAR_PTR name_ptr,BPLONG length);							
-extern int graphic_char(char ch);											
+extern int graphic_char(char ch);
 extern int single_quote_needed(CHAR_PTR name_ptr,BPLONG length);							
 extern int strcpy_add_quote(CHAR_PTR buf,CHAR_PTR str,BPLONG len);							
 extern void bp_write_qname_to_bp_buf(CHAR_PTR name_ptr,UW16 length);							
@@ -757,68 +760,68 @@ extern int bp_write_suspvar_update_pos(BPLONG op);
 extern int bp_write_int_update_pos(BPLONG op);										
 extern int bp_write_char_update_pos(char c);										
 extern int get_file_index(BPLONG cword, BPLONG mode);									
-extern int next_file_index(void);											
-extern void release_file_index(int i);											
+extern int next_file_index(void);
+extern void release_file_index(int i);
 extern int b_ATOM_MODE_cf(BPLONG op1,BPLONG op2);									
 extern int b_NORMAL_ATOM_c(BPLONG op);										
 extern int b_WRITENAME_c(BPLONG op);										
-extern int c_format_set_dest(void);											
-extern int c_format_get_line_pos(void);											
+extern int c_format_set_dest(void);
+extern int c_format_get_line_pos(void);
 extern int c_format_retrieve_codes(void);										
-extern int c_fmt_writename(void);											
+extern int c_fmt_writename(void);
 extern int b_WRITE_QUICK_c(BPLONG op);										
-extern int c_fmt_write_quick(void);											
+extern int c_fmt_write_quick(void);
 extern int b_WRITEQNAME_c(BPLONG op);										
-extern int c_fmt_writeqname(void);											
+extern int c_fmt_writeqname(void);
 extern int b_WRITEQ_QUICK_c(BPLONG op);									
-extern int c_fmt_writeq_quick(void);											
-extern int c_fmt_nl(void);												
-extern int b_NL(void);													
-extern int b_PUT_BYTE_c(BPLONG op);											
-extern int b_PUT_CODE_c(BPLONG op);											
-extern int b_PUT_c(BPLONG op);											
-extern int c_put_update_pos(void);											
+extern int c_fmt_writeq_quick(void);
+extern int c_fmt_nl(void);	
+extern int b_NL(void);		
+extern int b_PUT_BYTE_c(BPLONG op);
+extern int b_PUT_CODE_c(BPLONG op);
+extern int b_PUT_c(BPLONG op);
+extern int c_put_update_pos(void);
 void write_space();
-extern int b_TAB_c(BPLONG op);											
-extern int b_GET_BYTE_f(BPLONG op);											
-extern int b_GET_CODE_f(BPLONG op);											
+extern int b_TAB_c(BPLONG op);
+extern int b_GET_BYTE_f(BPLONG op);
+extern int b_GET_CODE_f(BPLONG op);
 extern int b_GET0_f(BPLONG op);										
-extern int b_PEEK_BYTE_f(BPLONG op);											
-extern int b_PEEK_CODE_f(BPLONG op);											
-extern int c_UNGETC(void);												
-extern int b_GET_f(BPLONG op);											
-extern int c_rm_file(void);												
-extern int c_cp_file(void);												
+extern int b_PEEK_BYTE_f(BPLONG op);
+extern int b_PEEK_CODE_f(BPLONG op);
+extern int c_UNGETC(void);	
+extern int b_GET_f(BPLONG op);
+extern int c_rm_file(void);	
+extern int c_cp_file(void);	
 extern int b_SEE_c(BPLONG fop);										
-extern int b_SEEN(void);												
+extern int b_SEEN(void);	
 extern int b_SEEING_f(BPLONG temp);										
 extern int b_TELL_cc(BPLONG fop,BPLONG mode);										
-extern int b_TOLD(void);												
+extern int b_TOLD(void);	
 extern int b_TELLING_f(BPLONG temp); /* arg1: unified with the current out put file name */				
 extern int b_OPEN_ccf(BPLONG fop,BPLONG sop,BPLONG Index);								
-extern int get_socket_fd(int index);											
+extern int get_socket_fd(int index);
 extern int allocate_socket_file(FILE *file, char *name);								
-extern int b_CLOSE_c(BPLONG Index);											
-extern void file_init(void);												
+extern int b_CLOSE_c(BPLONG Index);
+extern void file_init(void);	
 extern int b_ACCESS_ccf(BPLONG op1,BPLONG op2,BPLONG op3);								
 extern int socket_file_name(const char* filename);									
-extern int file_stat(void);												
-extern int c_file_permission(void);											
-extern int c_file_type(void);												
+extern int file_stat(void);	
+extern int c_file_permission(void);
+extern int c_file_type(void);	
 extern int c_directory_list_picat(BPLONG List);
 extern int c_directory_list_bp(BPLONG List);
-extern int c_directory_list(void);											
-extern int c_mkdir(void);												
-extern int c_rmdir(void);												
-extern int c_rename(void);												
-extern int c_chdir(void);												
-extern int c_get_cwd(void);												
-extern int c_write_term(void);												
+extern int c_directory_list(void);
+extern int c_mkdir(void);	
+extern int c_rmdir(void);	
+extern int c_rename(void);	
+extern int c_chdir(void);	
+extern int c_get_cwd(void);	
+extern int c_write_term(void);	
 extern void write_term1(BPLONG op,FILE *fp);										
-extern void write_list(BPLONG op);											
-extern int write_term(BPLONG op);											
+extern void write_list(BPLONG op);
+extern int write_term(BPLONG op);
 extern int b_WRITE_IMAGE_c(BPLONG op);										
-extern int write_image(BPLONG op);											
+extern int write_image(BPLONG op);
 extern int b_CURRENT_INPUT_f(BPLONG Index);									
 extern int b_CURRENT_OUTPUT_f(BPLONG Index);									
 extern int b_SET_BINARY_INPUT_cc(BPLONG Index,BPLONG Source);								
@@ -829,19 +832,19 @@ extern int b_SET_BINARY_OUTPUT_cc(BPLONG Index,BPLONG Source);
 extern int b_SET_TEXT_OUTPUT_cc(BPLONG Index,BPLONG Source);								
 extern int b_SET_OUTPUT_cc(BPLONG Index,BPLONG Source);									
 extern int cc_set_output(BPLONG temp_out_file_i);									
-extern int b_FLUSH_OUTPUT(void);											
+extern int b_FLUSH_OUTPUT(void);
 extern int b_ASPN_i(BPLONG op1);										
-extern int c_ASPN_i(void);												
-extern int b_ASPN_c(BPLONG op1);											
+extern int c_ASPN_i(void);	
+extern int b_ASPN_c(BPLONG op1);
 extern int b_ASPN2_cc(BPLONG op1,BPLONG op2);										
 extern int b_ASPN3_ccc(BPLONG op1,BPLONG op2,BPLONG op3);								
 extern int b_ASPN4_cccc(BPLONG op1,BPLONG op2,BPLONG op3,BPLONG op4);							
-extern int aspn(void);													
+extern int aspn(void);		
 extern int b_GET_LINE_NO_cf(BPLONG Index, BPLONG no);									
 extern int b_GET_LINE_POS_cf(BPLONG Index,BPLONG pos);									
 extern int b_ATOM_CONCAT_ccf(BPLONG a1, BPLONG a2, BPLONG a3);
 extern int c_FORMAT_PRINT_INTEGER(void);										
-extern int c_FORMAT_PRINT_FLOAT(void);											
+extern int c_FORMAT_PRINT_FLOAT(void);
 extern char *format_comma_separated_int(BPLONG amt);									
 extern int b_NAME0_cf(BPLONG op1,BPLONG op2); /* op2 is made to be the string of the name of op1*/	 
 extern void picat_str_to_c_str(TERM lst, char *s, BPLONG len);
@@ -879,38 +882,38 @@ extern void print_cnf_header(int sat_nvars, int num_cls);
 //
 //	float1.c prototypes
 //
-extern double floatval(BPLONG op);											
-extern BPLONG encodefloat1(double op);											
+extern double floatval(BPLONG op);
+extern BPLONG encodefloat1(double op);
 
 //
 //	gcheap.c prototypes
 //
-extern int gcHeap(void);												
+extern int gcHeap(void);	
 extern int eliminateDuplicatedTrailInTopSegment(void);									
 extern void eliminateDuplicatedTrailInTopSegmentSquare(void);								
 extern int eliminateDuplicatedTrailInTopSegmentLinear(void);								
-extern void packEntireTrail(void);											
+extern void packEntireTrail(void);
 extern int alreadyTrailed(BPLONG_PTR addr,BPLONG_PTR from_ptr,BPLONG_PTR to_ptr);					
-extern void copyHeapBack(void);												
-extern void gcRescueFreeVars(void);											
+extern void copyHeapBack(void);	
+extern void gcRescueFreeVars(void);
 extern void gcRescueBFrame(BPLONG_PTR ar);										
 extern void gcRescueArFrames(BPLONG_PTR ar);										
 extern void gcRescueSfFrames(BPLONG_PTR sf);										
 extern void gcRescueFrame(BPLONG_PTR f,BPLONG noReservedSlots);								
-extern void gcRescueTrail(void);											
+extern void gcRescueTrail(void);
 extern void gcRescueFreeVar(BPLONG_PTR addr,BPLONG term);								
-extern void gcRescueTriggeredCs(void);											
+extern void gcRescueTriggeredCs(void);
 extern BPLONG gcRescueBitVector(BPLONG_PTR bv_ptr);									
 extern void gcRescueTerm(BPLONG_PTR addr,BPLONG term);									
 
 //
 //	gcqueue.c prototypes
 //
-extern void gcQueueConstruct(void);											
-extern void gcQueueExpand(void);											
-extern BPLONG_PTR gcQueueCopy(void);											
-extern void gcInitDynamicArray(void);											
-extern void gcExpandDynamicArray(void);											
+extern void gcQueueConstruct(void);
+extern void gcQueueExpand(void);
+extern BPLONG_PTR gcQueueCopy(void);
+extern void gcInitDynamicArray(void);
+extern void gcExpandDynamicArray(void);
 extern void gcDisposeDynamicArray(void);										
 extern int allocateMaskArea(BPLONG size);										
 extern void gcSetMask(BPLONG_PTR addr,BPLONG size,BPLONG_PTR base);							
@@ -919,8 +922,8 @@ extern int gcIsMarked(BPLONG_PTR addr,BPLONG_PTR base);
 //
 //	gcstack.c prototypes
 //
-extern int number_of_gcs(void);												
-extern int garbage_collector(void);											
+extern int number_of_gcs(void);	
+extern int garbage_collector(void);
 extern void gc_initialize_ar_chain(void);										
 extern int gc_globalize_sf_chain(void);										
 extern void mark_stack_references_ar_chain(void);									
@@ -928,35 +931,35 @@ extern void mark_stack_references_sf_chain(void);
 extern void mark_stack_references_frame(BPLONG_PTR f);									
 extern void globalize_stack_vars_in_frame(BPLONG_PTR f,BPLONG size);							
 extern int allocateCopyArea(BPLONG size);										
-extern int gcStack(void);												
-extern void copyStackBack(void);											
+extern int gcStack(void);	
+extern void copyStackBack(void);
 extern void gcMoveFrameSlotOut(BPLONG term,BPLONG_PTR des);								
 extern BPLONG_PTR gcMoveFrameOut(BPLONG_PTR src_f,BPLONG nReservedSlots);						
 extern BPLONG_PTR gcMoveAliveFramesOutSf(void);										
 extern BPLONG_PTR gcReverseArChain(BPLONG_PTR f,BPLONG_PTR prev);							
 extern BPLONG_PTR gcMoveAliveFramesOutReversedAr(BPLONG_PTR prev,BPLONG_PTR f);						
 extern BPLONG_PTR gcMoveAliveFramesOutAr(void);										
-extern void gcStackMarkSuspVars(void);											
-extern void gcTrailMarkSuspVars(void);											
+extern void gcStackMarkSuspVars(void);
+extern void gcTrailMarkSuspVars(void);
 extern void gcMarkSuspVarsTerm(BPLONG term);										
 extern void gcMarkSuspVarsCs(BPLONG cs);										
-extern void gcResetSuspVars(void);											
-extern void gcResetTriggeredCs(void);											
+extern void gcResetSuspVars(void);
+extern void gcResetTriggeredCs(void);
 extern void gcResetCs(BPLONG_PTR addr,BPLONG list);									
-extern int b_ENABLE_GC(void);												
-extern int b_DISABLE_GC(void);												
-extern int c_GET_GC_TIME(void);												
+extern int b_ENABLE_GC(void);	
+extern int b_DISABLE_GC(void);	
+extern int c_GET_GC_TIME(void);	
 
 //
 //	getline.c prototypes
 //
 
 #if MSDOS || __EMX__ || __GO32__ || WIN32										
-extern int pc_keymap(int c);												
-#endif															
-extern int c_GET_NONEMPTY_LINE(void);											
-extern int getline_is_spaces(char *s);											
-extern int c_FINISH_GET_LINE(void);											
+extern int pc_keymap(int c);	
+#endif				
+extern int c_GET_NONEMPTY_LINE(void);
+extern int getline_is_spaces(char *s);
+extern int c_FINISH_GET_LINE(void);
 
 //
 //	global.c prototypes
@@ -968,12 +971,12 @@ extern int b_IS_DYNAMIC_cc(BPLONG name,BPLONG arity);
 extern int b_IS_ORDINARY_cc(BPLONG name,BPLONG arity);						
 extern int b_GLOBAL_SET_cccc(BPLONG name,BPLONG arity,BPLONG value,BPLONG part);		
 extern int b_GLOBAL_SET_ccc(BPLONG name,BPLONG arity,BPLONG value);				
-extern int c_OLD_GLOBAL_SET(void);											
-extern int c_OLD_GLOBAL_GET(void);											
+extern int c_OLD_GLOBAL_SET(void);
+extern int c_OLD_GLOBAL_GET(void);
 extern int b_GLOBAL_GET_ccf(BPLONG name,BPLONG arity,BPLONG value);				
 extern int b_ISGLOBAL_cc(BPLONG name,BPLONG arity);							
 extern int b_GLOBAL_DEL_cc(BPLONG name,BPLONG arity);							
-extern int c_SET_ARG_PAREA(void);											
+extern int c_SET_ARG_PAREA(void);
 extern int b_GLOBAL_INSERT_HEAD_cccc(BPLONG name,BPLONG arity,					
 				     BPLONG value,BPLONG part);					
 extern int b_GLOBAL_INSERT_TAIL_ccc(BPLONG name,BPLONG arity,BPLONG value);			
@@ -981,15 +984,15 @@ extern void assert_tail(SYM_REC_PTR sym_ptr,BPLONG term);
 extern BPLONG make_cons_in_parea(BPLONG car, BPLONG cdr);								
 extern BPLONG copy_term_heap_to_parea(BPLONG value);									
 extern BPLONG copy_term_heap_to_parea_with_varno(BPLONG value,BPLONG *varno);						 
-extern int c_UNNUMBER_VARS(void);											
+extern int c_UNNUMBER_VARS(void);
 
 //
 //	init.c prototypes
 //
 extern void init_toam(int argc, char **argv);										
-extern void init_stack(BPLONG bsize);											
+extern void init_stack(BPLONG bsize);
 extern int init_loading(int argc, char **argv);										
-extern int load_bp_out(void);												
+extern int load_bp_out(void);	
 extern int is_bc_file(CHAR_PTR main_arg);										
 extern int load_user_bc_file(char *name);										
 extern void add_main_arg(CHAR_PTR main_arg);										
@@ -998,17 +1001,17 @@ extern int c_init_global_each_session(void);
 //
 //	init_sym.c prototypes
 //
-extern void init_sym(void);												
-extern void init_error_sym(void);											
+extern void init_sym(void);	
+extern void init_error_sym(void);
 extern void init_char_sym(void);
 
 //
 //	loader.c prototypes
 //
 extern int loader(CHAR_PTR file,BPLONG file_type,BPLONG load_damon);							
-extern int load_syms(BPLONG file_type);											
-extern int load_text(void);												
-extern int load_hashtab(void);												
+extern int load_syms(BPLONG file_type);
+extern int load_text(void);	
+extern int load_hashtab(void);	
 extern int get_index_tab(BPLONG clause_no,BPLONG_PTR lenptr);								
 extern BPLONG_PTR gen_index(BPLONG hash_inst_addr,BPLONG clause_no,BPLONG alt);				
 extern BPLONG bp_hsize(BPLONG numentry);										
@@ -1019,8 +1022,8 @@ extern SYM_REC_PTR insert_cpred(CHAR_PTR name,BPLONG arity,int (*func)(void));
 extern int set_temp_ep(SYM_REC_PTR sym_ptr, BPLONG ep);						
 extern void set_real_ep(SYM_REC_PTR sym_ptr, CHAR_PTR base);								
 extern CHAR_PTR namestring(SYM_REC_PTR sym_ptr, CHAR_PTR s);								
-extern int c_CURRENT_PREDICATE(void);											
-extern int c_CURRENT_PREDICATES(void);											
+extern int c_CURRENT_PREDICATE(void);
+extern int c_CURRENT_PREDICATES(void);
 extern SYM_REC_PTR look_for_sym_with_entrance(BPLONG_PTR p);								
 extern int c_LOAD_BYTE_CODE_FROM_BPLISTS();
 extern int c_GET_MODULE_SIGNATURE_cf();
@@ -1034,36 +1037,37 @@ extern int c_GET_MODULE_SIGNATURE_cf();
 //	mic.c prototypes
 //
 extern int compare_bigint_float(BPLONG val1, BPLONG val2);
-extern int c_ref_equal(void);												
-extern int c_NEXT_PRIME(void);												
-extern int c_set_debugging_susp(void);											
+extern int c_ref_equal(void);	
+extern int c_NEXT_PRIME(void);	
+extern int c_set_debugging_susp(void);
 extern int c_unset_debugging_susp(void);										
-extern int c_UNDERSCORE_NAME(void);											
+extern int c_UNDERSCORE_NAME(void);
 extern BPLONG time_t_2_prolog(time_t *t);										
-extern int c_confirm_copy_right(void);											
-extern BPLONG cputime(void);												
-extern int c_WDAY_f(void);												
-extern int c_TIME_ffffff(void);												
-extern int c_GETENV_cf(void);												
+extern int c_confirm_copy_right(void);
+extern BPLONG cputime(void);	
+extern int c_WDAY_f(void);	
+extern int c_TIME_ffffff(void);	
+extern int c_GETENV_cf(void);	
 extern int b_COMPARE_fcc(BPLONG op1,BPLONG op2,BPLONG op3);								
 extern int bp_compare(BPLONG val1, BPLONG val2);							
+extern int bp_compare_array_array(BPLONG_PTR ptr1, BPLONG_PTR ptr2, BPLONG size1, BPLONG size2);
 extern int compare_float_unknown(BPLONG val1,BPLONG val2);								
 extern int comalpha(SYM_REC_PTR psc_ptr1,SYM_REC_PTR  psc_ptr2);							
-extern int c_INCREMENTARG(void);											
-extern int c_DECREMENTARG(void);											
+extern int c_INCREMENTARG(void);
+extern int c_DECREMENTARG(void);
 extern int b_DESTRUCTIVE_SET_ARG_ccc(BPLONG op1,BPLONG op2,BPLONG op3);			
 extern int b_CHAR_CODE_cf(BPLONG ch,BPLONG code); 
 extern int b_CHAR_CODE_fc(BPLONG ch,BPLONG code); 
 extern int string2codes(char *str,BPLONG list);										
-extern int var_or_atomic(BPLONG op);											
+extern int var_or_atomic(BPLONG op);
 extern int b_BLDATOM_fc(BPLONG op1,BPLONG op2);										
 extern int b_BLDNUM_fc(BPLONG op1,BPLONG op2);										
 extern int b_SYSTEM0_cf(BPLONG op1,BPLONG op2); /* op1: a list of int (string) for CShell commands */	
-extern int c_LOAD_cfc(void);												
+extern int c_LOAD_cfc(void);	
 extern int b_LOAD_cfc(BPLONG op1,BPLONG op2,BPLONG op3);					
 extern BPLONG compute_total_parea_size(void);										
-extern int c_STATISTICS(void);												
-extern int c_STATISTICS0(void);												
+extern int c_STATISTICS(void);	
+extern int c_STATISTICS0(void);	
 extern int c_TABLE_BLOCKS(void);
 extern int b_HASHVAL_cf(BPLONG op1,BPLONG op2); /* op1 a term, op2 the hash value of op1 */		
 extern BPLONG bp_hashval(BPLONG op);
@@ -1082,29 +1086,29 @@ extern BPLONG make_struct4(char *f,BPLONG op1,BPLONG op2,BPLONG op3,BPLONG op4);
 extern BPLONG make_struct5(char *f,BPLONG op1,BPLONG op2,BPLONG op3,BPLONG op4,BPLONG op5);				
 extern BPLONG make_struct_dummy(SYM_REC_PTR psc_ptr);									
 extern BPLONG make_struct_holders(SYM_REC_PTR psc_ptr,BPLONG init_val);							
-extern BPLONG make_cons_dummy(void);											
+extern BPLONG make_cons_dummy(void);
 extern BPLONG make_struct_with_args(BPLONG_PTR fp,SYM_REC_PTR psc_ptr);							
 extern int b_GET_LENGTH_cf(BPLONG op1,BPLONG op2);							
 extern int b_GET_UTF8_NCHARS_cf(BPLONG op1,BPLONG op2);							
-extern int c_SHOW_NONDET_FRAME(void);											
+extern int c_SHOW_NONDET_FRAME(void);
 extern int b_CPUTIME_f(BPLONG op1);										
-extern int membchk(void);												
+extern int membchk(void);	
 extern int membchk2(BPLONG x,BPLONG list);										
-extern void quit(CHAR_PTR s);												
+extern void quit(CHAR_PTR s);	
 extern void scat(CHAR_PTR s1, CHAR_PTR s2, CHAR_PTR s3);								
-extern int c_functor(void);												
+extern int c_functor(void);	
 extern int cfunctor1(BPLONG op1,BPLONG op2,BPLONG op3);									
-extern int c_arg(void);													
+extern int c_arg(void);		
 extern int b_GEN_ARG_ccf(BPLONG Index,BPLONG Comp,BPLONG Arg);								
 extern int carg1(BPLONG op1,BPLONG op2,BPLONG op3);						
-extern int c_get_main_args(void);											
-extern int c_SAVE_AR(void);												
-#ifdef GC														
-extern int c_set_gc_threshold(void);											
-#endif															
+extern int c_get_main_args(void);
+extern int c_SAVE_AR(void);	
+#ifdef GC			
+extern int c_set_gc_threshold(void);
+#endif				
 extern int b_NTH_ELM_ccf(BPLONG i,BPLONG l,BPLONG v);									
 extern void myquit(BPLONG overflow_type,char *src);									
-extern int c_HTABLE_HCODE(void);											
+extern int c_HTABLE_HCODE(void);
 extern int htable_contains_tuple(BPLONG_PTR htable_ptr,BPLONG n,BPLONG_PTR tuple_ptr,BPLONG arity);			
 extern int b_HTABLE_CONTAINS_TUPLE(BPLONG Htable,BPLONG Tuple);								
 extern int b_GLOBAL_HEAP_VTABLE_REF_f(BPLONG op);									
@@ -1137,9 +1141,9 @@ extern void qsort_term_array(BPLONG_PTR arr, BPLONG len);
 extern BPLONG bp_remove_eq_neibs(BPLONG lst);										
 extern BPLONG bp_reverse_list(BPLONG lst);										
 extern int b_sort_int_list(BPLONG lst,BPLONG sorted);									
-extern int c_sort_int_list(void);											
-extern int b_DEREF_c(BPLONG T);												
-extern int c_set_exception(void);											
+extern int c_sort_int_list(void);
+extern int b_DEREF_c(BPLONG T);	
+extern int c_set_exception(void);
   
 /**/
 extern int b_IS_STRUCT_c(BPLONG term);
@@ -1162,7 +1166,7 @@ extern int b_TO_CODES_cff(BPLONG term, BPLONG lst, BPLONG lstr);
 extern int b_NEW_STRUCT_ccf(BPLONG name, BPLONG arity, BPLONG term);
 /**/
 
-extern void Cboot_mic(void);												
+extern void Cboot_mic(void);	
 extern UW32 MurmurHash3_x86_32_uint32( const UW32 key, UW32 seed);
 extern int c_bp_exit();
 extern int b_PICAT_ARG_ccf(BPLONG Index,BPLONG Comp,BPLONG Arg);
@@ -1182,33 +1186,33 @@ extern BPLONG unnumberVarTermOpt(BPLONG term);
 extern BPLONG unnumberVarListOpt(BPLONG term);										
 extern BPLONG unnumberVarCommaOpt(BPLONG term);										
 extern BPLONG unnumberVarTerm(BPLONG term,BPLONG_PTR varVector,BPLONG_PTR maxVarNo);					
-extern void Cboot_numbervars(void);											
-extern int c_NUMBER_VARS(void);												
+extern void Cboot_numbervars(void);
+extern int c_NUMBER_VARS(void);	
 extern int aux_number_vars__3(BPLONG op1,BPLONG n0);								
-extern int c_COPY_TERM(void);												
-extern BPLONG copy_term(BPLONG term);											
-extern int c_VARS_SET(void);												
-extern int c_VARS_SET_INTERSECT(void);											
+extern int c_COPY_TERM(void);	
+extern BPLONG copy_term(BPLONG term);
+extern int c_VARS_SET(void);	
+extern int c_VARS_SET_INTERSECT(void);
 extern void vars_set_extract_vars(BPLONG term,BPLONG ex_term);								
 extern BPLONG collect_shared_vars(BPLONG term,BPLONG list0);								
-extern int c_SINGLETON_VARS(void);											
+extern int c_SINGLETON_VARS(void);
 extern void vars_set_extract_singleton_vars(BPLONG term);								
 extern int is_marked_as_singleton(BPLONG var);										
 
 //
-//	sicstus_support.c prototypes											
+//	sicstus_support.c prototypes
 //
-extern int c_current_host(void);											
-extern int c_process_id(void);												
-extern int c_socket_server_open(void);											
+extern int c_current_host(void);
+extern int c_process_id(void);	
+extern int c_socket_server_open(void);
 extern int c_socket_server_accept(void);										
-extern int c_socket_server_close(void);											
-extern void check_hash(void);												
-extern int c_format_to_codes(void);											
-extern int c_now(void);													
-extern int c_term_hash(void);												
-extern int c_random(void);												
-extern int c_simple(void);												
+extern int c_socket_server_close(void);
+extern void check_hash(void);	
+extern int c_format_to_codes(void);
+extern int c_now(void);		
+extern int c_term_hash(void);	
+extern int c_random(void);	
+extern int c_simple(void);	
 
 //
 //	table.c prototypes
@@ -1291,13 +1295,14 @@ extern int b_PICAT_TABLE_MAP_KEYS_cf(BPLONG map_num, BPLONG keys);
 extern int b_PICAT_TABLE_MAP_VALS_cf(BPLONG map_num, BPLONG vals);
 extern int b_PICAT_TABLE_MAP_LIST_cf(BPLONG map_num, BPLONG pairs);
 extern BPLONG table_maps_buckets_size();
-extern void set_temp_complete_subgoal_entries();
-
+extern void reset_temp_complete_subgoal_entries();
+void reset_temp_complete_scc_elms(BPLONG_PTR subgoal_entry);
+  
 //
 //	toam.c prototypes
 //
 extern void exception_handler(int signo);										
-extern void init_signals(void);												
+extern void init_signals(void);	
 extern int initialize_bprolog(int argc,char *argv[]);									
 extern int toam(BPLONG_PTR P, BPLONG_PTR AR, BPLONG_PTR LOCAL_TOP);				
 extern void roll_tabled_frames(BPLONG_PTR b,BPLONG_PTR end_b);								
@@ -1314,17 +1319,17 @@ extern int com0plain(FILE *card, int endeol);
 extern int com0plain_string(int endeol);										
 extern int com2plain(FILE *card, int astcom, int endcom);								
 extern int com2plain_string(int astcom, int endcom);								
-extern int GetToken(void);												
+extern int GetToken(void);	
 extern void printAtomStr(char *message);										
-extern int GetTokenString(void);											
+extern int GetTokenString(void);
 extern int b_NEXT_TOKEN_ff(BPLONG op1,BPLONG op2);									
 extern int b_SET_FLAG_DOUBLE_QUOTES_c(BPLONG FlagVal);									
 extern int b_GET_FLAG_DOUBLE_QUOTES_f(BPLONG FlagVal);									
-extern int c_get_line_nos(void);											
-extern int c_set_line_no(void);												
-extern int c_init_chars_pool(void);											
+extern int c_get_line_nos(void);
+extern int c_set_line_no(void);	
+extern int c_init_chars_pool(void);
 extern int c_update_term_start_line_no(void);										
-extern int c_report_syntax_error(void);											
+extern int c_report_syntax_error(void);
 extern int utf8_getc(FILE *curr_in, int c);
 extern char *utf8_codepoint_to_str(int code, CHAR_PTR s);
 extern int utf8_char_to_codepoint(CHAR_PTR *s_ptr);
@@ -1341,7 +1346,7 @@ extern int unify_str_str(BPLONG op1,BPLONG op2);
 extern int is_IDENTICAL(BPLONG op1, BPLONG op2);									
 extern int identical(BPLONG op1, BPLONG op2);								
 extern int is_UNIFIABLE(BPLONG op1, BPLONG op2);									
-extern int c_UNIFIABLE(void);												
+extern int c_UNIFIABLE(void);	
 extern int unify_suspvar_suspvar(BPLONG op1,BPLONG op2);								
 extern int unify_dvar_dvar(BPLONG_PTR dv_ptr1,BPLONG_PTR dv_ptr2);							
 extern int bind_susp_susp(BPLONG_PTR dv_ptr1,BPLONG_PTR dv_ptr2);							
@@ -1353,8 +1358,8 @@ extern int c_SAME_ADDR();
 //
 //	univ.c prototypes
 //
-extern BPLONG univ_lst2str(BPLONG L);											
-extern BPLONG univ_str2lst(BPLONG op1);											
+extern BPLONG univ_lst2str(BPLONG L);
+extern BPLONG univ_str2lst(BPLONG op1);
 extern int list_length(BPLONG L, BPLONG orig_L);									
 extern int b_UNIV_cc(BPLONG op1,BPLONG op2);										
 
@@ -1372,11 +1377,47 @@ extern int b_SAT_GET_INC_VAR_NUM_f(BPLONG Num);
 extern int c_sat_start();
 extern int c_sat_propagate_dom_bits();
   
+//
+//	espresso_bp.c prototypes
+//
 extern int c_call_espresso();
-extern int c_call_espresso_element();
-extern int c_call_espresso_table();
 extern int c_call_espresso_pb();
   
+//
+//	kapi.c prototypes
+//
+extern double PvalueOfReal(BPLONG term);
+extern BPLONG PvalueOfAddr(BPLONG term);
+extern char* PnumberToStr(BPLONG term);
+extern UW32 ParityOfCompound(BPLONG term);
+extern BPLONG PargOfCompound(BPLONG term, BPLONG n);
+extern char *PascOfFunc(BPLONG term);
+extern char *PascOfAtom(BPLONG term);
+extern char *PnameToAsc(BPLONG term);
+extern int Punify(BPLONG term1, BPLONG term2);
+extern int PuInt(BPLONG term, BPLONG i);
+extern int PuAtom(BPLONG term, char * str);
+extern void PuStr(BPLONG term, char *str);
+extern int PuAddr(BPLONG term, void *a);
+extern int PuReal(BPLONG term, double d);
+extern BPLONG PnewVar();
+extern BPLONG Patom(char *str);
+extern BPLONG create_FUNCTOR(char *name, BPLONG arity);
+extern BPLONG Pfunctorn(BPLONG name, BPLONG arity);
+extern BPLONG get_CAR(BPLONG term);
+extern BPLONG PlistCar(BPLONG term);
+extern BPLONG get_CDR(BPLONG term);
+extern BPLONG PlistCdr(BPLONG term);
+extern BPLONG PlistLength(BPLONG term);
+extern BPLONG Plistn(BPLONG length);
+extern int PcallF(BPLONG term);
+extern int PcallX(BPLONG command);
+extern int PexecP(char *cmd);
+extern int Pexecute(char *cmd);
+extern int PinitP(int argc, char **argv);
+extern void jni_interface();
+extern void plc_sup();
+
 //
 // others
 //

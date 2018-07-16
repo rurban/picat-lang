@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : clpfd_libs.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Primitives on linear constraints
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -894,7 +894,7 @@ int b_IS_BOOLEAN_VAR_CONSTR(coes_type)
 {
     DEREF_NONVAR(coes_type);
     coes_type = INTVAL(coes_type);
-    if (coes_type & 0x1L) return BP_TRUE; return BP_FALSE;
+    if (coes_type & 0x1LL) return BP_TRUE; return BP_FALSE;
 }
 
 /* Install the coefficients and variables on to the stack so that

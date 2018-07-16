@@ -389,7 +389,7 @@ new_domain_var(X) =>
     X = new_fd_var().
 
 %%%
-%post(Constr) ?=> writeln(Constr),fail.
+% post(Constr) ?=> writeln(user,Constr),fail.
 
 post(set_in(X,DomExp)) =>
     (DomExp='{}'(Dom)->
@@ -473,7 +473,6 @@ post(bool_xor(X,Y,Z)) =>
     Z #<=> (X #^ Y).   
 %
 post(int_pow(X,Y,Z)) =>
-    writeln($pow(X,Y,Z)),
     Z #= X**Y.
 post(int_negate(X,Z)) =>
     Z #= -X.
@@ -924,13 +923,13 @@ output_constr(OutS,'$\\='(X,Y)) =>
     output_item(OutS,X),
     print(OutS," #!= "),
     output_item(OutS,Y).
-output_constr(OutS,'$table_in'(VarVect,Table,_)) => 
+output_constr(OutS,'$table_in'(VarVect,_,Table)) => 
     print(OutS,"table_in("),    
     output_item(OutS,VarVect),    
     print(OutS," , "),
     output_list(OutS,Table),
     print(OutS,")").
-output_constr(OutS,'$table_notin'(VarVect,Table,_)) => 
+output_constr(OutS,'$table_notin'(VarVect,_,Table)) => 
     print(OutS,"table_notin("),    
     output_item(OutS,VarVect),    
     print(OutS," , "),

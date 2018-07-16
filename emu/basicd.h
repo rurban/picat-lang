@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : basicd.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -20,7 +20,7 @@ int redefine_warning = 0;
 int confirm_copy_right = 1;
 
 #ifdef LINUX
-BPLONG addr_top_bit = -1L; /* will be changed to 1000... or 0 later */
+BPLONG addr_top_bit = -1LL; /* will be changed to 1000... or 0 later */
 #endif
 
 int     use_tabling = 0;

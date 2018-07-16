@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : basic.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -53,7 +53,7 @@ extern int exec_trace[];
 
 /* maximum and minimum integers that are represented in one word */
 #ifdef M64BITS
-#define BP_MAXINT_1W 72057594037927935
+#define BP_MAXINT_1W 72057594037927935LL
 #define BP_MININT_1W -BP_MAXINT_1W
 #else
 #define BP_MAXINT_1W 268435455   
@@ -75,9 +75,19 @@ extern int exec_trace[];
 typedef char                CHAR;     /*  8 bits */
 typedef unsigned char       BYTE;     /*  8 bits */
 typedef unsigned short int  UW16;     /* 16 bits */
+#ifdef M64BITS
+typedef long long int            BPLONG;   /* 64 bits for Win x64*/
+typedef long long int            TERM;     /* 64 bits for Win x64*/
+typedef unsigned long long int   BPULONG;  /* 64 bits for Win x64*/
+#define BPLONG_FMT_STR "%lld"
+#define BPULONG_FMT_STR "%llx"
+#else
 typedef long int            BPLONG;   /* 32 or 64 bits */
 typedef long int            TERM;     /* 32 or 64 bits */
 typedef unsigned long int   BPULONG;  /* 32 or 64 bits */
+#define BPLONG_FMT_STR "%ld"
+#define BPULONG_FMT_STR "%lx"
+#endif
 typedef unsigned int        UW32;     /* 32 bits */
 
 typedef CHAR  *CHAR_PTR; 
@@ -498,7 +508,7 @@ extern BPLONG addr_top_bit;
 #define BP_MALLOC(ptr,size){							\
 	ptr = (BPLONG_PTR)(malloc(size*sizeof(BPLONG)));	\
 	if (ptr!=NULL){										\
-	  if (addr_top_bit == -1L){							\
+	  if (addr_top_bit == -1LL){						\
 		addr_top_bit = ((BPLONG)ptr & TOP_BIT);			\
 	  } else {											\
 		if (addr_top_bit!=((BPLONG)ptr & TOP_BIT)){		\

@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : cpreds.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Non-inline built-ins in C
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -261,6 +261,12 @@ int picat_is_compound(t)
     BPLONG_PTR top;
     DEREF(t);
     return (bp_is_list(t) || bp_is_structure(t));
+}
+
+int picat_is_array(t)
+    BPLONG t;
+{
+    return b_IS_ARRAY_c(t);
 }
 
 int bp_is_unifiable(t1,t2)
@@ -1207,11 +1213,9 @@ void Cboot() {
     insert_cpred("c_REDUCE_DOMAINS_IC_GE",2,c_REDUCE_DOMAINS_IC_GE);
     //  insert_cpred("c_REDUCE_DOMAIN_AC_ADD",3,c_REDUCE_DOMAIN_AC_ADD);
     insert_cpred("c_TA_TOP_f",1,c_TA_TOP_f);
-#ifdef SAT
     Cboot_sat();
+#ifdef SAT
     insert_cpred("c_call_espresso",5,c_call_espresso);
-    insert_cpred("c_call_espresso_element",5,c_call_espresso_element);
-    insert_cpred("c_call_espresso_table",7,c_call_espresso_table);
     insert_cpred("c_call_espresso_pb",6,c_call_espresso_pb);
 #endif
 

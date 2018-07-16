@@ -355,84 +355,17 @@ fd_vector_min_max(Min,Max) =>
     bp.fd_vector_min_max(Min,Max).
 
 /************************************************************************* 
-    regular(W,Q,S,M,Q0,Fs)
+    regular(L,Q,S,M,Q0,Fs)
 
-  W : A sentence (an IntVar array or list)
+  L : A sentence (an IntVar array or list)
   Q : number of states
   S : input_max, inputs are from 1 to S
-  M : transition matrix (the entry M[I,J] is a list of outgoing states for NFA)
+  M : transition matrix:  M[I,J] (I in 1..S, J in 1..Q) is a list of outgoing states for NFA (0 means an error).
   Q0: initial state
   Fs : accepting states
-
-  This is a translation of MiniZinc's regular constraint (defined in
-  lib/zinc/globals.mzn), via the Comet code refered above.
-  by Hakan Kjellerstrand, 2014, improved by N.F. Zhou
-
-  The following comments are adapted from the MiniZinc code:
-
-  regular(array[int] of var int: W, int: Q, int: S, array[int,int] of int: M, int: Q0, set of int: F)
-  The sequence of values in array W (which must all be in the range 1..S)
-  is accepted by the FA of Q states with input 1..S and transition
-  M (which maps (1..Q, 1..S) -> 0..Q)) and initial state Q0
-  (which must be in 1..Q) and accepting states 'Fs' (which all must be in
-  1..Q).  State 0 is reserved for the failing state.
 ***************************************************************************/
 regular(L, Q, S, M, Q0, Fs) =>
-    regular_cp(L, Q, S, M, Q0, Fs, cp).
-
-regular_cp(L, Q, S, M, Q0, Fs, Solver), list(L) =>
-    regular_cp_aux(L, Q, S, M, Q0, Fs, Solver).
-regular_cp(L, Q, S, M, Q0, Fs ,Solver), array(L) =>
-    regular_cp_aux(to_list(L), Q, S, M, Q0, Fs ,Solver).
-regular_cp(L, _Q, _S, _M, _Q0, _Fs, _Solver) =>
-    handle_exception($list_or_array_expected(L),regular).
-
-% W is a list
-regular_cp_aux(W, Q, S, M, Q0, Fs, Solver) =>
-    % If W has index set 1..n, then Visited[1] is the initial state
-    % (Q0), and Visited[i+1] holds the state we're in after  processing
-    % W[i].  If Visited[n+1] is in Fs, then we succeed (ie. accept the string).
-    check_regular_args(Q, S, M, Q0, Fs, Matrix, FsLst),   
-    N = len(W),
-    Visited = new_array(N+1),            % states
-    bp.domain(to_list(Visited),1,Q),
-    bp.domain(W,1,S),
-    Visited[1] = Q0,                    % initial state
-    bp.'::'(Visited[N+1],FsLst),
-    %    
-    preprocess_regular_cp(Q,S,Matrix,Q0,FsLst,Visited,N),
-    matrix_element_table(Matrix,Q,S,Table),
-    post_matrix_element_for_regular(W,1,Visited,Table,Solver),
-    if Solver==cp then 
-        bp.wait_to_check_regular(Matrix,Q0,FsLst,W)      % needed for NFA
-    end.  
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Visited is a vector of state variables created for the automaton. For each 
-% state variable Visited[T] (T=2..MaxSteps), a state cannot be a possible value
-% if it cannot be reached from Q0 in T steps. Similarly, for each state variable
-% Visited[N-T+2], a state cannot be a possible value either if it cannot be
-% reached from any final state in T steps.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-preprocess_regular_cp(Q,S,Matrix,Q0,FsLst,Visited,N) =>
-    MaxSteps = N,                                             % consider up to MaxSteps steps
-    ReachFromQ0 = new_array(Q,MaxSteps),                      % ReachFromQ0[I,K] is 1 if state I can be reached from Q0 in K steps
-    fa_reachable(Q0,1,MaxSteps,S,Matrix,ReachFromQ0),         % forward from Q0, defined in common_sat_cp.pi
-    %      
-    transport_trans_matrix(Matrix,TMatrix),
-    ReachFromF = new_array(Q,MaxSteps),                       % ReachFromF[I,K] is 1 if state I can be reached from a final state in K steps backward
-    foreach (F in FsLst)
-         fa_reachable(F,1,MaxSteps,S,TMatrix,ReachFromF)      % backward from a final state. 
-    end,
-    %
-    foreach (T in 2..MaxSteps, State in 1..Q)
-        if var(ReachFromQ0[State,T]) then                     % State cannot be reached from Q0 in T steps (Q0 is reachable in 1 step)
-            bp.domain_set_false(Visited[T],State)
-        end,
-        if var(ReachFromF[State,T]) then                      % State cannot be reached from any F in T steps (F is reachable in 1 step)
-            bp.domain_set_false(Visited[N-T+2],State)
-        end
-    end.
+    regular_constr(L, Q, S, M, Q0, Fs, cp).
 
 %%
 %% lex_le(L1,L2): collection L1 is lexicographically less than or equal to L2

@@ -248,7 +248,8 @@ Picat provides the following global constraints.
 
 \item \texttt{diffn($RectangleList$)}\index{\texttt{diffn/1}}: This constraint ensures that no two rectangles in $RectangleList$ overlap with each other. A rectangle in an $n$-dimensional space is represented by a list of $2\times n$ elements \texttt{[$X_1$, $X_2$, $\ldots$, $X_n$, $S_1$, $S_2$, $\ldots$, $S_n$]}, where \texttt{$X_i$} is the starting coordinate of the edge in the $i$th dimension, and \texttt{$S_i$} is the size of the edge.
 
-\item \texttt{disjunctive\_tasks($Tasks$)}\index{\texttt{disjunctive\_tasks/1}}: $Tasks$ is a list of terms.  Each term has the form \\ \texttt{disj\_tasks($S_1$,$D_1$,$S_2$,$D_2$)}, where \texttt{$S_1$} and \texttt{$S_2$} are two integer-domain variables, and \texttt{$D_1$} and \texttt{$D_2$} are two positive integers. This constraint is equivalent to posting the disjunctive constraint $S_1$+$D_1$ \verb+#=<+ $S_2$ \verb+#\/+ $S_2$+$D_2$ \verb+#=<+ $S_1$ for each term \texttt{disj\_tasks($S_1$,$D_1$,$S_2$,$D_2$)} in $Tasks$; however the constraint may be more efficient, because it converts the disjunctive tasks into global constraints. This constraint is only accepted by \texttt{cp}.
+\item \texttt{disjunctive\_tasks($Tasks$)}\index{\texttt{disjunctive\_tasks/1}}: $Tasks$ is a list of terms.  Each term has the form \\ \texttt{disj\_tasks($S_1$,$D_1$,$S_2$,$D_2$)}, where \texttt{$S_1$} and \texttt{$S_2$} are two integer-domain variables, and \texttt{$D_1$} and \texttt{$D_2$} are two positive integers. This constraint is equivalent to posting the disjunctive constraint $S_1$+$D_1$ \verb+#=<+ $S_2$ \verb+#\/+ $S_2$+$D_2$ \verb+#=<+ $S_1$ for each term \texttt{disj\_tasks($S_1$,$D_1$,$S_2$,$D_2$)} in $Tasks$; however the constraint may be more efficient, because it converts the disjunctive tasks into global constraints. 
+
 \item \texttt{element($I$, $List$, $V$)}\index{\texttt{element/3}}: This constraint is true if the $I$th element of $List$ is $V$, where $I$ and $V$ are integer-domain variables, and $List$ is a list of integer-domain variables.
 
 \item \texttt{exactly($N$,$L$,$V$)}:\index{\texttt{exactly/3}}: This constraint succeeds if there are exactly $N$ elements in $L$ that are equal to $V$, where $N$ and $V$ must be integer-domain variables, and $L$ must be a list of integer-domain variables.
@@ -271,7 +272,7 @@ Picat provides the following global constraints.
 
 \item \texttt{matrix\_element($Matrix$,$I$,$J$,$V$)}\index{\texttt{matrix\_element/4}}: This constraint is true if the entry at $<$$I$,$J$$>$ in $Matrix$ is $V$, where $I$, $J$, and $V$ are integer-domain variables, and $Matrix$ is an two-dimensional array of integer-domain variables.
 
-\item \texttt{neqs($NeqList$)}\index{\texttt{neqs/1}}: $NeqList$ is a list of inequality constraints of the form $X$ \verb+#!=+ $Y$, where $X$ and $Y$ are integer-domain variables. This constraint is equivalent to the conjunction of the inequality constraints in $NeqList$, but it extracts \texttt{all\_distinct}\index{\texttt{all\_distinct/1}} constraints from the inequality constraints. This constraint is only accepted by \texttt{cp}.
+\item \texttt{neqs($NeqList$)}\index{\texttt{neqs/1}}: $NeqList$ is a list of inequality constraints of the form $X$ \verb+#!=+ $Y$, where $X$ and $Y$ are integer-domain variables. This constraint is equivalent to the conjunction of the inequality constraints in $NeqList$, but it extracts \texttt{all\_distinct}\index{\texttt{all\_distinct/1}} constraints from the inequality constraints. 
 
 \item \texttt{nvalue($N$,$List$)}\index{\texttt{nvalue/2}}: The number of distinct values in $List$ is $N$, where $List$ is a list of integer-domain variables.
 
@@ -283,7 +284,7 @@ Picat provides the following global constraints.
 
 \item \texttt{serialized($Starts$, $Durations$)}\index{\texttt{serialized/2}}: This constraint describes a set of non-overlapping tasks, where $Starts$ and $Durations$ are lists of integer-domain variables, and the lists have the same length. Let $Os$ be a list of 1s that has the same length as $Starts$. This constraint is equivalent to \texttt{cumulative($Starts$,$Durations$,$Os$,1)}\index{\texttt{cumulative/4}}.
 
-\item \texttt{subcircuit($FDVars$)}\index{\texttt{subcircuit/1}}: This constraint is the same as \texttt{circuit($FDVars$)}\index{\texttt{circuit/1}}, except that not all of the vertices are required to be in the circuit. If the $i$th element of $FDVars$ is $i$, then the vertex $i$ is not part of the circuit. This constraint is only accepted by \texttt{cp} and {\tt sat}.
+\item \texttt{subcircuit($FDVars$)}\index{\texttt{subcircuit/1}}: This constraint is the same as \texttt{circuit($FDVars$)}\index{\texttt{circuit/1}}, except that not all of the vertices are required to be in the circuit. If the $i$th element of $FDVars$ is $i$, then the vertex $i$ is not part of the circuit. 
 
 \end{itemize}
 

@@ -75,6 +75,16 @@ This predicate, if it succeeds, binds $Plan$ to an optimal plan that can transfo
 \item \texttt{best\_plan\_bb($S$,$Plan$)}\index{\texttt{best\_plan\_bb/2}}: 
 This predicate is the same as the \texttt{best\_plan\_bb/4} predicate, except that the limit is assumed to be 268435455, and that the plan's cost is not returned.
 
+\item \texttt{best\_plan\_bin($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_bin/4}}: 
+This predicate, if it succeeds, binds $Plan$ to an optimal plan that can transform state $S$ to a final state. $Cost$ is the cost of $Plan$, which cannot exceed $Limit$, which is a given non-negative integer. The branch-and-bound algorithm is used with binary search to find an optimal plan.
+
+\item \texttt{best\_plan\_bin($S$,$Limit$,$Plan$)}: If the second argument is an integer, then this predicate is the same as the \texttt{best\_plan\_bin/4} predicate, except that the plan's cost is not returned. 
+
+\item \texttt{best\_plan\_bin($S$,$Plan$,$PlanCost$)}\index{\texttt{best\_plan\_bin/3}}: If the second argument is a variable, then this predicate is the same as the \texttt{best\_plan\_bin/4} predicate, except that the limit is assumed to be 268435455.
+
+\item \texttt{best\_plan\_bin($S$,$Plan$)}\index{\texttt{best\_plan\_bin/2}}: 
+This predicate is the same as the \texttt{best\_plan\_bin/4} predicate, except that the limit is assumed to be 268435455, and that the plan's cost is not returned.
+
 \item \texttt{current\_resource()=$Amount$}\index{\texttt{current\_resource/0}}: This function returns the current available resource amount of the current node. If the current execution path was not initiated by one of the calls that performs resource-bounded search, then 268435455 is returned. This function can be used to check the heuristics. If the heuristic estimate of the cost to travel from the current state to a final state is greater than the available resource amount, then the current state can be failed.
 
 \item \texttt{current\_plan()=$Plan$}\index{\texttt{current\_plan/0}}: This function returns the current plan that has transformed the initial state to the current state. If the current execution path was not initiated by one of the calls that performs resource-bounded search, then [] is returned.
@@ -90,17 +100,17 @@ In contrast to depth-bounded search, depth-unbounded search does not take into a
 \begin{itemize}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{plan\_unbounded/4}}: This predicate, if it succeeds, binds $Plan$ to a plan that can transform state $S$ to a final state. $Cost$ is the cost of $Plan$, which cannot exceed $Limit$, which is a given non-negative integer.
 
-\item \texttt{plan\_unbounded($S$,$Limit$,$Plan$)} 
-\item \texttt{plan\_unbounded($S$,$Plan$,$PlanCost$)}\index{\texttt{plan\_unbounded/3}}: 
-If the second argument is an integer, then this predicate is the same as the above predicate, except that the plan's cost is not returned. Otherwise, if the second argument is a variable, then this predicate is the same as the above predicate, except that the limit is assumed to be 268435455.
+\item \texttt{plan\_unbounded($S$,$Limit$,$Plan$)} If the second argument is an integer, then this predicate is the same as the \texttt{plan\_unbounded/4} predicate, except that the plan's cost is not returned. 
+
+\item \texttt{plan\_unbounded($S$,$Plan$,$PlanCost$)}\index{\texttt{plan\_unbounded/3}}: If the second argument is a variable, then this predicate is the same as the \texttt{plan\_unbounded/4} predicate, except that the limit is assumed to be 268435455.
 
 \item \texttt{plan\_unbounded($S$,$Plan$)}\index{\texttt{plan\_unbounded/2}}: This predicate is the same as the above predicate, except that the limit is assumed to be 268435455.
 
 \item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{best\_plan\_unbounded/4}}: This predicate, if it succeeds, binds $Plan$ to an optimal plan that can transform state $S$ to a final state. $Cost$ is the cost of $Plan$, which cannot exceed $Limit$, which is a given non-negative integer.
 
-\item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$)} 
-\item \texttt{best\_plan\_unbounded($S$,$Plan$,$PlanCost$)}\index{\texttt{best\_plan\_unbounded/3}}: 
-If the second argument is an integer, then this predicate is the same as the above predicate, except that the plan's cost is not returned. Otherwise, if the second argument is a variable, then this predicate is the same as the above predicate, except that the limit is assumed to be 268435455.
+\item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$)} If the second argument is an integer, then this predicate is the same as the \texttt{best\_plan\_unbounded/4} predicate, except that the plan's cost is not returned.
+
+\item \texttt{best\_plan\_unbounded($S$,$Plan$,$PlanCost$)}\index{\texttt{best\_plan\_unbounded/3}}: If the second argument is a variable, then this predicate is the same as the \texttt{best\_plan\_unbounded/4} predicate, except that the limit is assumed to be 268435455.
 
 \item \texttt{best\_plan\_unbounded($S$,$Plan$)}\index{\texttt{best\_plan\_unbounded/2}}: This predicate is the same as the above predicate, except that the limit is assumed to be 268435455.
 \end{itemize}

@@ -148,6 +148,7 @@ prolog2java(JNIEnv *env, BPLONG arg) {
     double PvalueOfReal();
     char *PnumberToStr();
 
+	//	printf("prolog2java "); write_term(arg); printf("\n");
     DEREF(arg);
     if (PisInt(arg)) {
         if (PisLong(arg)) {
@@ -160,7 +161,7 @@ prolog2java(JNIEnv *env, BPLONG arg) {
             return bignum;
         } else {
             return (*env)->NewObject(env,class_Integer, init_Integer, 
-                                     (jint)PvalueOfInt(arg));
+                                     (jlong)PvalueOfInt(arg));
         }
     } else if (PisReal(arg)) {
         return (*env)->NewObject(env,class_Double, init_Double, 
@@ -190,6 +191,7 @@ prolog2java(JNIEnv *env, BPLONG arg) {
         return (*env)->NewStringUTF(env, str);
     } else if (PisCompound(arg)) {
         int len = ParityOfCompound(arg);
+		//		printf(" PisCompound %d ",len); write_term(arg); printf("\n");
         jref array = (*env)->NewObjectArray(env, len, class_Object, 0);
         int i;
         for(i=0; i<len; i++) {
@@ -208,6 +210,7 @@ prolog2javaArray(JNIEnv *env, BPLONG arg) {
     BPLONG_PTR top;
 
     DEREF(arg);
+	//	printf("prolog2javaArray "); write_term(arg); printf("\n");
     if (PisCompound(arg)) result = prolog2java(env,arg);
     else result = (*env)->NewObjectArray(env, 0, class_Object, 0);
     return result;
@@ -316,7 +319,7 @@ javaMethod(){
     BPLONG obj = ARG(1,3);
     BPLONG method = ARG(2,3);
     BPLONG result = ARG(3,3);
-    DEREF(obj);
+    DEREF(obj); 
     /*  printf("javaMethod ");write_term(method);printf("\n"); */
     return javaMethod1(obj,method,result);
 }
@@ -325,6 +328,7 @@ int
 javaMethod1(BPLONG obj, BPLONG method, BPLONG result) {
     JNIEnv *env = Env;
     const char *functor = (const char*)PascOfFunc(method);
+	// printf("functor = %s\n", functor);
     /* !!! */
     jstring funcname = (*env)->NewStringUTF(env,functor);
     jref args = prolog2javaArray(env,method);
@@ -381,9 +385,9 @@ javaRegisterEventListener(int source_no, int event_no){
         if (!clazz) return callJavaException(env);
 
         args = (*env)->NewObjectArray(env, 2, class_Object, 0);
-        elm = (*env)->NewObject(env,class_Integer, init_Integer, (jint)source_no);
+        elm = (*env)->NewObject(env,class_Integer, init_Integer, (jlong)source_no);
         (*env)->SetObjectArrayElement(env, args, 0, elm);
-        elm = (*env)->NewObject(env,class_Integer, init_Integer, (jint)event_no);
+        elm = (*env)->NewObject(env,class_Integer, init_Integer, (jlong)event_no);
         (*env)->SetObjectArrayElement(env, args, 1, elm);
         (*env)->CallStaticObjectMethod(env,class_Plc,static_Plc,
                                        clazz, funcname, args);
@@ -627,7 +631,7 @@ void Cboot_plc(){
 #include "bprolog_cg_CgEvent.h"
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1mouse_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint type, jint x, jint y, jint count, jint modifiers){
+(JNIEnv *env, jclass class, jlong no, jlong type, jlong x, jlong y, jlong count, jlong modifiers){
     CgMouseEventClass mouseEventObject;
 
 #ifdef DEBUG_EVENT
@@ -646,7 +650,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1mouse_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1window_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint type){
+(JNIEnv *env, jclass class, jlong no, jlong type){
 
 #ifdef DEBUG_EVENT
     printf("window event: %d %d\n",no,type);
@@ -657,7 +661,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1window_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1focus_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint type){
+(JNIEnv *env, jclass class, jlong no, jlong type){
 
 #ifdef DEBUG_EVENT
     printf("focus event: %d %d\n",no,type);
@@ -667,7 +671,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1focus_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1key_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint type, jint code, jchar ch, jint modifiers){
+(JNIEnv *env, jclass class, jlong no, jlong type, jlong code, jchar ch, jlong modifiers){
     CgKeyEventClass keyEventObject;
 
 #ifdef DEBUG_EVENT
@@ -685,7 +689,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1key_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1component_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint type, jint x, jint y, jint width, jint height){
+(JNIEnv *env, jclass class, jlong no, jlong type, jlong x, jlong y, jlong width, jlong height){
 
     CgComponentEventClass componentEventObject;
 
@@ -705,7 +709,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1component_1event_1to_1bprol
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1action_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no){
+(JNIEnv *env, jclass class, jlong no){
 
 #ifdef DEBUG_EVENT
     printf("action event: %d\n",no);
@@ -715,7 +719,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1action_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1text_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jstring text){ 
+(JNIEnv *env, jclass class, jlong no, jstring text){ 
     const char *str;
 #ifdef DEBUG_EVENT
     printf("text event: %d %d\n",no);
@@ -724,7 +728,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1text_1event_1to_1bprolog
 }
   
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1item_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint index, jint change){
+(JNIEnv *env, jclass class, jlong no, jlong index, jlong change){
 
     CgItemEventClass itemEventObject;
 #ifdef DEBUG_EVENT
@@ -739,7 +743,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1item_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1adjustment_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jint no, jint adjust_type, jint value){
+(JNIEnv *env, jclass class, jlong no, jlong adjust_type, jlong value){
     CgAdjustmentEventClass adjustmentEventObject;
     adjustmentEventObject = (CgAdjustmentEventClass)malloc(sizeof(struct CgAdjustmentEvent));
     if (adjustmentEventObject==NULL) myquit(OUT_OF_MEMORY,"plc");

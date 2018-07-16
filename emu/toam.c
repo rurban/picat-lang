@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : toam.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Emulator of ATOAM
 
  * This Source Code Form is subject to the terms of the Mozilla Public

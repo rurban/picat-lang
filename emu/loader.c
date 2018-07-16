@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : loader.c
- *   Author : Updated by Neng-Fa ZHOU 1994-2017
+ *   Author : Updated by Neng-Fa ZHOU 1994-2018
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -20,8 +20,11 @@
 
 #define MAXSYMS BUCKET_CHAIN
 
+void inline IGUR(int i) {}  /* Ignore GCC Unused Result */
+void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
+
 #define READ_DATA(x,y)  (y - fread(x, sizeof(*x), y, fp))
-#define READ_DATA_ONLY(x,y)  fread(x, sizeof(*x), y, fp)
+#define READ_DATA_ONLY(x,y) IGUR( fread(x, sizeof(*x), y, fp))
 #define RELOC_ADDR(offset) ((BPLONG_PTR)curr_fence + offset)
 #define BUILTIN 1
 
@@ -297,13 +300,13 @@ int loader(file,file_type,load_damon)
      
         err_msg = load_text();
         if (err_msg != 0) {
-            printf("error %ld loading file %s: bad text segment\n", err_msg, file);
+            printf("error " BPLONG_FMT_STR " loading file %s: bad text segment\n", err_msg, file);
             return 1;  /* eventually upper level routines will determine */
         }
 
         err_msg = load_hashtab();
         if (err_msg != 0) {
-            printf("error %ld in (index) loading file %s: bad index segment\n", err_msg, file);
+            printf("error " BPLONG_FMT_STR " in (index) loading file %s: bad index segment\n", err_msg, file);
             return 1;  /*eventually upper level routines will determine */
         }
 
@@ -512,9 +515,6 @@ int load_text()
 #else
         *inst_addr++ = current_opcode;
 #endif
-        /*
-          printf("load %s  count=%ld text_bytes=%ld\n",inst_name[current_opcode],count,text_bytes);
-        */
 
 #include "load_inst.h" 
         count++;

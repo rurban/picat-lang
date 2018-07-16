@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : kapi.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: External language interface
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -12,6 +12,12 @@
 #include "kapi.h"
 #include <stdlib.h>
 #include "frame.h"
+
+#ifdef M64BITS
+#define HALF_WORD_LONG 32
+#else
+#define HALF_WORD_LONG 16
+#endif
 
 SYM_REC_PTR  objectRef;
 extern char *string_in;
@@ -38,14 +44,14 @@ double PvalueOfReal(term)
 BPLONG PvalueOfAddr(term)
     BPLONG term;
 {
-    register BPULONG w1,w2;
+    BPULONG w1,w2;
     BPLONG_PTR top;
 
     DEREF(term);
     UNTAG_ADDR(term);
     w1 = INTVAL(*((BPLONG_PTR)term+1));
     w2 = INTVAL(*((BPLONG_PTR)term+2));
-    return (w2<<16 | w1);
+    return (w2 << HALF_WORD_LONG | w1);
 }
 
 char* PnumberToStr(term)
@@ -70,7 +76,7 @@ BPLONG PargOfCompound(term, n)
     BPLONG term;
     BPLONG n;
 {
-    return picat_get_arg(n+1,term);
+  return picat_get_arg(n+1,term);
 }
 
 /* Return functors as strings*/
@@ -135,8 +141,8 @@ int PuAddr(term,a)
 
     temp = ADDTAG(heap_top,STR);
     NEW_HEAP_NODE((BPLONG)objectRef);  /* '$addr'(int1,int2) */
-    NEW_HEAP_NODE(MAKEINT(((unsigned long int)a<<16)>>16));     
-    NEW_HEAP_NODE(MAKEINT(((unsigned long int)a >>16)));
+    NEW_HEAP_NODE(MAKEINT(((BPULONG)a<<HALF_WORD_LONG)>>HALF_WORD_LONG));     
+    NEW_HEAP_NODE(MAKEINT(((BPULONG)a >>HALF_WORD_LONG)));
     return unify(term,temp);
 }
 
@@ -274,7 +280,7 @@ int Pexecute(cmd)
 
 int PinitP(argc, argv)
     int argc;
-    char *argv[];
+    char **argv;
 {
     return initialize_bprolog(argc,argv);
 }

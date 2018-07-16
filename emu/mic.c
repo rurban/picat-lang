@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : mic.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: miscellaneous functions
  *            Includes MurmurHash by Austin Appleby
 
@@ -36,6 +36,12 @@
 #include "term.h"
 #include "frame.h"
 #include "event.h"
+
+#if defined(WIN32) && defined(M64BITS)
+#define sys_getpid() _getpid()
+#else
+#define sys_getpid() getpid()
+#endif
 
 #define BP_COMPARE_VALS(val1,val2)    (((BPLONG)val1 == (BPLONG)val2) ? 0 : (((BPLONG)val1 > (BPLONG)val2) ? 1 : -1))
 
@@ -294,7 +300,7 @@ l_start:
                             {return 1;},
                             {return 1;},
                             {return -1L;},
-                            {if (IS_FLOAT_PSC(val2)) return 1; else goto compare_symbol;},
+                            {if (IS_FLOAT_PSC(val2)) return 1; else goto compare_struct_struct;},
                             {return 1;});},
 
               {SWITCH_OP(val2,lcompare4,
@@ -305,6 +311,7 @@ l_start:
                          {return BP_COMPARE_UNSIGNED_VALS(val1,val2);});});
 
 compare_atom_atom:
+	if (val1 == val2) return 0;
     if (ISINT(val1)){
         if (ISINT(val2)){
             val1 = INTVAL(val1); val2 = INTVAL(val2);
@@ -312,10 +319,12 @@ compare_atom_atom:
         } else
             return -1L; /* int atom */
     }  else {
-        if (ISATOM(val2)) 
-            goto compare_symbol;
-        else
-            return 1; /* atom int */
+	  if (ISATOM(val2)) {
+		sym_ptr1 = GET_ATM_SYM_REC(val1);
+		sym_ptr2 = GET_ATM_SYM_REC(val2);
+		return comalpha(sym_ptr1, sym_ptr2);
+	  } else
+		return 1; /* atom int */
     }
 
 compare_atom_bigint:
@@ -353,26 +362,34 @@ compare_bigint_unknown:
               {if (IS_FLOAT_PSC(val2)) return compare_bigint_float(val1,val2); else if (IS_BIGINT_PSC(val2)) return bp_compare_bigint_bigint(val1,val2); else return -1L;},
               {return 1;});
    
-compare_symbol:
-    if (val1 == val2) return 0;
-    sym_ptr1 = GET_SYM_REC(val1);
-    sym_ptr2 = GET_SYM_REC(val2);
-    a = GET_ARITY(sym_ptr1);
-    b = GET_ARITY(sym_ptr2);
-    if (a != b)
-        return BP_COMPARE_VALS(a,b);
-    c = comalpha(sym_ptr1, sym_ptr2);
-    if (c || a == 0)
-        return c;
-    UNTAG_ADDR(val1);
-    UNTAG_ADDR(val2);
-    for (b = 1; b <= a; b++) {
-        c = bp_compare(FOLLOW(((BPLONG_PTR)val1)+b),
-                       FOLLOW(((BPLONG_PTR)val2)+b));
-        if (c)
-            break;
-    }
-    return c;
+ compare_struct_struct:	{
+	  BPLONG_PTR ptr1, ptr2;
+	  if (val1 == val2) return 0;
+	  ptr1 = (BPLONG_PTR)UNTAGGED_ADDR(val1);
+	  ptr2 = (BPLONG_PTR)UNTAGGED_ADDR(val2);	  
+	  sym_ptr1 = (SYM_REC_PTR)(FOLLOW(ptr1));
+	  sym_ptr2 = (SYM_REC_PTR)(FOLLOW(ptr2));	  
+	  a = GET_ARITY(sym_ptr1);
+	  b = GET_ARITY(sym_ptr2);
+	  if (a != b){
+		if (GET_LENGTH(sym_ptr1) == 2 && GET_LENGTH(sym_ptr2) == 2){
+		  CHAR_PTR char_ptr1, char_ptr2;
+		  char_ptr1 = GET_NAME(sym_ptr1);
+		  char_ptr2 = GET_NAME(sym_ptr2);		
+		  if (*char_ptr1 == '{' && *(char_ptr1+1) == '}' && *char_ptr2 == '{' && *(char_ptr2+1) == '}'){
+			return bp_compare_array_array(ptr1,ptr2,a,b);
+		  }
+		}
+		return BP_COMPARE_VALS(a,b);
+	  }
+	  c = comalpha(sym_ptr1, sym_ptr2);
+	  if (c) return c;
+	  for (b = 1; b <= a; b++) {
+        c = bp_compare(FOLLOW(ptr1+b), FOLLOW(ptr2+b));
+        if (c) break;
+	  }
+	  return c;
+	}
 }
 
 int compare_bigint_float(BPLONG val1, BPLONG val2)
@@ -403,6 +420,21 @@ int compare_float_unknown(BPLONG val1, BPLONG val2)
     } else 
         return -1L;
 }
+
+/* size1 and size2 are not equal */
+int bp_compare_array_array(BPLONG_PTR ptr1, BPLONG_PTR ptr2, BPLONG size1, BPLONG size2){
+  BPLONG i;
+  
+  BPLONG size = (size1 < size2) ? size1 : size2;
+  for (i = 1; i <= size; i++){
+	int c = bp_compare(FOLLOW(ptr1+i), FOLLOW(ptr2+i));
+	if (c)  return c;
+  }
+  return (size1 < size2) ? -1L : 1L;
+}
+
+				 
+  
 
 int comalpha(sym_ptr1, sym_ptr2)
     SYM_REC_PTR sym_ptr1, sym_ptr2;
@@ -1183,7 +1215,7 @@ BPLONG hashtable_lookup_chain(chain,key)
     }
     return 0;
 }
-    
+
 BPLONG make_struct1(f,op1)
     char *f;
     BPLONG op1;
@@ -1367,16 +1399,16 @@ int c_SHOW_NONDET_FRAME() {
     op1 = ARG(1,1);
     op1 = INTVAL(op1);
     tempreg = (BPLONG_PTR)*arreg;
-    printf("AR=   = %lx\n",tempreg);
-    printf("(AR)  = %lx\n", *tempreg); 
-    printf("CPS   = %lx\n", *(tempreg-1)); 
-    printf("TOP   = %lx\n", *(tempreg-2)); 
-    printf("B     = %lx\n", *(tempreg-3)); 
-    printf("CPF   = %lx\n", *(tempreg-4)); 
-    printf("H     = %lx\n", *(tempreg-5)); 
-    printf("T     = %lx\n", *(tempreg-6)); 
+    printf("AR=   = " BPULONG_FMT_STR "\n",tempreg);
+    printf("(AR)  = " BPULONG_FMT_STR "\n", *tempreg); 
+    printf("CPS   = " BPULONG_FMT_STR "\n", *(tempreg-1)); 
+    printf("TOP   = " BPULONG_FMT_STR "\n", *(tempreg-2)); 
+    printf("B     = " BPULONG_FMT_STR "\n", *(tempreg-3)); 
+    printf("CPF   = " BPULONG_FMT_STR "\n", *(tempreg-4)); 
+    printf("H     = " BPULONG_FMT_STR "\n", *(tempreg-5)); 
+    printf("T     = " BPULONG_FMT_STR "\n", *(tempreg-6)); 
     for (i=1;i<= op1 ;i++) {
-        printf("%lx",*(tempreg-6-i));
+        printf(BPULONG_FMT_STR,*(tempreg-6-i));
         if (*(tempreg-6-i) == (BPLONG)(tempreg-6-i))
             printf(" ***\n");
         else
@@ -1681,27 +1713,27 @@ void myquit(overflow_type,src)
     switch (overflow_type) {
     case STACK_OVERFLOW:
         c_STATISTICS();
-        fprintf(stderr,"\nStack overflow in \"%s\" after %ld garbage collections and %ld stack expansions.\n",src,no_gcs,num_stack_expansions);
+        fprintf(stderr,"\nStack overflow in \"%s\" after " BPLONG_FMT_STR " garbage collections and " BPLONG_FMT_STR " stack expansions.\n",src,no_gcs,num_stack_expansions);
 #ifndef PICAT
         fprintf(stderr,"Please start B-Prolog with more stack space as\n");
         fprintf(stderr,"   bp -s xxx\n");
-        fprintf(stderr,"where xxx > %ld.\n",(int)stack_size);
+        fprintf(stderr,"where xxx > %lld.\n",(int)stack_size);
 #endif
         exit(1);
 
     case TRAIL_OVERFLOW:
         c_STATISTICS();
-        fprintf(stderr,"\nTRAIL stack overflow in \"%s\" after %ld garbage collections and %ld trail expansions.\n",src,no_gcs,num_trail_expansions);
+        fprintf(stderr,"\nTRAIL stack overflow in \"%s\" after " BPLONG_FMT_STR " garbage collections and " BPLONG_FMT_STR " trail expansions.\n",src,no_gcs,num_trail_expansions);
 #ifndef PICAT
         fprintf(stderr,"Please start B-Prolog with more trail stack space as\n");
         fprintf(stderr,"   bp -b xxx\n");
-        fprintf(stderr,"where xxx > %ld.\n",trail_size);
+        fprintf(stderr,"where xxx > %lld.\n",trail_size);
 #endif
         exit(1);
 
     case PAREA_OVERFLOW:
         c_STATISTICS();
-        fprintf(stderr,"\nProgram area overflow in \"%s\" after %ld expansions.\n",src,num_parea_expansions);
+        fprintf(stderr,"\nProgram area overflow in \"%s\" after " BPLONG_FMT_STR " expansions.\n",src,num_parea_expansions);
         exit(1);
 
     case OUT_OF_MEMORY:
@@ -2341,7 +2373,8 @@ void qsort_int_array(BPLONG_PTR arr, BPLONG len) {
     while (i >= 0) {
         L = beg[i]; R = end[i]-1;
         if (L < R) {
-            piv = arr[L];
+            swap = L + (R-L)/2;
+            piv = arr[swap]; arr[swap] = arr[L]; arr[L] = piv;
             while (L < R) {
                 while (L < R && arr[R] > piv) R--;
                 arr[L++] = arr[R];
@@ -2369,7 +2402,8 @@ void qsort_term_array(BPLONG_PTR arr, BPLONG len) {
     while (i >= 0) {
         L = beg[i]; R = end[i]-1;
         if (L < R) {
-            piv = arr[L];
+            swap = L + (R-L)/2;
+            piv = arr[swap]; arr[swap] = arr[L]; arr[L] = piv;
             while (L < R) {
                 while (L < R && bp_compare(arr[R],piv) > 0) R--;
                 arr[L++] = arr[R];
@@ -2577,7 +2611,7 @@ int b_IS_MAP_c(BPLONG term){
                      {return BP_FALSE;}, 
                      {
                          SYM_REC_PTR sym = GET_STR_SYM_REC(term);
-                         return (sym == hashtable_psc || sym == ghashtable_psc || thashtable_psc) ? BP_TRUE : BP_FALSE;
+                         return (sym == hashtable_psc || sym == ghashtable_psc || sym == thashtable_psc) ? BP_TRUE : BP_FALSE;
                      }, 
                      {return BP_FALSE;});
     return BP_FALSE;
@@ -2705,7 +2739,7 @@ int b_NEW_STRUCT_ccf(BPLONG name, BPLONG arity, BPLONG term){
 
 int c_getpid(){
     BPLONG op = ARG(1,1);
-    return unify(op,MAKEINT(getpid()));
+    return unify(op,MAKEINT(sys_getpid()));
 }
 
 void Cboot_mic()

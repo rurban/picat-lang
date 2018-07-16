@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : gcQueue.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Queue class and other utilities used by the GC
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -185,6 +185,6 @@ int gcIsMarked(addr,base)
     BPLONG_PTR word_ptr = global_mask_ptr+offset/NBITS_IN_LONG; 
     BPULONG word = FOLLOW(word_ptr);
     BPLONG bitPosition = offset % NBITS_IN_LONG;
-    BPULONG mask = (0x1L << bitPosition);
+    BPULONG mask = (0x1ULL << bitPosition);
     if ((mask & word) == mask) return 1; else return 0;
 }

@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : cfd.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Primitives on composite finite domains (tuples)
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -78,7 +78,7 @@ void domain_set_true_bv(dv_ptr,elm)
   
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
-    mask = (0x1L << offset);
+    mask = (0x1ULL << offset);
     if (w & mask) return; /* already on */
     FOLLOW(w_ptr) = (w | mask);
     DV_size(dv_ptr) += 1;

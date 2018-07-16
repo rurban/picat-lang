@@ -38,6 +38,16 @@ static int      gl_tab(char *buf, int offset, int *loc);  /* forward reference n
 #include <errno.h>
 #include <signal.h>
 
+#if defined(WIN32) && defined(M64BITS)
+#define sys_write(a,b,c) _write(a,b,c)
+#define sys_isatty(t) _isatty(t)
+#else
+#define sys_write(a,b,c) write(a,b,c)
+#define sys_isatty(t) isatty(t)
+#endif
+
+
+
 /********************* exported interface ********************************/
 
 void            gl_setwidth();          /* specify width of screen */
@@ -345,7 +355,7 @@ gl_putc(c)
 {
     char   ch = c;
 
-    if (ch == '\r' || ch == '\n'); else write(1, &ch, 1);
+    if (ch == '\r' || ch == '\n'); else sys_write(1, &ch, 1);
 
     /*    if (ch == '\n') {
           ch = '\r'; 
@@ -364,7 +374,7 @@ gl_puts(buf)
     
     if (buf) {
         len = strlen(buf);
-        write(1, buf, len);
+        sys_write(1, buf, len);
     }
 }
 
@@ -375,7 +385,7 @@ gl_error(buf)
     int len = strlen(buf);
 
     gl_cleanup();
-    write(2, buf, len);
+    sys_write(2, buf, len);
     exit(1);
 }
 
@@ -386,7 +396,7 @@ gl_init()
     if (gl_init_done < 0) {             /* -1 only on startup */
         hist_init();
     }
-    if (isatty(0) == 0 || isatty(1) == 0)
+    if (sys_isatty(0) == 0 || sys_isatty(1) == 0)
         gl_error("\n*** Error: getline(): not interactive, use stdio.\n");
     gl_char_init();
     gl_init_done = 1;

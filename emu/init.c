@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : init.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -89,7 +89,7 @@ void init_toam(argc, argv)
                     print_picat_usage();
                     exit(0);
                 } else if (*(str+2) == 'v' || strcmp(str+2,"version")==0){
-                    printf("Picat version 2.2#4\n");
+                    printf("Picat version 2.4b6\n");
                     exit(0);
                 }
                                 

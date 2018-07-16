@@ -1,49 +1,49 @@
 /********************************************************************
  *   File   : term.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
-#define REF               0x0L   /* 00 */
-#define LST               0x3L   /* 11 */
-#define STR               0x1L   /* 01 */
-#define ATM               0x2L   /* 10 */
+#define REF               0x0ULL   /* 00 */
+#define LST               0x3ULL   /* 11 */
+#define STR               0x1ULL   /* 01 */
+#define ATM               0x2ULL   /* 10 */
 #define EPSILON           1.0e-8
-#define MASK2             0x2L
+#define MASK2             0x2ULL
 
-#define MASK_LOW28        0xfffffffL
+#define MASK_LOW28        0xfffffffULL
 
 #ifdef M64BITS
-#define SUSP              0x8000000000000001L
-#define TOP_BIT_MASK      0x8000000000000000L
-#define TOP_BIT           0x8000000000000000L
-#define TAG_MASK          0x8000000000000003L
-#define INT_TAG           0x8000000000000002L
-#define INT_TAG32         0x80000002L
-#define VAL_MASK1         0xfffffffffffffffcL
-#define VAL_MASK0         0x7ffffffffffffffcL
-#define FFFF              0xffffffffffffffffL
-#define MASK_FF           0xffffffffffffffffL
-#define MASK_7F           0x7fffffffffffffffL
-#define HASH_BITS         0x000000000fffffffL
-#define MASK_LOW16        0x000000000000ffffL
+#define SUSP              0x8000000000000001ULL
+#define TOP_BIT_MASK      0x8000000000000000ULL
+#define TOP_BIT           0x8000000000000000ULL
+#define TAG_MASK          0x8000000000000003ULL
+#define INT_TAG           0x8000000000000002ULL
+#define INT_TAG32         0x80000002ULL
+#define VAL_MASK1         0xfffffffffffffffcULL
+#define VAL_MASK0         0x7ffffffffffffffcULL
+#define FFFF              0xffffffffffffffffULL
+#define MASK_FF           0xffffffffffffffffULL
+#define MASK_7F           0x7fffffffffffffffULL
+#define HASH_BITS         0x000000000fffffffULL
+#define MASK_LOW16        0x000000000000ffffULL
 #else
-#define SUSP              0x80000001L
-#define TOP_BIT_MASK      0x80000000L
-#define TOP_BIT           0x80000000L
-#define TAG_MASK          0x80000003L
-#define INT_TAG32         0x80000002L
-#define INT_TAG           0x80000002L
-#define VAL_MASK1         0xfffffffcL
-#define VAL_MASK0         0x7ffffffcL
-#define FFFF              0xffffffffL
-#define MASK_FF           0xffffffffL
-#define MASK_7F           0x7fffffffL
-#define HASH_BITS         0x0fffffffL
-#define MASK_LOW16        0x0000ffffL
+#define SUSP              0x80000001UL
+#define TOP_BIT_MASK      0x80000000UL
+#define TOP_BIT           0x80000000UL
+#define TAG_MASK          0x80000003UL
+#define INT_TAG32         0x80000002UL
+#define INT_TAG           0x80000002UL
+#define VAL_MASK1         0xfffffffcUL
+#define VAL_MASK0         0x7ffffffcUL
+#define FFFF              0xffffffffUL
+#define MASK_FF           0xffffffffUL
+#define MASK_7F           0x7fffffffUL
+#define HASH_BITS         0x0fffffffUL
+#define MASK_LOW16        0x0000ffffUL
 #endif
 
 /****************************************************************************/
@@ -80,10 +80,10 @@
 #define BP_ONE  MAKEINT(1)
 #define BP_TWO  MAKEINT(2)
 #define BP_THREE  MAKEINT(3)
-#define BP_MONE  MAKEINT(-1L)
+#define BP_MONE  MAKEINT(-1LL)
 
 #define ADDTAG3(op,tag)    ((BPLONG)(op) | tag)
-#define UNTAGGED3(op)      (((BPLONG)(op)) & ~0x3L) /* fffffffc */
+#define UNTAGGED3(op)      (((BPLONG)(op)) & VAL_MASK1)     /* fffffffc */
 #define UNTAGGED_CONT(op)      (((BPLONG)(op)) & VAL_MASK0) /* 7ffffffc */
 
 #ifdef LINUX
@@ -175,7 +175,7 @@
 #define IHASH(val,size)  (((unsigned long int)val >>2 ) % size)
 
 #ifdef  M64BITS
-#define ALIGN(type,ptr)  ptr = (type)((BPULONG)((CHAR_PTR)ptr + 7) & 0xfffffffffffffff8L)
+#define ALIGN(type,ptr)  ptr = (type)((BPULONG)((CHAR_PTR)ptr + 7) & 0xfffffffffffffff8ULL)
 #else
 #define ALIGN(type,ptr)  ptr = (type)((BPULONG)((CHAR_PTR)ptr + 3) & 0xfffffffc)
 #endif
@@ -520,8 +520,8 @@
 #define WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset){							\
 	offset = elm-BV_low_val(bv_ptr);									\
 	w_ptr = (BPLONG_PTR)BV_base_ptr(bv_ptr) + offset/NBITS_IN_LONG;		\
-											offset = offset % NBITS_IN_LONG; \
-											w = FOLLOW(w_ptr); }
+	offset = offset % NBITS_IN_LONG;									\
+	w = FOLLOW(w_ptr); }
 
 #define NEXT_IN_WORD(from,w,w_ptr,offset,mask){ \
     mask = (MASK_FF << offset);					\
@@ -540,8 +540,8 @@
 
 
 #define  NEXT_IN_ELM(elm,w,offset,mask){						\
-    while ((w & (0xffL << offset))==0){offset += 8; elm += 8;}	\
-    mask = (0x1L << offset);									\
+    while ((w & (0xffULL << offset))==0){offset += 8; elm += 8;}	\
+    mask = (0x1ULL << offset);									\
     while (!(w & mask)){										\
       elm++;													\
       mask <<= 1;												\
@@ -568,7 +568,7 @@
   }
 
 #define  PREV_IN_ELM(elm,w,offset,mask){		\
-	mask = (0x1L << offset);					\
+	mask = (0x1ULL << offset);					\
 	while ((w & mask) ==0){						\
 	  elm--;									\
 	  mask >>= 1;								\

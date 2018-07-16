@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : toam.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -457,7 +457,7 @@ extern BPLONG no_gcs;
 	}
 
 /* Two things are done in ROLL_CHOICE_POINTS
-   1. If the choice point is an incomplete tabled frame, the AR field of the subgoal table entry is set to NULL;
+   1. If the choice point is an incomplete tabled frame, set the AR field of the subgoal table entry to NULL;
    2. If the choice point is a call_cleanup frame (Flag,Cleanup,Call,Exception,Recovery,...), call Cleanup
 */
 #define  ROLL_CHOICE_POINTS(to_b) {									\
@@ -470,8 +470,6 @@ extern BPLONG no_gcs;
 			  gtable = (BPLONG_PTR)GET_AR_SUBGOAL_TABLE(b);				\
 			  if (gtable!=NULL && GT_TOP_AR(gtable)!=SUBGOAL_COMPLETE){	\
 				GT_TOP_AR(gtable) = (BPLONG)NULL;						\
-				GT_SCC_ELMS(gtable) = (BPLONG)NULL;						\
-				GT_SCC_ROOT(gtable) = (BPLONG)gtable;					\
 			  }															\
 			} else {													\
 			  BPLONG cleanup;											\
@@ -805,8 +803,8 @@ extern BPLONG no_gcs;
     BPLONG_PTR scc_root, scc_root_ar;									\
     scc_root = (BPLONG_PTR)GT_SCC_ROOT(subgoal_entry);					\
     scc_root_ar = (BPLONG_PTR)GT_TOP_AR(scc_root);						\
-    if ((BPLONG)scc_root_ar!=SUBGOAL_COMPLETE) {						\
-      while ((BPLONG)scc_root_ar==SUBGOAL_TEMP_COMPLETE){				\
+    if ((BPLONG)scc_root_ar != SUBGOAL_COMPLETE) {						\
+      while ((BPLONG)scc_root_ar == SUBGOAL_TEMP_COMPLETE){				\
 		scc_root = (BPLONG_PTR)GT_SCC_ROOT(scc_root);					\
 		scc_root_ar = (BPLONG_PTR)GT_TOP_AR(scc_root);					\
       }																	\
@@ -818,9 +816,10 @@ extern BPLONG no_gcs;
     if (IS_TABLE_FRAME(f)){												\
       BPLONG_PTR subgoal_entry = (BPLONG_PTR)GET_AR_SUBGOAL_TABLE(f);	\
       if (subgoal_entry != NULL && GT_TOP_AR(subgoal_entry) != SUBGOAL_COMPLETE){ \
+		reset_temp_complete_scc_elms(subgoal_entry);					\
 		GT_TOP_AR(subgoal_entry) = (BPLONG)NULL;						\
-      }																	\
-    }																	\
+	  }																	\
+	}																	\
   }
 
 

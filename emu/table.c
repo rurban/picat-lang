@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : table.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2017
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
  *   Purpose: Primitives on table area
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -373,7 +373,6 @@ void expandSubgoalTable(){
     new_htable_size = bp_hsize(new_htable_size);
 
     new_htable = (BPLONG_PTR)malloc(sizeof(BPLONG)*new_htable_size);
-    //  printf("table_size %ld\n",new_htable_size);
     if (new_htable == NULL) return; /* stop expanding */
     for (i=0;i<new_htable_size;i++){
         new_htable[i] = (BPLONG)NULL;
@@ -1052,8 +1051,7 @@ void propagate_scc_root(BPLONG_PTR fp,BPLONG_PTR subgoal_entry,BPLONG_PTR scc_ro
     } 
 }
 
-/* initialize also region pointers */
-/* update region pointers */
+/* initialize the subgoal and all of its dependents */
 void initialize_scc_elms(BPLONG_PTR subgoal_entry){
     BPLONG_PTR ptr,entry; 
 
@@ -1082,6 +1080,19 @@ void complete_scc_elms(BPLONG_PTR subgoal_entry){
         tmp_ptr = (BPLONG_PTR)FOLLOW(ptr+1); 
         TABLE_FREE_CELL(ptr); 
         ptr = tmp_ptr;
+    }
+}
+
+void reset_temp_complete_scc_elms(BPLONG_PTR subgoal_entry){
+    BPLONG_PTR ptr, entry, tmp_ptr; 
+  
+    ptr = (BPLONG_PTR)GT_SCC_ELMS(subgoal_entry); 
+    while (ptr != NULL){ 
+        entry = (BPLONG_PTR)FOLLOW(ptr);
+        if (entry != NULL && GT_TOP_AR(entry) == SUBGOAL_TEMP_COMPLETE){
+            GT_TOP_AR(entry) = (BPLONG)NULL;
+        }
+        ptr = (BPLONG_PTR)FOLLOW(ptr+1); 
     }
 }
 
@@ -1894,16 +1905,13 @@ int table_statistics(){
         subgoal_count += count;
         /*    if (count != 0) fprintf(curr_out,"socket#%d(chainsize%d)\n",i,count); */
     }
-    fprintf(curr_out,"number_of_subgoals=%ld\t\t\n",subgoal_count);
-    fprintf(curr_out,"max_number_of_answers=%ld\t\t\n",max_ans_count);
-    fprintf(curr_out,"number_of_zero_answer_subgoals=%ld\t\t\n",zero_ans_count);
+    fprintf(curr_out,"number_of_subgoals=" BPLONG_FMT_STR "\t\t\n",subgoal_count);
+    fprintf(curr_out,"max_number_of_answers=" BPLONG_FMT_STR "\t\t\n",max_ans_count);
+    fprintf(curr_out,"number_of_zero_answer_subgoals=" BPLONG_FMT_STR "\t\t\n",zero_ans_count);
     fprintf(curr_out,"average_number_of_answers=%.2f\t\t\n",(float)total_ans_count/subgoal_count);
-    fprintf(curr_out,"max_iterations=%ld\t\t\n",max_its_count);
+    fprintf(curr_out,"max_iterations=" BPLONG_FMT_STR "\t\t\n",max_its_count);
     fprintf(curr_out,"average_iterations=%.2f\t\t\n",(float)total_its_count/(float)subgoal_count);
-    fprintf(curr_out,"number_of_scc_nodes=%ld\n",scc_nodes_count);
-    /*
-      fprintf(curr_out,"%ld & %ld & %.2f & %ld & %.2f \\\\\n",subgoal_count,max_ans_count,(float)total_ans_count/subgoal_count,max_ans_access_count,(float)total_ans_access_count/subgoal_count);
-    */
+    fprintf(curr_out,"number_of_scc_nodes=" BPLONG_FMT_STR "\n",scc_nodes_count);
     return 1;
 }
 
@@ -1967,15 +1975,20 @@ int c_TA_TOP_f(){
     return BP_TRUE;
 }
 
-void set_temp_complete_subgoal_entries(){
+void reset_temp_complete_subgoal_entries(){
     BPLONG i;
-    BPLONG_PTR subgoal_entry;
+    BPLONG_PTR subgoal_entry, ptr;
   
     for (i=0;i<subgoalTableBucketSize;i++){
         subgoal_entry = (BPLONG_PTR)FOLLOW(subgoalTable+i);
         while (subgoal_entry != NULL) {
-            if (GT_TOP_AR(subgoal_entry) == SUBGOAL_TEMP_COMPLETE)
-                GT_TOP_AR(subgoal_entry) = (BPLONG)NULL;
+            if (GT_TOP_AR(subgoal_entry) == SUBGOAL_TEMP_COMPLETE){
+                printf("TEMP_COMPLETE " BPULONG_FMT_STR "\n",subgoal_entry);
+                ptr = (BPLONG_PTR)GT_SCC_ROOT(subgoal_entry);
+                printf("SCC_ROOT = " BPULONG_FMT_STR "\n", ptr);
+                printf("SCC_ROOT = " BPULONG_FMT_STR "\n", GT_TOP_AR(ptr));
+            }
+            //                GT_TOP_AR(subgoal_entry) = (BPLONG)NULL;
             subgoal_entry = (BPLONG_PTR)GT_NEXT(subgoal_entry);
         }
     }

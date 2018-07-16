@@ -109,12 +109,14 @@ mip_solve_aux(solve(Solver,TmpFile),ObjExp,Sense,Vars) =>   % Solver = gurobi, o
     ).
 
 mip_solve_repeat(Solver,TmpFileStr,SolFileStr,ObjExp,Sense,Vars,VarsArr,Table) ?=>
-    bp.'$table_notin'(VarsArr,Table),              % generated constraints are added into the global store
     mip_call_mip(Solver,TmpFileStr,SolFileStr,ObjExp,Sense,Vars),
     bp.assert($mip_last_solution(VarsArr)).
 mip_solve_repeat(Solver,TmpFileStr,SolFileStr,ObjExp,Sense,Vars,VarsArr,Table),
-    bp.retract($mip_last_solution(Tuple))
+    bp.retract($mip_last_solution(Tuple)),
+%	not member(Tuple, Table)                       % somehow this test is needed for Gurobi
+	true
 =>
+    bp.'$table_notin'(VarsArr,[Tuple]),            % generated constraints are added into the global store
     mip_solve_repeat(Solver,TmpFileStr,SolFileStr,ObjExp,Sense,Vars,VarsArr,[Tuple|Table]).
     
 mip_call_mip(Solver,TmpFileStr,SolFileStr,ObjExp,Sense,Vars) =>
@@ -347,7 +349,7 @@ mip_bind_vars([Var|Vars],HTab),var(Var),
     Val = HTab.get(ColNo,[]),
     Val !== []
 =>
-    (Var = Val -> true; printf(stdout,"WARNING:: constraints are assumed to be IP unless coefficients or variables are real\n"),handle_exception($invalid_mip_solution(Val),solve)),
+    (Var = Val -> true; printf(stderr,"WARNING:: constraints are assumed to be IP unless coefficients or variables are real\n"),handle_exception($invalid_mip_solution(Val),solve)),
     mip_bind_vars(Vars,HTab).
 mip_bind_vars([Var|Vars],HTab),number(Var) =>
     mip_bind_vars(Vars,HTab).    

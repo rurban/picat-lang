@@ -20,16 +20,16 @@
  *  in luck: it is almost identical to the VMS character set.
  */
 #define TOKEN_CHECK_EXCEPTION() {               \
-        if (exception!=(BPLONG)NULL){           \
-            return BP_ERROR;                    \
-        }                                       \
-    }
+	if (exception != (BPLONG)NULL){				\
+	  return BP_ERROR;							\
+	}											\
+  }
 
 #define TOKEN_CHECK_EXCEPTION_STRING() {        \
-        if (exception!=(BPLONG)NULL){           \
-            return BP_ERROR;                    \
-        }                                       \
-    }
+	if (exception != (BPLONG)NULL){				\
+	  return BP_ERROR;							\
+	}											\
+  }
 
 #define StrCpy(dst, src) (void)strcpy(dst, src)
 #define Printf           (void)printf
@@ -300,70 +300,70 @@ int next_token_index = 0;
 
 #ifdef BPSOLVER
 #define BP_GETC_STRING(c){                      \
-        c = *string_in;                         \
-        if (c!=0){                              \
-            string_in++;                        \
-        }                                       \
-    }
+	c = *string_in;								\
+	if (c != 0){								\
+	  string_in++;								\
+	}											\
+  }
 
 #define BP_UNGETC_STRING {                      \
-        string_in--;                            \
-    }
+	string_in--;								\
+  }
 
 #define BP_GETC(card,c){                        \
-        c = getc(card);                         \
-    }
+	c = getc(card);								\
+  }
   
 #define BP_UNGETC(c,card){                      \
-        ungetc((char)c,card);                   \
-    }
+	ungetc((char)c,card);						\
+  }
 #else
 #define BP_GETC_STRING(c){                                              \
-        c = *string_in;                                                 \
-        if (c!=0){                                                      \
-            string_in++;                                                \
-            if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
-        }                                                               \
-    }
+	c = *string_in;														\
+	if (c != 0){														\
+	  string_in++;														\
+	  if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
+	}																	\
+  }
 
 #define BP_UNGETC_STRING {                      \
-        string_in--;                            \
-        chars_pool_index--;                     \
-    }
+	string_in--;								\
+	chars_pool_index--;							\
+  }
 
 #define BP_GETC(card,c){                                                \
-        c = getc(card);                                                 \
-        if (c>=0){                                                      \
-            if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
-        }                                                               \
-    }
+	c = getc(card);														\
+	if (c>=0){															\
+	  if (chars_pool_index<MAX_CHARS_IN_POOL) chars_pool[chars_pool_index++] = (char)c; \
+	}																	\
+  }
   
 #define BP_UNGETC(c,card){                      \
-        ungetc((char)c,card);                   \
-        chars_pool_index--;                     \
-    }
+	ungetc((char)c,card);						\
+	chars_pool_index--;							\
+  }
 #endif
 
 /* convert a code point to char array s, which has n remaining slots */
-#define UTF8_CODEPOINT_TO_STR(code,s,n){                \
-        if (code <= 127){                               \
-            n--;                                        \
-            if (n < 0){                                 \
-                printAtomStr(tok2long);                 \
-            } else {                                    \
-                *s++ = (BYTE)code;                      \
-            }                                           \
-        } else {                                        \
-            if (n < 4){                                 \
-                printAtomStr(tok2long);                 \
-            } else {                                    \
-                CHAR_PTR  s1;                           \
-                s1 = utf8_codepoint_to_str(code,s);     \
-                n -= (s1-s);                            \
-                s = s1;                                 \
-            }                                           \
-        }                                               \
-    }
+#define UTF8_CODEPOINT_TO_STR(code,s,n){		\
+	if (code <= 127){							\
+	  n--;										\
+	  if (n < 0){								\
+		printAtomStr(tok2long);                 \
+	  } else {									\
+		*s++ = (BYTE)code;                      \
+	  }											\
+	} else {									\
+	  if (n < 4){								\
+		printAtomStr(tok2long);                 \
+	  } else {									\
+		CHAR_PTR  s1;                           \
+		s1 = utf8_codepoint_to_str(code,s);     \
+		n -= (s1-s);                            \
+		s = s1;                                 \
+	  }											\
+	}											\
+  }
 
 CHAR    AtomStr[MAX_STR_LEN];
 BPLONG    list_p;
@@ -631,7 +631,7 @@ int read_utf8_character(FILE * card, int q){
         return handleEndInQuoted();
     }
     if (q == -1) return c;
-    if (c==q){
+    if (c == q){
         BP_GETC(card,c);
         if (c == q) return c;               /* q is also used as an escape */
         lastc = c; 
@@ -726,7 +726,7 @@ int read_utf8_character(FILE * card, int q){
     {BPLONG n;
             n = 0;
             BP_GETC(card,c);
-            while (c!='\'' && c!='\\' && c!='\n' && c!= -1){
+            while (c != '\'' && c != '\\' && c != '\n' && c != -1){
                 if (DigVal(c) <= 15){
                     n = (n<<4) + DigVal(c);
                     BP_GETC(card,c);
@@ -735,7 +735,7 @@ int read_utf8_character(FILE * card, int q){
                     return n;
                 }
             }
-            if (c!='\\'){
+            if (c != '\\'){
                 exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
@@ -777,7 +777,7 @@ int read_utf8_character(FILE * card, int q){
     {BPLONG n;
         n = DigVal(c);
         BP_GETC(card,c);
-        while (c!='\'' && c!='\\' && c!='\n' && c!= -1){
+        while (c != '\'' && c != '\\' && c != '\n' && c != -1){
             if (DigVal(c) <= 7){
                 n = (n<<3) + DigVal(c);
                 BP_GETC(card,c);
@@ -786,7 +786,7 @@ int read_utf8_character(FILE * card, int q){
                 return n;
             }
         }
-        if (c!='\\'){
+        if (c != '\\'){
             exception = c_syntax_error(et_IN_CHARACTER);
             return n;
         }
@@ -810,16 +810,16 @@ int read_utf8_character_string(int q){
  
     BP_GETC_STRING(c);
     if (c == '\0') return handleEolInQuoted2();
-    if (q== -1) return c;
+    if (q == -1) return c;
   
-    if (c==q){
+    if (c == q){
         BP_GETC_STRING(c);
         if (c == q) return c; /* q is also used as an escape */
         lastc = c; 
         return -1; 
     }
 
-    if (c!='\\'){ /* escape char */
+    if (c != '\\'){ /* escape char */
         if (c & 0x80){                      /* leading byte of a utf8 char? */
             if ((c & 0xe0) == 0xc0){          /* 110xxxxx */
                 BP_GETC_STRING(b2);
@@ -895,7 +895,7 @@ int read_utf8_character_string(int q){
     {BPLONG n;
             n = 0;
             BP_GETC_STRING(c);
-            while (c!='\0' && c!='\'' && c!='\\' && c!= '\n'){
+            while (c != '\0' && c != '\'' && c != '\\' && c != '\n'){
                 if (DigVal(c) <= 15){
                     n = (n<<4) + DigVal(c);
                     BP_GETC_STRING(c);
@@ -904,8 +904,8 @@ int read_utf8_character_string(int q){
                     return n;
                 }
             }
-            if (c=='\n') BP_UNGETC_STRING;
-            if (c!='\\'){
+            if (c == '\n') BP_UNGETC_STRING;
+            if (c != '\\'){
                 exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
@@ -947,7 +947,7 @@ int read_utf8_character_string(int q){
     {BPLONG n;
         n = DigVal(c);
         BP_GETC_STRING(c);
-        while (c != '\0' && c!='\'' && c!='\\' && c!= '\n'){
+        while (c != '\0' && c != '\'' && c != '\\' && c != '\n'){
             if (DigVal(c) <= 7){
                 n = (n<<3) + DigVal(c);
                 BP_GETC_STRING(c);
@@ -956,8 +956,8 @@ int read_utf8_character_string(int q){
                 return n;
             }
         }
-        if (c=='\n') BP_UNGETC_STRING;
-        if (c!='\\'){
+        if (c == '\n') BP_UNGETC_STRING;
+        if (c != '\\'){
             exception = c_syntax_error(et_IN_CHARACTER);
             return n;
         }
@@ -1054,7 +1054,7 @@ int com2plain(card, astcom, endcom)
   
     BP_GETC(card,c);
     for (state = 0; c >= 0; ) {
-        if (c=='\n'){INC_LINE_NO;}
+        if (c == '\n'){INC_LINE_NO;}
         if (c == endcom && state)
             break;
         state = c == astcom;
@@ -1111,15 +1111,15 @@ START:
          * (5) binary (0b|0B)..., octal (0o|0O)..., and hexadecimal (0x|0X)...
          * We allow underscores in numbers too, ignoring them. 
          */
-        if (c=='0'){
+        if (c == '0'){
             BP_GETC(card,d);
-            if (d=='b' || d=='B' || d=='o' || d=='O' || d=='x' || d=='X'){ /* binary, octal, hexadecimal*/
+            if (d == 'b' || d == 'B' || d == 'o' || d == 'O' || d == 'x' || d == 'X'){ /* binary, octal, hexadecimal*/
                 int base;
-                if (d=='b' || d=='B') base = 2;
-                else if (d=='o' || d=='O') base = 8;
+                if (d == 'b' || d == 'B') base = 2;
+                else if (d == 'o' || d == 'O') base = 8;
                 else base = 16;
                 BP_GETC(card,c); /* first char right after must be a valid digit of the base */
-                if (DigVal(c)<0 || DigVal(c)>=base || c=='_'){
+                if (DigVal(c)<0 || DigVal(c)>=base || c == '_'){
                     exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
                 }
@@ -1137,7 +1137,7 @@ START:
                             if (ISINT(rad_int)) rad_int = bp_int_to_bigint(INTVAL(rad_int));
                             rad_int = bp_add_bigint_bigint(rad_int,bp_int_to_bigint(DigVal(c)));
                             BP_GETC(card,c); 
-                            while (c=='_'){BP_GETC(card,c);}
+                            while (c == '_'){BP_GETC(card,c);}
                         } while (DigVal(c)>=0 && DigVal(c)<base);
                         if (DigVal(c)<99){
                             exception = c_syntax_error(et_INTEGER);
@@ -1148,7 +1148,7 @@ START:
                     } /* end read bigint */
 
                     BP_GETC(card,c); 
-                    while (c=='_'){BP_GETC(card,c);}
+                    while (c == '_'){BP_GETC(card,c);}
                 } while (DigVal(c)>=0 && DigVal(c)<base);
                 if (DigVal(c)<99){
                     exception = c_syntax_error(et_INTEGER);
@@ -1305,16 +1305,16 @@ START:
     case SIGN:
     lab_sign_case:
 #ifdef BPSOLVER
-        if (c=='?') c = '.';
+        if (c == '?') c = '.';
 #endif
         *s = (BYTE)c;
         BP_GETC(card,d); 
         if (c == intab.begcom && d == intab.astcom) {
         ASTCOM:
-            if (com2plain(card, d, intab.endcom)==BP_ERROR) return BP_ERROR;
+            if (com2plain(card, d, intab.endcom) == BP_ERROR) return BP_ERROR;
             BP_GETC(card,c); 
             goto START;
-        } else if (c=='&' && d=='&'){
+        } else if (c == '&' && d == '&'){
             *s++ = '&'; 
             *s++ = '&'; 
             *s = '\0'; 
@@ -1322,10 +1322,10 @@ START:
             rtnint = 2;
             return LOWER;
         } else if (c == '.'){
-            if (d== '.'){ /* .. */
+            if (d == '.'){ /* .. */
                 *++s = (BYTE)d;
                 BP_GETC(card,d); 
-                if (d=='+' || d=='-'){
+                if (d == '+' || d == '-'){
                     lastc = c = d;
                     *++s = 0;
                     rtnint = (BPLONG)(s - AtomStr);
@@ -1373,7 +1373,7 @@ START:
         BP_GETC(card,d); 
         if (c == intab.begcom && d == intab.astcom)
             goto ASTCOM;
-        if (c=='|' && d=='|'){
+        if (c == '|' && d == '|'){
             *s++ = '|'; 
             *s++ = '|'; 
             *s = '\0'; 
@@ -1412,7 +1412,7 @@ START:
                 myquit(STACK_OVERFLOW,"tk"); 
             }
             heap_top += 2;
-            if (double_quotes_flag==0)  /* codes */
+            if (double_quotes_flag == 0)  /* codes */
                 *newpair++ = MAKEINT(d); 
             else { /* chars */
                 s = AtomStr; n = MAX_STR_LEN;
@@ -1463,7 +1463,7 @@ START:
                 next_char_type = InType(next_c);                                                                                        //branch
             }                                                                                                                   //branch
             BP_UNGETC(next_c,card);
-            if (next_char_type==LOWER)
+            if (next_char_type == LOWER)
                 goto lab_lower_case;
             else
                 goto lab_sign_case;
@@ -1501,7 +1501,7 @@ int GetTokenString()
  
     c = lastc;
 START:
-    if (c=='\0') goto end_of_clause;
+    if (c == '\0') goto end_of_clause;
     switch (InType(c)) {
     case DIGIT:
         /* The FOLLOWing kinds of numbers exist:
@@ -1512,15 +1512,15 @@ START:
          * (5) binary (0b|0B)..., octal (0o|0O)..., and hexadecimal (0x|0X)...
          * We allow underscores in numbers too, ignoring them. (disallowed, but not completely n.f.)
          */
-        if (c=='0'){
+        if (c == '0'){
             BP_GETC_STRING(d);
-            if (d=='b' || d=='B' || d=='o' || d=='O' || d=='x' || d=='X'){ /* binary, octal, hexadecimal*/
+            if (d == 'b' || d == 'B' || d == 'o' || d == 'O' || d == 'x' || d == 'X'){ /* binary, octal, hexadecimal*/
                 int base;
-                if (d=='b' || d=='B') base = 2;
-                else if (d=='o' || d=='O') base = 8;
+                if (d == 'b' || d == 'B') base = 2;
+                else if (d == 'o' || d == 'O') base = 8;
                 else base = 16;
                 BP_GETC_STRING(c);  /* first char right after must be a valid digit of the base */
-                if (DigVal(c)<0 || DigVal(c)>=base || c=='_'){
+                if (DigVal(c)<0 || DigVal(c)>=base || c == '_'){
                     exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
                 }
@@ -1538,7 +1538,7 @@ START:
                             if (ISINT(rad_int)) rad_int = bp_int_to_bigint(INTVAL(rad_int)); 
                             rad_int = bp_add_bigint_bigint(rad_int,bp_int_to_bigint(DigVal(c)));
                             BP_GETC_STRING(c); 
-                            while (c=='_'){BP_GETC_STRING(c);}
+                            while (c == '_'){BP_GETC_STRING(c);}
                         } while (DigVal(c)>=0 && DigVal(c)<base);
                         if (DigVal(c)<99){
                             exception = c_syntax_error(et_INTEGER);
@@ -1549,7 +1549,7 @@ START:
                     } /* end read bigint */
 
                     BP_GETC_STRING(c); 
-                    while (c=='_'){BP_GETC_STRING(c);}
+                    while (c == '_'){BP_GETC_STRING(c);}
                 } while (DigVal(c)>=0 && DigVal(c)<base);
                 if (DigVal(c)<99){
                     exception = c_syntax_error(et_INTEGER);
@@ -1711,10 +1711,10 @@ START:
         BP_GETC_STRING(d);
         if (c == intab.begcom && d == intab.astcom) {
         ASTCOM:      
-            if (com2plain_string(d, intab.endcom)==BP_ERROR) return BP_ERROR;
+            if (com2plain_string(d, intab.endcom) == BP_ERROR) return BP_ERROR;
             BP_GETC_STRING(c);
             goto START;
-        } else if (c=='&' && d=='&'){
+        } else if (c == '&' && d == '&'){
             *s++ = '&'; 
             *s++ = '&'; 
             *s = '\0'; 
@@ -1722,10 +1722,10 @@ START:
             rtnint = 2;
             return LOWER;
         } else if (c == '.'){
-            if (d== '.'){ /* .. */
+            if (d == '.'){ /* .. */
                 *++s = (BYTE)d;
                 BP_GETC_STRING(d);
-                if (d=='+' || d=='-'){
+                if (d == '+' || d == '-'){
                     lastc = c = d;
                     *++s = 0;
                     rtnint = (BPLONG)(s - AtomStr);
@@ -1771,7 +1771,7 @@ START:
         BP_GETC_STRING(d);
         if (c == intab.begcom && d == intab.astcom)
             goto ASTCOM;
-        if (c=='|' && d=='|'){
+        if (c == '|' && d == '|'){
             *s++ = '|'; 
             *s++ = '|'; 
             *s = '\0'; 
@@ -1809,7 +1809,7 @@ START:
                 myquit(STACK_OVERFLOW,"tk"); 
             }
             heap_top += 2;
-            if (double_quotes_flag==0)  /* codes */
+            if (double_quotes_flag == 0)  /* codes */
                 *newpair++ = MAKEINT(d); 
             else { /* chars */
                 s = AtomStr; n = MAX_STR_LEN;
@@ -1860,7 +1860,7 @@ START:
                 next_char_type = InType(next_c);                                                                                        
             }                                                                                                                   //branch
             BP_UNGETC_STRING;
-            if (next_char_type==LOWER)
+            if (next_char_type == LOWER)
                 goto lab_lower_case;
             else
                 goto lab_sign_case;
@@ -1893,20 +1893,20 @@ int b_NEXT_TOKEN_ff(op1,op2)
 #ifdef BPSOLVER
 #else
     if (next_token_index<MAX_TOKENS_IN_TERM){
-        if (lastc==' ') 
+        if (lastc == ' ') 
             token_start_pos[next_token_index++] = chars_pool_index;
         else 
             token_start_pos[next_token_index++] = chars_pool_index-1;
     }
 #endif
-    if (string_in==NULL) i = GetToken(); else i = GetTokenString();
-    if (exception!=(BPLONG)NULL){
-        if (string_in==NULL){
+    if (string_in == NULL) i = GetToken(); else i = GetTokenString();
+    if (exception != (BPLONG)NULL){
+        if (string_in == NULL){
             char c;
             fprintf(stderr,  "*** error on line %d\n", (int)curr_line_no);
             BP_GETC(card,c); 
-            while (c!= -1 && c!= '\n' && c!='\r'){
-                if (c=='\n'){INC_LINE_NO;}
+            while (c != -1 && c != '\n' && c != '\r'){
+                if (c == '\n'){INC_LINE_NO;}
                 BP_GETC(card,c); 
             }
             lastc = c;
@@ -2074,8 +2074,8 @@ int c_init_chars_pool(){
 int c_update_term_start_line_no(){
     term_start_line_no = curr_line_no;
     term_start_pool_index = chars_pool_index;
-    while (chars_pool[term_start_pool_index] !='\n' && term_start_pool_index>0)  term_start_pool_index--; /* back up */
-    if (chars_pool[term_start_pool_index] =='\n') term_start_pool_index++;
+    while (chars_pool[term_start_pool_index]  != '\n' && term_start_pool_index>0)  term_start_pool_index--; /* back up */
+    if (chars_pool[term_start_pool_index] == '\n') term_start_pool_index++;
 
     return BP_TRUE;
 }
@@ -2091,17 +2091,21 @@ int c_report_syntax_error(){
     if (NTokensBefore>MAX_TOKENS_IN_TERM) return BP_TRUE;
 
     here_out = 0;
-    if (NTokensBefore==0) here_out = 1;
+    if (NTokensBefore == 0) here_out = 1;
     for (i = term_start_pool_index; i< chars_pool_index; i++){
-        if (NTokensBefore!=0 && i==token_start_pos[NTokensBefore]){
+        if (NTokensBefore != 0 && i == token_start_pos[NTokensBefore]){
+#ifndef WIN32 		  
+            fputs("\033\[31m <<HERE>> \033\[39m\n",stderr);
+#else
             fputs(" <<HERE>> \n",stderr);
+#endif
             for (j=0;j<char_no;j++) fputc(' ',stderr);
             here_out = 1;
         }
         fputc(chars_pool[i],stderr);
-        if (chars_pool[i]=='\n') char_no=0; else char_no++;
+        if (chars_pool[i] == '\n') char_no=0; else char_no++;
     }
-    if (here_out==0) fputs("<<HERE>>",stderr);
+    if (here_out == 0) fputs("<<HERE>>",stderr);
 
     fprintf(stderr,"\n\n");
     return BP_TRUE;
