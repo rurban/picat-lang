@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------------
-// Quine–McCluskey Algorithm
+// QuineÂ–McCluskey Algorithm
 // =========================
 //-------------------------------------------------------------------------------------------------------------
 // English:
@@ -119,7 +119,7 @@ int init_qc(){
         wprim[x] = BP_FALSE;
         nwprim[x] = BP_FALSE;
         result[x] = BP_FALSE;
-        nwprim[x] = BP_TRUE; //unwesentliche Primimplikaten als benötigt markieren
+        nwprim[x] = BP_TRUE; //unwesentliche Primimplikaten als benÃ¶tigt markieren
         for (y = 0; y < QC_MAX; y++) {
             mask[x][y] = 0;
             minterm[x][y] = 0;

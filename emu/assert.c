@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : assert.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: assert global database
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -1051,4 +1051,342 @@ BPLONG numberVarCopyCommaToParea(term,varno)
     FOLLOW(ret_term_ptr) = tmp;
     return ret_term;
 }
+
+/*  defined basic.h, also see table_maps in table.c
+
+	There is a big difference between a global map and a table map:
+	a global map hashes a key-value pair by using a hash code generated 
+	from the main functor of the key, while a table map hashes a key-value 
+	pair by using a hash code generated from the entire key.
+
+typedef struct {
+  BPLONG key;
+  BPLONG val;
+  BPLONG_PTR next;
+} KEY_VAL_PAIR;
+
+typedef KEY_VAL_PAIR *KEY_VAL_PAIR_PTR;
+
+typedef struct {
+  BPLONG size;
+  BPLONG count;
+  BPLONG_PTR htable;
+} MAP_RECORD;
+
+typedef MAP_RECORD *MAP_RECORD_PTR;
+*/
+
+#define NUM_PICAT_GLOBAL_MAPS 97
+BPLONG_PTR picat_global_maps[NUM_PICAT_GLOBAL_MAPS];
+BPLONG picat_global_map_ids[NUM_PICAT_GLOBAL_MAPS];
+
+void init_picat_global_maps(){
+  BPLONG i;
+  
+  for (i = 0; i < NUM_PICAT_GLOBAL_MAPS; i++){
+	picat_global_maps[i] = NULL;
+  }
+}
+
+/* Return the number of the map with map_id. If no map with the id was found,
+   then create a new map and register it into global_maps. Linear prob is used 
+   to look for the map with map_id.
+
+   Each entry in global_maps is a pointer to a MAP_RECORD, which stores the 
+   information about the map, including the size of the bucket table, the number 
+   of key-value pairs (count), and a pointer to the bucket table (htable).
+*/
+int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num){
+  BPLONG slot_i0, slot_i, i, map_id_cp, this_hcode, varno;
+  BPLONG_PTR tmp_ptr;
+  MAP_RECORD_PTR map_ptr;
+
+  this_hcode = bp_hashval(map_id);
+  slot_i0 = slot_i = (this_hcode % NUM_PICAT_GLOBAL_MAPS);  
+  
+  // linear prob 
+  while ((BPLONG_PTR)picat_global_maps[slot_i] != NULL){
+	if (key_identical(picat_global_map_ids[slot_i], map_id)){
+	  return unify(map_num,MAKEINT(slot_i));
+	}
+	slot_i++;
+	if (slot_i == NUM_PICAT_GLOBAL_MAPS) slot_i = 0;
+	if (slot_i == slot_i0) quit("GLOBAL MAPS OVERFLOW");
+  }
+  // Come here if map_id was not found. Register a map in slot i
+  varno = 0;
+  map_id_cp = numberVarCopyToParea(map_id,&varno);
+  if (map_id_cp == BP_ERROR) return BP_ERROR;
+  if (varno != 0){
+	exception = ground_expected;
+	return BP_ERROR;
+  }
+
+  ALLOCATE_FROM_PAREA(tmp_ptr,sizeof(MAP_RECORD)/sizeof(BPLONG));
+  if (tmp_ptr == NULL) myquit(OUT_OF_MEMORY,"global_maps");
+  map_ptr = (MAP_RECORD_PTR)tmp_ptr;
+  map_ptr->count = 0;
+  map_ptr->size = 7;    // initial size 
+  tmp_ptr = (BPLONG_PTR)malloc(7*sizeof(BPLONG_PTR));
+  map_ptr->htable = tmp_ptr;
+  for (i = 0; i < 7; i++)
+	FOLLOW(tmp_ptr+i) = (BPLONG)NULL;
+  
+  picat_global_maps[slot_i] = (BPLONG_PTR)map_ptr;
+  
+  picat_global_map_ids[slot_i] = map_id_cp;
+  return unify(map_num,MAKEINT(slot_i));
+}
+
+void expand_picat_global_map(MAP_RECORD_PTR mr_ptr){
+  BPLONG new_htable_size, old_htable_size, i, key, this_hcode;
+  BPLONG_PTR new_htable,old_htable;
+  KEY_VAL_PAIR_PTR kvp_ptr, next_kvp_ptr;
+
+  old_htable_size = mr_ptr->size;
+  old_htable = mr_ptr->htable;
+  new_htable_size = 3*old_htable_size;
+  new_htable_size = bp_hsize(new_htable_size);
+
+  //  printf("global_map expand %d\n",new_htable_size);
+
+  new_htable = (BPLONG_PTR)malloc(sizeof(BPLONG_PTR)*new_htable_size);
+  if (new_htable == NULL) return; /* stop expanding */
+  for (i=0; i<new_htable_size; i++){
+	new_htable[i] = (BPLONG)NULL;
+  }
+  for (i=0; i<old_htable_size; i++){
+	kvp_ptr = (KEY_VAL_PAIR_PTR)old_htable[i];
+	while (kvp_ptr != NULL){
+	  BPLONG_PTR new_kvp_ptr_ptr;
+
+	  next_kvp_ptr = (KEY_VAL_PAIR_PTR)(kvp_ptr->next);
+	  key = kvp_ptr->key;
+	  BP_HASH_CODE1(key,this_hcode,lab);
+	  new_kvp_ptr_ptr = (BPLONG_PTR)(new_htable + this_hcode%new_htable_size);
+	  kvp_ptr->next = (BPLONG_PTR)FOLLOW(new_kvp_ptr_ptr);
+	  FOLLOW(new_kvp_ptr_ptr) = (BPLONG)kvp_ptr;
+	  kvp_ptr = next_kvp_ptr;
+	}
+  }
+  free(old_htable);
+  mr_ptr->size = new_htable_size;
+  mr_ptr->htable = new_htable;
+}
+
+int b_PICAT_GLOBAL_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
+  BPLONG i, key_cp, val_cp, this_hcode, dummy_hcode, varno;
+  BPLONG_PTR trail_top0, tmp_ptr, kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+  BPLONG initial_diff0;
+
+  DEREF(key);
+  if (ISREF(key)){
+	exception = nonvariable_expected;
+	return BP_ERROR;
+  }
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+  BP_HASH_CODE1(key,this_hcode,lab);
+
+  kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size)); 
+  kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+  initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
+  varno = 0;
+  val_cp = numberVarCopyToParea(val,&varno);
+  if (val_cp == BP_ERROR) return BP_ERROR;
+
+  while (kvp_ptr != NULL){ /* lookup */
+	if (!key_identical(kvp_ptr->key,key)){
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	} else {
+	  release_term_space(kvp_ptr->val);
+	  kvp_ptr->val = val_cp;  /* update */
+	  goto lookup_end;
+	}
+  }
+  // come here if lookup failed 
+
+  varno = 0;
+  key_cp = numberVarCopyToParea(key,&varno);
+  if (key_cp == BP_ERROR) return BP_ERROR;
+
+  ALLOCATE_FROM_PAREA(tmp_ptr,sizeof(KEY_VAL_PAIR)/sizeof(BPLONG));
+  if (tmp_ptr == NULL) myquit(OUT_OF_MEMORY,"global_maps");
+  kvp_ptr = (KEY_VAL_PAIR_PTR)tmp_ptr;
+  kvp_ptr->key = key_cp;
+  kvp_ptr->val = val_cp;
+  kvp_ptr->next = (BPLONG_PTR)FOLLOW(kvp_ptr_ptr);
+  FOLLOW(kvp_ptr_ptr) = (BPLONG)kvp_ptr;
+
+  mr_ptr->count++;
+  if (2*mr_ptr->count > mr_ptr->size)
+	expand_picat_global_map(mr_ptr);
+
+ lookup_end:
+  trail_top0 = (BPLONG_PTR)((BPULONG)trail_up_addr-initial_diff0);
+  UNDO_TRAILING;
+  return BP_TRUE;
+}
+
+int b_PICAT_GLOBAL_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val){
+  BPLONG i, key_cp, val_cp, this_hcode, varno;
+  BPLONG_PTR trail_top0, kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+  BPLONG initial_diff0;
+
+  DEREF(key);
+  if (ISREF(key)){
+	exception = nonvariable_expected;
+	return BP_ERROR;
+  }
+	
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+
+  BP_HASH_CODE1(key,this_hcode,lab);
+  
+  kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size)); 
+  kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+  while (kvp_ptr != NULL){ /* lookup */
+	if (!key_identical(key,kvp_ptr->key)){
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	} else {
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  return unify(val,unnumberVarTermOpt(kvp_ptr->val));
+	}
+  }
+  return BP_FALSE;
+}
+
+int b_PICAT_GLOBAL_MAP_SIZE_cf(BPLONG map_num, BPLONG size){
+  MAP_RECORD_PTR mr_ptr;
+
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+  return unify(size,MAKEINT(mr_ptr->count));
+}
+
+int b_PICAT_GLOBAL_MAP_CLEAR_c(BPLONG map_num){
+  int i;
+  MAP_RECORD_PTR mr_ptr;
+  BPLONG_PTR htable;
+
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+  mr_ptr-> count = 0;
+  htable = mr_ptr->htable;
+  for (i = 0; i < mr_ptr->size; i++){
+	BPLONG term = FOLLOW(htable+i);
+	if (term != (BPLONG)NULL){
+	  release_term_space(term);
+	  FOLLOW(htable+i) = (BPLONG)NULL;
+	}
+  }
+  return BP_TRUE;
+}
+
+int b_PICAT_GLOBAL_MAP_KEYS_cf(BPLONG map_num, BPLONG keys){
+  BPLONG i, lst, key;
+  BPLONG_PTR kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+
+  lst = nil_sym;
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+
+  for (i = 0; i < mr_ptr->size; i++){
+	kvp_ptr_ptr = (mr_ptr->htable+i);
+	kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+	while (kvp_ptr != NULL){ /* lookup */
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  key = unnumberVarTermOpt(kvp_ptr->key);
+	  FOLLOW(heap_top) = key;
+	  FOLLOW(heap_top+1) = lst;
+	  lst = ADDTAG(heap_top,LST);
+	  heap_top += 2;
+	  LOCAL_OVERFLOW_CHECK("global");
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	}
+  }
+  return unify(lst,keys);
+}
+
+int b_PICAT_GLOBAL_MAP_VALS_cf(BPLONG map_num, BPLONG vals){
+  BPLONG i, lst, val;
+  BPLONG_PTR kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+
+  lst = nil_sym;
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+
+  for (i = 0; i < mr_ptr->size; i++){
+	kvp_ptr_ptr = (mr_ptr->htable+i);
+	kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+	while (kvp_ptr != NULL){ /* lookup */
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  val = unnumberVarTermOpt(kvp_ptr->val);
+	  FOLLOW(heap_top) = val;
+	  FOLLOW(heap_top+1) = lst;
+	  lst = ADDTAG(heap_top,LST);
+	  heap_top += 2;
+	  LOCAL_OVERFLOW_CHECK("global");
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	}
+  }
+  return unify(lst,vals);
+}
+
+int b_PICAT_GLOBAL_MAP_LIST_cf(BPLONG map_num, BPLONG pairs){
+  BPLONG i, lst, key, val, pair;
+  BPLONG_PTR kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+
+  lst = nil_sym;
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
+
+  for (i = 0; i < mr_ptr->size; i++){
+	kvp_ptr_ptr = (mr_ptr->htable+i);
+	kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+	while (kvp_ptr != NULL){ /* lookup */
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  key = unnumberVarTermOpt(kvp_ptr->key);
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  val = unnumberVarTermOpt(kvp_ptr->val);
+	  pair = ADDTAG(heap_top,STR);
+	  FOLLOW(heap_top++) = (BPLONG)equal_psc;
+	  FOLLOW(heap_top++) = key;
+	  FOLLOW(heap_top++) = val;
+	  FOLLOW(heap_top) = pair;
+	  FOLLOW(heap_top+1) = lst;
+	  lst = ADDTAG(heap_top,LST);
+	  heap_top += 2;
+	  LOCAL_OVERFLOW_CHECK("global");
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	}
+  }
+  return unify(lst,pairs);
+}
+
 

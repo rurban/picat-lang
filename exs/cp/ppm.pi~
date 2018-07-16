@@ -1,7 +1,7 @@
 % ppm.pi (in Picat)
 % https://www.mat.unical.it/aspcomp2013/FinalProblemDescriptions/PermutationPatternMatching
 % by Roman Bartak, Feb. 2013
-% translated to Picat by Neng-Fa Zhou
+% translate to Picat by Neng-Fa Zhou
 import cp.
 
 main =>

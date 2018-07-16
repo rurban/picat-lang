@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : basicd.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -105,6 +105,7 @@ BPLONG_PTR global_unnumbervar_watermark;
 BPLONG      exception;
 BPLONG      foreign_exception = (BPLONG) NULL;
 SYM_REC_PTR  list_psc;
+SYM_REC_PTR  equal_psc;
 BPLONG list_psc_int;
 BPLONG list_psc_hashcode;
 SYM_REC_PTR  error_psc;
@@ -164,6 +165,7 @@ BPLONG  structure_expected;
 BPLONG  compound_expected;
 BPLONG  char_code_expected;
 BPLONG  char_expected;
+BPLONG  ground_expected;
 BPLONG  float_format_expected;
 BPLONG  operator_type_expected;
 BPLONG  variable_expected;

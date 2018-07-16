@@ -171,6 +171,14 @@ extern BPLONG numberVarCopyToParea(BPLONG term,BPLONG *varno);
 extern BPLONG numberVarCopyListToParea(BPLONG term,BPLONG *varno);							
 extern BPLONG numberVarCopyCommaToParea(BPLONG term, BPLONG *varno);							
 extern int b_DYN_PRED_CLAUSE_COUNT_cf(BPLONG Head,BPLONG Count);
+extern int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num);
+extern int b_PICAT_GLOBAL_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val);
+extern int b_PICAT_GLOBAL_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val);
+extern int b_PICAT_GLOBAL_MAP_SIZE_cf(BPLONG map_num, BPLONG size);
+extern int b_PICAT_GLOBAL_MAP_CLEAR_c(BPLONG map_num);
+extern int b_PICAT_GLOBAL_MAP_KEYS_cf(BPLONG map_num, BPLONG keys);
+extern int b_PICAT_GLOBAL_MAP_VALS_cf(BPLONG map_num, BPLONG vals);
+extern int b_PICAT_GLOBAL_MAP_LIST_cf(BPLONG map_num, BPLONG pairs);
 
 //
 //	findall.c
@@ -241,6 +249,7 @@ extern BPLONG bp_pow_bigint_int(BPLONG op1,BPLONG op2);
 extern int bp_write_bigint_to_strf(BPLONG op, char *buf, int buf_size);
 extern void bp_print_bigint(BPLONG op);											
 extern int b_BUILD_56B_INT_ccf(BPLONG w1, BPLONG w0, BPLONG v);
+extern BPLONG bp_bigint_to_native_long(BPLONG op);
 
 //
 //	buildtins.c prototypes
@@ -1221,7 +1230,7 @@ extern int isGroundNumberedTerm(BPLONG term);
 extern void init_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr);
 extern int identical_numbered_gterms(BPLONG op1, BPLONG op2);
 extern void gterms_table_statistics(GTERMS_HTABLE_PTR gterms_htable_ptr, int *nTerms, int *maxTTCollisions, float *aveTTCollisions);
-extern int gterms_htable_num_of_occupied_slots(GTERMS_HTABLE_PTR gterms_htable_ptr);
+extern BPLONG gterms_htable_num_of_occupied_slots(GTERMS_HTABLE_PTR gterms_htable_ptr);
 extern void allocate_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr, int size);
 extern BPLONG register_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr,BPLONG term,BPLONG hcode);
 extern void expand_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr);
@@ -1263,9 +1272,17 @@ extern int table_statistics();
 extern int b_PLANNER_CURR_RPC_fff(BPLONG,BPLONG,BPLONG);
 extern int b_TABLE_MAP_PUT_cc(BPLONG,BPLONG);
 extern int b_TABLE_MAP_GET_cf(BPLONG,BPLONG);
-extern int c_TABLE_MAP_SIZE();
 extern int b_IS_PLANNER_STATE_c(BPLONG state);
 extern int c_TA_TOP_f();
+extern int b_GET_PICAT_TABLE_MAP_cf(BPLONG map_id, BPLONG map_num);
+extern int b_PICAT_TABLE_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val);
+extern int b_PICAT_TABLE_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val);
+extern int b_PICAT_TABLE_MAP_SIZE_cf(BPLONG map_num, BPLONG size);
+extern int b_PICAT_TABLE_MAP_CLEAR_c(BPLONG map_num);
+extern int b_PICAT_TABLE_MAP_KEYS_cf(BPLONG map_num, BPLONG keys);
+extern int b_PICAT_TABLE_MAP_VALS_cf(BPLONG map_num, BPLONG vals);
+extern int b_PICAT_TABLE_MAP_LIST_cf(BPLONG map_num, BPLONG pairs);
+extern BPLONG table_maps_buckets_size();
 
 //
 //	toam.c prototypes

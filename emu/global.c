@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : global.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: Management of the global database
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -99,7 +99,7 @@ int b_GLOBAL_SET_ccc(name,arity,value)
     if (TAG(value) == ATM) 
         GET_EP(sym_ptr) = (int (*)(void))value;
     else {
-        release_term_space(oldValue);
+	    release_term_space(oldValue);
         res = copy_term_heap_to_parea(value);
         if (res==BP_ERROR) return BP_ERROR;
         GET_EP(sym_ptr) = (int (*)(void))res;

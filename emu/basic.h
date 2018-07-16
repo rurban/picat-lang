@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : basic.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -176,6 +176,24 @@ typedef struct {
 
 typedef NUMBERED_TERM_AREA_RECORD *NUMBERED_TERM_AREA_RECORD_PTR;
 
+/* for global and table maps */
+
+typedef struct {
+  BPLONG key;
+  BPLONG val;
+  BPLONG_PTR next;
+} KEY_VAL_PAIR;
+
+typedef KEY_VAL_PAIR *KEY_VAL_PAIR_PTR;
+
+typedef struct {
+  BPLONG size;
+  BPLONG count;
+  BPLONG_PTR htable;
+} MAP_RECORD;
+
+typedef MAP_RECORD *MAP_RECORD_PTR;
+
 #ifdef BUILTIN_PROTO_CHECK
 typedef union {	
 int  (*func0)(void);
@@ -340,6 +358,7 @@ extern BPLONG_PTR global_unnumbervar_watermark;
 
 extern BPLONG      exception;
 extern SYM_REC_PTR  list_psc;
+extern SYM_REC_PTR  equal_psc;
 extern BPLONG list_psc_int;
 extern BPLONG list_psc_hashcode;
 extern SYM_REC_PTR  error_psc;
@@ -397,6 +416,7 @@ extern BPLONG  structure_expected;
 extern BPLONG  compound_expected;
 extern BPLONG  char_code_expected;
 extern BPLONG  char_expected;
+extern BPLONG  ground_expected;
 extern BPLONG  float_format_expected;
 extern BPLONG  operator_type_expected;
 extern BPLONG  variable_expected;

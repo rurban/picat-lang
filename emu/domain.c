@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : domain.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: Primitives on finite domains
 
  * This Source Code Form is subject to the terms of the Mozilla Public

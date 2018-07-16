@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : cpreds.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: Non-inline built-ins in C
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -1196,7 +1196,6 @@ void Cboot() {
 
     insert_cpred("c_REDUCE_DOMAINS_IC_EQ",2,c_REDUCE_DOMAINS_IC_EQ);
     insert_cpred("c_REDUCE_DOMAINS_IC_GE",2,c_REDUCE_DOMAINS_IC_GE);
-    insert_cpred("c_TABLE_MAP_SIZE",1,c_TABLE_MAP_SIZE);
     insert_cpred("c_TA_TOP_f",1,c_TA_TOP_f);
 
     Cboot_sat();

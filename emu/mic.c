@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : mic.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: miscellaneous functions
  *            Includes MurmurHash by Austin Appleby
 
@@ -1099,26 +1099,35 @@ BPLONG bp_hashval_list(BPLONG term){
   return hcode_sum;
 }
 
-
+/* NOTE: A tabled term always has its hash code stored with it, so it needs not be recomputed. */
 BPLONG bp_hashval(BPLONG op){
   BPLONG  i,arity,hcode_sum,this_hcode;
   SYM_REC_PTR sym_ptr;
-  BPLONG_PTR top;
+  BPLONG_PTR top, term_ptr;
   
   SWITCH_OP(op,hashval_lab,
 			{return 0;},
 			{return  (((op & HASH_BITS)>>2));},
-			{if (ISLIST(op)){
+			{
+			  if (ISLIST(op)){
+				term_ptr = (BPLONG_PTR)UNTAGGED_ADDR(op);
+				if (!IS_HEAP_REFERENCE(term_ptr)){         
+				  return (FOLLOW(term_ptr-2) & HASH_BITS);
+				}
 				return bp_hashval_list(op);
 			  } else return 0;
 			},
-			{sym_ptr = GET_STR_SYM_REC(op);
+			{
+			  term_ptr = (BPLONG_PTR)UNTAGGED_ADDR(op);
+			  if (!IS_HEAP_REFERENCE(term_ptr)){         
+				return (FOLLOW(term_ptr-2) & HASH_BITS);
+			  }
+			  sym_ptr = (SYM_REC_PTR)FOLLOW(term_ptr);
 			  arity = GET_ARITY(sym_ptr);
-			  UNTAG_ADDR(op);
 			  hcode_sum = (((BPLONG)sym_ptr & HASH_BITS)>>2);
-			  hcode_sum += bp_hashval(*((BPLONG_PTR)op+1));
+			  hcode_sum += bp_hashval(*(term_ptr+1));
 			  for (i=2;i<=arity;i++){
-				this_hcode = bp_hashval(*((BPLONG_PTR)op+i));
+				this_hcode = bp_hashval(*(term_ptr+i));
 				if (this_hcode != 0) hcode_sum = MurmurHash3_x86_32_uint32((UW32)this_hcode,(UW32)hcode_sum);	
 			  }
 			  return (hcode_sum & HASH_BITS);
@@ -1146,6 +1155,11 @@ int b_HASHTABLE_GET_ccf(table,key,value)
   
   /*  write_term(key);printf("   "); write_term(table);printf("\n"); */
   DEREF(key);
+  if (ISREF(key)){
+	exception = nonvariable_expected;
+	return BP_ERROR;
+  }
+
   DEREF(table);
   if (!ISSTRUCT(table)){
     exception = illegal_arguments;
@@ -1235,7 +1249,7 @@ BPLONG hashtable_lookup_chain(chain,key)
     car = FOLLOW(ptr); DEREF(car);
     str_ptr = (BPLONG_PTR)UNTAGGED_ADDR(car);
     key1 = FOLLOW(str_ptr+1); DEREF(key1);
-    if (key1 == key || (TAG(key) != ATM && b_VARIANT_cc(key1,key))){
+    if (key1 == key || (TAG(key) != ATM && key_identical(key1,key))){
       return FOLLOW(str_ptr+2);
     }
     chain = FOLLOW(ptr+1);

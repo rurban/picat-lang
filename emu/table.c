@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : table.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: Primitives on table area
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -84,10 +84,10 @@ BPLONG table_area_size(){
         size += NUMBERED_TERM_BLOCK_SIZE;
         block_low_addr = (BPLONG_PTR)FOLLOW(block_low_addr);
     }
+	size += subgoalTableBucketSize;
     for (i=0;i<subgoalTableBucketSize;i++){
-        subgoal_entry = (BPLONG_PTR)subgoalTable[i];
+	    subgoal_entry = (BPLONG_PTR)subgoalTable[i];
         while (subgoal_entry != NULL){
-            size++;
             answerTable = (BPLONG_PTR)GT_ANSWER_TABLE(subgoal_entry);
             if (answerTable != NULL && ((BPLONG)answerTable & 0x1) == 0){ /* answer table exists only when there are two or more answers */
                 size += ANSWERTABLE_RECORD_SIZE+ANSWERTABLE_BUCKET_SIZE(answerTable);
@@ -96,6 +96,9 @@ BPLONG table_area_size(){
         }
     }
     size += gterms_htable_num_of_occupied_slots(ta_record_ptr->gterms_htable_ptr);
+
+	size += table_maps_buckets_size();
+	
     return size;
 }
 
@@ -113,6 +116,7 @@ int table_area_num_expansions(){
 int c_INITIALIZE_TABLE(){
     BPLONG_PTR low_addr,prev_low_addr;
     int i,success;
+	void init_picat_table_maps();
 
     exception = (BPLONG)NULL;
     in_critical_region = 0;
@@ -135,6 +139,8 @@ int c_INITIALIZE_TABLE(){
   
     init_gterms_htable(ta_gterms_htable_ptr);
     table_free_cells_ptr = NULL;
+
+	init_picat_table_maps();
 #endif
     return BP_TRUE;
 }
@@ -697,10 +703,12 @@ void gterms_table_statistics(GTERMS_HTABLE_PTR gterms_htable_ptr, int *nTerms, i
         *aveTTCollisions = 0;
 }
 
-int gterms_htable_num_of_occupied_slots(GTERMS_HTABLE_PTR gterms_htable_ptr){
+BPLONG gterms_htable_num_of_occupied_slots(GTERMS_HTABLE_PTR gterms_htable_ptr){
     BPLONG_PTR htable;
-    int i,size,count;
+    BPLONG i,size,count;
 
+    return gterms_htable_ptr->size;
+	/*
     count = 0;
     size = gterms_htable_ptr->size;
     htable = gterms_htable_ptr->htable;
@@ -708,6 +716,7 @@ int gterms_htable_num_of_occupied_slots(GTERMS_HTABLE_PTR gterms_htable_ptr){
         if (htable[i] != (BPLONG)NULL) count++;
     }
     return count;
+	*/
 }
 
 void allocate_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr, int size){
@@ -831,7 +840,7 @@ l_number_var_copy_faa:
 
     case STR:
         this_ground_flag = TOP_BIT;
-        if (term>0){
+        if (term>0){  /* not susp_var */
             term_ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
             if (!IS_HEAP_REFERENCE(term_ptr)){                       /* term_ptr may point to a ground term in table area,*/
                 *hcode_ptr = (FOLLOW(term_ptr-2) & HASH_BITS);
@@ -1933,74 +1942,6 @@ int b_PLANNER_CURR_RPC_fff(BPLONG Amount, BPLONG Plan, BPLONG Cost){
     return BP_TRUE;
 }
 
-/* insert the call $picat_table_map(Key,_) to the subgoal table with $picat_table_map(Key,Val) as an answer */
-b_TABLE_MAP_PUT_cc(BPLONG Key,BPLONG Val){
-    BPLONG_PTR subgoal_entry,stack_arg_ptr,answer,trail_top0;
-    BPLONG initial_diff0;
-  
-    //  printf("=>TABLE_MAP_PUT ");    write_term(Key); printf("\n");
-
-    stack_arg_ptr = local_top;
-    FOLLOW(stack_arg_ptr) = Key;
-    FOLLOW(stack_arg_ptr-1) = (BPLONG)(stack_arg_ptr-1);  /* free var */
-    subgoal_entry = lookupSubgoalTable(stack_arg_ptr,2,thashtable_psc,0,0);
-    if ((BPLONG)subgoal_entry == BP_ERROR){
-        return BP_ERROR;
-    }
-    initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
-    FOLLOW(stack_arg_ptr-1) = Val;
-    answer = addFirstTableAnswer(stack_arg_ptr, 2);
-    if ((BPLONG)answer == BP_ERROR){
-        return BP_ERROR;
-    }
-    GT_ANSWER_TABLE(subgoal_entry) = ((BPLONG)answer | 0x1); /* the TAG indicates that it's an answer, not an answer table */
-    trail_top0 = (BPLONG_PTR)((BPULONG)trail_up_addr-initial_diff0);
-    UNDO_TRAILING;
-    return BP_TRUE;
-}
-
-/* check if there is a subgoal $picat_table_map(Key,_) in the subgoal table. If so, retrieve Val of the answer */
-b_TABLE_MAP_GET_cf(BPLONG Key,BPLONG Val){
-    BPLONG_PTR subgoal_entry,stack_arg_ptr,answer,table_arg_ptr;
-
-    //  printf("=>TABLE_MAP_GET ");    write_term(Key); printf("\n");
-    stack_arg_ptr = local_top;
-    FOLLOW(stack_arg_ptr) = Key;
-    FOLLOW(stack_arg_ptr-1) = (BPLONG)(stack_arg_ptr-1);  /* free var */
-    subgoal_entry = lookupSubgoalTableNoCopy(stack_arg_ptr,2,thashtable_psc); 
-    if ((BPLONG)subgoal_entry == BP_ERROR){
-        return BP_ERROR;
-    } else if (subgoal_entry == NULL) {
-        return BP_FALSE;
-    }
-    answer = (BPLONG_PTR)GT_ANSWER_TABLE(subgoal_entry);
-    answer = (BPLONG_PTR)UNTAGGED_ADDR((BPLONG)answer);
-    table_arg_ptr = ANSWER_ARG_ADDR(answer); 
-    PREPARE_UNNUMBER_TERM(local_top-3);
-    match_term_tabledTerm(Val,FOLLOW(table_arg_ptr+1));
-    return BP_TRUE;
-}
-
-c_TABLE_MAP_SIZE(){
-    BPLONG_PTR subgoal_entry;
-    SYM_REC_PTR sym_ptr;
-    BPLONG Size,i,count = 0;
-
-    //  printf("=>map size \n");
-    Size = ARG(1,1);
-    for (i=0;i<subgoalTableBucketSize;i++){
-        subgoal_entry = (BPLONG_PTR)FOLLOW(subgoalTable+i);
-        while (subgoal_entry != NULL){
-            sym_ptr = (SYM_REC_PTR)GT_SYM(subgoal_entry);
-            if (sym_ptr == thashtable_psc){
-                count++;
-            }
-            subgoal_entry = (BPLONG_PTR)GT_NEXT(subgoal_entry);
-        }
-    }
-    return unify(Size,MAKEINT(count));
-}
-
 /* check if a call '_$planner'(S,_) has been tabled */
 b_IS_PLANNER_STATE_c(BPLONG state){
     BPLONG_PTR stack_arg_ptr;
@@ -2109,3 +2050,337 @@ void myWriteList(term)
 }
 */
 
+#define NUM_PICAT_TABLE_MAPS 97
+BPLONG_PTR picat_table_maps[NUM_PICAT_TABLE_MAPS];
+BPLONG picat_table_map_ids[NUM_PICAT_TABLE_MAPS];
+
+/*  defined in basic.h, also see global_maps in assert.c
+
+typedef struct {
+  BPLONG key;
+  BPLONG val;
+  BPLONG_PTR next;
+} KEY_VAL_PAIR;
+
+typedef KEY_VAL_PAIR *KEY_VAL_PAIR_PTR;
+
+typedef struct {
+  BPLONG size;
+  BPLONG count;
+  BPLONG_PTR htable;
+} MAP_RECORD;
+
+typedef MAP_RECORD *MAP_RECORD_PTR;
+*/
+
+void init_picat_table_maps(){
+  BPLONG i;
+  
+  for (i = 0; i < NUM_PICAT_TABLE_MAPS; i++){
+	picat_table_maps[i] = NULL;
+  }
+}
+
+/* Return the number of the map with map_id. If no map with the id was found,
+   then create a new map and register it into table_maps. Linear prob is used 
+   to look for the map with map_id.
+
+   Each entry in table_maps is a pointer to a MAP_RECORD, which stores the 
+   information about the map, including the size of the bucket table, the number 
+   of key-value pairs (count), and a pointer to the bucket table (htable).
+*/
+int b_GET_PICAT_TABLE_MAP_cf(BPLONG map_id, BPLONG map_num){
+  BPLONG slot_i0, slot_i, i, map_id_cp, this_hcode, this_ground_flag;
+  BPLONG_PTR tmp_ptr;
+  MAP_RECORD_PTR map_ptr;
+
+  PREPARE_NUMBER_TERM(0);
+  this_ground_flag = TOP_BIT;
+  map_id_cp = numberVarCopyToTableArea(ta_record_ptr,map_id,&this_hcode,&this_ground_flag);
+  if (map_id_cp == BP_ERROR) return BP_ERROR;
+  if (this_ground_flag == 0){
+	exception = ground_expected;
+	return BP_ERROR;
+  }
+  slot_i0 = slot_i = (this_hcode % NUM_PICAT_TABLE_MAPS);  
+  
+  // linear prob 
+  while ((BPLONG_PTR)picat_table_maps[slot_i] != NULL){
+	if (picat_table_map_ids[slot_i] == map_id_cp){
+	  return unify(map_num,MAKEINT(slot_i));
+	}
+	slot_i++;
+	if (slot_i == NUM_PICAT_TABLE_MAPS) slot_i = 0;
+	if (slot_i == slot_i0) quit("TABLE MAPS OVERFLOW");
+  }
+  // Come here if map_id was not found. Register a map in slot i
+  ALLOCATE_FROM_NUMBERED_TERM_AREA(ta_record_ptr,tmp_ptr,sizeof(MAP_RECORD));
+  if (tmp_ptr == NULL) myquit(OUT_OF_MEMORY,"table_maps");
+  map_ptr = (MAP_RECORD_PTR)tmp_ptr;
+  map_ptr->count = 0;
+  map_ptr->size = 7;    // initial size 
+  tmp_ptr = (BPLONG_PTR)malloc(7*sizeof(BPLONG_PTR));
+  map_ptr->htable = tmp_ptr;
+  for (i = 0; i < 7; i++)
+	FOLLOW(tmp_ptr+i) = (BPLONG)NULL;
+  
+  picat_table_maps[slot_i] = (BPLONG_PTR)map_ptr;
+  picat_table_map_ids[slot_i] = map_id_cp;
+
+  return unify(map_num,MAKEINT(slot_i));
+}
+
+BPLONG table_maps_buckets_size(){
+  BPLONG i, size;
+  MAP_RECORD_PTR map_ptr;
+  
+  size = NUM_PICAT_TABLE_MAPS;
+  
+  for (i = 0; i < NUM_PICAT_TABLE_MAPS; i++){
+	map_ptr = (MAP_RECORD_PTR)picat_table_maps[i];
+	if (map_ptr != NULL){
+	  size += map_ptr->size;
+	}
+  }
+  return size;
+}
+
+void expand_picat_table_map(MAP_RECORD_PTR mr_ptr){
+    BPLONG new_htable_size,old_htable_size,i;
+    BPLONG_PTR new_htable,old_htable;
+	KEY_VAL_PAIR_PTR kvp_ptr, next_kvp_ptr;
+
+    old_htable_size = mr_ptr->size;
+    old_htable = mr_ptr->htable;
+    new_htable_size = 3*old_htable_size;
+    new_htable_size = bp_hsize(new_htable_size);
+
+	//	printf("table_map expand %d\n",new_htable_size);
+
+    new_htable = (BPLONG_PTR)malloc(sizeof(BPLONG_PTR)*new_htable_size);
+    if (new_htable == NULL) return; /* stop expanding */
+    for (i=0; i<new_htable_size; i++){
+	  new_htable[i] = (BPLONG)NULL;
+    }
+    for (i=0; i<old_htable_size; i++){
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)old_htable[i];
+	  while (kvp_ptr != NULL){
+		BPLONG_PTR new_kvp_ptr_ptr;
+
+		next_kvp_ptr = (KEY_VAL_PAIR_PTR)(kvp_ptr->next);
+		new_kvp_ptr_ptr = (BPLONG_PTR)(new_htable + bp_hashval(kvp_ptr->key)%new_htable_size);
+		kvp_ptr->next = (BPLONG_PTR)FOLLOW(new_kvp_ptr_ptr);
+		FOLLOW(new_kvp_ptr_ptr) = (BPLONG)kvp_ptr;
+		kvp_ptr = next_kvp_ptr;
+	  }
+	}
+    free(old_htable);
+    mr_ptr->size = new_htable_size;
+    mr_ptr->htable = new_htable;
+}
+
+int b_PICAT_TABLE_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
+  BPLONG i, key_cp, val_cp, this_hcode, this_ground_flag, dummy_hcode, dummy_ground_flag;
+  BPLONG_PTR trail_top0, tmp_ptr, kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+  BPLONG initial_diff0;
+
+  DEREF(key);
+  if (ISREF(key)){
+	exception = nonvariable_expected;
+	return BP_ERROR;
+  }
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+
+  initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
+  PREPARE_NUMBER_TERM(0);
+  key_cp = numberVarCopyToTableArea(ta_record_ptr,key,&this_hcode,&this_ground_flag);
+  if (key_cp == BP_ERROR) return BP_ERROR;
+
+  val_cp = numberVarCopyToTableArea(ta_record_ptr,val,&dummy_hcode,&dummy_ground_flag);
+  if (val_cp == BP_ERROR) return BP_ERROR;
+  
+  kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size)); 
+  kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+  while (kvp_ptr != NULL){ /* lookup */
+	if (kvp_ptr->key != key_cp && !key_identical(kvp_ptr->key,key_cp)){
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	} else {
+	  kvp_ptr->val = val_cp;  /* update */
+	  goto lookup_end;
+	}
+  }
+  // come here if lookup failed 
+  ALLOCATE_FROM_NUMBERED_TERM_AREA(ta_record_ptr,tmp_ptr,sizeof(KEY_VAL_PAIR));
+  if (tmp_ptr == NULL) myquit(OUT_OF_MEMORY,"table_maps");
+  kvp_ptr = (KEY_VAL_PAIR_PTR)tmp_ptr;
+  kvp_ptr->key = key_cp;
+  kvp_ptr->val = val_cp;
+  kvp_ptr->next = (BPLONG_PTR)FOLLOW(kvp_ptr_ptr);
+  FOLLOW(kvp_ptr_ptr) = (BPLONG)kvp_ptr;
+
+  mr_ptr->count++;
+  if (2*mr_ptr->count > mr_ptr->size)
+	expand_picat_table_map(mr_ptr);
+
+ lookup_end:
+  trail_top0 = (BPLONG_PTR)((BPULONG)trail_up_addr-initial_diff0);
+  UNDO_TRAILING;
+  return BP_TRUE;
+}
+
+int b_PICAT_TABLE_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val){
+  BPLONG i, key_cp, val_cp, this_hcode, this_ground_flag;
+  BPLONG_PTR trail_top0, kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+  BPLONG initial_diff0;
+
+  DEREF(key);
+  if (ISREF(key)){
+	exception = nonvariable_expected;
+	return BP_ERROR;
+  }
+	
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+
+  this_hcode = bp_hashval(key);
+  
+  kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size)); 
+  kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+  while (kvp_ptr != NULL){ /* lookup */
+	if (kvp_ptr->key != key && !key_identical(kvp_ptr->key,key)){
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	} else {
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  return unify(val,unnumberVarTabledTerm(kvp_ptr->val));
+	}
+  }
+  return BP_FALSE;
+}
+
+int b_PICAT_TABLE_MAP_SIZE_cf(BPLONG map_num, BPLONG size){
+  MAP_RECORD_PTR mr_ptr;
+
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+  return unify(size,MAKEINT(mr_ptr->count));
+}
+
+int b_PICAT_TABLE_MAP_CLEAR_c(BPLONG map_num){
+  int i;
+  MAP_RECORD_PTR mr_ptr;
+  BPLONG_PTR htable;
+
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+  mr_ptr-> count = 0;
+  htable = mr_ptr->htable;
+  for (i = 0; i < mr_ptr->size; i++){
+	FOLLOW(htable+i) = (BPLONG)NULL;
+  }
+  return BP_TRUE;
+}
+
+int b_PICAT_TABLE_MAP_KEYS_cf(BPLONG map_num, BPLONG keys){
+  BPLONG i, lst, key;
+  BPLONG_PTR kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+
+  lst = nil_sym;
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+
+  for (i = 0; i < mr_ptr->size; i++){
+	kvp_ptr_ptr = (mr_ptr->htable+i);
+	kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+	while (kvp_ptr != NULL){ /* lookup */
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  key = unnumberVarTabledTerm(kvp_ptr->key);
+	  FOLLOW(heap_top) = key;
+	  FOLLOW(heap_top+1) = lst;
+	  lst = ADDTAG(heap_top,LST);
+	  heap_top += 2;
+	  LOCAL_OVERFLOW_CHECK("table");
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	}
+  }
+  return unify(lst,keys);
+}
+
+int b_PICAT_TABLE_MAP_VALS_cf(BPLONG map_num, BPLONG vals){
+  BPLONG i, lst, val;
+  BPLONG_PTR kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+
+  lst = nil_sym;
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+
+  for (i = 0; i < mr_ptr->size; i++){
+	kvp_ptr_ptr = (mr_ptr->htable+i);
+	kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+	while (kvp_ptr != NULL){ /* lookup */
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  val = unnumberVarTabledTerm(kvp_ptr->val);
+	  FOLLOW(heap_top) = val;
+	  FOLLOW(heap_top+1) = lst;
+	  lst = ADDTAG(heap_top,LST);
+	  heap_top += 2;
+	  LOCAL_OVERFLOW_CHECK("table");
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	}
+  }
+  return unify(lst,vals);
+}
+
+int b_PICAT_TABLE_MAP_LIST_cf(BPLONG map_num, BPLONG pairs){
+  BPLONG i, lst, key, val, pair;
+  BPLONG_PTR kvp_ptr_ptr;
+  MAP_RECORD_PTR mr_ptr;
+  KEY_VAL_PAIR_PTR kvp_ptr;
+
+  lst = nil_sym;
+  DEREF_NONVAR(map_num);
+  map_num = INTVAL(map_num);
+  mr_ptr = (MAP_RECORD_PTR)picat_table_maps[map_num];
+
+  for (i = 0; i < mr_ptr->size; i++){
+	kvp_ptr_ptr = (mr_ptr->htable+i);
+	kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
+
+	while (kvp_ptr != NULL){ /* lookup */
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  key = unnumberVarTabledTerm(kvp_ptr->key);
+	  PREPARE_UNNUMBER_TERM(local_top);
+	  val = unnumberVarTabledTerm(kvp_ptr->val);
+	  pair = ADDTAG(heap_top,STR);
+	  FOLLOW(heap_top++) = (BPLONG)equal_psc;
+	  FOLLOW(heap_top++) = key;
+	  FOLLOW(heap_top++) = val;
+	  FOLLOW(heap_top) = pair;
+	  FOLLOW(heap_top+1) = lst;
+	  lst = ADDTAG(heap_top,LST);
+	  heap_top += 2;
+	  LOCAL_OVERFLOW_CHECK("table");
+	  kvp_ptr = (KEY_VAL_PAIR_PTR)kvp_ptr->next;
+	}
+  }
+  return unify(lst,pairs);
+}

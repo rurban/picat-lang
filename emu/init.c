@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : init.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -226,6 +226,7 @@ void init_toam(argc, argv)
     c_INITIALIZE_TABLE();
 #endif
     initialize_free_records();
+	init_picat_global_maps();
     inst_begin = 0;
     exception = illegal_arguments;
 }  /* end of init_toam */

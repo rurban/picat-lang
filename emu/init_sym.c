@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : init_sym.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -73,6 +73,7 @@ void init_sym(){
   
     interrupt_sym = ADDTAG(BP_NEW_SYM("interrupt",0),ATM);
     ball_psc = BP_NEW_SYM("$ball",0);
+    equal_psc = BP_NEW_SYM("=",2);
 
     eof_atom = ADDTAG(BP_NEW_SYM("end_of_file",0),ATM);
     true_atom = ADDTAG(BP_NEW_SYM("true",0),ATM);
@@ -95,6 +96,7 @@ void init_sym(){
     compound_expected = ADDTAG(BP_NEW_SYM("compund_expected",0),ATM);
     char_code_expected = ADDTAG(BP_NEW_SYM("char_code_expected",0),ATM);
     char_expected = ADDTAG(BP_NEW_SYM("char_expected",0),ATM);
+    ground_expected = ADDTAG(BP_NEW_SYM("ground_expected",0),ATM);
     float_format_expected = ADDTAG(BP_NEW_SYM("float_format_expected",0),ATM);
     operator_type_expected = ADDTAG(BP_NEW_SYM("operator_type_expected",0),ATM);
     variable_expected = ADDTAG(BP_NEW_SYM("variable_expected",0),ATM);

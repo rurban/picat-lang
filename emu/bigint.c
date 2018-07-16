@@ -239,6 +239,20 @@ BPLONG bp_bigint_to_int(BPLONG op){
     return bp_ubig_to_int(size,x);
 }
 
+/* if op is non-negative, 2**56 < op <= 2**63, convert it to long; otherwise, return 0 */
+BPLONG bp_bigint_to_native_long(BPLONG op) {
+    BPLONG size, sign, DLst;
+    UBIGINT x;
+
+	BP_DECOMPOSE_BIGINT(op,sign,size,DLst);
+	if (sign != 1 || size != 3) return 0;
+    LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",size+1);
+    x = (local_top-size-1);
+    BP_MAKE_UBIG_FROM_DLST(DLst,size,x);
+	if (x[2] >= 128) return 0;
+    return bp_ubig_to_int(size,x);
+}
+
 // size > 0 
 double bp_ubig_to_double(BPLONG size, UBIGINT x)
 {

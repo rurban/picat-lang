@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : sat_bp.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: interface between B-Prolog and GLPK
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -111,7 +111,8 @@ c_lp_solve(){
         glp_set_obj_dir(lp, GLP_MAX); 
 
     /* coefficients of the objective expression */
-    //  write_term(ObjVector);
+	//	printf("ObjSense=%d\n",ObjSense);
+	//	write_term(ObjVector);
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(ObjVector);
     for (i=1;i<=NCols;i++){
         temp = FOLLOW(ptr+i);

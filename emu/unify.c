@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : unify.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -523,8 +523,8 @@ void merge_cs(addr_head_cs1,cs2)
 
 
 /* same as identical(op1,op2) except that variables are not compared */
-key_identical(op1, op2)
-register BPLONG op1, op2;
+int key_identical(op1, op2)
+	 BPLONG op1, op2;
 {
     register BPLONG_PTR top;
     register BPLONG     arity, i;
@@ -546,9 +546,18 @@ key_identical_start:
         return 0;
 
     case LST:
+	  if (IsNumberedVar(op1)){
+		DEREF(op2);
+		if (ISREF(op2) || IsNumberedVar(op2)){
+		  return 1;
+		} else {
+		  return 0;
+		}
+	  }
         SWITCH_OP_LST(op2,key_identical_lst_d,
                       {return 0;},
-                      {if (op1 == op2) return 1;
+                      {	  if (op1 == op2) return 1;
+						  if (IsNumberedVar(op2)) return 0;
                           UNTAG_ADDR(op1);
                           UNTAG_ADDR(op2);
                           if (!key_identical(*(BPLONG_PTR) op1, *(BPLONG_PTR) op2)) return 0;

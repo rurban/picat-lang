@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : arith.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2015
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2016
  *   Purpose: arithmetic functions 
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -282,9 +282,11 @@ BPLONG bp_math_mul(op1,op2)
                 d2 = op2;
                 d1 = d1*d2;
                 if (BP_IN_28B_INT_RANGE(d1)){
-                    res = (BPLONG)d1;
+				    res = (BPLONG)d1;
                     return MAKEINT(res);
-                }
+                } else {
+				  return bp_double_to_bigint(d1);
+				}
 #endif
             }
             return (op1==0 || op2==0)  ? BP_ZERO : bp_mul_bigint_bigint(bp_int_to_bigint(op1),bp_int_to_bigint(op2));
@@ -645,13 +647,17 @@ BPLONG bp_math_mod(op1,op2)
         }
     } else if (IS_BIGINT(op1)){
         if (ISINT(op2)){
-            op2 = INTVAL(op2);
+		    op2 = INTVAL(op2);
             if (op2==0){
                 exception = et_ZERO_DIVISOR; return BP_ERROR;
             }
+#ifdef M64BITS
+			i = bp_bigint_to_native_long(op1);
+			if (i != 0) return MAKEINT(i%op2);
+#endif
             return bp_mod_bigint_bigint(op1,bp_int_to_bigint(op2));
         } else if (IS_BIGINT(op2)){
-            return bp_mod_bigint_bigint(op1,op2);
+		    return bp_mod_bigint_bigint(op1,op2);
         } else {
             exception = c_type_error(et_INTEGER,op2);
             return BP_ERROR;
