@@ -203,9 +203,3 @@ void dis_zs(filedes, n)
         if (n >= 1) fprintf(filedes, ",");
     }
 }
-
-
-
-
-
-

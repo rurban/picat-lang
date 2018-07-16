@@ -894,7 +894,8 @@ int b_IS_BOOLEAN_VAR_CONSTR(coes_type)
 {
     DEREF_NONVAR(coes_type);
     coes_type = INTVAL(coes_type);
-    if (coes_type & 0x1) return BP_TRUE; return BP_FALSE;
+    if (coes_type & 0x1) return BP_TRUE;
+    return BP_FALSE;
 }
 
 /* Install the coefficients and variables on to the stack so that
@@ -1019,6 +1020,7 @@ int b_BOOL_OR_c(BPLONG n) {
     BPLONG_PTR dv_ptr, var_ptr;
     BPLONG x1, x;
     int i;
+    BPLONG last_var;
     //  printf("=> bool_or\n");
     DEREF_NONVAR(n); n = INTVAL(n);
     var_ptr = arreg+n;
@@ -1057,7 +1059,6 @@ int b_BOOL_OR_c(BPLONG n) {
         return BP_TRUE;
     } else {  /* x1=1, perform unit propagation */
         int num_of_vars = 0;
-        BPLONG last_var;
 
         for (i = 1; i < n; i++) {
             x = FOLLOW(var_ptr-i); DEREF_NONVAR(x);
@@ -1087,6 +1088,7 @@ int b_BOOL_AND_c(BPLONG n) {
     BPLONG_PTR dv_ptr, var_ptr;
     BPLONG x1, x;
     int i;
+    BPLONG last_var;
 
     //  printf("=> bool_and\n");
     DEREF_NONVAR(n); n = INTVAL(n);
@@ -1132,7 +1134,6 @@ int b_BOOL_AND_c(BPLONG n) {
         return BP_TRUE;
     } else {  /* x1=0, perform unit propagation (sort of) */
         int num_of_vars = 0;
-        BPLONG last_var;
 
         for (i = 1; i < n; i++) {
             x = FOLLOW(var_ptr-i); DEREF_NONVAR(x);
@@ -1173,6 +1174,7 @@ int b_PROP_MAX_c(BPLONG n) {
         last1 = DV_last(dv_ptr1);
     } else {
         first1 = last1 = INTVAL(x1);
+        dv_ptr1 = 0;
     }
 
     num_of_vars = 0;
@@ -1195,6 +1197,7 @@ int b_PROP_MAX_c(BPLONG n) {
             if (x > last1) return BP_FALSE;
             if (x < acc_min) acc_min = x;
             if (x > acc_max) acc_max = x;
+            dv_ptr = 0;
         }
     }
     if (num_of_vars == 0) {
@@ -1246,6 +1249,7 @@ int b_PROP_MIN_c(BPLONG n) {
         first1 = DV_first(dv_ptr1);
         last1 = DV_last(dv_ptr1);
     } else {
+        dv_ptr1 = 0;
         first1 = last1 = INTVAL(x1);
     }
 
@@ -1264,6 +1268,7 @@ int b_PROP_MIN_c(BPLONG n) {
             }
             if (last > acc_max) acc_max = last;
         } else {
+            dv_ptr = 0;
             x = INTVAL(x);
             if (x < first1) return BP_FALSE;
             if (x < acc_min) acc_min = x;

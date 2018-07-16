@@ -19,6 +19,7 @@
 #else
 #include <unistd.h>
 #endif
+#include <stdio.h>
 
 /* extern char *malloc();*/
 

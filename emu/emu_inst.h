@@ -5002,15 +5002,15 @@ case unify_cons_ww:  /* y */
 lab_unify_cons_ww:
     op1 = NextOperandYC;
     SWITCH_OP_LST(op1, rr_unify_cons_ww,
-                  {rr_unify_cons_ww_var:
+                  {rr_unify_cons_ww_var: /* UNUSED */
                       PUSHTRAIL(op1);
                       FOLLOW(op1) = ADDTAG(H, LST);
                       FOLLOW(H) = (BPLONG)H; H++;
                       FOLLOW(H) = (BPLONG)H; H++;
                       CONTCASE;},
-                  {rr_unify_cons_ww_lst:
+                  {rr_unify_cons_ww_lst: /* UNUSED */
                       CONTCASE;},
-                  {rr_unify_cons_ww_susp:
+                  {rr_unify_cons_ww_susp: /* UNUSED */
                       op2 = ADDTAG(H, LST);
                       FOLLOW(H) = (BPLONG)H; H++;
                       FOLLOW(H) = (BPLONG)H; H++;

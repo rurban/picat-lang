@@ -15,6 +15,7 @@
 #include "inst.h"
 
 extern BPLONG table_allocate_code;
+void init_picat_table_maps();
 
 #define AllocateCellFromTableArea(ptr) {                                \
         if (table_free_cells_ptr != NULL) {                             \
@@ -116,9 +117,8 @@ int table_area_num_expansions() {
     return ta_record_ptr->num_expansions;
 }
 
-int c_INITIALIZE_TABLE() {
+int c_INITIALIZE_TABLE(){
     BPLONG_PTR low_addr, prev_low_addr;
-    void init_picat_table_maps();
 
     bp_exception = (BPLONG)NULL;
     in_critical_region = 0;
@@ -906,6 +906,7 @@ l_number_var_copy_faa:
             return FOLLOW(dest_ptr);
         }
     }
+    return BP_ERROR;
 }
 
 /*
@@ -1521,7 +1522,6 @@ int c_VARIANT() {
 
 int b_VARIANT_cc(BPLONG op1, BPLONG op2) {
     int i;
-    BPLONG maxVarNo;
     BPLONG_PTR trail_top0;
     BPLONG initial_diff0;
 
@@ -1529,8 +1529,6 @@ int b_VARIANT_cc(BPLONG op1, BPLONG op2) {
 
     if (TAG(op1) == ATM || TAG(op2) == ATM)
         return op1 == op2;
-
-    maxVarNo = -1;
 
     initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
 
@@ -1583,6 +1581,7 @@ beginning:
                          }
                          return 1;
                      });
+    return 0;
 }
 
 int term_subsume_term(BPLONG op1, BPLONG op2) {
@@ -1823,12 +1822,12 @@ int c_table_cardinality_limit() {
     ep = (BPLONG_PTR)GET_EP(sym_ptr);
     if (GET_ETYPE(sym_ptr) != T_PRED) {
         bp_exception = illegal_arguments;
-        return -1;
+        return BP_ERROR;
     }
 
     if (FOLLOW(ep) != table_allocate_code) {
         bp_exception = illegal_arguments;
-        return -1;
+        return BP_ERROR;
     }
     if (ISREF(card)) {
         BPLONG cur_limit = FOLLOW(ep+8);
@@ -1840,6 +1839,7 @@ int c_table_cardinality_limit() {
         FOLLOW(ep+8) = INTVAL(card);
         return BP_TRUE;
     }
+    return BP_ERROR;
 }
 
 /* set the cardinality limit of all tabled predicates (except those with
@@ -1867,9 +1867,9 @@ int c_set_all_table_cardinality_limit() {
     return BP_TRUE;
 }
 
-int table_statistics() {
+int table_statistics(){
     BPLONG i, count, subgoal_count, total_ans_count, max_ans_count, zero_ans_count, total_ans_access_count, max_ans_access_count, total_its_count, max_its_count, scc_nodes_count;
-    BPLONG_PTR subgoal_entry, ptr;
+    BPLONG_PTR subgoal_entry,ptr;
     subgoal_count = 0;
     total_ans_access_count = 0;
     max_ans_access_count = 0;
@@ -1984,7 +1984,7 @@ void reset_temp_complete_subgoal_entries() {
             if (GT_TOP_AR(subgoal_entry) == SUBGOAL_TEMP_COMPLETE) {
                 printf("TEMP_COMPLETE " BPULONG_FMT_STR "\n", subgoal_entry);
                 ptr = (BPLONG_PTR)GT_SCC_ROOT(subgoal_entry);
-                printf("SCC_ROOT = " BPULONG_FMT_STR "\n", ptr);
+                printf("SCC_ROOT = %p\n", ptr);
                 printf("SCC_ROOT = " BPULONG_FMT_STR "\n", GT_TOP_AR(ptr));
             }
             //                GT_TOP_AR(subgoal_entry) = (BPLONG)NULL;

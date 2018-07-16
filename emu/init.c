@@ -14,7 +14,7 @@
 #endif
 #endif
 #include <stdlib.h>
-#ifdef unix
+#if defined(unix) || defined(DARWIN)
 #include <unistd.h>
 #endif
 

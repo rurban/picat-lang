@@ -511,17 +511,16 @@ int get_file_name(BPLONG op) {
     } else {
         picat_str_to_c_str(op, s1, MAX_STR_LEN);
     }
-    get_file_name_aux(s1);
+    return get_file_name_aux(s1);
 }
 #else
 int get_file_name(op)
     BPLONG op;
 {
     CHAR s1[MAX_STR_LEN];
-
-    DEREF(op);
-    namestring(GET_SYM_REC(op), s1);
-    get_file_name_aux(s1);
+    DEREF(op); 
+    namestring(GET_SYM_REC(op),s1);
+    return get_file_name_aux(s1);
 }
 #endif
 
@@ -1585,7 +1584,6 @@ int c_UNGETC()
 int b_GET_f(op)
     BPLONG op;
 {
-    BPLONG_PTR top;
     BPLONG n;
 
     do {
@@ -1601,9 +1599,8 @@ int b_GET_f(op)
 
 int c_rm_file() {
     BPLONG op;
-    char *f_name;
-
-    op = ARG(1, 1);
+  
+    op = ARG(1,1);
     if (check_file_term(op) != BP_TRUE) return BP_ERROR;
     get_file_name(op);
     CHANGE_FILE_SEPARATOR(full_file_name);
@@ -2969,7 +2966,7 @@ int b_GET_LINE_POS_cf(Index, pos)
 int c_FORMAT_PRINT_INTEGER() {
     BPLONG control, arg, number, len;
     BPLONG_PTR top;
-    char format[20];
+    char format[22];
 
     control = ARG(1, 3); DEREF(control); control = INTVAL(control);
     arg = ARG(2, 3); DEREF(arg);
@@ -3001,7 +2998,7 @@ int c_FORMAT_PRINT_FLOAT() {
     BPLONG control, arg, number, len;
     BPLONG_PTR top;
     double val;
-    char format[20];
+    char format[22];
 
     control = ARG(1, 3); DEREF(control); control = INTVAL(control);
     arg = ARG(2, 3); DEREF(arg);
