@@ -1908,8 +1908,7 @@ void load_hashtab_from_c_array(){
     while (count<hash_array_size){
         n_hashtabs++;
         hash_inst_addr = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
-        //        hash_reg = bc_indecies[count++];
-        bc_indecies[count++];
+        count++;
         clause_no = bc_indecies[count++];
         alt = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
 
