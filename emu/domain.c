@@ -440,7 +440,7 @@ int b_DM_INCLUDE(Var1, Var2)
 
 /* preconditions: (1) dv_ptr1 has at least the same size as dv_ptr2;
    (2) dv_ptr1 has at least the same range as dv_ptr2; and
-   (3) dv_ptr1 is a bit vector 
+   (3) dv_ptr1 is a bit vector
 */
 int domain_include_bv(dv_ptr1, dv_ptr2)
     BPLONG_PTR dv_ptr1, dv_ptr2;
@@ -501,8 +501,9 @@ int varorint_set_false(X, elm)
 {
     BPLONG_PTR dv_ptr;
     DEREF_NONVAR(X);
-    if (ISINT(X)) {
-        if (INTVAL(X) == elm) return BP_FALSE; return BP_TRUE;
+    if (ISINT(X)){
+        if (INTVAL(X)==elm) return BP_FALSE;
+        return BP_TRUE;
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     domain_set_false_noint(dv_ptr, elm);
@@ -1132,7 +1133,7 @@ BPLONG from, to;
 }
 
 /*
-  c_reachability_test(VarsVect) 
+  c_reachability_test(VarsVect)
   the graph represented by the fd variables is a SCC.
 */
 int c_reachability_test() {
@@ -1315,7 +1316,7 @@ BPLONG_PTR var_vector, visited;
 
 /* A directed graph is given as a structure v(node(V1,Neibs_1),...,node(Vn,Neibs_n))
    where Vi is a domain variable and Neibs_i is domain variable whose domain
-   contains the successors that can be directed reached from i. Mark each node with 
+   contains the successors that can be directed reached from i. Mark each node with
    Lab such that there is a path from start to end in which all the nodes are marked
    with Lab. The Prolog frame is as follows:
 
@@ -1682,7 +1683,7 @@ BPLONG_PTR ConStartArray, ConEndArray, ConLabArray, ConFlagArray, LabVarArray, S
 }
 
 /* v1 and v2 have been found to be cutting nodes for the kth connection with l1,
-   check if they are cutting nodes for another connection with label l2. If so, 
+   check if they are cutting nodes for another connection with label l2. If so,
    then no labels other than l1 and l2 are allowed for v1 and v2.
 */
 void check_cuts_in_another_connection(v1, v2, n, firstCon, firstLab, nConnections, ConStartArray, ConEndArray, ConLabArray, LabVarArray, SuccVarArray, VisitedArray)
@@ -1814,7 +1815,7 @@ BPLONG val1, val2;
   dvar(X) :
   b_DM_COUNT_cf(X,Size),
   c_alldistinct_count_subsets(X,L,R,Size,NumElms,M),
-  (M>Size -> 
+  (M>Size ->
   fail
   ;
   M=:=Size ->
@@ -1829,7 +1830,7 @@ BPLONG val1, val2;
   $alldistinct_exclude_hall_set(X,[Y|Ys]):-dvar(Y) :
   (b_DM_INCLUDE(X,Y)->true; c_exclude_dom(X,Y)),
   $alldistinct_exclude_hall_set(X,Ys).
-  $alldistinct_exclude_hall_set(X,[_|Ys]):-true : 
+  $alldistinct_exclude_hall_set(X,[_|Ys]):-true :
   $alldistinct_exclude_hall_set(X,Ys).
 */
 int b_ALLDISTINCT_CHECK_HALL_VAR_cccc(X, NumElmsLeft, L, R)
@@ -2113,7 +2114,7 @@ int c_var_notin_ints() {
 int b_VAR_NOTIN_D_cc(X, List)
     BPLONG X, List;
 {
-    BPLONG elm, low, up, minX;
+    BPLONG elm, low, up;
     BPLONG_PTR lst_ptr, interval_ptr, dv_ptr;
 
     DEREF_NONVAR(X);
@@ -2122,7 +2123,7 @@ int b_VAR_NOTIN_D_cc(X, List)
         return check_var_notin_d(INTVAL(X), List);
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
-    minX = DV_first(dv_ptr);
+    /*minX = DV_first(dv_ptr);*/
     DEREF_NONVAR(List);
     while (ISLIST(List)) {
         lst_ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
@@ -2178,7 +2179,7 @@ int check_var_notin_d(x, List)
 }
 
 /*
-  Enforce that tasks are disjunctive with this task (start,duration) 
+  Enforce that tasks are disjunctive with this task (start,duration)
   est -- earliest start time
   lst -- latest start time
   eet -- earliest end time
@@ -2300,8 +2301,8 @@ int b_DISJUNCTIVE_TASKS_AC(n)
     }
 
 /* Q and T
-   if (acc_est+acc_duration1>acc_lct1)  T << Q 
-   if (acc_est1+acc_duration1>acc_lct)  Q << T 
+   if (acc_est+acc_duration1>acc_lct1)  T << Q
+   if (acc_est1+acc_duration1>acc_lct)  Q << T
 */
 #define EDGE_FINDER(acc_est, acc_lct, acc_duration, start, duration) {  \
         if (ISINT(start)) {                                             \
@@ -2393,7 +2394,7 @@ int b_DISJUNCTIVE_TASKS_EF(n)
     }
 
 /* edge finding: For each set Q={T1,T2,..T_{i-1}} where Ti=(Si,Di)
-   if est(Q)+d(Q)+Di > lct(Q U {Ti}) then Ti << Q (i.e., Si=<lct(Q)-Di-d(Q)) 
+   if est(Q)+d(Q)+Di > lct(Q U {Ti}) then Ti << Q (i.e., Si=<lct(Q)-Di-d(Q))
    if est(Q U {Ti}) + d(Q) + Di > lct(Q) then Q << Ti (i.e., Si>=lst(Q)+d(Q))
 */
 /* forward */
@@ -2497,7 +2498,7 @@ int b_EXCLUDE_NOGOOD_INTERVAL_ccc(Var, Low, Up)
 }
 
 /*
-  X :: List 
+  X :: List
   where List is a sorted list of integers and integer intervals.
 */
 int c_integers_intervals_list() {
@@ -2835,11 +2836,10 @@ void exclude_unsupported_y_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
 }
 
 /* X*Y = cz: Special attention needed when X=Y! */
-void exclude_unsupported_y_constr_xy_eq_c(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr_y, BPLONG cz) {
-    BPLONG minX, maxX, eY, maxY, eX;
+void exclude_unsupported_y_constr_xy_eq_c(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr_y, BPLONG cz){
+    BPLONG eY,maxY,eX;
     int supported;
 
-    minX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
     eY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
 
     for (; ; ) {  /* loop_Y: enumerate Y's domain */
@@ -2913,7 +2913,7 @@ void exclude_unsupported_z_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
     }  /* end of loop_Z */
 }
 
-/* X+Y = Z, X is a bit-vector domain. The constraint is already interval consistent. 
+/* X+Y = Z, X is a bit-vector domain. The constraint is already interval consistent.
    Ensure that every element in Y's domain and Z's domain is supported.
 */
 int c_CLPFD_ADD_AC_ccc() {
@@ -2991,7 +2991,7 @@ int c_CLPFD_ADD_AC_ccc() {
         elmZ++;
     }
 
-    //  printf("<= ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
+    //  printf("<= ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n");
 
     return BP_TRUE;
 }
@@ -3093,6 +3093,7 @@ x_is_int:
             z_includes_0 = 0;
         }
     } else if (ISINT(Z)) {
+        dv_ptr_z = 0;
         minZ = maxZ = INTVAL(Z);
         if (minZ > 0 || maxZ < 0) {
             z_includes_0 = 0;
@@ -3154,17 +3155,17 @@ x_is_int:
         if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         maxY = DV_last(dv_ptr_y);
     }
-    if (minX > 0 && maxX < BP_MAXINT_1W || maxX < 0 && minX > BP_MININT_1W) {
-        lowY = min4(sound_low_div(minZ, minX), sound_low_div(minZ, maxX), sound_low_div(maxZ, minX), sound_low_div(maxZ, maxX));
-        upY = max4(sound_up_div(minZ, minX), sound_up_div(minZ, maxX), sound_up_div(maxZ, minX), sound_up_div(maxZ, maxX));
-        if (domain_region_noint(dv_ptr_y, lowY, upY) == BP_FALSE) return BP_FALSE;
+    if ((minX > 0 && maxX < BP_MAXINT_1W) || (maxX < 0 && minX > BP_MININT_1W)){
+        lowY = min4(sound_low_div(minZ,minX), sound_low_div(minZ,maxX), sound_low_div(maxZ,minX), sound_low_div(maxZ,maxX));
+        upY = max4(sound_up_div(minZ,minX), sound_up_div(minZ,maxX), sound_up_div(maxZ,minX), sound_up_div(maxZ,maxX));
+        if (domain_region_noint(dv_ptr_y,lowY,upY)==BP_FALSE) return BP_FALSE;
         if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
     }
-    if (minY > 0 && maxY < BP_MAXINT_1W || maxY < 0 && minY > BP_MININT_1W) {
-        lowX = min4(sound_low_div(minZ, minY), sound_low_div(minZ, maxY), sound_low_div(maxZ, minY), sound_low_div(maxZ, maxY));
-        upX = max4(sound_up_div(minZ, minY), sound_up_div(minZ, maxY), sound_up_div(maxZ, minY), sound_up_div(maxZ, maxY));
-        if (domain_region_noint(dv_ptr_x, lowX, upX) == BP_FALSE) return BP_FALSE;
+    if ((minY > 0 &&  maxY < BP_MAXINT_1W)  || (maxY <0 && minY > BP_MININT_1W)){
+        lowX = min4(sound_low_div(minZ,minY), sound_low_div(minZ,maxY), sound_low_div(maxZ,minY), sound_low_div(maxZ,maxY));
+        upX = max4(sound_up_div(minZ,minY), sound_up_div(minZ,maxY), sound_up_div(maxZ,minY), sound_up_div(maxZ,maxY));
+        if (domain_region_noint(dv_ptr_x,lowX,upX)==BP_FALSE) return BP_FALSE;
         if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
     }
 
