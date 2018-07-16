@@ -47,6 +47,12 @@
     }														\
   }
 
+#define COMPARE_FLOAT_FLOAT(f1,f2){				\
+	if (f1<f2) return -1L;						\
+	else if (f1 == f2) return 0;				\
+	else return 1;								\
+  }
+
 extern BPLONG no_gcs;
 extern BPLONG gc_time;
 extern BPLONG gc_threshold;
@@ -255,7 +261,7 @@ int bp_compare(BPLONG val1, BPLONG val2)
 					   {return 1;}, 
 					   {goto compare_atom_atom;}, 
 					   {return -1L;}, 
-					   {if (IS_FLOAT_PSC(val2)) return 1; else if (IS_BIGINT_PSC(val2)) goto compare_atom_bigint; else return -1L;},
+					   {if (IS_FLOAT_PSC(val2)) goto compare_atom_float; else if (IS_BIGINT_PSC(val2)) goto compare_atom_bigint; else return -1L;},
 					   {return 1;});},
 
 			{if (!ISLIST(val2)) 
@@ -311,13 +317,22 @@ int bp_compare(BPLONG val1, BPLONG val2)
   } else
 	return 1; /* atom int */
 
+ compare_atom_float:
+  if (ISINT(val1)) {
+	double f1 = (double)INTVAL(val1);
+	double f2 = floatval(val2);
+	COMPARE_FLOAT_FLOAT(f1,f2);
+  } else {
+	return 1;
+  }
+
  compare_bigint_unknown:
   SWITCH_OP(val2,lcompare_bigint_unknown,
 			{return 1;}, 
 			{goto compare_atom_atom;}, 
-	     {return -1L;}, 
-	     {if (IS_FLOAT_PSC(val2)) return 1; else if (IS_BIGINT_PSC(val2)) return bp_compare_bigint_bigint(val1,val2); else return -1L;},
-	     {return 1;});
+			{return -1L;}, 
+			{if (IS_FLOAT_PSC(val2)) return compare_bigint_float(val1,val2); else if (IS_BIGINT_PSC(val2)) return bp_compare_bigint_bigint(val1,val2); else return -1L;},
+			{return 1;});
    
  compare_symbol:
    if (val1 == val2) return 0;
@@ -341,6 +356,15 @@ int bp_compare(BPLONG val1, BPLONG val2)
    return c;
  }
 
+int compare_bigint_float(val1,val2)
+     BPLONG val1,val2;
+{
+  double f1,f2;
+  f1 = bp_bigint_to_double(val1);
+  f2 = floatval(val2);
+  COMPARE_FLOAT_FLOAT(f1,f2);
+}
+
 int compare_float_unknown(val1,val2)
      BPLONG val1,val2;
 {
@@ -350,14 +374,17 @@ int compare_float_unknown(val1,val2)
   DEREF(val2);
   if (ISFLOAT(val2)){
     f2 = floatval(val2);
-    if (f1<f2) return -1L;
-    else if (f1 == f2) return 0;
-    else return 1;
+    COMPARE_FLOAT_FLOAT(f1,f2);
   } else if (ISREF(val2)) {
     return 1;
-  } else {
+  } else if (ISINT(val2)){
+	f2 = (double)INTVAL(val2);
+	COMPARE_FLOAT_FLOAT(f1,f2);
+  } else if (IS_BIGINT(val2)){
+	f2 = bp_bigint_to_double(val2);
+	COMPARE_FLOAT_FLOAT(f1,f2);
+  } else 
     return -1L;
-  }
 }
 
 int comalpha(sym_ptr1, sym_ptr2)

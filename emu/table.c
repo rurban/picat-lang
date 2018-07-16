@@ -365,6 +365,7 @@ void expandSubgoalTable(){
     new_htable_size = bp_hsize(new_htable_size);
 
     new_htable = (BPLONG_PTR)malloc(sizeof(BPLONG)*new_htable_size);
+	//	printf("table_size %ld\n",new_htable_size);
     if (new_htable == NULL) return; /* stop expanding */
     for (i=0;i<new_htable_size;i++){
         new_htable[i] = (BPLONG)NULL;

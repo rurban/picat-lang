@@ -128,6 +128,7 @@ typedef struct {
   BPLONG bucket_size;
   BPLONG_PTR hashtable;
 } InterpretedPred;
+
 typedef InterpretedPred *InterpretedPredPtr;
 
 /* each bucket is a record of the following form:
@@ -195,26 +196,26 @@ typedef struct {
 #define INITIALIZE_BUILTIN2(index,function) {builtins[index].argcount = 2; builtins[index].func.func2 = function;}
 #define INITIALIZE_BUILTIN3(index,function) {builtins[index].argcount = 3; builtins[index].func.func3 = function;}
 #define INITIALIZE_BUILTIN4(index,function) {builtins[index].argcount = 4; builtins[index].func.func4 = function;}
-#define EXECUTE_BUILTIN0(res,index) {int tempindex = index; \
-				     if (builtins[tempindex].argcount != 0) \
-					printf("builtin[%d] called with 0 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
-				     res = (*builtins[tempindex].func.func0)();}
-#define EXECUTE_BUILTIN1(res,index,op) {int tempindex = index; \
-				     if (builtins[tempindex].argcount != 1) \
-					printf("builtin[%d] called with 1 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
-				     res = (*builtins[tempindex].func.func1)(op);}
-#define EXECUTE_BUILTIN2(res,index,op1,op2) {int tempindex = index; \
-				     if (builtins[tempindex].argcount != 2) \
-					printf("builtin[%d] called with 2 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
-				     res = (*builtins[tempindex].func.func2)(op1,op2);}
+#define EXECUTE_BUILTIN0(res,index) {int tempindex = index;				\
+	if (builtins[tempindex].argcount != 0)								\
+	  printf("builtin[%d] called with 0 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
+	res = (*builtins[tempindex].func.func0)();}
+#define EXECUTE_BUILTIN1(res,index,op) {int tempindex = index;			\
+	if (builtins[tempindex].argcount != 1)								\
+	  printf("builtin[%d] called with 1 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
+	res = (*builtins[tempindex].func.func1)(op);}
+#define EXECUTE_BUILTIN2(res,index,op1,op2) {int tempindex = index;		\
+	if (builtins[tempindex].argcount != 2)								\
+	  printf("builtin[%d] called with 2 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
+	res = (*builtins[tempindex].func.func2)(op1,op2);}
 #define EXECUTE_BUILTIN3(res,index,op1,op2,op3) {int tempindex = index; \
-				     if (builtins[tempindex].argcount != 3) \
-					printf("builtin[%d] called with 3 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
-				     res = (*builtins[tempindex].func.func3)(op1,op2,op3);}
+	if (builtins[tempindex].argcount != 3)								\
+	  printf("builtin[%d] called with 3 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
+	res = (*builtins[tempindex].func.func3)(op1,op2,op3);}
 #define EXECUTE_BUILTIN4(res,index,op1,op2,op3,op4) {int tempindex = index; \
-				     if (builtins[tempindex].argcount != 4) \
-					printf("builtin[%d] called with 4 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
-				     res = (*builtins[tempindex].func.func4)(op1,op2,op3,op4);}
+	if (builtins[tempindex].argcount != 4)								\
+	  printf("builtin[%d] called with 4 args, expected %d\n",tempindex,builtins[tempindex].argcount); \
+	res = (*builtins[tempindex].func.func4)(op1,op2,op3,op4);}
 #else
 typedef int (*Builtins)();
 

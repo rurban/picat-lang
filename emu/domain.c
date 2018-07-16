@@ -2515,14 +2515,16 @@ int c_integers_intervals_list(){
                 min0 = FOLLOW(interval_ptr+1);DEREF(min0);
                 max0 = FOLLOW(interval_ptr+2);DEREF(max0);
                 if (!ISINT(min0) || !ISINT(max0)){
-                    exception = illegal_arguments;
-                    return BP_ERROR;
+				  //  exception = illegal_arguments;
+				  //  return BP_ERROR;
+				  return BP_FALSE;
                 }
                 min0=INTVAL(min0);
                 max0=INTVAL(max0);
                 if (min0>max0){
-                    exception = illegal_arguments;
-                    return BP_ERROR;
+				  // exception = illegal_arguments;
+                  // return BP_ERROR;
+				  return BP_FALSE;
                 }
             } else return BP_FALSE;
     }
@@ -2544,14 +2546,16 @@ int c_integers_intervals_list(){
                 low = FOLLOW(interval_ptr+1);DEREF(low);
                 up = FOLLOW(interval_ptr+2);DEREF(up);
                 if (!ISINT(low) || !ISINT(up)){
-                    exception = illegal_arguments;
-                    return BP_ERROR;
+				  return BP_FALSE;
+				  // exception = illegal_arguments;
+				  // return BP_ERROR;
                 }
                 low=INTVAL(low);
                 up=INTVAL(up);
                 if (low>up){
-                    exception = illegal_arguments;
-                    return BP_ERROR;
+				  return BP_FALSE;
+				  // exception = illegal_arguments;
+				  // return BP_ERROR;
                 }
                 if (low<=max0){
                     unify(Unsorted,MAKEINT(1));
@@ -2560,8 +2564,9 @@ int c_integers_intervals_list(){
             } else return BP_FALSE;
     }
     if (!ISNIL(List)){
-        exception = illegal_arguments;
-        return BP_ERROR;
+	  return BP_FALSE;
+	  // exception = illegal_arguments;
+	  // return BP_ERROR;
     }
 
     unify(Min,MAKEINT(min0));
@@ -2827,7 +2832,7 @@ void exclude_unsupported_y_constr_xy_eq_c(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
         supported = 0;
         if (eY==0){ /* 0 is supported if cz=0 */
             if (cz==0) supported = 1;
-        } if (dv_ptr_x==dv_ptr_y){ /* X and Y are identical */
+        } else if (dv_ptr_x==dv_ptr_y){ /* X and Y are identical */
             if (eY*eY==cz) supported = 1;
         } else {
 		    eX = cz/eY;
@@ -2866,7 +2871,7 @@ void exclude_unsupported_z_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
             if (dm_true(dv_ptr_x,0) || dm_true(dv_ptr_y,0)) supported = 1;
         } else if (dv_ptr_x==dv_ptr_y){
             if (eZ>0){
-                eX = sqrt(eZ);
+			    eX = (BPLONG)sqrt(eZ);
                 if (eX*eX==eZ) supported = 1;
             } 
         } else {

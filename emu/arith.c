@@ -1258,17 +1258,32 @@ BPLONG bp_math_sum1(op1)
     sum = BP_ZERO;
     DEREF(op1);
     op0 = op1;
-    while (ISLIST(op1)){
+	if (b_IS_ARRAY_c(op1)){
+	  SYM_REC_PTR sym_ptr;
+	  int i;
+	  if (ISATOM(op1)) return sum;
+	  ptr = (BPLONG_PTR)UNTAGGED_ADDR(op1);
+	  sym_ptr = (SYM_REC_PTR)FOLLOW(ptr);
+	  i = GET_ARITY(sym_ptr);
+	  while (i>0){
+		cur_elm = FOLLOW(ptr+i); 
+        sum = bp_math_add(sum,cur_elm);
+        if (sum == BP_ERROR) return BP_ERROR;
+		i--;
+	  }
+	} else {
+	  while (ISLIST(op1)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(op1);
         cur_elm = FOLLOW(ptr); 
         sum = bp_math_add(sum,cur_elm);
         if (sum == BP_ERROR) return BP_ERROR;
         op1 = FOLLOW(ptr+1); DEREF(op1);
-    }
-    if (!ISNIL(op1)){
+	  }
+	  if (!ISNIL(op1)){
         exception = c_type_error(et_LIST,op0);
         return BP_ERROR;
-    }
+	  }
+	}
     return sum;
 }
 
@@ -1282,17 +1297,32 @@ BPLONG bp_math_prod1(op1)
     prod = BP_ONE;
     DEREF(op1);
     op0 = op1;
-    while (ISLIST(op1)){
+	if (b_IS_ARRAY_c(op1)){
+	  SYM_REC_PTR sym_ptr;
+	  int i;
+	  if (ISATOM(op1)) return prod;
+	  ptr = (BPLONG_PTR)UNTAGGED_ADDR(op1);
+	  sym_ptr = (SYM_REC_PTR)FOLLOW(ptr);
+	  i = GET_ARITY(sym_ptr);
+	  while (i>0){
+		cur_elm = FOLLOW(ptr+i); 
+        prod = bp_math_mul(prod,cur_elm);
+        if (prod == BP_ERROR) return BP_ERROR;
+		i--;
+	  }
+	} else {
+	  while (ISLIST(op1)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(op1);
         cur_elm = FOLLOW(ptr); 
         prod = bp_math_mul(prod,cur_elm);
         if (prod == BP_ERROR) return BP_ERROR;
         op1 = FOLLOW(ptr+1); DEREF(op1);
-    }
-    if (!ISNIL(op1)){
+	  }
+	  if (!ISNIL(op1)){
         exception = c_type_error(et_LIST,op0);
         return BP_ERROR;
-    }
+	  }
+	}
     return prod;
 }
 

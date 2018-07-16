@@ -22,6 +22,8 @@ import common_sat_cp.
 % circuit(L) => circuit(L).
 % count(V,FDVars,Rel,N) => count(V,FDVars,Rel,N).
 % cumulative(Starts,Durations,Resources,Limit) => cumulative(Starts,Durations,Resources,Limit).
+% decreasing(FDVars) => decreasing(FDVars).
+% decreasing_strict(FDVars) => decreasing_strict(FDVars).
 % diffn(RectangleList) => diffn(RectangleList).
 % element(I,FDVars,V) => element(I,FDVars,V).
 % fd_disjoint(DVar1,DVar2) => fd_disjoint(DVar1,DVar2).
@@ -36,6 +38,8 @@ import common_sat_cp.
 % fd_true(FDVar,Elm) => fd_true(FDVar,Elm).
 % fd_vector_min_max(Min,Max) => fd_vector_min_max(Min,Max).
 % global_cardinality(FDVars,Pairs) => global_cardinality(FDVars,Pairs).
+% increasing(FDVars) => increasing(FDVars).
+% increasing_strict(FDVars) => increasing_strict(FDVars).
 % lex_lt(L1,L2) = > lex_lt(L1,L2).
 % lex_le(L1,L2) = > lex_le(L1,L2).
 % new_dvar() = new_dvar().
@@ -77,7 +81,8 @@ import common_sat_cp.
 '#<=>'(X,Y) => bp.'$<=>'(X,Y).
 
 % '#=>'(X,Y) =>  X #=> Y.
-'#=>'(X,Y) => bp.'$=>'(X,Y).
+'#=>'(X,Y) => 
+   bp.'$=>'(X,Y).
 
 % '#/\\'(X,Y) =>  X #/\ Y.
 '#/\\'(X,Y) => bp.'$/\\'(X,Y).
@@ -535,3 +540,61 @@ at_most(N,X,V) =>
 %
 at_least(N,X,V) => 
   count(V,X,#>=,N).
+
+%
+% Ensure that List is increasing
+%
+increasing(FDVars),array(FDVars) =>
+   foreach(I in 2..length(FDVars)) FDVars[I-1] #=< FDVars[I] end.
+increasing(FDVars),list(FDVars) =>
+   increasing_list(FDVars).
+increasing(FDVars) =>
+   handle_exception($dvar_collection_expected(FDVars),increasing).
+
+increasing_list([]) => true.
+increasing_list([_]) => true.
+increasing_list([X|T@[Y|_]]) => 
+    X #=< Y,
+	increasing_list(T).
+
+increasing_strict(FDVars),array(FDVars) =>
+   foreach(I in 2..length(FDVars)) FDVars[I-1] #< FDVars[I] end.
+increasing_strict(FDVars),list(FDVars) =>
+   increasing_strict_list(FDVars).
+increasing_strict(FDVars) =>
+   handle_exception($dvar_collection_expected(FDVars),increasing_strict).
+
+increasing_strict_list([]) => true.
+increasing_strict_list([_]) => true.
+increasing_strict_list([X|T@[Y|_]]) => 
+    X #< Y,
+	increasing_strict_list(T).
+
+%
+% Ensure that FDVars is decreasing
+%
+decreasing(FDVars),array(FDVars) =>
+   foreach(I in 2..length(FDVars)) FDVars[I-1] #>= FDVars[I] end.
+decreasing(FDVars),list(FDVars) =>
+   decreasing_list(FDVars).
+decreasing(FDVars) =>
+   handle_exception($dvar_collection_expected(FDVars),decreasing).
+
+decreasing_list([]) => true.
+decreasing_list([_]) => true.
+decreasing_list([X|T@[Y|_]]) => 
+    X #>= Y,
+	decreasing_list(T).
+
+decreasing_strict(FDVars),array(FDVars) =>
+   foreach(I in 2..length(FDVars)) FDVars[I-1] #> FDVars[I] end.
+decreasing_strict(FDVars),list(FDVars) =>
+   decreasing_strict_list(FDVars).
+decreasing_strict(FDVars) =>
+   handle_exception($dvar_collection_expected(FDVars),decreasing_strict).
+
+decreasing_strict_list([]) => true.
+decreasing_strict_list([_]) => true.
+decreasing_strict_list([X|T@[Y|_]]) => 
+    X #> Y,
+	decreasing_strict_list(T).

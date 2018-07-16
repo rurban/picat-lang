@@ -76,15 +76,15 @@
 #define IS_FLAT_B_FRAME(f) ((AR_BTM(f) & TAG_MASK)==FLAT_B_FRAME_TAG)
 #define IS_FLAT_FRAME(f) ((AR_BTM(f) & TAG_MASK)==FLAT_FRAME_TAG)
 
-#define NO_RESERVED_SLOTS(f,no){				\
-    switch((AR_BTM(f) & TAG_MASK)){				\
-    case FLAT_FRAME_TAG: no = 4; break;				\
-    case FLAT_B_FRAME_TAG: no = 5; break;			\
-    case SUSP_FRAME_TAG: no = SUSP_FRAME_SIZE; break;		\
-    case NONDET_FRAME_TAG:					\
-    case CATCHER_FRAME_TAG: no = 9; break;		\
-    case TABLE_FRAME_TAG:  no = 13; break;			\
-    }								\
+#define NO_RESERVED_SLOTS(f,no){						\
+    switch((AR_BTM(f) & TAG_MASK)){						\
+    case FLAT_FRAME_TAG: no = 4; break;					\
+    case FLAT_B_FRAME_TAG: no = 5; break;				\
+    case SUSP_FRAME_TAG: no = SUSP_FRAME_SIZE; break;	\
+    case NONDET_FRAME_TAG:								\
+    case CATCHER_FRAME_TAG: no = 9; break;				\
+    case TABLE_FRAME_TAG:  no = 13; break;				\
+    }													\
   }
 
 #define FLAT_FRAME_SIZE 4
@@ -97,17 +97,15 @@
 subgoalTable -> bucket[0]
                  ...
        	        bucket[subgoalTableBucketSize-1]
+
 subgoalTableEntry ->
                 NEXT
                 ANSWER_TABLE
-                ANSWER_TABLE_FIRST0 // very beginning of the answer list
-                ANSWER_TABLE_FIRST1 // beginning of the new answers for the last round
-                ANSWER_TABLE_FIRST2 // beginning of the new answers for the current round
-		STATE           // looping or normal or revised
+		        STATE           // looping or normal or revised
                 MASTER_AR       // point to the frame of the master. If 
                                 // complete, MASTER_AR becomes SUBGOAL_COMPLETE
-		SCC_ROOT        // root subgoal of the SCC this subgoal belongs to
-		SCC_ELMS        // list of nodes in the SCC rooted at this node
+		        SCC_ROOT        // root subgoal of the SCC this subgoal belongs to
+		        SCC_ELMS        // list of nodes in the SCC rooted at this node
                 SYM
                 args
 
@@ -120,9 +118,9 @@ subgoalTableEntry ->
     evaluated - 1: the subgoal has been evaluated; 0: not evaluated
     looping -- 1: a looping node 0: not a looping node
 
-    The information on master/slave is not stored. It is possible to
-    distinguish masters from slaves. Slaves only execute the
-    table_use_answer instruction while masters execute table_check_competion
+    The information about pioneer/follower is not stored. It is possible to
+    distinguish between pioneers and followers. Followers only execute the
+    table_use_answer instruction while pioneers execute table_check_competion
     after a round of execution.
 */
 #define SUBGOAL_NEW_REGION_SET_BIT 0x10L
@@ -156,10 +154,11 @@ subgoalTableEntry ->
 #define SET_SUBGOAL_EVALUATED(subgoal_entry) GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_EVALUATED_BIT
 #define SUBGOAL_EVALUATED(subgoal_entry) (GT_STATE(subgoal_entry) & SUBGOAL_EVALUATED_BIT)
 
-#define SET_SUBGOAL_LOOPING(subgoal_entry)				\
-  if (GT_STATE(subgoal_entry) & SUBGOAL_LOOPING_BIT);			\
-  else									\
+#define SET_SUBGOAL_LOOPING(subgoal_entry)								\
+  if (GT_STATE(subgoal_entry) & SUBGOAL_LOOPING_BIT);					\
+  else																	\
     {GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_LOOPING_BIT;} 
+
 #define SUBGOAL_IS_LOOPING(subgoal_entry) (GT_STATE(subgoal_entry) & SUBGOAL_LOOPING_BIT)
 
 #define SET_SUBGOAL_ANS_REVISED(subgoal_entry) GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_ANS_REVISED_BIT; 
@@ -190,8 +189,8 @@ subgoalTableEntry ->
 
 /************************************************
 answerTable ->  SIZE
- 	        FIRST
-	        LAST
+   	            FIRST
+	            LAST
                 COUNT
                 BUCKET_PTR
 
@@ -214,7 +213,7 @@ BUCKET_PTR  ->  bucket[0]
           -> next_in_chain
           -> A1
           -> ...
-	  -> An
+    	  -> An
 ************************************************/
 #define ANSWER_NEXT_IN_TABLE(answer) FOLLOW((BPLONG_PTR)(answer))
 #define ANSWER_NEXT_IN_TABLE_ADDR(answer) (answer)
