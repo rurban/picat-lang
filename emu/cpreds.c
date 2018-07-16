@@ -307,11 +307,10 @@ BPLONG picat_get_integer(t)
     DEREF(t);
     if (ISINT(t)){
         return INTVAL(t);
-    } else  if (IS_BIGINT(t)){
+    } else if (IS_BIGINT(t)){
         return bp_bigint_to_int(t); /* !! may lose bits */
-    } else if(ISADDR(t)){ 
+    } else if (ISADDR(t)){ 
         printf("integer expected, found address\n");
-    } else {
         bp_exception = integer_expected;
         return 0;
     }
@@ -1211,9 +1210,9 @@ void Cboot() {
 #endif
 
     /*
-      #ifdef GLPK
-      Cboot_glpk();
-      #endif
+#ifdef GLPK
+    Cboot_glpk();
+#endif
     */
     insert_cpred("c_sat_start_dump",1,c_sat_start_dump);
     insert_cpred("c_sat_stop_dump",0,c_sat_stop_dump);

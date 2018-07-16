@@ -502,7 +502,7 @@ int get_file_name(BPLONG op){
     } else {
         picat_str_to_c_str(op, s1, MAX_STR_LEN-1);
     }
-    get_file_name_aux(s1);
+    return get_file_name_aux(s1);
 }
 #else
 int get_file_name(op)
@@ -512,7 +512,7 @@ int get_file_name(op)
   
     DEREF(op); 
     namestring(GET_SYM_REC(op),s1);
-    get_file_name_aux(s1);
+    return get_file_name_aux(s1);
 }
 #endif
 
@@ -1610,7 +1610,6 @@ int c_UNGETC()
 int b_GET_f(op)
     BPLONG op;
 {
-    BPLONG_PTR top;
     BPLONG n;
 
     do {
@@ -1626,7 +1625,6 @@ int b_GET_f(op)
 
 int c_rm_file() {
     BPLONG op;
-    char *f_name;
   
     op = ARG(1,1);
     if (check_file_term(op)!=BP_TRUE) return BP_ERROR;
@@ -2999,7 +2997,7 @@ int b_GET_LINE_POS_cf(Index,pos)
 int c_FORMAT_PRINT_INTEGER(){
     BPLONG control,arg,number,len;
     BPLONG_PTR top;
-    char format[20];
+    char format[22];
 
     control = ARG(1,3); DEREF(control);control=INTVAL(control);
     arg = ARG(2,3); DEREF(arg);
@@ -3031,7 +3029,7 @@ int c_FORMAT_PRINT_FLOAT(){
     BPLONG control,arg,number,len;
     BPLONG_PTR top;
     double val;
-    char format[20];
+    char format[22];
 
     control = ARG(1,3); DEREF(control);control=INTVAL(control);
     arg = ARG(2,3); DEREF(arg);
@@ -3152,7 +3150,6 @@ int print_term_to_buf(BPLONG term){
             sprintf(bp_buf,"%.15lf", floatval(term));
             bp_trim_trailing_zeros(bp_buf);
         } else if (IS_BIGINT(term)){
-            CHAR_PTR ch_ptr;
             int j, i = bp_write_bigint_to_str(term,bp_buf,MAX_STR_LEN);  /* stored in bp_buf from index i to MAX_STR_LEN-1 */
             if (i==BP_ERROR) return BP_ERROR;
             j = 0;

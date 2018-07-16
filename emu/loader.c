@@ -422,7 +422,7 @@ int c_GET_MODULE_SIGNATURE_cf(){
     }
     /* printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); */
 
-    READ_DATA(&magic, 1);
+    READ_DATA_ONLY(&magic, 1);
     if (load_bytecode_header()==BP_ERROR)
         return BP_ERROR;
 
@@ -554,7 +554,7 @@ int load_hashtab()
             return 1;
         alt = BB4(buf_for_read);
         alt = (BPLONG)RELOC_ADDR(alt);
-        if (eof_flag = get_index_tab(clause_no, &temp_len))
+        if ((eof_flag = get_index_tab(clause_no, &temp_len)))
             return eof_flag;
         inst_addr = gen_index(hash_inst_addr,clause_no,alt);
         count += (16 + temp_len);
@@ -1016,7 +1016,9 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
     u.ptr = key;
     if (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0)) {
         const UW32 *k = (const UW32 *)key;         /* read 32-bit chunks */
+#ifdef VALGRIND
         const BYTE  *k8;
+#endif
 
         /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */
         while (length > 12)

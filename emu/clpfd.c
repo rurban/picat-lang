@@ -425,9 +425,6 @@ int b_SELECT_FF_MAX_cf(Vars,BestVar)
     BPLONG Var,size,size0;
     BPLONG_PTR dv_ptr,dv_ptr0,ptr;
 
-    BPLONG Vars0;
-    Vars0 = Vars;
-  
     DEREF_NONVAR(Vars); 
     while (ISLIST(Vars)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Vars);
@@ -505,9 +502,6 @@ int b_SELECT_MAX_cf(Vars,BestVar)
     BPLONG Var,max0,max;
     BPLONG_PTR dv_ptr,dv_ptr0,ptr;
 
-    BPLONG Vars0;
-    Vars0 = Vars;
-  
     DEREF_NONVAR(Vars); 
     while (ISLIST(Vars)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Vars);
@@ -806,12 +800,11 @@ int c_VV_EQ_C_CON_aux(dv_ptr_x,dv_ptr_y,C)
     BPLONG C;
 BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
-    BPLONG currX,currY,maxX,minY,maxY;
-
+    BPLONG currX,currY,maxX;
 
     /* for each x in X, there is an y in Y such that x+y=C */
     currX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
-    minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
+    /*minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);*/
     /* write_term(dv_ptr_x);printf("+"); write_term(dv_ptr_y); printf("_eq_%d",C);printf("\n"); */
     for (;;){
         currY = C-currX;
@@ -865,12 +858,11 @@ int c_V_EQ_VC_CON_aux(dv_ptr_x,dv_ptr_y,C)
     BPLONG C;
 BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
-    BPLONG currX,currY,maxX,minY,maxY;
-
+    BPLONG currX,currY,maxX;
 
     /* for each x in X, there is an y in Y such that x=y+C */
     currX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
-    minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
+    /*minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);*/
     /* write_term(dv_ptr_x);printf("_eq_"); write_term(dv_ptr_y); printf("+%d",C);printf("\n"); */
     for (;;){
         currY = currX-C;
@@ -919,10 +911,10 @@ int c_UU_EQ_C_CON_aux(A,dv_ptr_x,B,dv_ptr_y,C)
     BPLONG A,B,C;
 BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
-    BPLONG tmp,currX,currY,maxX,minY,maxY;
+    BPLONG tmp,currX,currY,maxX;
 
     currX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
-    minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
+    /*minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y)*/;
     for (;;){
         tmp = C-A*currX;
         currY = tmp/B;
@@ -942,9 +934,9 @@ BPLONG_PTR dv_ptr_x, dv_ptr_y;
     
 void print_event_queue(){
     int i;
-    printf("trigger_no=%d\n",trigger_no);
+    printf("trigger_no=%ld\n",trigger_no);
     for (i = 1; i<=trigger_no;i++){
-        printf("FLAG(%ld) queue(%x)\n",event_flag[i],triggeredCs[i]);
+        printf("FLAG(%d) queue(%lx)\n",event_flag[i],triggeredCs[i]);
     }
     if (trigger_no>=1) printf("\n");
 }
@@ -978,10 +970,10 @@ int c_U_EQ_UC_CON_aux(A,dv_ptr_x,B,dv_ptr_y,C)
     BPLONG A,B,C;
 BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
-    BPLONG tmp,currX,currY,maxX,minY,maxY;
+    BPLONG tmp,currX,currY,maxX;
 
     currX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
-    minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
+    /* minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);*/
 
     for (;;){
         tmp = A*currX-C;
@@ -1445,7 +1437,7 @@ int b_ABS_CON_cc(X,Y)
     BPLONG X,Y;
 {
     BPLONG_PTR dv_ptr_x,dv_ptr_y;
-    BPLONG elm,melm,minX,maxX,minY,maxY;
+    BPLONG elm,melm,minY,maxY;
   
     DEREF_NONVAR(X);
     if (!IS_SUSP_VAR(X)) return BP_TRUE;
@@ -1456,7 +1448,7 @@ int b_ABS_CON_cc(X,Y)
     dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
     if (IS_IT_DOMAIN(dv_ptr_x) && IS_IT_DOMAIN(dv_ptr_y)) return BP_TRUE;
 
-    minX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
+    /*minX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x); */
     minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
   
     for (elm=minY;elm<=maxY;elm++){

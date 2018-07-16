@@ -13,6 +13,7 @@
 #include "sapi.h"
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 
 /* extern char *malloc();*/
 
