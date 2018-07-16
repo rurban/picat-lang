@@ -53,7 +53,7 @@ extern double floatval();
     }
 
 int glpk_error(error_msg)
-	 char *error_msg;
+    char *error_msg;
 {
     fprintf(stderr, "GLPK ERROR: %s\n ", error_msg);
     return BP_FALSE;
@@ -111,8 +111,8 @@ int c_lp_solve(){
         glp_set_obj_dir(lp, GLP_MAX); 
 
     /* coefficients of the objective expression */
-	//	printf("ObjSense=%d\n",ObjSense);
-	//	write_term(ObjVector);
+    //  printf("ObjSense=%d\n",ObjSense);
+    //  write_term(ObjVector);
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(ObjVector);
     for (i=1;i<=NCols;i++){
         temp = FOLLOW(ptr+i);

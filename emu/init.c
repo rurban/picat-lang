@@ -27,7 +27,7 @@ BPLONG  trail_size  = 1000000;
 BPLONG  table_size = 1000000;
 
 void print_picat_usage(){
-    printf("Usage: picat [-path Path] [-log] [-g InitGoal] PicatMainFileName Arg1 Arg2 ...\n");
+    printf("Usage: picat [[-path Path]|[-log]|[-g InitGoal]|...] PicatMainFileName A1 A2 ...\n");
 }
 
 #ifdef WIN32
@@ -68,12 +68,12 @@ void init_toam(argc, argv)
             case 'p': 
                 if (strcmp(str+1,"path")==0){
                     i++;
-                    if (i>argc){
+                    if (i > argc){
                         print_picat_usage();
                         exit(0);
                     } else {
                         /*
-						  int j;
+                          int j;
                           printf("setenv %s\n",argv[i]);
                           for (j=i+1; j<argc; j++){
                           printf("      %s\n",argv[j]);
@@ -88,13 +88,21 @@ void init_toam(argc, argv)
                 if (strcmp(str+2,"help")==0){
                     print_picat_usage();
                     exit(0);
+                } else if (*(str+2) == 'v' || strcmp(str+2,"version")==0){
+                    printf("Picat version 2.0#1\n");
+                    exit(0);
                 }
-
+                                
             case 'l': 
             case 'g':
                 use_gl_getline = 0; 
                 break;
 
+            case 's': i++;
+                sscanf(argv[i], "%ld", &stack_size);
+                if (stack_size<1000000) stack_size=1000000; 
+                break;
+                                
 #else
             case 'T': 
             case 't': 
@@ -225,7 +233,7 @@ void init_toam(argc, argv)
     c_INITIALIZE_TABLE();
 #endif
     initialize_free_records();
-	init_picat_global_maps();
+    init_picat_global_maps();
     inst_begin = 0;
     exception = illegal_arguments;
 }  /* end of init_toam */
@@ -311,7 +319,9 @@ int init_loading(argc, argv)
                     use_gl_getline = 0; 
                 }
                 break;
-         
+            case 's':
+                i++;
+                break;
             default:
                 add_main_arg(str);
             }

@@ -25,18 +25,21 @@ The \texttt{util} module provides general useful utility functions and predicate
 
 \section{Utilities on Strings and Lists}
 \begin{itemize}
+\item \texttt{chunks\_of($List$,$K$) = $ListOfLists$}\index{\texttt{chunks\_of/2}}: This function splits $List$ into chunks, each of which has length $K$, and returns the list of the chunks. The last chunk may have less than $K$ elements if the length of $List$ is not a multiple of $K$.
+\item \texttt{drop($List$,$K$) = $List$}\index{\texttt{drop/2}}: This function returns the suffix of $List$ after the first $K$ elements are dropped, or [] if $K$ is greater than the length of $List$.
 \item \texttt{find($String$,$SubString$,$From$,$To$)}\index{\texttt{find/4}}: This predicate searches for an occurrence of $SubString$ in $String$, and binds $From$ to the starting index and $To$ to the ending index. On backtracking, this predicate searches for the next occurrence of $SubString$.
 \item \texttt{find\_ignore\_case($String$,$SubString$,$From$,$To$)}\index{\texttt{find\_ignore\_case/4}}: This predicate is the same as \texttt{find($String$,$SubString$,$From$,$To$)}, except that it is case insensitive.
-\item \texttt{split($String$,$Separators$) = $Tokens$}\index{\texttt{split/2}}: This function splits $String$ into a list of tokens, using characters in the string $Separators$ as split characters. Recall that a string is a list of characters. A token is a string, so the return value is a list of lists of characters.
-\item \texttt{split($String$) = $Tokens$}\index{\texttt{split/1}}: This function is the same as \texttt{split($String$,}\verb+" \t\n\r")+, which uses white spaces as split characters.
-\item \texttt{join($Tokens$,$Separator$) = $String$}\index{\texttt{join/2}}: This function concatenates the tokens $Tokens$ into a string, adding $Separator$, which is a string or an atom, between each two tokens.
 \item \texttt{join($Tokens$) = $String$}\index{\texttt{join/1}}: This function is the same as \texttt{join($Tokens$," " )}.
-\item \texttt{strip($List$,$Elms$) = $List$}\index{\texttt{strip/2}}: This function returns a copy of $List$ with leading and trailing elements in $Elms$ removed.
-\item \texttt{strip($List$) = $List$}\index{\texttt{strip/1}}: This function is the same as \texttt{strip($List$,}\verb+" \t\n\r")+. 
-\item \texttt{lstrip($List$,$Elms$) = $List$}\index{\texttt{lstrip/2}}: This function returns a copy of $List$ with leading  elements in $Elms$ removed.
+\item \texttt{join($Tokens$,$Separator$) = $String$}\index{\texttt{join/2}}: This function concatenates the tokens $Tokens$ into a string, adding $Separator$, which is a string or an atom, between each two tokens.
 \item \texttt{lstrip($List$) = $List$}\index{\texttt{lstrip/1}}: This function is the same as \texttt{lstrip($List$,}\verb+" \t\n\r")+. 
+\item \texttt{lstrip($List$,$Elms$) = $List$}\index{\texttt{lstrip/2}}: This function returns a copy of $List$ with leading  elements in $Elms$ removed.
+\item \texttt{rstrip($List$) = $List$}\index{\texttt{rstrip/1}}: This function is the same as \texttt{rstrip($List$,}\verb+" \t\n\r")+.
 \item \texttt{rstrip($List$,$Elms$) = $List$}\index{\texttt{rstrip/2}}: This function returns a copy of $List$ with trailing elements in $Elms$ removed.
-\item \texttt{rstrip($List$) = $List$}\index{\texttt{rstrip/1}}: This function is the same as \texttt{rstrip($List$,}\verb+" \t\n\r")+. 
+\item \texttt{split($String$) = $Tokens$}\index{\texttt{split/1}}: This function is the same as \texttt{split($String$,}\verb+" \t\n\r")+, which uses white spaces as split characters.
+\item \texttt{split($String$,$Separators$) = $Tokens$}\index{\texttt{split/2}}: This function splits $String$ into a list of tokens, using characters in the string $Separators$ as split characters. Recall that a string is a list of characters. A token is a string, so the return value is a list of lists of characters.
+\item \texttt{strip($List$) = $List$}\index{\texttt{strip/1}}: This function is the same as \texttt{strip($List$,}\verb+" \t\n\r")+. 
+\item \texttt{strip($List$,$Elms$) = $List$}\index{\texttt{strip/2}}: This function returns a copy of $List$ with leading and trailing elements in $Elms$ removed.
+\item \texttt{take($List$,$K$) = $List$}\index{\texttt{take/2}}: This function returns the prefix of $List$ of length $K$, or $List$ itself if $K$ is greater than the length of $List$.
 \end{itemize}
 
 \section{Utilities on Matrices}

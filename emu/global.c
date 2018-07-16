@@ -99,7 +99,7 @@ int b_GLOBAL_SET_ccc(name,arity,value)
     if (TAG(value) == ATM) 
         GET_EP(sym_ptr) = (int (*)(void))value;
     else {
-	    release_term_space(oldValue);
+        release_term_space(oldValue);
         res = copy_term_heap_to_parea(value);
         if (res==BP_ERROR) return BP_ERROR;
         GET_EP(sym_ptr) = (int (*)(void))res;

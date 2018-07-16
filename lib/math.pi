@@ -2,11 +2,16 @@ module math.  % imported by default
 
 abs(X) = abs(X).
 acos(X) = acos(X).
+% acot(X) = acot(X).
+% acsc(X) = acsc(X).
+% asec(X) = asec(X).
 asin(X) = asin(X).
 atan(X) = atan(X).
 atan2(X,Y) = atan2(X,Y).
 ceiling(X) = ceiling(X).
 cos(X) = cos(X).
+% cot(X) = cot(X).
+% csc(X) = csc(X).
 e = 2.71828182845904523536.
 even(X) => even(X).
 exp(X) = exp(X).
@@ -30,9 +35,87 @@ random() = random().
 random(Seed) = random(Seed).
 random2() = random2().
 round(X) = round(X).
+% sec(X) = sec(X).
 sign(X) = sign(X).
 sin(X) = sin(X).
 sqrt(X) = sqrt(X).
 tan(X) = tan(X).
+to_degrees(X) = (X/3.141592653589793)*180.0.
+to_radians(X) = X/180.0*3.141592653589793.
 truncate(X) = truncate(X).
+%%
+% secant of X radians
+sec(X) = Val =>
+   Orig = X,
+   TwoPi = 2 * pi,
+   while (X < 0)
+          X := X + TwoPi
+   end,
+   while (X >= TwoPi)
+          X := X - TwoPi
+   end,
 
+   if X == pi / 2 || X == 3 * pi / 2 then      % secant cannot be given odd multiples of pi / 2
+      throw $error(domain_error(Orig), sec)
+   else
+      Val = 1 / cos(X)
+   end.
+
+% cosecant of X radians
+csc(X) = Val =>
+   Orig = X,
+   TwoPi = 2 * pi,
+   while (X < 0)
+          X := X + TwoPi
+   end,
+   while (X >= TwoPi)
+          X := X - TwoPi
+   end,
+
+   if X == 0 || X == 0.0 || X == pi() then     % cosecant cannot be given multiples of pi
+      throw $error(domain_error(Orig), csc)
+   else
+      Val = 1 / sin(X)
+   end.
+
+% cotangent of X radians
+cot(X) = Val =>
+   Orig = X,
+   TwoPi = 2 * pi,
+   while (X < 0)
+          X := X + TwoPi
+   end,
+   while (X >= TwoPi)
+          X := X - TwoPi
+   end,
+   if X == 0 || X == 0.0 || X == pi() then     % cotangent cannot be given multiples of pi
+      throw $error(domain_error(Orig), cot)
+   elseif X == pi / 2 || X == 3 * pi / 2 then  % tan(X) is undefined, so manually assign 0
+      Val = 0.0
+   else
+      Val = cos(X) / sin(X)
+   end.
+
+% inverse secant
+asec(X) = Val =>
+   if X > -1 && X < 1 then                     % acos must be passed values in the range [-1, 1]
+      throw $error(domain_error(X), asec)
+   else
+      Val = acos(1 / X)
+   end.
+
+% inverse cosecant
+acsc(X) = Val =>                               
+   if X > -1 && X < 1 then                     % asin must be passed values in the range [-1, 1]
+      throw $error(domain_error(X), acsc)
+   else
+      Val = asin(1 / X)
+   end.
+
+% inverse cotangent
+acot(X) = Val =>
+   if X == 0 || X == 0.0 then
+      Val = pi / 2
+   else
+      Val = atan(1 / X)
+   end.

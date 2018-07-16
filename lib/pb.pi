@@ -133,10 +133,10 @@ parse_constr(Tokens,VarsMap) =>
     Tokens1 = [Op|Tokens2],
     parse_int(Tokens2,_,C),
     (Op == '=' ->
-%        println(Exp #= C),
+        println(Exp #= C),
         Exp #= C
     ;
-%        println(Exp #>= C),
+        println(Exp #>= C),
         Exp #>= C
     ).
 

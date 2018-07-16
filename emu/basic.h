@@ -396,6 +396,10 @@ extern SYM_REC_PTR u_eq_uc_arc;
 extern SYM_REC_PTR c_object_ref_sym;
 extern SYM_REC_PTR register_event_listener;
 
+extern BPLONG windows_atom;
+extern BPLONG cygwin_atom;
+extern BPLONG unix_atom;
+
 extern BPLONG unknown_exception;
 extern BPLONG eof_atom;
 extern BPLONG true_atom;

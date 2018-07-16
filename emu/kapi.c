@@ -58,7 +58,7 @@ char* PnumberToStr(term)
 /* Manipulate compound terms */
 
 UW32 ParityOfCompound(term)
-BPLONG term;
+    BPLONG term;
 {
     BPLONG_PTR top;
 
@@ -96,15 +96,15 @@ char *PnameToAsc(term)
 
 /* UNIFY */
 int Punify(term1,term2)
-	 BPLONG term1;
-	 BPLONG term2;
+    BPLONG term1;
+    BPLONG term2;
 {
     return unify(term1,term2);
 }
 
 int PuInt(term,i)
-	 BPLONG term;
-	 BPLONG i;
+    BPLONG term;
+    BPLONG i;
 {
     BPLONG op;
   
@@ -113,23 +113,23 @@ int PuInt(term,i)
 }
 
 int PuAtom(term,str)
-	 BPLONG term;
-	 char *str;
+    BPLONG term;
+    char *str;
 {
     BPLONG op = picat_build_atom(str);
     return unify(term,op);
 }
 
 void PuStr(term,str)
-	 BPLONG term;
-	 char *str;
+    BPLONG term;
+    char *str;
 {
     string2codes(str,term);
 }
 
 int PuAddr(term,a)
-	 BPLONG term;
-	 void *a;
+    BPLONG term;
+    void *a;
 {
     register BPLONG temp;
 
@@ -141,8 +141,8 @@ int PuAddr(term,a)
 }
 
 int PuReal(term,d)
-	 BPLONG term;
-	 double d;
+    BPLONG term;
+    double d;
 {
     return unify(term,encodefloat1(d));
 }
@@ -213,7 +213,7 @@ BPLONG PlistCdr(term)
 }
 
 BPLONG PlistLength(term)
-	 BPLONG term;
+    BPLONG term;
 {
     register BPLONG len=0;
     BPLONG_PTR top;
@@ -249,32 +249,32 @@ BPLONG Plistn(length)
 }
 
 int PcallF(term)
-	 BPLONG term;
+    BPLONG term;
 {
     return bp_call_term(term);
 }
 
 int PcallX(command)
-	 BPLONG command;
+    BPLONG command;
 {
     return bp_call_term(command);
 }
 
 int PexecP(cmd)
-	 char *cmd;
+    char *cmd;
 {
     return bp_call_string(cmd);
 }
 
 int Pexecute(cmd)
-	 char *cmd;
+    char *cmd;
 {
     return bp_call_string(cmd);
 }
 
 int PinitP(argc, argv)
-	 int argc;
-	 char *argv[];
+    int argc;
+    char *argv[];
 {
     return initialize_bprolog(argc,argv);
 }

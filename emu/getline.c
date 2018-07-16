@@ -740,18 +740,18 @@ gl_redraw()
 static void
 gl_fixup(prompt, change, cursor)
     char  *prompt;
-    int    change, cursor;
-    /*
-     * This function is used both for redrawing when input changes or for
-     * moving within the input line.  The parameters are:
-     *   prompt:  compared to last_prompt[] for changes;
-     *   change : the index of the start of changes in the input buffer,
-     *            with -1 indicating no changes, -2 indicating we're on
-     *            a new line, redraw everything.
-     *   cursor : the desired location of the cursor after the call.
-     *            A value of BUF_SIZE can be used  to indicate the cursor should
-     *            move just past the end of the input line.
-     */
+int    change, cursor;
+/*
+ * This function is used both for redrawing when input changes or for
+ * moving within the input line.  The parameters are:
+ *   prompt:  compared to last_prompt[] for changes;
+ *   change : the index of the start of changes in the input buffer,
+ *            with -1 indicating no changes, -2 indicating we're on
+ *            a new line, redraw everything.
+ *   cursor : the desired location of the cursor after the call.
+ *            A value of BUF_SIZE can be used  to indicate the cursor should
+ *            move just past the end of the input line.
+ */
 {
     static int   gl_shift;      /* index of first on screen character */
     static int   off_right;     /* true if more text right of screen */
@@ -1192,7 +1192,7 @@ int c_GET_NONEMPTY_LINE(){
 }
 
 int getline_is_spaces(s)
-	 char *s;
+    char *s;
 {
     while (*s!='\0'){
         if (*s == ' ' || *s == '\t')

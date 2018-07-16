@@ -26,7 +26,7 @@
 
 BPLONG_PTR new_bv_domain_var(from,to,first,last,size,bv_word)
     BPLONG from,to,first,last,size;
-    BPULONG bv_word;
+BPULONG bv_word;
 {       
     BPLONG_PTR dv_ptr,top;
     BPLONG i;
@@ -167,7 +167,7 @@ int b_CFD_COMPUTE_MINS_MAXS(Arity,Tuples,Mins,Maxs)
 /*  Normalize the tuples so that the minimum element in every column is 0 */
 void cfd_transform_tuples(n,Tuples,MinArray)
     BPLONG n,Tuples;
-    BPLONG_PTR MinArray;
+BPLONG_PTR MinArray;
 {
     BPLONG tuple,i,e;
     BPLONG_PTR ptr;
@@ -224,8 +224,8 @@ int b_CFD_TRANSFORM_TUPLES(Arity,Tuples,Mins)
    Tuples=[t(a11,...,a1n),...,t(am1,...,amn)],
 
    A2Tries=t(t(_,T12,...,T1n),
-             ...,
-			 t(Tn1,Tn2,...,Tn(n-1),_)) 
+   ...,
+   t(Tn1,Tn2,...,Tn(n-1),_)) 
    
    Tij takes the form trie(Sij0,...,Sijk,...) where Sijk denotes k's supports (fd var) in Vj
    (k is an element in Vi's domain).
@@ -383,7 +383,7 @@ int b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries)
 /* initialize the arrays */
 void initialize_min_max_arrays(n,nk,MinArray,MaxArray)
     BPLONG n,nk;
-    BPLONG_PTR MinArray,MaxArray;
+BPLONG_PTR MinArray,MaxArray;
 {
     BPLONG i,j,k;
 
@@ -402,8 +402,8 @@ void initialize_min_max_arrays(n,nk,MinArray,MaxArray)
 /* for i in 0..n-2, j in i+1..n-1, compute supports[i,j,_] and supports[j,i,_] */
 void compute_mins_maxs_in(n,nk,Tuples,MinArray,MaxArray)
     BPLONG n,nk;
-    BPLONG Tuples;
-    BPLONG_PTR MinArray,MaxArray;
+BPLONG Tuples;
+BPLONG_PTR MinArray,MaxArray;
 {
     BPLONG i,j;
   
@@ -436,7 +436,7 @@ void compute_mins_maxs_in(n,nk,Tuples,MinArray,MaxArray)
 /* iterate through all possible tuples from V1*V2*...*Vn that are not in hashtable */
 void compute_mins_maxs_notin(arg_no,n,nk,htable_ptr,htable_size,tuple_ptr,CompVarArray,MinArray,MaxArray)
     BPLONG arg_no,n,nk,htable_size;
-    BPLONG_PTR tuple_ptr,CompVarArray,MinArray,MaxArray,htable_ptr;
+BPLONG_PTR tuple_ptr,CompVarArray,MinArray,MaxArray,htable_ptr;
 {
     BPLONG compvar,i,j;
   
@@ -481,7 +481,7 @@ void compute_mins_maxs_notin(arg_no,n,nk,htable_ptr,htable_size,tuple_ptr,CompVa
 /* initialize supports Sijk (supports in Vj of k in Vi)  */
 void  initialize_supports(n,nk,tries_ptr,CompVarMaxArray,MinArray,MaxArray)
     BPLONG n,nk;
-    BPLONG_PTR tries_ptr,MinArray,MaxArray,CompVarMaxArray;
+BPLONG_PTR tries_ptr,MinArray,MaxArray,CompVarMaxArray;
 {
     BPLONG i,j,k,tries_ij,min,max;
     BPLONG_PTR tries_ij_ptr;
@@ -518,7 +518,7 @@ void  initialize_supports(n,nk,tries_ptr,CompVarMaxArray,MinArray,MaxArray)
 void compute_supports_in(n,Tuples,tries_ptr,MinArray,MaxArray)
     BPLONG n;
     BPLONG Tuples;
-    BPLONG_PTR tries_ptr,MinArray,MaxArray;
+BPLONG_PTR tries_ptr,MinArray,MaxArray;
 {
 
     BPLONG i,j;
@@ -564,8 +564,8 @@ void compute_supports_in(n,Tuples,tries_ptr,MinArray,MaxArray)
 
 void compute_supports_notin(arg_no,n,htable_ptr,htable_size,tuple_ptr,CompVarArray,tries_ptr,MinArray,MaxArray)
     BPLONG arg_no,n;
-    BPLONG htable_size;
-    BPLONG_PTR tuple_ptr,CompVarArray,tries_ptr,MinArray,MaxArray,htable_ptr;
+BPLONG htable_size;
+BPLONG_PTR tuple_ptr,CompVarArray,tries_ptr,MinArray,MaxArray,htable_ptr;
 {     
     BPLONG i,j;
 
@@ -625,7 +625,7 @@ void compute_supports_notin(arg_no,n,htable_ptr,htable_size,tuple_ptr,CompVarArr
 /* exclude those elements that have no support */
 int exclude_ac_unsupported_from_fd(X,Y,trie_xy_ptr)
     BPLONG X,Y;
-    BPLONG_PTR trie_xy_ptr;
+BPLONG_PTR trie_xy_ptr;
 {
     BPLONG k,Sk,max;
     SYM_REC_PTR sym_ptr;

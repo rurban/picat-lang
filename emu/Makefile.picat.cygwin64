@@ -1,4 +1,4 @@
-CC     = gcc -DGC -DGCC -DPICAT -DSAT  -DGLPK -DM64BITS
+CC     = gcc -DGC -DGCC -DPICAT -DSAT  -DM64BITS
 #CC     = gcc -DGC -pg  -DSAT -DNO_SEMI_OPT -DGLPK -DPICAT
 #CC     = gcc -DGCC -shared
 #CC     = cc
@@ -33,19 +33,8 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 			 $(ESP)signature_exact.o $(ESP)sminterf.o $(ESP)solution.o $(ESP)sparse.o $(ESP)unate.o $(ESP)util_signature.o \
 			 $(ESP)verify.o $(ESP)espresso.o
 
-GLPK_OBJ = glpk/glpapi.o glpk/glpavl.o glpk/glpbfi.o glpk/glpbfx.o glpk/glpdmp.o glpk/glpgmp.o glpk/glphbm.o glpk/glpiet.o \
-		 glpk/glpinv01.o glpk/glpinv02.o glpk/glpios01.o glpk/glpios02.o glpk/glpios03.o glpk/glpipm.o glpk/glpipp01.o \
-		 glpk/glpipp02.o glpk/glplib01.o glpk/glplib02.o glpk/glplib03.o glpk/glplib04.o glpk/glplib05.o glpk/glplib06.o \
-		 glpk/glplib07.o glpk/glplib08.o glpk/glplib09.o glpk/glplpp01.o glpk/glplpp02.o glpk/glplpx01.o glpk/glplpx02.o \
-		 glpk/glplpx03.o glpk/glplpx04.o glpk/glplpx05.o glpk/glplpx06.o glpk/glplpx07.o glpk/glplpx08.o glpk/glplpx09.o \
-		 glpk/glplpx10.o glpk/glplpx11.o glpk/glplpx12.o glpk/glplpx13.o glpk/glplpx14.o glpk/glplpx15.o glpk/glplpx16.o \
-		 glpk/glplpx17.o glpk/glplpx18.o glpk/glplpx19.o glpk/glpluf01.o glpk/glpluf02.o glpk/glplux.o glpk/glpmat.o \
-		 glpk/glpmip01.o glpk/glpmip02.o glpk/glpmpl01.o glpk/glpmpl02.o glpk/glpmpl03.o glpk/glpmpl04.o glpk/glpqmd.o \
-		 glpk/glprng.o glpk/glpspx01.o glpk/glpspx02.o glpk/glpssx01.o glpk/glpssx02.o glpk/glpstr.o glpk/glptsp.o
-
-
 picat.exe : $(OBJ)
-	cd espresso && make && cd .. && cd glpk && make && cd .. && $(CC) -o picat.exe $(OBJ) $(ESPRESSO_OBJ) $(GLPK_OBJ) $(LFLAGS)
+	cd espresso && make && cd .. && $(CC) -o picat.exe $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
 clean :
 	rm -f *.o picat.exe
 dis.o   : dis.c term.h inst.h basic.h 

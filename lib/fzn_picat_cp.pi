@@ -12,7 +12,7 @@
        cumulative/4,
        diffn/4,
        element/3,
-	   inverse/2,
+       inverse/2,
        lex_.../2,
        maximum/2
        minimum/2
@@ -70,7 +70,7 @@ process_args(["-s"|As],File) =>
     get_heap_map().put(fzn_show_stats,1),
     process_args(As,File).
 process_args(["-v"|As],File) =>
-    printf("Version 0.6b3\n"),
+    printf("Version 2.0b2\n"),
     process_args(As,File).
 process_args(["-n",N|As],File) =>
    % get N solutions
@@ -165,7 +165,9 @@ fzn_interpret(FD,':'(Type,IdentAnns),SymTable,PVars,SVars,OutAnns) =>
 fzn_interpret(FD,constraint(ElmAnns),SymTable,PVars,SVars,OutAnns) =>
     detach_annotations(ElmAnns,Constraint,_Anns),
     fzn_eval_expr(Constraint,SymTable,BPConstraint),
+%     printf("post(%w)\n",BPConstraint),
     post(BPConstraint),
+%     println("<=post\n"),
     read_flatzinc_item(FD) = NItem,
     fzn_interpret(FD,NItem,SymTable,PVars,SVars,OutAnns).
 fzn_interpret(FD,predicate(_Elms),SymTable,PVars,SVars,OutAnns) =>  % predicate definition not supported
@@ -478,7 +480,11 @@ fzn_output([output_array(Ident,Ranges,ElmType,BPArr)|L]) =>
     length(Ranges) = Dim,
     printf("%w = array%wd(",Ident,Dim),
     foreach($range(Min,Max) in Ranges)
-        printf("%w..%w,",Min,Max)
+        if Min > Max then
+            print("{},")
+		else
+            printf("%w..%w,",Min,Max)
+		end
     end,
     fzn_write(ElmType,BPArr),
     println(");"),
@@ -490,10 +496,9 @@ fzn_write(_,Term),integer(Term) =>
     print(Term).
 fzn_write(Type,Term) =>
     (ground(Term)->
-    length(Term) = N,
-    print('['),
-    fzn_write_array(Type,Term,1,N),
-    print(']')
+        print('['),
+        (atom(Term) -> true; length(Term) = N, fzn_write_array(Type,Term,1,N)),
+        print(']')
     ;
         fzn_error("fzn_write requires ground data: %w%n",Term)
     ).
@@ -697,7 +702,7 @@ post(alldifferent_except_0(Vec)) =>
     List = to_list(Vec),
     all_different_except_0(List).
 post(inverse(Vec1,Vec2)) =>
-	assignment(Vec1,Vec2).
+    assignment(Vec1,Vec2).
 post(count_reif(Vec,V,N,B)) =>
     List = to_list(Vec),
     Ni :: 0..length(Vec),
@@ -732,10 +737,12 @@ post(cumulative(SVec,DVec,RVec,Cap)) =>
     cumulative(SList,DList,RList,Cap).
 post(circuit(Vec)) =>
     List = to_list(Vec),
-    circuit(List).
+    transform_circuit(List,List1),
+    circuit(List1).
 post(subcircuit(Vec)) =>
     List = to_list(Vec),
-    subcircuit(List).
+    transform_circuit(List,List1),    
+    subcircuit(List1).
 post(element(I,Vec,Y)) =>
     List = to_list(Vec),
     element(I,List,Y).
@@ -769,8 +776,8 @@ post(regular(X, Q, S, D, Q0, F)) =>
     (F=$range(LB,UB) -> 
         NF=LB..UB
     ; F='{}'(Lst) ->
-	    NF = Lst
-	;		
+        NF = Lst
+    ;        
         NF=F
     ),
     regular(X,Q,S,M,Q0,NF).
@@ -802,9 +809,9 @@ post(Constr) =>
 transform_table(_VecT,_N,I,Max,TupleT),I>Max => TupleT=[].
 transform_table(VecT,N,I,Max,TupleT) =>
     Tuple = new_array(N),
-	foreach (J in I..I+N-1)
-	    Tuple[J-I+1] = VecT[J]
-	end,
+    foreach (J in I..I+N-1)
+        Tuple[J-I+1] = VecT[J]
+    end,
     TupleT=[Tuple|TupleTR],
     transform_table(VecT,N,I+N,Max,TupleTR).
 
@@ -832,3 +839,17 @@ vector_sum(Cs,Xs,CXs,I,N) =>
     CXs = $(C*X+CXsR),
     vector_sum(Cs,Xs,CXsR,I+1,N).
 
+%% ensure that the minimum index is 1
+transform_circuit(List,List1) =>
+    LB = min([fd_min(V) : V in List]),
+    if LB !== 1 then
+        transform_circuit_aux(List,List1,LB)
+    else
+        List1 = List
+    end.
+
+transform_circuit_aux([],NVs,_LB) => NVs=[].
+transform_circuit_aux([V|Vs],NVs,LB) =>
+    NV #= V-LB+1,
+    NVs = [NV|NVsR],
+    transform_circuit_aux(Vs,NVsR,LB).

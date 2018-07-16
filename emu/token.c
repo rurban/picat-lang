@@ -2085,7 +2085,9 @@ int c_report_syntax_error(){
     BPLONG char_no = 0;
   
     NTokensBefore = ARG(1,1); DEREF(NTokensBefore); NTokensBefore = INTVAL(NTokensBefore);
-  
+
+    //  printf("report_syntax_error %d\n", NTokensBefore);
+        
     if (NTokensBefore>MAX_TOKENS_IN_TERM) return BP_TRUE;
 
     here_out = 0;

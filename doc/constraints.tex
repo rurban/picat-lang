@@ -287,11 +287,10 @@ Picat provides the following global constraints.
 
 \section{Solver Invocation}
 \begin{itemize}
-\item \texttt{solve($Options$, $Vars$)}\index{\texttt{solve/2}}: This predicate calls the imported solver to label the variables $Vars$ with values, where $Options$ is a list of options for the solver. The options will be detailed below. For \texttt{cp} and \texttt{sat}, this predicate can be called multiple times for a problem, and each call can backtrack in order to find multiple solutions. However, for \texttt{mip}, this predicate can be called only once for a problem, and this call can backtrack in order to find multiple solutions. 
-
+\item \texttt{solve($Options$, $Vars$)}\index{\texttt{solve/2}}: This predicate calls the imported solver to label the variables $Vars$ with values, where $Options$ is a list of options for the solver. The options will be detailed below. For \texttt{cp} and \texttt{sat}, this predicate can backtrack in order to find multiple solutions. However, for \texttt{mip}, this call cannot backtrack. The \texttt{cp} module allows \textit{incremental labeling} of variables, and some variables that occur in constraints but are not passed to \texttt{solve} may remain uninstantiated after a call to \texttt{solve}. The user is responsible for having all the variables that need to be instantiated passed to \texttt{solve}. In constrast, the \texttt{sat} module does not support incremental labeling of variables; once a call to \texttt{solve} succeeds, all the variables in constraints, whether they are passed to \texttt{solve} or not, will be instantiated when \texttt{solve} succeeds.
 \item\texttt{solve($Vars$)}\index{\texttt{solve/1}}: This predicate is the same as \texttt{solve([], $Vars$)}\index{\texttt{solve/2}}. 
 \item \texttt{indomain($Var$)}\index{\texttt{indomain/1}}: This predicate is only accepted by \texttt{cp}. It is the same as \texttt{solve([], [$Var$])}\index{\texttt{solve/2}}.
-\item \texttt{solve\_all($Options$, $Vars$) = $Solutions$}\index{\texttt{solve\_all/2}}: This function returns all the solutions that satisfy the constraints.
+\item \texttt{solve\_all($Options$, $Vars$) = $Solutions$}\index{\texttt{solve\_all/2}}: This function returns all the solutions that satisfy the constraints.\footnote{The \texttt{solve\_all} function is not available in the \texttt{mip} module.}
 \item \texttt{solve\_all($Vars$) = $Solutions$}\index{\texttt{solve\_all/1}}: This function is the same as \texttt{solve\_all([],$Vars$)}.
 \item \texttt{solve\_suspended($Options$)}\index{\texttt{solve\_suspended/1}}: After \texttt{solve($Vars$)} has successfully labeled $Vars$, some constraints may remain suspended and not completely checked because not all of the decision variables are included in $Vars$. The \texttt{solve\_suspended($Options$)} predicate labels all remaining variables in the suspended constraints. This predicate is only provided by the \texttt{cp} module. 
 \item \texttt{solve\_suspended}\index{\texttt{solve\_suspended/0}}: This predicate is the same as \texttt{solve\_suspended([])}.
@@ -333,17 +332,32 @@ The \texttt{cp} module also accepts the following options:
 
 \subsection{Solving Options for \texttt{sat}}
 \begin{itemize}
-\item \texttt{dump}: dumps the CNF code to \texttt{stdout}.
-\item \texttt{dump($File$)}: dumps the CNF code to $File$.
-\item \texttt{seq}: use sequential search to find an optimal answer.
-\item \texttt{split}: use binary search to find an optimal answer (default).
-\item \texttt{\$nvars$(NVars)$}: the number of variables in the CNF code is $NVars$.
-\item \texttt{\$ncls$(NCls)$}: the number of clauses in the CNF code is $NCls$.
+\item \texttt{dump}: Dump the CNF code to \texttt{stdout}.
+\item \texttt{dump($File$)}: Dump the CNF code to $File$.
+\item \texttt{seq}: Use sequential search to find an optimal answer.
+\item \texttt{split}: Use binary search to find an optimal answer (default).
+\item \texttt{\$nvars$(NVars)$}: The number of variables in the CNF code is $NVars$.
+\item \texttt{\$ncls$(NCls)$}: The number of clauses in the CNF code is $NCls$.
 \end{itemize}
 
 \subsection{Solving Options for \texttt{mip}}
 \begin{itemize}
-\item \texttt{dump}: dumps the constraints in CPLEX format to \texttt{stdout}.
+\item \texttt{dump}: Dump the constraints in CPLEX format to \texttt{stdout}.
+\item \texttt{dump($File$)}: Dump the CPLEX format to $File$.
+\item \texttt{glpk}: \index{\texttt{glpk}}Instruct Picat to use the GLPK MIP solver. Picat uses the following command to call the GLPK solver:
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> \texttt{glpsol --lp -o $SolFile$ $TmpFile$}
+\end{tabbing}
+where $SolFile$ is a solution file, and $TmpFile$ is a file that stores the CPLEX-format constraints. Picat throws \texttt{existence\_error} if the command \texttt{glpsol} is not available.
+\item \texttt{gurobi}: \index{\texttt{gurobi}}Instruct Picat to use the Gurobi MIP solver. Picat uses the following command to call the Gurobi solver:
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> \texttt{gurobi\_cl ResultFile=$SolFile$ $TmpFile$}
+\end{tabbing}
+where $SolFile$ is a file for the solution, and $TmpFile$ is a file that stores the CPLEX-format constraints. Picat throws \texttt{existence\_error} if the command \texttt{gurobi\_cl} is not available.
+\item \texttt{sol($File$)}: Instruct the mip solver to save the solution into $File$ rather than the default file '\_\_tmp.sol'.
+\item \texttt{tmp($File$)}: Dump the CPLEX format to $File$ rather than the default file '\_\_tmp.lp', before calling the mip solver.
 % \item \texttt{\$format(clp)}: dumps the constraints in B-Prolog format to \texttt{stdout}.
 \end{itemize}
 \ignore{

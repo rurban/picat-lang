@@ -122,7 +122,8 @@ Table \ref{tab:arithdef} gives the meaning of each of the numeric operators in P
  {\tt $X$ \verb+^+ $Y$} &   bitwise xor \\ \hline
  {\tt $X$ \verb+\/+ $Y$}  &   bitwise or \\ \hline 
  {\tt $From$ \verb+..+ $Step$ \verb+..+ $To$}  &   A range (list) of numbers with a step \\ \hline 
- {\tt $From$ \verb+..+ $To$}  &   A range (list) of numbers with step 1 \\ \hline 
+ {\tt $From$ \verb+..+ $To$}  &   A range (list) of numbers with step 1 \\ \hline
+ {\tt $X$ \verb+=:=+ $Y$}  &   pretty much (numerically) equal \\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -147,6 +148,7 @@ In addition to the numeric operators, the \texttt{basic} module also provides th
 \item \texttt{to\_hex\_string($Int$) = $String$}\index{\texttt{to\_hex\_string/1}}: This function returns the hexadecimal representation of the integer\index{integer} $Int$ as a string\index{string}.
 \item \texttt{to\_int($ANS$) = $Int$}\index{\texttt{to\_int/1}}: This function is the same as \texttt{truncate($ANS$)}\index{\texttt{truncate/1}} in the \texttt{math} module if $ANS$ is a number, the same as \texttt{ord($ANS$)-ord('0')} if $ANS$ is a digit character, and the same as \texttt{parse\_term($ANS$)} if $ANS$ is a string.
 \item \texttt{to\_integer($ANS$) = $Int$}\index{\texttt{to\_integer/1}}: This function is the same as \texttt{to\_int($ANS$)}.
+\item \texttt{to\_number($ANS$) = $Num$}\index{\texttt{to\_number/1}}: This function is the same as $ANS$ if $ANS$ is a number, the same as \texttt{ord($ANS$)-ord('0')} if $ANS$ is a digit character, and the same as \texttt{parse\_term($ANS$)} if $ANS$ is a string.
 \item \texttt{to\_oct\_string($Int$) = $String$}\index{\texttt{to\_oct\_string/1}}:  This function returns the octal representation of the integer $Int$ as a string\index{string}.
 \item \texttt{to\_radix\_string($Int$,$Base$) = $String$}\index{\texttt{to\_radix\_string/2}}:  This function returns the representation of the integer $Int$ of the numeral $Base$ as a string\index{string}, where $Base$ must be greater than 1 and less than 37. The call \texttt{to\_oct\_string($Int$)} is the same as \texttt{to\_radix\_string($Int$,8)}.
 \item \texttt{to\_real($NS$) = $Real$}\index{\texttt{to\_real/1}}: This function is the same as \texttt{to\_float($NS$)}.
@@ -250,7 +252,7 @@ aa \= aaa \= aaa \= aaa \=aaa \= aaa \= aaa \= aaa \kill
 \item \texttt{sum($List$) = $Val$}\index{\texttt{sum/1}}: This function returns the sum of all of the values in $List$. 
 \item \texttt{tail($List$) = $Term$}\index{\texttt{tail/1}}: This function returns the tail of the list $List$.  For example, the call \texttt{tail([1,2,3])} returns \texttt{[2,3]}.
 \item \texttt{to\_array($List$) = $Array$}\index{\texttt{to\_array/1}}: This function converts the list\index{list} $List$ to an array\index{array}.  The elements of the array\index{array} are in the same order as the elements of the list.
-\item \texttt{zip($List_1$, $List_2$, $\ldots$, $List_n$) = $List$}\index{\texttt{zip}}:This function makes a list\index{list} of array tuples.  The $j$th tuple in the list takes the form \texttt{\{$E_{1j},\ldots,E_{nj}$\}}, where $E_{ij}$ is the $j$th element in $List_i$. In the current implementation, $n$ can be 2, 3, or 4.
+\item \texttt{zip($List_1$, $List_2$, $\ldots$, $List_n$) = $List$}\index{\texttt{zip}}: This function makes a list\index{list} of array tuples.  The $j$th tuple in the list takes the form \texttt{\{$E_{1j},\ldots,E_{nj}$\}}, where $E_{ij}$ is the $j$th element in $List_i$. In the current implementation, $n$ can be 2, 3, or 4.
 
 \end{itemize}
 
@@ -362,32 +364,53 @@ A set\index{set} is a map where every key is associated with the atom \texttt{no
 \section{\label{sec:unification}Equality Testing, Unification, and Term Comparison}
 The equality test \texttt{$T_1$ == $T_2$} \index{{\verb+==/2+}} is true if term $T_1$ and term $T_2$ are identical. Two variables are identical if they are aliases. Two primitive values\index{primitive value} are identical if they have the same type and the same internal representation. Two lists\index{list} are identical if the cars\index{car} are identical and the cdrs\index{cdr} are identical. Two structures\index{structure} are identical if their functors\index{functor} are the same and their components are pairwise identical. The inequality test \texttt{$T_1$ !== $T_2$} is the same as \texttt{not $T_1$ == $T_2$}.  Note that two terms can be identical even if they are stored in different memory locations.  Also note that it takes linear time in the worst case to test whether two terms are identical, unlike in C-family languages, in which the equality test operator \texttt{==} only compares addresses.
 
-The unification \texttt{$T_1$ = $T_2$} \index{{\verb+=/2+}} is true if term $T_1$ and term $T_2$ are already identical, or if they can be made identical by instantiating\index{instantiated variable} the variables in the terms. The built-in \texttt{$T_1$ != $T_2$} is true if term $T_1$ and term $T_2$ are not unifiable.
-
-The predicate \texttt{bind\_vars($Term$,$Val$)} \index{\texttt{bind\_vars/2}} This predicate binds all of the variables in $Term$ to $Val$.
+The unification \texttt{$T_1$ = $T_2$} \index{{\verb+=/2+}} is true if term $T_1$ and term $T_2$ are already identical, or if they can be made identical by instantiating\index{instantiated variable} the variables in the terms. The built-in \texttt{$T_1$ != $T_2$} is true if term $T_1$ and term $T_2$ are not unifiable. The predicate \texttt{bind\_vars($Term$,$Val$)}\index{\texttt{bind\_vars/2}} binds all of the variables in $Term$ to $Val$.
 
 \subsection*{Example}
 \begin{verbatim}
-    picat> X = 1
+    Picat> X = 1
     X = 1
-    picat> $f(a,b) = $f(a,b)
+    Picat> $f(a,b) = $f(a,b)
     yes
     Picat> [H|T] = [a,b,c]
     H = a
     T = [b,c]
-    picat> $f(X,b) = $f(a,Y)
+    Picat> $f(X,b) = $f(a,Y)
     X = a
     Y = b
-    picat> X = $f(X)
+    Picat> bind_vars({X,Y,Z},a)
+    Picat> X = $f(X)
 \end{verbatim}
 The last query illustrates the \emph{occurs-check problem}\index{occurs-check problem}. When binding \texttt{X} to \texttt{f(X)}, Picat does not check if \texttt{X} occurs in \texttt{f(X)} for the sake of efficiency. This unification creates a cyclic term, which can never be printed.
 
 When a unification's operands contain attributed variables\index{attributed variable}, the implementation is more complex. When a plain variable is unified with an attributed variable\index{attributed variable}, the plain variable is bound to the attributed variable\index{attributed variable}. When two attributed variables\index{attributed variable}, say $Y$ and $O$, where $Y$ is younger than $O$, are unified,  $Y$ is bound to $O$, but $Y$'s attributes are not copied to $O$. Since garbage collection does not preserve the seniority of terms, the result of the unification of two attributed variables\index{attributed variable} is normally unpredictable.
 
+\subsection{Numerical Equality}
+The numerical equality test \texttt{$T_1$ =:= $T_2$} \index{{\verb+=:=/2+}} is true if term $T_1$ and term $T_2$ are pretty much the same numerical value.  This means that $T1$ and $T2$ must both be numbers.  Whereas the test \texttt{$T_1$ == $T_2$} fails if one number is an integer and one number is a real number, the test \texttt{$T_1$ =:= $T_2$} may succeed.  Consider the following examples.
+\subsection*{Example}
+
+\begin{verbatim}
+    
+Picat> 1 == 1.0
+no
+
+Picat> 1 =:= 1.0
+yes
+\end{verbatim}
+In the first query, $1$ is an integer, while $1.0$ is a real number, so the equality test fails.  However, the second query, which is a numerical equality test, succeeds.  
+
+\subsection{Ordering of Terms}
+Picat orders terms in the following way:
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> \texttt{var}\ $<$\ \texttt{number} \ $<$\ \texttt{atom} \ $<$\ \texttt{structure} and \texttt{array} \ $<$\ \texttt{list} and \texttt{string}
+\end{tabbing}
+Variables are ordered by their addresses. Note that the ordering of variables may change after garbage collection. Numbers are ordered by their numerical values. Atoms are ordered lexicographically. Structures are first ordered lexicographically by their names; if their names are the same, then they are ordered by their components. Arrays are ordered as structures with the special name '\{\}'. Lists and strings are ordered by their elements.
+
 \begin{itemize}
 \item \texttt{$Term1$ @< $Term2$}: The term $Term1$ precedes the term $Term2$ in the standard order. For example, \texttt{a @< b} succeeds.
-\item \texttt{$Term1$ @<= $Term2$}: This is the same as \texttt{$Term1$ @=< $Term2$}.
 \item \texttt{$Term1$ @=< $Term2$}: The term $Term1$ either precedes, or is identical to, the term $Term2$ in the standard order. For example, \texttt{a @=< b} succeeds.
+\item \texttt{$Term1$ @<= $Term2$}: This is the same as \texttt{$Term1$ @=< $Term2$}.
 \item \texttt{$Term1$ @> $Term2$}: The term $Term1$ follows the term $Term2$ in the standard order.
 \item \texttt{$Term1$ @>= $Term2$}: The term $Term1$ either follows, or is identical to, the term $Term2$ in the standard order.
 \end{itemize}
@@ -414,7 +437,7 @@ A predicate\index{predicate} or function\index{function} is said to be \emph{hig
 \item \texttt{apply($S$, $Arg_1$, $\ldots$, $Arg_n$) = $Val$}\index{\texttt{apply}}:   $S$ is an atom or a structure.  This function calls the function that is named by $S$ with the arguments that are specified in $S$, together with extra arguments $Arg_1$, \ldots, $Arg_n$.  This function returns the value that $S$ returns.
 \item \texttt{call($S$, $Arg_1$, $\ldots$, $Arg_n$)}\index{\texttt{call}}:  $S$ is an atom or a structure.  This predicate calls the predicate that is named by $S$ with the arguments that are specified in $S$, together with extra arguments $Arg_1$, \ldots, $Arg_n$.
 \item \texttt{call\_cleanup($Call$,$Cleanup$)}\index{\texttt{call\_cleanup/2}}: This predicate is the same as \texttt{call($Call$)}, except that \texttt{$Cleanup$} is called when \texttt{$Call$} succeeds determinately (i.e., with no remaining choice point), when \texttt{$Call$} fails, or when \texttt{$Call$} raises an exception.
-\item \texttt{catch($Call$, $Exeption$, $Handler$)}\index{\texttt{catch/3}}: This predicate is the same as $Call$, except when an exception that matches $Exception$ is raised during the execution of $Call$. When such an exception is raised, all of the bindings that have been performed on variables in \texttt{$Call$} will be undone, and \texttt{$Handler$} will be executed to handle the exception. 
+\item \texttt{catch($Call$, $Exception$, $Handler$)}\index{\texttt{catch/3}}: This predicate is the same as $Call$, except when an exception that matches $Exception$ is raised during the execution of $Call$. When such an exception is raised, all of the bindings that have been performed on variables in \texttt{$Call$} will be undone, and \texttt{$Handler$} will be executed to handle the exception. 
 \item \texttt{findall($Template$,$Call$) = $Answers$}\index{\texttt{findall/2}}: This function returns a list of all possible instances of \texttt{call($Call$)} that are true in the form of $Template$. Note that $Template$ is assumed to be a term without function calls, and that $Call$ is assumed to be a predicate call whose arguments can contain function calls. Also note that, like a loop, \texttt{findall} forms a name scope. For example, in \texttt{findall(f(X),p(X,g(Y)))}, \texttt{f(X)} is a term even though it is not preceded with \verb+$+; \texttt{g(Y)} is a function call; the variables \texttt{X} and \texttt{Y} are assumed to be local to \texttt{findall} if they do not occur before in the outer scope.
 \item \texttt{find\_all($Template$,$Call$) = $Answers$}\index{\texttt{find\_all/2}}: This function is the same as the above function.
 \item \texttt{count\_all($Call$) = $Count$}\index{\texttt{count\_all/2}}: This function returns the number of all possible instances of \texttt{call($Call$)} that are true. For example, \texttt{count\_all(member(X,[1,2,3]))} returns 3.

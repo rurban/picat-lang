@@ -36,7 +36,7 @@ static LGL * bp_lgl;
 #endif
 #endif
 
-    static int sat_dump_flag = 0;
+static int sat_dump_flag = 0;
 static int sat_count_flag = 0;
 static int num_cls = 0;
 
@@ -86,26 +86,30 @@ int b_SAT_ADD_CL_c(BPLONG cl){
     BPLONG cl0 = cl;
 
     DEREF_NONVAR(cl);
-    while (ISLIST(cl)){
+	if (sat_dump_flag) {
+	  while (ISLIST(cl)){
         BPLONG_PTR lst_ptr;
         lst_ptr = (BPLONG_PTR)UNTAGGED_ADDR(cl);
         lit = FOLLOW(lst_ptr); DEREF_NONVAR(lit); 
         cl = FOLLOW(lst_ptr+1); DEREF_NONVAR(cl);
-        if (sat_dump_flag) {
-            write_term(lit); 
-            write_space();
-        } else {
-            lit = INTVAL(lit);
-            SAT_ADD_LIT(lit);
-        }
+		write_term(lit); 
+		write_space();
+	  }
+	  num_cls++;
+	  write_term(BP_ZERO);
+	  b_NL();
+	} else {
+	  while (ISLIST(cl)){
+        BPLONG_PTR lst_ptr;
+        lst_ptr = (BPLONG_PTR)UNTAGGED_ADDR(cl);
+        lit = FOLLOW(lst_ptr); DEREF_NONVAR(lit); 
+        cl = FOLLOW(lst_ptr+1); DEREF_NONVAR(cl);
+		lit = INTVAL(lit);
+		SAT_ADD_LIT(lit);
+	  }
+	  SAT_ADD_LIT(0); 
     }
-    if (sat_dump_flag){
-        num_cls++;
-        write_term(BP_ZERO);
-        b_NL();
-    } else {
-        SAT_ADD_LIT(0); 
-    }
+	
     return BP_TRUE;
 }
 

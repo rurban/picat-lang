@@ -541,7 +541,7 @@ int load_hashtab()
         hash_inst_addr = (BPLONG)RELOC_ADDR(hash_inst_addr);
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 10;
-		//        hash_reg = BB4(buf_for_read);
+        //        hash_reg = BB4(buf_for_read);
         BB4(buf_for_read);
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 1;
@@ -717,8 +717,8 @@ BPLONG_PTR gen_index(BPLONG hash_inst_addr,BPLONG clause_no,BPLONG alt)
 
 static void inserth(ttype,val,label, bucket)
     BPLONG ttype, val;
-    BPLONG_PTR label;
-    struct   hrec *bucket;
+BPLONG_PTR label;
+struct   hrec *bucket;
 {
     BPLONG_PTR temp;
 
@@ -1473,26 +1473,26 @@ SYM_REC_PTR look_for_sym_with_entrance(p)
         inst_addr++;                                            \
     }
 
-#define  LoadZsFromBPList(n) {                                  \
-                              while (n>0) {                     \
-                                           LoadZFromBPList;     \
-                                           n--;                 \
-                                           }                    \
-                              }
+#define  LoadZsFromBPList(n) {                  \
+        while (n>0) {                           \
+            LoadZFromBPList;                    \
+            n--;                                \
+        }                                       \
+    }
 
 #define  LoadYsFromBPList(n) {                  \
         while (n>0) {                           \
-                     LoadLiteralFromBPList;     \
-                     n--;                       \
-                     }                          \
-        }
+            LoadLiteralFromBPList;              \
+            n--;                                \
+        }                                       \
+    }
 
 #define  LoadConstantsFromBPList(n) {           \
         while (n>0) {                           \
-                     LoadZFromBPList;           \
-                     n--;                       \
-                     }                          \
-        }
+            LoadZFromBPList;                    \
+            n--;                                \
+        }                                       \
+    }
 
 /* Load in-memory byte codes */
 int c_LOAD_BYTE_CODE_FROM_BPLISTS(){
@@ -1881,7 +1881,7 @@ void load_text_from_c_array(){
 }
 
 void load_hashtab_from_c_array(){
-  BPLONG hash_inst_addr,alt, clause_no;
+    BPLONG hash_inst_addr,alt, clause_no;
     BPLONG count,hash_array_size;
 
     BPLONG     hashval, size, j;
@@ -1898,7 +1898,7 @@ void load_hashtab_from_c_array(){
     while (count<hash_array_size){
         n_hashtabs++;
         hash_inst_addr = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
-		//        hash_reg = bc_indecies[count++];
+        //        hash_reg = bc_indecies[count++];
         bc_indecies[count++];
         clause_no = bc_indecies[count++];
         alt = (BPLONG)RELOC_ADDR(bc_indecies[count++]);

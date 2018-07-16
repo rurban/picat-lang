@@ -142,6 +142,10 @@ SYM_REC_PTR register_event_listener;
 /* $addr(int) */
 SYM_REC_PTR c_object_ref_sym; 
 
+BPLONG windows_atom;
+BPLONG cygwin_atom;
+BPLONG unix_atom;
+
 BPLONG unknown_exception;
 BPLONG eof_atom;
 BPLONG true_atom;

@@ -23,6 +23,20 @@ The \texttt{planner} module provides several predicates for solving planning pro
 
 A state is normally a ground term. As all states are tabled during search, it is of paramount importance to find a good representation for states such that terms among states can be shared as much as possible.
 
+In addition to the two required predicates given above, users can optionally provide the following global procedures to assist Picat in searching for plans:
+\begin{itemize}
+\item \texttt{heuristic($S$)}\index{\texttt{heuristic/1}}: This function returns an estimation of the resource amount needed to transform $S$ into a goal state. This estimation is said to be \textit{admissible} if it never exceeds the real cost. All heuristic estimations must be admissible in order for the planner to find optimal plans. This function is used by the planner to check the heuristic estimation before each state expansion.
+
+\item \texttt{sequence($P$,$Action$)}\index{\texttt{sequence/2}}: This predicate binds $Action$ to a viable action form based on the current partial plan $P$. Note that the actions in list $P$ are in reversed order, with the most recent action occurring first in the list, and the first action occurring last in the list. The planner calls \texttt{sequence/2} to find an action for expanding the current state before calling \texttt{action/4}. For example,
+\begin{verbatim}
+sequence([move(R,X,Y)|_], Action) ?=> Action = $move(R,Y,_).
+sequence([move(R,_,_)|_], Action) ?=> Action = $jump(R).
+sequence([move(R,_,_)|_], Action) => Action = $wait(R).
+sequence(_, _) => true.
+\end{verbatim}
+These sequence rules ban robots from moving in an interleaving fashion; a robot must continue to move until it takes the action \texttt{jump} or \texttt{wait} before another robot can start moving. The last rule \texttt{sequence(\_, \_) => true} is necessary; it permits any action to be taken if the partial plan is empty, or if the most recent action in the partial plan is not \texttt{move}.
+\end{itemize}
+
 \section{Depth-Bounded Search}
 Depth-bounded search amounts to exploring the search space, taking into account the current available resource amount. A new state is only explored if the available resource amount is non-negative. When depth-bounded search is used, the function {\tt current\_resource()} can be used to retrieve the current resource amount. If the heuristic estimate of the cost to travel from the current state to the final state is greater than the available resource amount, then the current state fails.
 
@@ -91,8 +105,8 @@ If the second argument is an integer, then this predicate is the same as the abo
 \item \texttt{best\_plan\_unbounded($S$,$Plan$)}\index{\texttt{best\_plan\_unbounded/2}}: This predicate is the same as the above predicate, except that the limit is assumed to be 268435455.
 \end{itemize}
 
-\section{Example}
-The program shown in Figure \ref{fig:farmer2} solves the Farmer's problem by using the \texttt{planner} module. The {\tt best\_plan\_unbounded(S0,Plan)} searches for a shortest plan in exactly the same way as the program in Figure \ref{fig:farmer}.
+\section{Examples}
+The program shown in Figure \ref{fig:farmer2} solves the Farmer's problem by using the \texttt{planner} module. 
 
 \begin{figure}
 \begin{center}
@@ -101,7 +115,7 @@ The program shown in Figure \ref{fig:farmer2} solves the Farmer's problem by usi
 
     go =>
         S0=[s,s,s,s],
-        best_plan_unbounded(S0,Plan),
+        best_plan(S0,Plan),
         writeln(Plan).
 
     final([n,n,n,n]) => true.
@@ -141,5 +155,54 @@ The program shown in Figure \ref{fig:farmer2} solves the Farmer's problem by usi
 \end{center}
 \caption{\label{fig:farmer2}A program for the Farmer's problem using \texttt{planner}.}
 \end{figure}
+
+Figure \ref{fig:15puzzlesol} gives a program for the 15-puzzle problem. A state is represented as a list of sixteen locations, each of which takes the form \texttt{($R_i$,$C_i$)}, where $R_i$ is a row number and $C_i$ is a column number. The first element in the list gives the position of the empty square, and the remaining elements in the list give the positions of the numbered tiles from 1 to 15. The function \texttt{heuristic(Tiles)} returns the Manhattan distance between the current state and the final state.
+
+\begin{figure}[t]
+\begin{center}
+\begin{verbatim}
+import planner.
+
+main =>
+    InitS = [(1,2),(2,2),(4,4),(1,3),
+             (1,1),(3,2),(1,4),(2,4),
+             (4,2),(3,1),(3,3),(2,3),
+             (2,1),(4,1),(4,3),(3,4)],
+    best_plan(InitS,Plan),
+    foreach (Action in Plan)
+       println(Action)
+    end.
+
+final(State) => State=[(1,1),(1,2),(1,3),(1,4),
+                       (2,1),(2,2),(2,3),(2,4),
+                       (3,1),(3,2),(3,3),(3,4),
+                       (4,1),(4,2),(4,3),(4,4)].
+
+action([P0@(R0,C0)|Tiles],NextS,Action,Cost) =>
+    Cost = 1,
+    (R1 = R0-1, R1 >= 1, C1 = C0, Action = up;
+     R1 = R0+1, R1 =< 4, C1 = C0, Action = down;
+     R1 = R0, C1 = C0-1, C1 >= 1, Action = left;
+     R1 = R0, C1 = C0+1, C1 =< 4, Action = right),
+    P1 = (R1,C1),
+    slide(P0,P1,Tiles,NTiles),
+    NextS = [P1|NTiles].
+
+% slide the tile at P1 to the empty square at P0
+slide(P0,P1,[P1|Tiles],NTiles) =>
+    NTiles = [P0|Tiles].
+slide(P0,P1,[Tile|Tiles],NTiles) =>
+    NTiles=[Tile|NTilesR],
+    slide(P0,P1,Tiles,NTilesR).
+
+heuristic([_|Tiles]) = Dist =>
+    final([_|FTiles]),
+    Dist = sum([abs(R-FR)+abs(C-FC) : 
+                {(R,C),(FR,FC)} in zip(Tiles,FTiles)]).
+\end{verbatim}
+\end{center}
+\caption{\label{fig:15puzzlesol}A program for the 15-puzzle}
+\end{figure}
+
 
 

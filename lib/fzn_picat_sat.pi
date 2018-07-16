@@ -12,7 +12,7 @@
        cumulative/4,
        diffn/4,
        element/3,
-	   inverse/2,
+       inverse/2,
        lex_.../2,
        maximum/2
        minimum/2
@@ -47,14 +47,10 @@ main(Args) =>
     get_global_map().put(count_solutions,0),
     if get_heap_map().has_key(fzn_show_stats) then
        statistics(runtime,_),
-       statistics(backtracks, Backtracks1),
        fzn_interpret_file(File), 
-       statistics(backtracks, Backtracks2),
        statistics(runtime, [_,End]),
        T = End / 1000.0,
-       Backtracks = Backtracks2 - Backtracks1,
-       NSols = get_global_map().get(count_solutions),
-       printf("%% CPU time %f seconds Backtracks: %d Solutions: %d%n", T, Backtracks, NSols)
+       printf("%% CPU time %f seconds%n", T)
     else
        fzn_interpret_file(File)
     end.
@@ -70,7 +66,7 @@ process_args(["-s"|As],File) =>
     get_heap_map().put(fzn_show_stats,1),
     process_args(As,File).
 process_args(["-v"|As],File) =>
-    printf("Version 0.6b3\n"),
+    printf("Version 2.0b2\n"),
     process_args(As,File).
 process_args(["-n",N|As],File) =>
    % get N solutions
@@ -292,8 +288,8 @@ proc_solve_annotations(SolveType,SolveAnns,SymTable,PVars,SVars,OutAnns) =>
     solve_annotations_to_label_args(Anns,SymTable,LabelCalls,[]),
     proc_solve(SolveType,LabelCalls,PVars,SVars,OutAnns.reverse()).
 
-proc_solve(all,LabelCalls,PVars,SVars,ROutAnns) ?=>
-    label_vars(LabelCalls,PVars,SVars),
+proc_solve(all,_LabelCalls,PVars,_SVars,ROutAnns) ?=>
+    solve(PVars),
     fzn_output(ROutAnns),
     get_global_map().put(fzn_solution_found,1),
     FznNumSolutions = get_global_map().get(fzn_num_solutions),
@@ -308,34 +304,29 @@ proc_solve(all,_LabelCalls,_PVars,_SVars,_ROutAnns) =>
     ;
         println('=====UNSATISFIABLE=====')
     ).
-proc_solve(one,LabelCalls,PVars,SVars,ROutAnns) =>    
-    (label_vars(LabelCalls,PVars,SVars) ->
+proc_solve(one,_LabelCalls,PVars,_SVars,ROutAnns) =>    
+    (solve(PVars) ->
         get_global_map().put(count_solutions,get_global_map().get(count_solutions)+1),
         fzn_output(ROutAnns)
     ;
         println('=====UNSATISFIABLE=====')
     ).
-proc_solve(min(Obj),_LabelCalls,PVars,SVars,ROutAnns) =>
-    (solve($[min(Obj),report(fzn_output_obj(ROutAnns,Obj))],(PVars,SVars)) ->
+proc_solve(min(Obj),_LabelCalls,PVars,_SVars,ROutAnns) =>
+    (solve($[min(Obj),report(fzn_output_obj(ROutAnns,Obj))],PVars) ->
         get_global_map().put(count_solutions,get_global_map().get(count_solutions)+1),
         printf("%% obj = %w%n",Obj),
         println('==========')
     ;
         println('=====UNSATISFIABLE=====')
     ).
-proc_solve(max(Obj),_LabelCalls,PVars,SVars,ROutAnns) =>
-    (solve($[max(Obj),report(fzn_output_obj(ROutAnns,Obj))],(PVars,SVars)) ->
+proc_solve(max(Obj),_LabelCalls,PVars,_SVars,ROutAnns) =>
+    (solve($[max(Obj),report(fzn_output_obj(ROutAnns,Obj))],PVars) ->
         get_global_map().put(count_solutions,get_global_map().get(count_solutions)+1),
         printf("%% obj = %w%n",Obj),
         println('==========')
     ;
         println('=====UNSATISFIABLE=====')
     ).
-
-
-label_vars(_LabelCalls,PVars,SVars) =>
-%    solve([dump],PVars++SVars).
-    solve(PVars++SVars).
 
 solve_annotations_to_label_args([],_SymTable,Calls,CallsR) => Calls=CallsR.
 solve_annotations_to_label_args([SearchAnn|SearchAnns],SymTable,Calls,CallsR) =>
@@ -396,7 +387,11 @@ fzn_output([output_array(Ident,Ranges,ElmType,BPArr)|L]) =>
     length(Ranges) = Dim,
     printf("%w = array%wd(",Ident,Dim),
     foreach($range(Min,Max) in Ranges)
-        printf("%w..%w,",Min,Max)
+        if Min > Max then
+            print("{},")
+		else
+            printf("%w..%w,",Min,Max)
+		end
     end,
     fzn_write(ElmType,BPArr),
     println(");"),
@@ -407,11 +402,10 @@ fzn_write(bool,Term), integer(Term) =>
 fzn_write(_,Term),integer(Term) =>
     print(Term).
 fzn_write(Type,Term) =>
-    (ground(Term)->
-    length(Term) = N,
-    print('['),
-    fzn_write_array(Type,Term,1,N),
-    print(']')
+    (ground(Term)->        
+        print('['),
+        (atom(Term) -> true; length(Term) = N, fzn_write_array(Type,Term,1,N)),
+        print(']')
     ;
         fzn_error("fzn_write requires ground data: %w%n",Term)
     ).
@@ -429,7 +423,7 @@ new_domain_var(X) =>
     X = new_fd_var().
 
 %%%
-%post(Constr) ?=> writeln(Constr),fail.
+% post(Constr) ?=> writeln(Constr),fail.
 
 post(set_in(X,DomExp)) =>
     (DomExp='{}'(Dom)->
@@ -616,7 +610,7 @@ post(alldifferent_except_0(Vec)) =>
     List = to_list(Vec),
     all_different_except_0(List).
 post(inverse(Vec1,Vec2)) =>
-	assignment(Vec1,Vec2).
+    assignment(Vec1,Vec2).
 post(count_reif(Vec,V,N,B)) =>
     List = to_list(Vec),
     Ni :: 0..length(Vec),
@@ -651,10 +645,12 @@ post(cumulative(SVec,DVec,RVec,Cap)) =>
     cumulative(SList,DList,RList,Cap).
 post(circuit(Vec)) =>
     List = to_list(Vec),
-    circuit(List).
+    transform_circuit(List,List1),
+    circuit(List1).
 post(subcircuit(Vec)) =>
     List = to_list(Vec),
-    subcircuit(List).
+    transform_circuit(List,List1),    
+    subcircuit(List1).
 post(element(I,Vec,Y)) =>
     List = to_list(Vec),
     element(I,List,Y).
@@ -688,7 +684,7 @@ post(regular(X, Q, S, D, Q0, F)) =>
     (F=$range(LB,UB) -> 
         NF=LB..UB
     ; F='{}'(Lst) ->
-	    NF = Lst
+        NF = Lst
     ;
         NF=F
     ),
@@ -720,9 +716,9 @@ post(Constr) =>
 transform_table(_VecT,_N,I,Max,TupleT),I>Max => TupleT=[].
 transform_table(VecT,N,I,Max,TupleT) =>
     Tuple = new_array(N),
-	foreach (J in I..I+N-1)
-	    Tuple[J-I+1] = VecT[J]
-	end,
+    foreach (J in I..I+N-1)
+        Tuple[J-I+1] = VecT[J]
+    end,
     TupleT=[Tuple|TupleTR],
     transform_table(VecT,N,I+N,Max,TupleTR).
 
@@ -749,4 +745,19 @@ vector_sum(Cs,Xs,CXs,I,N) =>
     Xs[I] = X,
     CXs = $(C*X+CXsR),
     vector_sum(Cs,Xs,CXsR,I+1,N).
+
+%% ensure that the minimum index is 1
+transform_circuit(List,List1) =>
+    LB = min([fd_min(V) : V in List]),
+    if LB !== 1 then
+        transform_circuit_aux(List,List1,LB)
+    else
+        List1 = List
+    end.
+
+transform_circuit_aux([],NVs,_LB) => NVs=[].
+transform_circuit_aux([V|Vs],NVs,LB) =>
+    NV #= V-LB+1,
+    NVs = [NV|NVsR],
+    transform_circuit_aux(Vs,NVsR,LB).
 

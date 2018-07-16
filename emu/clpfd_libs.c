@@ -51,13 +51,13 @@ int nary_interval_consistent_eq(n)
     coe_ptr = var_ptr+n;
     c = INTVAL(FOLLOW(coe_ptr)); /* c+a1*x1+...+ak*xk where x1,...,xk are integers */
     type = INTVAL(FOLLOW(coe_ptr+1)); 
-	/*
+    /*
       printf("c = %d type=%d\n",c,type);
       for (i = 1; i<=n; i++){
       write_term(FOLLOW(coe_ptr-i)); printf("*"); write_term(FOLLOW(var_ptr-i)); printf(" ");
       }
       printf("\n");
-	*/
+    */
 
     switch (type) {
     case 0:{ /* general case, overflow may occur */
@@ -422,14 +422,14 @@ int nary_interval_consistent_ge(n)
     c = INTVAL(FOLLOW(coe_ptr)); /* c+a1*x1+...+ak*xk where x1,...,xk are integers */
     type = INTVAL(FOLLOW(coe_ptr+1)); 
 
-	/*  
-		printf("c = %d type=%d\n",c,type);
-		for (i = 1; i<=n; i++){
-		write_term(FOLLOW(coe_ptr-i)); printf("*"); write_term(FOLLOW(var_ptr-i)); printf(" ");
-		}
-		printf("\n");
-	*/
-	
+    /*  
+        printf("c = %d type=%d\n",c,type);
+        for (i = 1; i<=n; i++){
+        write_term(FOLLOW(coe_ptr-i)); printf("*"); write_term(FOLLOW(var_ptr-i)); printf(" ");
+        }
+        printf("\n");
+    */
+        
     /*  printf("ge n= %d type =%d\n",n,type); */
     switch (type){
     case 0: /* general case, overflow may occur */
@@ -758,7 +758,7 @@ int varorint_domain_region(X,from,to)
 
 int domain_region_noint(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG dv_ptr_first,dv_ptr_last,size;
     int k;
@@ -771,7 +771,7 @@ int domain_region_noint(dv_ptr,from,to)
 
 int domain_region_aux(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG dv_ptr_first,dv_ptr_last,size,val;
     int k;

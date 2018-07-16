@@ -88,7 +88,7 @@ cwd() = Path =>
 % dir => dir.
 dir =>
     bp.c_OS_TYPE_f(OS),
-    (OS==windows -> bp.dir; bp.ls).
+    (OS == windows -> bp.dir; bp.ls).
 
 % directory(Path) => directory(Path).
 directory(Path),check_path(Path) =>
@@ -151,7 +151,7 @@ env_exists(String) =>
 
 % getenv(Name) = getenv(Name).
 getenv(Path)=Paths,check_path(Path) =>
-    (bp.picat_getenv(Path,Paths) -> true; handle_exception($no_environment_var(Path),getenv)).
+    (bp.picat_getenv(Path,Paths) -> true; handle_exception($existence_error(Path),getenv)).
 getenv(String)=_Paths =>
     handle_exception($string_expected(String),getenv).    
 
@@ -221,27 +221,27 @@ rm(String) =>
     
 picat_delete_file(Name) =>
     (file(Name)->true; handle_exception($file_expected(Name),rm)),
-    (bp.delete_file(Name) -> true;  handle_exception($file_not_deleted(Name),rm)).
+    (bp.delete_file(Name) -> true;  handle_exception($action_failed(Name),rm)).
     
 % rmdir(Path) => rmdir(Path).
 rmdir(Path) =>
     (check_path(Path) ->
-	    (exists(Path) ->
-		    picat_delete_directory(Path)
-		;
-		    handle_exception($directory_expected(String),rmdir)
-		)
-	;
-	    handle_exception($string_expected(String),rmdir)
-	).
+        (exists(Path) ->
+            picat_delete_directory(Path)
+        ;
+            handle_exception($directory_expected(String),rmdir)
+        )
+    ;
+        handle_exception($string_expected(String),rmdir)
+    ).
 
 picat_delete_directory(Name) =>
-    (bp.delete_directory(Name) -> true; handle_exception($dir_not_deleted(Name),rmdir)).
+    (bp.delete_directory(Name) -> true; handle_exception($action_failed(Name),rmdir)).
 
 % separator() = separator().
 separator() = Char =>
     bp.c_OS_TYPE_f(OS),
-    (OS==windows -> Char='\\'; Char='/').
+    (OS == windows -> Char='\\'; Char='/').
 
 % size(Path) = size(Path). size/1 is defined in basic, so must be module qualified as os.size(File).
 size(Path) = Size, check_path(Path) =>

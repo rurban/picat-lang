@@ -87,7 +87,7 @@ BPLONG_PTR expand_trail(trail_top,breg)
 
 void my_memcpy_top_down(des,src,size)
     BPLONG_PTR des,src;
-    BPLONG size;
+BPLONG size;
 {
     while (size>0){
         FOLLOW(des) = FOLLOW(src);
@@ -98,7 +98,7 @@ void my_memcpy_top_down(des,src,size)
 
 void my_memcpy_btm_up(des,src,size)
     BPLONG_PTR des,src;
-    BPLONG size;
+BPLONG size;
 {
     while (size>0){
         FOLLOW(des) = FOLLOW(src);
@@ -375,7 +375,7 @@ void expandStackNullifyUntaggedCellsFrame(ar,diff_s)
 
 void expandStackNullifyUntaggedCellsFrameSlots(f,nslots,diff_s)
     BPLONG_PTR f;
-    BPLONG nslots,diff_s;
+BPLONG nslots,diff_s;
 {
     BPLONG_PTR sp,top;
 
@@ -505,7 +505,7 @@ void expandStackResetPointers(diff_h,diff_s)
 
 BPLONG_PTR expandStackResetAddr(addr,diff_h,diff_s)
     BPLONG_PTR addr;
-    BPLONG diff_h,diff_s;
+BPLONG diff_h,diff_s;
 {
     if (IS_HEAP_REFERENCE(addr)){
         return (BPLONG_PTR)((BPULONG)addr+diff_h);

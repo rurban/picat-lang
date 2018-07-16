@@ -24,9 +24,23 @@ where $OSPrompt$ is the OS prompt. After the interpreter is started, it responds
 In general, the \texttt{picat} command takes the following form:
 \begin{tabbing}
 aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
-\> \texttt{picat [-path $Directories$][-log] [-g $InitGoal$] $File$ $Arg_1$ $Arg_2$ $\ldots$ $Arg_n$}
+\> \texttt{picat $Options$ $PicatMainFileName$ $A_1$ $A_2$ $\ldots$ $A_n$}
 \end{tabbing}
-$Directories$ is a semicolon-separated and double-quoted list of directories, and will be set as the value of the environment variable \texttt{PICATPATH} before the execution of the program. The Picat system will look for the file and the related modules in these directories. The option \texttt{-log} makes the system print log information and warning messages. The option \texttt{-g} makes Picat execute a specified initial query $InitGoal$ rather than the default \texttt{main} predicate. The file name $File$ can have the extension \texttt{.pi}, and can contain a path of directories.
+where $PicatMainFileName$ can have the extension \texttt{.pi} and can contain a path of directories, and $Options$ is a sequence of options of the following:
+\begin{itemize}
+\item \texttt{-g $InitGoal$}: This option makes Picat execute a specified initial query $InitGoal$ rather than the default \texttt{main} predicate.
+
+\item \texttt{--help}: Print out the help info.
+
+\item \texttt{-log}: The option \texttt{-log} makes the system print log information and warning messages. 
+
+\item \texttt{-path $Directories$}: $Directories$ is a semicolon-separated and double-quoted list of directories. This option sets the value of the environment variable \texttt{PICATPATH} before the execution of the program. The Picat system will look for $PicatMainFileName$ and the related modules in these directories. 
+
+\item \texttt{-s $Size$}: This option reserves $Size$ words for the stack and the heap when the system is started.
+
+\item \texttt{--v}:
+\item \texttt{--version}: This option makes Picat print the version number.
+\end{itemize}
 
 Once the interpreter is started, users can type a query after the prompt. For example,
 \begin{verbatim}

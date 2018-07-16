@@ -660,13 +660,13 @@ DWORD WINAPI timerThread(LPVOID timer_no){
         BPLONG timer;
         BPLONG_PTR ptr;
 
-		/*
-#ifdef _WIN32
-        BPLONG pid;
-#else
-        pthread_t pid;
-#endif
-		*/
+        /*
+          #ifdef _WIN32
+          BPLONG pid;
+          #else
+          pthread_t pid;
+          #endif
+        */
 
         timer = ARG(1,1); DEREF(timer); 
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(timer);

@@ -58,6 +58,10 @@ void init_sym(){
     plan_psc = BP_NEW_SYM("_$plan",2);
     register_event_listener = BP_NEW_SYM("registerEventListener",2);
   
+    windows_atom = ADDTAG(insert_sym("windows",7,0),ATM);
+    cygwin_atom = ADDTAG(insert_sym("cygwin",6,0),ATM);
+    unix_atom = ADDTAG(insert_sym("unix",4,0),ATM);
+        
     thread_psc = BP_NEW_SYM("$thread",4);
     hashtable_psc = BP_NEW_SYM("$hshtb",2);
     ghashtable_psc = BP_NEW_SYM("$ghshtb",2);
@@ -74,7 +78,7 @@ void init_sym(){
     interrupt_sym = ADDTAG(BP_NEW_SYM("interrupt",0),ATM);
     ball_psc = BP_NEW_SYM("$ball",0);
     equal_psc = BP_NEW_SYM("=",2);
-	planner_explored_depth_psc = BP_NEW_SYM("_$planner_explored_depth",0);
+    planner_explored_depth_psc = BP_NEW_SYM("_$planner_explored_depth",0);
 
     eof_atom = ADDTAG(BP_NEW_SYM("end_of_file",0),ATM);
     true_atom = ADDTAG(BP_NEW_SYM("true",0),ATM);

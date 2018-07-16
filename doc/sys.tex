@@ -31,6 +31,10 @@ The \texttt{sys} module includes a number of built-ins for compiling programs an
 \item \texttt{cl\_facts($Facts$)}\index{\texttt{cl\_facts/1}}: This predicate compiles and loads facts into the system.  The argument $Facts$ is a list of ground facts.
 
 \item \texttt{cl\_facts($Facts$, $IndexInfo$)}\index{\texttt{cl\_facts/2}}: This predicate compiles and loads facts into the system.  The argument $Facts$ is a list of ground facts.  The argument $IndexInfo$ is a list of indexing information in the form \texttt{p($M_1$, $M_2$, \ldots, $M_n$)}.  Each $M_i$ can either be \texttt{+}, which indicates that the argument is input, or \texttt{-}, which indicates that the argument is output.
+
+\item \texttt{cl\_facts\_table($Facts$)}\index{\texttt{cl\_facts\_table/1}}: This predicate is the same as \texttt{cl\_facts/1}, except that the facts are all tabled.
+
+\item \texttt{cl\_facts\_table($Facts$, $IndexInfo$)}\index{\texttt{cl\_facts\_table/2}}: This predicate is the same as \texttt{cl\_facts/2}, except that the facts are all tabled.
 \end{itemize}
 
 \section{Tracing Execution}

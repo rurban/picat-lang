@@ -1046,8 +1046,6 @@ extern int c_WDAY_f(void);
 extern int c_TIME_ffffff(void);												
 extern int c_GETENV_cf(void);												
 extern int b_COMPARE_fcc(BPLONG op1,BPLONG op2,BPLONG op3);								
-extern int b_FAST_COMPARE_fcc(BPLONG op1,BPLONG op2,BPLONG op3);								
-extern int bp_fast_compare(BPLONG val1, BPLONG val2);							
 extern int bp_compare(BPLONG val1, BPLONG val2);							
 extern int compare_float_unknown(BPLONG val1,BPLONG val2);								
 extern int comalpha(SYM_REC_PTR psc_ptr1,SYM_REC_PTR  psc_ptr2);							

@@ -807,7 +807,7 @@ int b_VV_EQ_C_CON_ccc(X,Y,C)
   
 int c_VV_EQ_C_CON_aux(dv_ptr_x,dv_ptr_y,C)
     BPLONG C;
-    BPLONG_PTR dv_ptr_x, dv_ptr_y;
+BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
     BPLONG currX,currY,maxX,minY,maxY;
 
@@ -866,7 +866,7 @@ int b_V_EQ_VC_CON_ccc(X,Y,C)
 
 int c_V_EQ_VC_CON_aux(dv_ptr_x,dv_ptr_y,C)
     BPLONG C;
-    BPLONG_PTR dv_ptr_x, dv_ptr_y;
+BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
     BPLONG currX,currY,maxX,minY,maxY;
 
@@ -920,7 +920,7 @@ int c_UU_EQ_C_CON(){
 /* for each x in X, there is an y in Y such that A*x+B*y=C */
 int c_UU_EQ_C_CON_aux(A,dv_ptr_x,B,dv_ptr_y,C)
     BPLONG A,B,C;
-    BPLONG_PTR dv_ptr_x, dv_ptr_y;
+BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
     BPLONG tmp,currX,currY,maxX,minY,maxY;
 
@@ -979,7 +979,7 @@ int c_U_EQ_UC_CON(){
 /* for each x in X, there is a y in Y such that A*x=B*y+C */
 int c_U_EQ_UC_CON_aux(A,dv_ptr_x,B,dv_ptr_y,C)
     BPLONG A,B,C;
-    BPLONG_PTR dv_ptr_x, dv_ptr_y;
+BPLONG_PTR dv_ptr_x, dv_ptr_y;
 {
     BPLONG tmp,currX,currY,maxX,minY,maxY;
 
@@ -1237,7 +1237,7 @@ BPLONG clpset_pickup_all_possible(sp_dv_ptr,sa_dv_ptr)
 */
 BPLONG clpset_pickup_only_in(sp_dv_ptr,sa_dv_ptr,card)  
     BPLONG_PTR sp_dv_ptr,sa_dv_ptr;
-    BPLONG card;
+BPLONG card;
 {
     BPLONG last,cur;
   
@@ -1277,7 +1277,7 @@ BPLONG clpset_pickup_only_in(sp_dv_ptr,sa_dv_ptr,card)
          
 void clpset_exclude_all_possible(sp_dv_ptr,cur,last)
     BPLONG_PTR sp_dv_ptr;
-    BPLONG cur,last;
+BPLONG cur,last;
 {
     while (cur!=last){
         domain_set_false_noint(sp_dv_ptr,cur);

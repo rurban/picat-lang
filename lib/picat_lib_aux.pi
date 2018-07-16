@@ -87,7 +87,7 @@ frand() = V =>
    (_I,V) = modf(random()/Max).
 
 picat_path() = Path =>
-    (bp.picat_getenv('PICATPATH',Path) -> true; handle_exception($no_environment_var('PICATPATH'),picat_path)).
+    (bp.picat_getenv('PICATPATH',Path) -> true; handle_exception($existence_error('PICATPATH'),picat_path)).
 
 
 % Show all the statistics

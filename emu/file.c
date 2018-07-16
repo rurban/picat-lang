@@ -621,7 +621,7 @@ int single_quote_needed(name_ptr,length)
 /* copy the str to buf, adding quotes when necessary */
 int strcpy_add_quote(buf,str,len)
     CHAR_PTR buf,str;
-    BPLONG len;
+BPLONG len;
 {
     int i,new_len=len+2;
     *buf++ = '\'';

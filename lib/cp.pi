@@ -120,7 +120,7 @@ solve(Options,Vars) =>
         MetaCalls = []
     ),
     (select($label(LabelPred),Options1,Options2) ->
-        (atom(LabelPred) -> true; handle_exception(invalid_label_option,LabelPred)),
+        (atom(LabelPred) -> true; handle_exception(atom_expected(LabelPred),solve)),
         (bp.'$dyna_resolve_name'(['$picat_top_level'],LabelPred,1,pred,MLabelPred) ->
             true
         ;
@@ -316,7 +316,7 @@ fd_min_max(FDVar,Min,Max) =>
 fd_next(FDVar,Elm) = NextElm, 
     dvar(FDVar), integer(Elm) 
 =>
-    (bp.domain_next_inst(FDVar,Elm,NextElm) -> true; handle_exception(failed_function_call,fd_next)).
+    (bp.domain_next_inst(FDVar,Elm,NextElm) -> true; handle_exception(failed,fd_next)).
 fd_next(FDVar,Elm) = _NextElm =>
     bp.expect_dvar_int(FDVar,Elm,fd_next).
 
@@ -324,7 +324,7 @@ fd_next(FDVar,Elm) = _NextElm =>
 fd_prev(FDVar,Elm) = PrevElm,
     dvar(FDVar), integer(Elm) 
 =>
-    (bp.b_DM_PREV_ccf(FDVar,Elm,PrevElm) -> true; handle_exception(failed_function_call,fd_prev)).
+    (bp.b_DM_PREV_ccf(FDVar,Elm,PrevElm) -> true; handle_exception(failed,fd_prev)).
 fd_prev(FDVar,Elm) = _PrevElm =>
     bp.expect_dvar_int(FDVar,Elm,fd_prev).
 
@@ -386,7 +386,7 @@ lex_le(L1,L2),array(L1),array(L2) =>
     check_args_lex(to_list(L1),to_list(L2),L11,L22),
     lex_le_aux(L11,L22).
 lex_le(L1,L2) =>
-    handle_exception($wrong_arguments(L1,L2),lex_le).
+    throw($invalid(lex_le(L1,L2))).
 
 %%
 %% lex_lt(L1,L2): collection L1 is lexicographically less than L2
@@ -398,7 +398,7 @@ lex_lt(L1,L2),array(L1),array(L2) =>
     check_args_lex(to_list(L1),to_list(L2),L11,L22),
     lex_lt_aux(L11,L22).
 lex_lt(L1,L2) =>
-    handle_exception($wrong_arguments(L1,L2),lex_lt).
+    throw($invalid(lex_lt(L1,L2))).
 
 check_args_lex(L1,L2,L11,L22) =>
     (bp.dvar_or_int_list(L1) -> true; handle_exception($dvar_list_expected(L1),lex)),
@@ -605,7 +605,7 @@ increasing(FDVars),array(FDVars) =>
 increasing(FDVars),list(FDVars) =>
    increasing_list(FDVars).
 increasing(FDVars) =>
-   handle_exception($dvar_collection_expected(FDVars),increasing).
+   handle_exception($list_or_array_expected(FDVars),increasing).
 
 increasing_list([]) => true.
 increasing_list([_]) => true.
@@ -618,7 +618,7 @@ increasing_strict(FDVars),array(FDVars) =>
 increasing_strict(FDVars),list(FDVars) =>
    increasing_strict_list(FDVars).
 increasing_strict(FDVars) =>
-   handle_exception($dvar_collection_expected(FDVars),increasing_strict).
+   handle_exception($list_or_array_expected(FDVars),increasing_strict).
 
 increasing_strict_list([]) => true.
 increasing_strict_list([_]) => true.
@@ -634,7 +634,7 @@ decreasing(FDVars),array(FDVars) =>
 decreasing(FDVars),list(FDVars) =>
    decreasing_list(FDVars).
 decreasing(FDVars) =>
-   handle_exception($dvar_collection_expected(FDVars),decreasing).
+   handle_exception($list_or_array_expected(FDVars),decreasing).
 
 decreasing_list([]) => true.
 decreasing_list([_]) => true.
@@ -647,7 +647,7 @@ decreasing_strict(FDVars),array(FDVars) =>
 decreasing_strict(FDVars),list(FDVars) =>
    decreasing_strict_list(FDVars).
 decreasing_strict(FDVars) =>
-   handle_exception($dvar_collection_expected(FDVars),decreasing_strict).
+   handle_exception($list_or_array_expected(FDVars),decreasing_strict).
 
 decreasing_strict_list([]) => true.
 decreasing_strict_list([_]) => true.

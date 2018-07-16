@@ -526,13 +526,13 @@ BPLONG bp_build_float(f)
 }
   
 BPLONG picat_build_atom(name) 
-const char *name;
+    const char *name;
 {
     return ADDTAG(insert_sym(name,strlen(name),0),ATM);
 }
 
 BPLONG bp_build_atom(name) 
-const char *name;
+    const char *name;
 {
     return picat_build_atom(name);
 }
@@ -857,7 +857,7 @@ void expand_bp_str_bag(){
 
 void append_str_to_solution_bag(str,len,check_quote)
     char *str;
-    BPLONG len,check_quote;
+BPLONG len,check_quote;
 {
     if (bp_sol_bag_ptr->pos + len + 10 >= bp_sol_bag_ptr->size){ /* 10 may not be enough */
         expand_bp_str_bag();

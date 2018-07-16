@@ -11,7 +11,7 @@
 #define LST               0x3L   /* 11 */
 #define STR               0x1L   /* 01 */
 #define ATM               0x2L   /* 10 */
-#define EPSILON           1.0e-12
+#define EPSILON           1.0e-8
 #define MASK2             0x2L
 
 #define MASK_LOW28        0xfffffffL

@@ -187,7 +187,7 @@ int unify_lst_lst(op1,op2)
   op1,op2 are both structures
 */
 int unify_str_str(op1,op2)
-	 register BPLONG op1,op2;
+    register BPLONG op1,op2;
 {
     register BPLONG     arity, i;
 
@@ -208,13 +208,13 @@ int unify_str_str(op1,op2)
 }
   
 int is_IDENTICAL(op1, op2)
-	 BPLONG op1, op2;
+    BPLONG op1, op2;
 {
     return bp_identical(op1, op2);
 }
 
 int bp_identical(op1, op2)
-	 register BPLONG op1, op2;
+    register BPLONG op1, op2;
 {
     register BPLONG_PTR top;
     register BPLONG     arity, i;
@@ -256,7 +256,7 @@ int bp_identical(op1, op2)
 }
 
 int is_UNIFIABLE(t1,t2)
-	 BPLONG t1,t2;
+    BPLONG t1,t2;
 {
     BPLONG_PTR trail_top0,hbreg0;
     BPLONG initial_diff0,trigger_no0;
@@ -288,7 +288,7 @@ int c_UNIFIABLE(){
 }
 
 int unify_suspvar_suspvar(op1,op2)
-	 BPLONG op1,op2;
+    BPLONG op1,op2;
 {
     BPLONG_PTR dv_ptr1,dv_ptr2;
 
@@ -318,7 +318,7 @@ int unify_suspvar_suspvar(op1,op2)
 }
 
 int unify_dvar_dvar(dv_ptr1,dv_ptr2)
-	 BPLONG_PTR dv_ptr1,dv_ptr2;
+    BPLONG_PTR dv_ptr1,dv_ptr2;
 {
     BPLONG first,last,count;
     BPLONG_PTR top;
@@ -437,7 +437,7 @@ itdvar_bvdvar:
   
 /* let dv_ptr2 point to dv_ptr1 */
 int bind_susp_susp(dv_ptr1,dv_ptr2)
-	 BPLONG_PTR dv_ptr1,dv_ptr2;
+    BPLONG_PTR dv_ptr1,dv_ptr2;
 {
     /*
       printf("bind_susp_susp dv_ptr1=%x dv_ptr2=%x %d\n",(BPULONG)dv_ptr1-(BPULONG)stack_low_addr,(BPULONG)dv_ptr2-(BPULONG)stack_low_addr,dv_ptr2>dv_ptr1);
@@ -524,7 +524,7 @@ void merge_cs(addr_head_cs1,cs2)
 
 /* same as identical(op1,op2) except that variables are not compared */
 int key_identical(op1, op2)
-	 BPLONG op1, op2;
+    BPLONG op1, op2;
 {
     register BPLONG_PTR top;
     register BPLONG     arity, i;
@@ -546,18 +546,18 @@ key_identical_start:
         return 0;
 
     case LST:
-	  if (IsNumberedVar(op1)){
-		DEREF(op2);
-		if (ISREF(op2) || IsNumberedVar(op2)){
-		  return 1;
-		} else {
-		  return 0;
-		}
-	  }
+        if (IsNumberedVar(op1)){
+            DEREF(op2);
+            if (ISREF(op2) || IsNumberedVar(op2)){
+                return 1;
+            } else {
+                return 0;
+            }
+        }
         SWITCH_OP_LST(op2,key_identical_lst_d,
                       {return 0;},
-                      {	  if (op1 == op2) return 1;
-						  if (IsNumberedVar(op2)) return 0;
+                      {   if (op1 == op2) return 1;
+                          if (IsNumberedVar(op2)) return 0;
                           UNTAG_ADDR(op1);
                           UNTAG_ADDR(op2);
                           if (!key_identical(*(BPLONG_PTR) op1, *(BPLONG_PTR) op2)) return 0;

@@ -14,7 +14,6 @@ filter([E|Es], Goal) = L, call(Goal,E) =>
 filter([_E|Es], Goal) = filter(Es, Goal).
 
 drop(L,N) = Taken, list(L), integer(N), drop_aux(L,N,Taken) => true.
-drop(N,L) = Taken, list(L), integer(N), drop_aux(L,N,Taken) => true.
 
 private
 drop_aux([_|T],N,Taken),N>0 => drop_aux(T,N-1,Taken).
@@ -29,18 +28,16 @@ private
 drop_while_aux([],_P,Res) => Res=[].
 drop_while_aux(List@[H|T],P,Res) => 
     (call(P,H) -> 
-	drop_while_aux(T,P,Res)
+	    drop_while_aux(T,P,Res)
     ;
         Res=List
     ).
 
 take(L,N) = Taken, list(L), integer(N), take_aux(L,N,Taken) => true.
-take(N,L) = Taken, list(L), integer(N), take_aux(L,N,Taken) => true.
 
 private
 take_aux([H|T],N,Taken),N>0 => Taken=[H|TakenR], take_aux(T,N-1,TakenR).
-take_aux(List,_N,Taken),List=[_|_] => Taken=List.
-take_aux([],_N,Taken) => Taken=[].
+take_aux(List,_N,Taken) => Taken = [].
 
 % take_while(ListOrPred,PredOrList)
 % Note: P must be a defined predicate.
@@ -57,3 +54,20 @@ take_while_aux([H|T],P,Res) =>
         Res=[]
     ).
 
+chunks_of([],_N) = [].
+chunks_of(L,N) = Chunks =>
+    Chunks = [Chunk|ChunksR],
+    chunks_of(L,Chunk,0,N,ChunksR).
+
+chunks_of([],Chunk,_,_,Chunks) => Chunk = [], Chunks = [].
+chunks_of(L,Chunk,N,N,Chunks) =>
+    Chunk = [],
+	(L == [] ->
+	    Chunks = []
+	;
+	    Chunks = [NextChunk|ChunksR],
+    	chunks_of(L,NextChunk,0,N,ChunksR)
+	).
+chunks_of([X|Xs],Chunk,Count,N,Chunks) =>
+    Chunk = [X|ChunkR],
+	chunks_of(Xs,ChunkR,Count+1,N,Chunks).

@@ -167,7 +167,7 @@ addr, addr+1,...,addr+size-1 to be 1
 
 void gcSetMask(addr,size,base)
     BPLONG_PTR addr,base;
-    BPLONG size;
+BPLONG size;
 {
     int i;
 

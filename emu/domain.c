@@ -73,9 +73,9 @@ int b_DM_CREATE_DVAR(Var,From,To)
         //    printf("%%  WARNING: upper bound changed to: %ld\n",BP_MAXINT_1W);
         To = BP_MAXINT_1W;
     }
-	if (From == To){
-	  return unify(Var,MAKEINT(From));
-	}
+    if (From == To){
+        return unify(Var,MAKEINT(From));
+    }
     return aux_create_domain_var(Var,From,To);
 }
 
@@ -119,7 +119,7 @@ int c_DM_CREATE_DVARS(){
 
 int aux_create_domain_var(Var,from,to)
     BPLONG Var;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG_PTR dv_ptr;
   
@@ -153,7 +153,7 @@ int aux_create_domain_var(Var,from,to)
 
 int aux_create_bv_domain_var(Var,from,to)
     BPLONG Var;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG_PTR dv_ptr;
   
@@ -335,7 +335,7 @@ void it_to_bv_with_hole(dv_ptr,elm)
 /* interval_start > DV_first(dv_ptr) && interval_end<DV_last(dv_ptr) */
 void it_to_bv_with_interval_holes(dv_ptr,interval_start,interval_end)
     BPLONG_PTR dv_ptr;
-    BPLONG interval_start,interval_end;
+BPLONG interval_start,interval_end;
 {
     BPLONG from,to,i,size;
     BPLONG_PTR top;
@@ -1077,7 +1077,7 @@ int b_DM_COUNT_cf(Var,Count)
 
 int count_domain_elms(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG_PTR w_ptr,bv_ptr;
     BPULONG w,mask,offset;
@@ -1101,7 +1101,7 @@ int count_domain_elms(dv_ptr,from,to)
 /* same as count_domain_elms but post dom_any(X,E) events */
 int exclude_domain_elms(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG_PTR w_ptr,bv_ptr;
     BPULONG w,mask,offset;
@@ -1276,7 +1276,7 @@ int c_path_from_to_reachability_test(){
 
 int path_from_to_reachable(from,to,var_vector,visited)
     BPLONG from,to;
-    BPLONG_PTR var_vector,visited;
+BPLONG_PTR var_vector,visited;
 {
     BPLONG var,next,last;
     BPLONG_PTR dv_ptr;
@@ -1394,7 +1394,7 @@ int b_PATH_FROM_TO_REACHABLE()
 
 int check_reach_cuts_in_one_connection(n,Start,End,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray)
     BPLONG n,Start,End,Lab,TaggedLab;
-    BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
+BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG i;
 
@@ -1452,7 +1452,7 @@ int check_reach_cuts_in_one_connection(n,Start,End,Lab,TaggedLab,LabVarArray,Suc
 
 int path_from_to_node_degree(n,NodeNum,Lab,TaggedLab,LabVarArray,SuccVarArray)
     BPLONG NodeNum,Lab,TaggedLab,n;
-    BPLONG_PTR LabVarArray,SuccVarArray;
+BPLONG_PTR LabVarArray,SuccVarArray;
 {
     BPLONG LabVar,SuccVar;
 
@@ -1504,7 +1504,7 @@ int path_from_to_node_degree(n,NodeNum,Lab,TaggedLab,LabVarArray,SuccVarArray)
 
 void check_reach_withno_cut(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray)
     BPLONG Start,Lab,TaggedLab;
-    BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
+BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG curNodeNum,LabVar,SuccVar;
     BPLONG_PTR q_front,q_rear;
@@ -1569,7 +1569,7 @@ void check_reach_withno_cut(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,Visited
 
 void check_reach_with_one_cut(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray,cutNodeNum)
     BPLONG Start,Lab,TaggedLab,cutNodeNum;
-    BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
+BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG curNodeNum,LabVar,SuccVar;
     BPLONG_PTR q_front,q_rear;
@@ -1635,7 +1635,7 @@ void check_reach_with_one_cut(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,Visit
 /* consider firstCon connection */
 void check_two_cuts_in_two_connections(n,firstCon,nConnections,ConStartArray,ConEndArray,ConLabArray,ConFlagArray,LabVarArray,SuccVarArray,VisitedArray)
     BPLONG n,firstCon,nConnections;
-    BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,ConFlagArray,LabVarArray,SuccVarArray,VisitedArray;
+BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,ConFlagArray,LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG Start,End,Lab,TaggedLab,LabVar,v1,v2;
     BPLONG_PTR dv_ptr;  
@@ -1681,7 +1681,7 @@ void check_two_cuts_in_two_connections(n,firstCon,nConnections,ConStartArray,Con
 */
 void check_cuts_in_another_connection(v1,v2,n,firstCon,firstLab,nConnections,ConStartArray,ConEndArray,ConLabArray,LabVarArray,SuccVarArray,VisitedArray)
     BPLONG v1,v2,n,firstCon,firstLab,nConnections;
-    BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,LabVarArray,SuccVarArray,VisitedArray;
+BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG secondCon,LabVar,Start,End,Lab,TaggedLab,Flag;
     BPLONG_PTR dv_ptr1, dv_ptr2;
@@ -1723,7 +1723,7 @@ void check_cuts_in_another_connection(v1,v2,n,firstCon,firstLab,nConnections,Con
 
 void check_reach_with_two_cuts(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray,cutNodeNum1,cutNodeNum2)
     BPLONG Start,Lab,TaggedLab,cutNodeNum1,cutNodeNum2;
-    BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
+BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG curNodeNum,LabVar,SuccVar;
     BPLONG_PTR q_front,q_rear;
@@ -1789,7 +1789,7 @@ void check_reach_with_two_cuts(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,Visi
 /* exclude all elements but val1 and val2 (val1\=val2) */
 void domain_reduce_to_two(dv_ptr,val1,val2)
     BPLONG_PTR dv_ptr;
-    BPLONG val1,val2;
+BPLONG val1,val2;
 {
     BPLONG t;
     // printf("reduce_to_two %d %d ",val1,val2); write_term1(dv_ptr,stderr); printf("\n");
@@ -1827,7 +1827,7 @@ void domain_reduce_to_two(dv_ptr,val1,val2)
   $alldistinct_exclude_hall_set(X,Ys).
 */
 int b_ALLDISTINCT_CHECK_HALL_VAR_cccc(X,NumElmsLeft,L,R)
-	 BPLONG X,NumElmsLeft,L,R;
+    BPLONG X,NumElmsLeft,L,R;
 {
     BPLONG L0,NumElmsLeft0;
     BPLONG_PTR dv_ptr1,dv_ptr2,ptr,flag_ptr;
@@ -2298,40 +2298,40 @@ int b_DISJUNCTIVE_TASKS_AC(n)
    if (acc_est1+acc_duration1>acc_lct)  Q << T 
 */
 #define EDGE_FINDER(acc_est,acc_lct,acc_duration,start,duration){       \
-                                                                 if (ISINT(start)){ \
-                                                                                   est = INTVAL(start); \
-                                                                                   lct = est+duration; \
-                                                                                   if (est<acc_est) acc_est = est; \
-                                                                                   if (lct>acc_lct) acc_lct = lct; \
-                                                                                   acc_duration += duration; \
-                                                                                   if (acc_lct-acc_est<acc_duration){return BP_FALSE;} \
-                                                                                   } else { \
-                                                                                           BPLONG acc_est1,acc_lct1,acc_duration1; \
-                                                                                           dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start); \
-                                                                                           est = DV_first(dv_ptr); \
-                                                                                           lct = DV_last(dv_ptr)+duration; \
-                                                                                                                acc_est1 = (est<acc_est) ? est : acc_est; \
-                                                                                                                acc_lct1 = (lct>acc_lct) ? lct : acc_lct; \
-                                                                                                                acc_duration1 = acc_duration+duration; \
-                                                                                                                if (acc_est+acc_duration1>acc_lct1){ \
-                                                                                                                                                    BPLONG new_lst = acc_lct-acc_duration1; \
-                                                                                                                                                    if (new_lst<DV_last(dv_ptr)) { \
-                                                                                                                                                                                  if (domain_region_noint(dv_ptr,est,new_lst)==BP_FALSE) return BP_FALSE; \
-                                                                                                                                                                                  acc_lct1 = acc_lct; \
-                                                                                                                                                                                  } \
-                                                                                                                                                    } else if (acc_est1+acc_duration1>acc_lct){ \
-                                                                                                                                                                                               BPLONG new_est = acc_est + acc_duration; \
-                                                                                                                                                                                               if (new_est>est){ \
-                                                                                                                                                                                                                if (domain_region_noint(dv_ptr,new_est,DV_last(dv_ptr))==BP_FALSE) return BP_FALSE; \
-                                                                                                                                                                                                                acc_est1 = acc_est; \
-                                                                                                                                                                                                                } \
-                                                                                                                                                                                               } \
-                                                                                                                acc_est = acc_est1; \
-                                                                                                                acc_lct = acc_lct1; \
-                                                                                                                acc_duration = acc_duration1; \
-                                                                                                                if (acc_lct-acc_est<acc_duration){return BP_FALSE;} \
-                                                                                                                } \
-                                                                 }
+        if (ISINT(start)){                                              \
+            est = INTVAL(start);                                        \
+            lct = est+duration;                                         \
+            if (est<acc_est) acc_est = est;                             \
+            if (lct>acc_lct) acc_lct = lct;                             \
+            acc_duration += duration;                                   \
+            if (acc_lct-acc_est<acc_duration){return BP_FALSE;}         \
+        } else {                                                        \
+            BPLONG acc_est1,acc_lct1,acc_duration1;                     \
+            dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start);            \
+            est = DV_first(dv_ptr);                                     \
+            lct = DV_last(dv_ptr)+duration;                             \
+            acc_est1 = (est<acc_est) ? est : acc_est;                   \
+            acc_lct1 = (lct>acc_lct) ? lct : acc_lct;                   \
+            acc_duration1 = acc_duration+duration;                      \
+            if (acc_est+acc_duration1>acc_lct1){                        \
+                BPLONG new_lst = acc_lct-acc_duration1;                 \
+                if (new_lst<DV_last(dv_ptr)) {                          \
+                    if (domain_region_noint(dv_ptr,est,new_lst)==BP_FALSE) return BP_FALSE; \
+                    acc_lct1 = acc_lct;                                 \
+                }                                                       \
+            } else if (acc_est1+acc_duration1>acc_lct){                 \
+                BPLONG new_est = acc_est + acc_duration;                \
+                if (new_est>est){                                       \
+                    if (domain_region_noint(dv_ptr,new_est,DV_last(dv_ptr))==BP_FALSE) return BP_FALSE; \
+                    acc_est1 = acc_est;                                 \
+                }                                                       \
+            }                                                           \
+            acc_est = acc_est1;                                         \
+            acc_lct = acc_lct1;                                         \
+            acc_duration = acc_duration1;                               \
+            if (acc_lct-acc_est<acc_duration){return BP_FALSE;}         \
+        }                                                               \
+    }
 
 #define FORWARD_EDGE_FINDER {                                           \
         start = starts[0]; DEREF_NONVAR(start);                         \
@@ -2366,110 +2366,110 @@ int b_DISJUNCTIVE_TASKS_EF(n)
     BPLONG starts[20],durations[20],t_starts[20],t_durations[20];
 
     n = INTVAL(n); m = n-1; /* m : number of tasks except for the seed task */
-start = FOLLOW(arreg+n); DEREF_NONVAR(start); /* S0 */
-duration0 = FOLLOW(arreg+n+n); /* D0 */
-DEREF_NONVAR(duration0); duration0 = INTVAL(duration0); 
+    start = FOLLOW(arreg+n); DEREF_NONVAR(start); /* S0 */
+    duration0 = FOLLOW(arreg+n+n); /* D0 */
+    DEREF_NONVAR(duration0); duration0 = INTVAL(duration0); 
 
-if (IS_SUSP_VAR(start)){
-dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start);
-est0 = DV_first(dv_ptr);
-lst0 = DV_last(dv_ptr);
-} else {
-est0 = lst0 = INTVAL(start);
-}    
-lct0 = lst0+duration0;
+    if (IS_SUSP_VAR(start)){
+        dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start);
+        est0 = DV_first(dv_ptr);
+        lst0 = DV_last(dv_ptr);
+    } else {
+        est0 = lst0 = INTVAL(start);
+    }    
+    lct0 = lst0+duration0;
 
-for (i=n-1;i>=1;i--){
-t_starts[n-i-1] = FOLLOW(arreg+i); 
-duration = FOLLOW(arreg+n+i);  /* Di */
-DEREF_NONVAR(duration);
-t_durations[n-i-1] = INTVAL(duration);
-}
+    for (i=n-1;i>=1;i--){
+        t_starts[n-i-1] = FOLLOW(arreg+i); 
+        duration = FOLLOW(arreg+n+i);  /* Di */
+        DEREF_NONVAR(duration);
+        t_durations[n-i-1] = INTVAL(duration);
+    }
 
 /* edge finding: For each set Q={T1,T2,..T_{i-1}} where Ti=(Si,Di)
    if est(Q)+d(Q)+Di > lct(Q U {Ti}) then Ti << Q (i.e., Si=<lct(Q)-Di-d(Q)) 
    if est(Q U {Ti}) + d(Q) + Di > lct(Q) then Q << Ti (i.e., Si>=lst(Q)+d(Q))
 */
 /* forward */
-for (i=0;i<m;i++){
-starts[i] = t_starts[i];
-durations[i] = t_durations[i];
-}
-FORWARD_EDGE_FINDER;
+    for (i=0;i<m;i++){
+        starts[i] = t_starts[i];
+        durations[i] = t_durations[i];
+    }
+    FORWARD_EDGE_FINDER;
 
 /* backward */
-for (i=m-1;i>=0;i--){
-starts[m-i-1] = t_starts[i];
-durations[m-i-1] = t_durations[i];
-}
-FORWARD_EDGE_FINDER;
+    for (i=m-1;i>=0;i--){
+        starts[m-i-1] = t_starts[i];
+        durations[m-i-1] = t_durations[i];
+    }
+    FORWARD_EDGE_FINDER;
   
 // in-out 1
-h = m/2; 
-j=0;
-for (i=h;i>=0;i--){
-starts[j] = t_starts[i]; 
-durations[j] = t_durations[i];
-j++;
-}
-for (i=h+1;i<m;i++){
-starts[j] = t_starts[i]; 
-durations[j] = t_durations[i];
-j++;
-}
-FORWARD_EDGE_FINDER;
+    h = m/2; 
+    j=0;
+    for (i=h;i>=0;i--){
+        starts[j] = t_starts[i]; 
+        durations[j] = t_durations[i];
+        j++;
+    }
+    for (i=h+1;i<m;i++){
+        starts[j] = t_starts[i]; 
+        durations[j] = t_durations[i];
+        j++;
+    }
+    FORWARD_EDGE_FINDER;
 
 // in-out 2
-j=0;
-for (i=h+1;i<m;i++){
-starts[j] = t_starts[i]; 
-durations[j] = t_durations[i];
-j++;
-}
-for (i=h;i>=0;i--){
-starts[j] = t_starts[i]; 
-durations[j] = t_durations[i];
-j++;
-}
-FORWARD_EDGE_FINDER;
+    j=0;
+    for (i=h+1;i<m;i++){
+        starts[j] = t_starts[i]; 
+        durations[j] = t_durations[i];
+        j++;
+    }
+    for (i=h;i>=0;i--){
+        starts[j] = t_starts[i]; 
+        durations[j] = t_durations[i];
+        j++;
+    }
+    FORWARD_EDGE_FINDER;
 
 /* merge 1 */
-i = 0; j = m-1; h=0;
-while (i<j){
-starts[h] = t_starts[i]; 
-durations[h] = t_durations[i];
-h++;
-starts[h] = t_starts[j]; 
-durations[h] = t_durations[j];
-h++;  i++; j--;
-}
-starts[h] = t_starts[i]; 
-durations[h] = t_durations[i];
-FORWARD_EDGE_FINDER;  
+    i = 0; j = m-1; h=0;
+    while (i<j){
+        starts[h] = t_starts[i]; 
+        durations[h] = t_durations[i];
+        h++;
+        starts[h] = t_starts[j]; 
+        durations[h] = t_durations[j];
+        h++;  i++; j--;
+    }
+    starts[h] = t_starts[i]; 
+    durations[h] = t_durations[i];
+    FORWARD_EDGE_FINDER;  
   
 /* merge 2 */
-i = m/2; j = i+1; h=0;
-while (i>=0 && j<m){
-starts[h] = t_starts[i]; 
-durations[h] = t_durations[i];
-h++;
-starts[h] = t_starts[j]; 
-durations[h] = t_durations[j];
-h++;  i--; j++;
-}
-while (i>=0){
-starts[h] = t_starts[i]; 
-durations[h] = t_durations[i];
-h++;  i--; 
-} 
-while (j<m){
-starts[h] = t_starts[j]; 
-durations[h] = t_durations[j];
-h++;  j++;
-}
-FORWARD_EDGE_FINDER;    
+    i = m/2; j = i+1; h=0;
+    while (i>=0 && j<m){
+        starts[h] = t_starts[i]; 
+        durations[h] = t_durations[i];
+        h++;
+        starts[h] = t_starts[j]; 
+        durations[h] = t_durations[j];
+        h++;  i--; j++;
+    }
+    while (i>=0){
+        starts[h] = t_starts[i]; 
+        durations[h] = t_durations[i];
+        h++;  i--; 
+    } 
+    while (j<m){
+        starts[h] = t_starts[j]; 
+        durations[h] = t_durations[j];
+        h++;  j++;
+    }
+    FORWARD_EDGE_FINDER;    
     
-return BP_TRUE;
+    return BP_TRUE;
 }
 
 int b_EXCLUDE_NOGOOD_INTERVAL_ccc(Var,Low,Up)
@@ -2495,91 +2495,91 @@ int b_EXCLUDE_NOGOOD_INTERVAL_ccc(Var,Low,Up)
   where List is a sorted list of integers and integer intervals.
 */
 int c_integers_intervals_list(){
-  BPLONG List,Min,Max,Unsorted;
-  BPLONG elm,low,up,min0,max0;
-  BPLONG_PTR top,ptr,interval_ptr;
+    BPLONG List,Min,Max,Unsorted;
+    BPLONG elm,low,up,min0,max0;
+    BPLONG_PTR top,ptr,interval_ptr;
 
-  List = ARG(1,4); DEREF(List);
-  Min = ARG(2,4);
-  Max = ARG(3,4);
-  Unsorted = ARG(4,4);
+    List = ARG(1,4); DEREF(List);
+    Min = ARG(2,4);
+    Max = ARG(3,4);
+    Unsorted = ARG(4,4);
 
-  if (ISLIST(List)){
-	ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
-	elm = FOLLOW(ptr);DEREF(elm);
-	List = FOLLOW(ptr+1);DEREF(List);
-	if (ISINT(elm)){
-	  min0 = max0 = INTVAL(elm);
-	} else if ISSTRUCT(elm) {
-		interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
-		if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
-		  return BP_FALSE;
-		}
-		min0 = FOLLOW(interval_ptr+1);DEREF(min0);
-		max0 = FOLLOW(interval_ptr+2);DEREF(max0);
-		if (!ISINT(min0) || !ISINT(max0)){
-		  //  exception = illegal_arguments;
-		  //  return BP_ERROR;
-		  return BP_FALSE;
-		}
-		min0=INTVAL(min0);
-		max0=INTVAL(max0);
-		if (min0 > max0){
-		  // exception = illegal_arguments;
-		  // return BP_ERROR;
-		  return BP_FALSE;
-		}
-	  } else return BP_FALSE;
-  }
-  while (ISLIST(List)){
-	ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
-	elm = FOLLOW(ptr);DEREF(elm);
-	List = FOLLOW(ptr+1);DEREF(List);
-	if (ISINT(elm)){
-	  elm = INTVAL(elm);
-	  if (elm <= max0){
-		unify(Unsorted,MAKEINT(1));
-		if (elm < min0) min0 = elm;
-	  } else {
-		max0 = elm;
-	  }
-	} else if ISSTRUCT(elm) {
-		interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
-		if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
-		  return BP_FALSE;
-		}
-		low = FOLLOW(interval_ptr+1);DEREF(low);
-		up = FOLLOW(interval_ptr+2);DEREF(up);
-		if (!ISINT(low) || !ISINT(up)){
-		  return BP_FALSE;
-		  // exception = illegal_arguments;
-		  // return BP_ERROR;
-		}
-		low = INTVAL(low);
-		up = INTVAL(up);
-		if (low > up){
-		  return BP_FALSE;
-		  // exception = illegal_arguments;
-		  // return BP_ERROR;
-		}
-		if (low <= max0){
-		  unify(Unsorted,MAKEINT(1));
-		  if (low < min0) min0 = low;
-		  if (up > max0) max0 = up;
-		} else {
-		  if (up > max0) max0 = up;
-		}
-	  } else return BP_FALSE;
-  }
-  if (!ISNIL(List)){
-	return BP_FALSE;
-	// exception = illegal_arguments;
-	// return BP_ERROR;
-  }
+    if (ISLIST(List)){
+        ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
+        elm = FOLLOW(ptr);DEREF(elm);
+        List = FOLLOW(ptr+1);DEREF(List);
+        if (ISINT(elm)){
+            min0 = max0 = INTVAL(elm);
+        } else if ISSTRUCT(elm) {
+                interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
+                if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
+                    return BP_FALSE;
+                }
+                min0 = FOLLOW(interval_ptr+1);DEREF(min0);
+                max0 = FOLLOW(interval_ptr+2);DEREF(max0);
+                if (!ISINT(min0) || !ISINT(max0)){
+                    //  exception = illegal_arguments;
+                    //  return BP_ERROR;
+                    return BP_FALSE;
+                }
+                min0=INTVAL(min0);
+                max0=INTVAL(max0);
+                if (min0 > max0){
+                    // exception = illegal_arguments;
+                    // return BP_ERROR;
+                    return BP_FALSE;
+                }
+            } else return BP_FALSE;
+    }
+    while (ISLIST(List)){
+        ptr = (BPLONG_PTR)UNTAGGED_ADDR(List);
+        elm = FOLLOW(ptr);DEREF(elm);
+        List = FOLLOW(ptr+1);DEREF(List);
+        if (ISINT(elm)){
+            elm = INTVAL(elm);
+            if (elm <= max0){
+                unify(Unsorted,MAKEINT(1));
+                if (elm < min0) min0 = elm;
+            } else {
+                max0 = elm;
+            }
+        } else if ISSTRUCT(elm) {
+                interval_ptr = (BPLONG_PTR)UNTAGGED_ADDR(elm);
+                if (FOLLOW(interval_ptr) != (BPLONG)interval_psc){
+                    return BP_FALSE;
+                }
+                low = FOLLOW(interval_ptr+1);DEREF(low);
+                up = FOLLOW(interval_ptr+2);DEREF(up);
+                if (!ISINT(low) || !ISINT(up)){
+                    return BP_FALSE;
+                    // exception = illegal_arguments;
+                    // return BP_ERROR;
+                }
+                low = INTVAL(low);
+                up = INTVAL(up);
+                if (low > up){
+                    return BP_FALSE;
+                    // exception = illegal_arguments;
+                    // return BP_ERROR;
+                }
+                if (low <= max0){
+                    unify(Unsorted,MAKEINT(1));
+                    if (low < min0) min0 = low;
+                    if (up > max0) max0 = up;
+                } else {
+                    if (up > max0) max0 = up;
+                }
+            } else return BP_FALSE;
+    }
+    if (!ISNIL(List)){
+        return BP_FALSE;
+        // exception = illegal_arguments;
+        // return BP_ERROR;
+    }
 
-  unify(Min,MAKEINT(min0));
-  unify(Max,MAKEINT(max0));
-  return BP_TRUE;
+    unify(Min,MAKEINT(min0));
+    unify(Max,MAKEINT(max0));
+    return BP_TRUE;
 }
 
 int b_VAR_IN_D_cc(X,List)
@@ -2648,7 +2648,7 @@ int check_var_in_d(x,List)
 
 void exclude_inner_interval_bv(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPULONG w,mask,offset; 
     BPLONG_PTR w_ptr,bv_ptr,last_trailed_addr;
@@ -2679,7 +2679,7 @@ void exclude_inner_interval_bv(dv_ptr,from,to)
 
 int domain_exclude_interval_aux(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
     BPLONG val;
 
@@ -2706,7 +2706,7 @@ int domain_exclude_interval_aux(dv_ptr,from,to)
 /* from must be le to */
 int domain_exclude_interval_noint(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
-    BPLONG from,to;
+BPLONG from,to;
 {
   
     // printf("exclude_interval  %x %d %d\n",dv_ptr,from,to);
@@ -2843,8 +2843,8 @@ void exclude_unsupported_y_constr_xy_eq_c(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
         } else if (dv_ptr_x==dv_ptr_y){ /* X and Y are identical */
             if (eY*eY==cz) supported = 1;
         } else {
-		    eX = cz/eY;
-			if (eX*eY==cz && dm_true(dv_ptr_x,eX)) supported = 1;
+            eX = cz/eY;
+            if (eX*eY==cz && dm_true(dv_ptr_x,eX)) supported = 1;
         }
         if (supported==0){
             domain_set_false_noint(dv_ptr_y,eY);
@@ -2879,7 +2879,7 @@ void exclude_unsupported_z_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
             if (dm_true(dv_ptr_x,0) || dm_true(dv_ptr_y,0)) supported = 1;
         } else if (dv_ptr_x==dv_ptr_y){
             if (eZ>0){
-			    eX = (BPLONG)sqrt(eZ);
+                eX = (BPLONG)sqrt(eZ);
                 if (eX*eX==eZ) supported = 1;
             } 
         } else {
@@ -2945,7 +2945,7 @@ x_is_int:
     }
     /* come here if both X and Y are dvar */
 
-	// printf("=> multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
+    // printf("=> multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
 
     dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
@@ -3030,9 +3030,9 @@ x_is_int:
         if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
     }
 
-	//	printf("=> multi-3 "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
+    //  printf("=> multi-3 "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
     if (IS_SUSP_VAR(Z)){
-	    if (IS_SMALL_DOMAIN(dv_ptr_y) && maxX-minX <= 65536){
+        if (IS_SMALL_DOMAIN(dv_ptr_y) && maxX-minX <= 65536){
             exclude_unsupported_y_constr_xy_eq_z(dv_ptr_x,dv_ptr_y,dv_ptr_z);
             if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         }
@@ -3052,7 +3052,7 @@ x_is_int:
             if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;      
         }
     }
-	// printf("<= multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
+    // printf("<= multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
 
     return BP_TRUE;
 }
@@ -3127,7 +3127,7 @@ int c_cpcon_decrement_counters(){
 
 int cpcon_decrement_counter(Counters,J,elm,dv_ptr)
     BPLONG Counters,J,elm;
-    BPLONG_PTR dv_ptr;
+BPLONG_PTR dv_ptr;
 {
     BPLONG counter,count,p_key;
     BPLONG_PTR struct_ptr;
