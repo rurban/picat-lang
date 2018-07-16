@@ -68,7 +68,7 @@ int c_findall_pre(){
 int c_findall_post(){
     BPLONG SymPtr;
     SYM_REC_PTR sym_ptr;
-    int i;
+
     //  printf("=> find_all post\n");
     SymPtr = ARG(1,1);
 
@@ -190,7 +190,6 @@ BPLONG copy_term_heap_to_faa(BPLONG value)
 int check_ground_using_faa(BPLONG term){
     BPLONG_PTR trail_top0;
     BPLONG initial_diff0;
-    BPLONG temp;
     int success;
 
     if (faa_record_ptr->low_addr==NULL){
@@ -236,7 +235,7 @@ BPLONG numberVarCopyToFindallArea(NUMBERED_TERM_AREA_RECORD_PTR faa_record_ptr, 
 {
     BPLONG_PTR term_ptr, dest_ptr;
     BPLONG_PTR top;
-    BPLONG term_cp,term_cp1;
+    BPLONG term_cp;
     BPLONG i,arity,size;
     SYM_REC_PTR sym_ptr;
 
@@ -300,6 +299,7 @@ l_number_var_copy_faa:
             return FOLLOW(dest_ptr);
         }
     }
+    return BP_ERROR;
 }
 
 BPLONG numberVarCopyListToFindallArea(NUMBERED_TERM_AREA_RECORD_PTR faa_record_ptr,BPLONG term){

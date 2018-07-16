@@ -307,14 +307,13 @@ BPLONG picat_get_integer(t)
     DEREF(t);
     if (ISINT(t)){
         return INTVAL(t);
-    } else  if (IS_BIGINT(t)){
+    } else if (IS_BIGINT(t)){
         return bp_bigint_to_int(t); /* !! may lose bits */
-    } else if(ISADDR(t)){ 
+    } else if (ISADDR(t)){ 
         printf("integer expected, found address\n");
-    } else {
-        exception = integer_expected;
-        return 0;
     }
+    exception = integer_expected;
+    return 0;
 }
 
 double bp_get_float(t)
