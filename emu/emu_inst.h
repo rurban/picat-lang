@@ -8574,7 +8574,7 @@ switch (*P++){
                 goto lab_table_consume;
             }
             GT_TOP_AR(subgoal_entry) = (BPLONG)AR;
-                  
+
             SUBGOAL_START_ITERATION(subgoal_entry);
             CONTCASE;
         } else { /* descendent of master_ar */
@@ -8806,7 +8806,7 @@ switch (*P++){
             initialize_scc_elms(subgoal_entry);
             
             SUBGOAL_START_ITERATION(subgoal_entry);
-            /* printf("recompute =%lx\n",subgoal_entry);  print_subgoal_entry_only(subgoal_entry);printf("\n"); */
+			// printf("recompute =%lx\n",subgoal_entry);  print_subgoal_entry_only(subgoal_entry);printf("\n"); 
             P = (BPLONG_PTR)*P;
             CONTCASE;
         }

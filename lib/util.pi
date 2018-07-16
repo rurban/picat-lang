@@ -159,7 +159,7 @@ find_last_of(List,Pattern) = Index,list(List) =>
 find_last_of(Struct,Pattern) = Index,struct(Struct) =>
     find_struct_last_of(Struct,Pattern,len(Struct),Index).
 find_last_of(Struct,_) = _ =>
-    handle_exception($compound_expected(Struct),find_first_of).
+    handle_exception($compound_expected(Struct),find_last_of).
 
 find_list_last_of([],_Pattern,_CurIndex,Index0,Index) => Index=Index0.
 find_list_last_of([E|L],Pattern,CurIndex,Index0,Index), E != Pattern => % not unifiable

@@ -38,9 +38,10 @@ bool2pos(List) = [Pos : {E,Pos} in zip(List,1..List.length), E==1].
 pos2bool(Bool) = List =>
    List = [],
    foreach(I in 1..max(Bool))
-      if I in Bool then
+      % if I in Bool then   %  <- wrong
+      if member(I,Bool) then % <- new
          List := List ++ [1]
-      else 
+      else
          List := List ++ [0]
       end
    end.
@@ -106,11 +107,12 @@ alpha_code(C) = ord(C) - 64, uppercase(C) => true.
 %   Picat> L=tc([3,2,1,5,6,4],5)
 %   L = [5,6,4]
 % 
-tc(List, Start) = TC => 
+tc(List, Start) = TC =>
    TC = [Start],
    Next = List[Start],
-   while (not Next in TC)
-       TC := TC ++ [Next],
+   % while (not Next in TC)  %  <-- wrong
+   while (not member(Next, TC))   % <--- new
+       TC := TC ++ [Next],    
        Next := List[Next]
    end.
 

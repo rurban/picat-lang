@@ -1102,8 +1102,9 @@ BPLONG_PTR allocateAnswerTable(BPLONG_PTR first_answer, int arity){
 
     answer_table = (BPLONG_PTR)malloc(ANSWERTABLE_RECORD_SIZE*sizeof(BPLONG));
     if (answer_table == NULL){
-        exception = et_OUT_OF_MEMORY;
-        return (BPLONG_PTR)BP_ERROR;
+	  //	  myquit(OUT_OF_MEMORY,"at");
+	  exception = et_OUT_OF_MEMORY;
+	  return (BPLONG_PTR)BP_ERROR;
     }
     ANSWERTABLE_FIRST(answer_table) = (BPLONG)first_answer;
     ANSWERTABLE_LAST(answer_table)  = (BPLONG)first_answer;
@@ -1111,8 +1112,9 @@ BPLONG_PTR allocateAnswerTable(BPLONG_PTR first_answer, int arity){
     ANSWERTABLE_COUNT(answer_table) = 1;
     bucket_ptr = (BPLONG_PTR)malloc(InitAnswerTableBucketSize*sizeof(BPLONG));
     if (bucket_ptr == NULL){
-        exception = et_OUT_OF_MEMORY;
-        return (BPLONG_PTR)BP_ERROR;
+	  // myquit(OUT_OF_MEMORY,"at");
+	  exception = et_OUT_OF_MEMORY;
+	  return (BPLONG_PTR)BP_ERROR;
     }
     ANSWERTABLE_BUCKET_PTR(answer_table) = (BPLONG)bucket_ptr;
 
