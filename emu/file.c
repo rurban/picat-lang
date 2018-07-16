@@ -3524,7 +3524,7 @@ int b_PEEK_CHAR_cf(BPLONG FDIndex, BPLONG Ch){
                 ungetc(*ch_ptr,in_fptr);
             }
         } else {
-            char c = (char)b;
+            unsigned char c = (unsigned  char)b;
             ungetc((char)b,in_fptr);
             //      b = ADDTAG(insert_sym(&c,1,0),ATM);
             b = char_sym_table[c];
@@ -3560,7 +3560,7 @@ int b_READ_CHAR_ccf(BPLONG FDIndex, BPLONG N, BPLONG Lst){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
+            unsigned char c = (unsigned char)b;
             //      b = ADDTAG(insert_sym(&c,1,0),ATM);
             b = char_sym_table[c];
         }
@@ -3735,7 +3735,7 @@ int b_READ_FILE_CHARS_cf(BPLONG FDIndex, BPLONG Lst){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
+            unsigned char c = (unsigned char)b;
             //      b = ADDTAG(insert_sym(&c,1,0),ATM);
             b = char_sym_table[c];
         }
@@ -3802,7 +3802,7 @@ int b_READ_LINE_cf(BPLONG FDIndex, BPLONG Lst){
     b = getc(in_fptr);
     ret_lst_ptr = &ret_lst;
     while (b!=EOF && b!='\n'){
-        char c = (char)b;
+        unsigned char c = (unsigned char)b;
         if (c=='\r'){
             b = getc(in_fptr);
             continue;
@@ -3814,7 +3814,6 @@ int b_READ_LINE_cf(BPLONG FDIndex, BPLONG Lst){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
             //      b = ADDTAG(insert_sym(&c,1,0),ATM);
             b = char_sym_table[c];
         }
@@ -3901,7 +3900,7 @@ int b_WRITE_BYTE_cc(BPLONG FDIndex, BPLONG op){
 int b_put_char(FILE *out_fptr,BPLONG op){
     SYM_REC_PTR sym_ptr;
     BPLONG len;
-    char *ch_ptr, *ch_ptr_end;
+    char *ch_ptr;
     sym_ptr = (SYM_REC_PTR)GET_ATM_SYM_REC(op);
     len = GET_LENGTH(sym_ptr);
     ch_ptr = GET_NAME(sym_ptr);

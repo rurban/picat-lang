@@ -77,7 +77,7 @@ extern int exec_trace[];
 typedef char                CHAR;     /*  8 bits */
 typedef unsigned char       BYTE;     /*  8 bits */
 typedef unsigned short int  UW16;     /* 16 bits */
-#ifdef M64BITS
+#if defined(M64BITS) && defined(_WIN32)
 typedef long long int            BPLONG;   /* 64 bits for Win x64*/
 typedef long long int            TERM;     /* 64 bits for Win x64*/
 typedef unsigned long long int   BPULONG;  /* 64 bits for Win x64*/
