@@ -905,7 +905,7 @@ void aux_term_2_string_term(term)
     BPLONG_PTR top;
 
     SWITCH_OP(term,term_2_string_l,
-              {sprintf(buf,"_%x",(BPULONG)term);
+              {sprintf(buf,"_"BPULONG_FMT_STR,(BPULONG)term);
                   append_str_to_solution_bag(buf,strlen(buf),0);},
               {if (ISINT(term)){
                       sprintf(buf,"%d",(int)INTVAL(term));
@@ -920,7 +920,7 @@ void aux_term_2_string_term(term)
                       sprintf(buf,"%lf",floatval(term));
                       append_str_to_solution_bag(buf,strlen(buf),0);
                   } else if (IS_SUSP_VAR(term)){
-                      sprintf(buf,"_%x",(BPULONG)term);
+                      sprintf(buf,"_"BPULONG_FMT_STR,(BPULONG)term);
                       append_str_to_solution_bag(buf,strlen(buf),1);
                   } else {
                       sym_ptr = GET_STR_SYM_REC(term);
@@ -934,7 +934,7 @@ void aux_term_2_string_term(term)
                       }
                       append_str_to_solution_bag(")",1,0);
                   }},
-              {sprintf(buf,"_%x",(BPULONG)term);
+              {sprintf(buf,"_"BPULONG_FMT_STR,(BPULONG)term);
                   append_str_to_solution_bag(buf,strlen(buf),0);});
 }
 

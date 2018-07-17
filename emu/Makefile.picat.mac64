@@ -7,7 +7,8 @@ CC     = gcc-mp-7 -DGCC -DPICAT -DSAT -DM64BITS
 #CFLAGS = -c  -O4 -Dunix                        #Solaris,SonyNews
 #CFLAGS = -c  -O4 -DWIN32 -DGC                  #Windows-PC
 #CFLAGS = -c  -O -DDARWIN -DGLPK -DGC -finline-functions -fomit-frame-pointer -arch i386 #x86_64  #MacOS X, Darwin
-CFLAGS = -c  -O3 -DDARWIN -Wall -DGC -fomit-frame-pointer -arch x86_64  #MacOS X, Darwin
+#CFLAGS = -c -g -O3 -DDARWIN -Wall -DGC -fomit-frame-pointer -arch x86_64  #MacOS X, Darwin
+CFLAGS = -c -g -DDARWIN -Wall -DGC -fomit-frame-pointer -arch x86_64
 
 LGLFLAG = -Wall -DNLGLOG -DNLGLSTATS -DNDEBUG -DNLGLPICOSAT
 
@@ -64,7 +65,7 @@ float1.o    : float1.c term.h basic.h bapi.h
 arith.o    : arith.c term.h basic.h bapi.h
 	$(CC) $(CFLAGS) arith.c 
 bigint.o    : bigint.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) bigint.c 
+	$(CC) -O3 $(CFLAGS) bigint.c 
 token.o    : token.c term.h basic.h bapi.h
 	$(CC) $(CFLAGS) token.c 
 global.o    : global.c term.h basic.h bapi.h 
