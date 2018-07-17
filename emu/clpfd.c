@@ -936,7 +936,7 @@ void print_event_queue(){
     int i;
     printf("trigger_no=%ld\n",trigger_no);
     for (i = 1; i<=trigger_no;i++){
-        printf("FLAG(%d) queue(%lx)\n",event_flag[i],triggeredCs[i]);
+        printf("FLAG(%d) queue(%p)\n",event_flag[i],triggeredCs[i]);
     }
     if (trigger_no>=1) printf("\n");
 }

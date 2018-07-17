@@ -95,20 +95,20 @@
 
 #ifdef LINUX
 #ifdef M64BITS
-#define ADDTAG(op,tag)    ((BPLONG)(op) | tag)
+#define ADDTAG(op,tag)         ((BPLONG)(op) | tag)
 #define UNTAG_ADDR(op)         op &= VAL_MASK0 
-#define UNTAGGED_ADDR(op)      (((BPLONG)op) & VAL_MASK0)
+#define UNTAGGED_ADDR(op)      (BPULONG)(((BPLONG)op) & VAL_MASK0)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #else
-#define ADDTAG(op,tag)    (((BPLONG)(op) & ~TOP_BIT) | tag)
+#define ADDTAG(op,tag)         (((BPLONG)(op) & ~TOP_BIT) | tag)
 #define UNTAG_ADDR(op)         op = ((op & VAL_MASK0) | addr_top_bit)
-#define UNTAGGED_ADDR(op)      ((((BPLONG)(op)) & VAL_MASK0) | addr_top_bit)
+#define UNTAGGED_ADDR(op)      (BPULONG)((((BPLONG)(op)) & VAL_MASK0) | addr_top_bit)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #endif
 #else
-#define ADDTAG(op,tag)    ((BPLONG)(op) | tag)
+#define ADDTAG(op,tag)         ((BPLONG)(op) | tag)
 #define UNTAG_ADDR(op)         op &= VAL_MASK0 
-#define UNTAGGED_ADDR(op)      (((BPLONG)(op)) & VAL_MASK0)
+#define UNTAGGED_ADDR(op)      (BPULONG)(((BPLONG)(op)) & VAL_MASK0)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #endif
 
@@ -125,7 +125,7 @@
 
 #define DEREF(op)								\
   while (ISREF(op)) {							\
-    top =  (BPLONG_PTR)FOLLOW(op);			    \
+    top = (BPLONG_PTR)FOLLOW(op);			    \
     if ((BPLONG)top==op)						\
       break;									\
     op = (BPLONG)top;							\
