@@ -125,6 +125,10 @@ void init_toam(argc, argv)
                   break;
                 */
 
+            case 'n': num_line = 1; break;
+
+            case 'd': disassem = 1; break;
+
             case 's': i++;
                 sscanf(argv[i], "%ld", &stack_size);
                 if (stack_size < 1000000) stack_size = 1000000;
@@ -134,8 +138,6 @@ void init_toam(argc, argv)
                 sscanf(argv[i], "%ld", &trail_size);
                 if (trail_size < 1000000) trail_size = 1000000;
                 break;
-
-            case 'd': disassem = 1; break;
 
             case 'l':
                 if (strcmp(str+1, "log") == 0) {  /* enable log printing */
