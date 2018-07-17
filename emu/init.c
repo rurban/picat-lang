@@ -103,6 +103,10 @@ void init_toam(argc, argv)
                 use_gl_getline = 0; 
                 break;
 
+            case 'n': num_line = 1; break;
+
+            case 'd': disassem = 1; break;
+
             case 's': i++;
                 sscanf(argv[i], BPLONG_FMT_STR, &stack_size);
                 if (stack_size<1000000) stack_size=1000000; 

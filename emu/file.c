@@ -3213,9 +3213,9 @@ void picat_str_to_c_str(BPLONG lst, char *buf, BPLONG buf_size){
         s = GET_NAME(sym_ptr);
         len = GET_LENGTH(sym_ptr);
         if (i+len >= buf_size){
-            printf("hreg = " BPULONG_FMT_STR " local_top = " BPULONG_FMT_STR " buf_size = " BPULONG_FMT_STR " \n", heap_top, local_top, buf_size);
+            printf("hreg = %p local_top = %p buf_size = " BPULONG_FMT_STR " \n", heap_top, local_top, buf_size);
             write_term(lst0); printf("\n");
-            quit("buf overfolow in picat_str_to_c_str");
+            quit("buf overflow in picat_str_to_c_str");
         }
         for (j=0; j<len; j++){
             *(ch_ptr+i) = *(s+j);
