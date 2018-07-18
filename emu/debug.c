@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <string.h>
@@ -60,7 +60,7 @@ int c_set_dg_flag()
 int c_get_dg_flag()
 {
     BPLONG a;
-  
+
     a = ARG(1,1);
     return unify(a,MAKEINT(dg_flag_word));
 }
@@ -80,8 +80,8 @@ int c_remove_spy_point(){
 		  dg_flag_word &= ~((UW16)DG_FLAG_SPY);
         }
         return BP_TRUE;
-    }  else 
-        return BP_FALSE;    
+    }  else
+        return BP_FALSE;
 }
 
 int c_is_spy_point(){
@@ -107,7 +107,7 @@ int c_add_spy_point(){
         number_of_spy_points++;
         dg_flag_word = DG_FLAG_SPY;
         return BP_TRUE;
-    } else 
+    } else
         return BP_FALSE;
 }
 
@@ -117,7 +117,7 @@ int c_get_spy_points(){
     SYM_REC_PTR sym_ptr;
 
     list = ARG(1,1);
-  
+
     temp1 = nil_sym;
     for (i = 0; i < BUCKET_CHAIN; ++i) {
         sym_ptr = hash_table[i];
@@ -141,7 +141,7 @@ int c_remove_spy_points(){
     BPLONG i;
     SYM_REC_PTR sym_ptr;
 
-  
+
     for (i = 0; i < BUCKET_CHAIN; ++i) {
         sym_ptr = hash_table[i];
         while (sym_ptr!=NULL){
@@ -151,7 +151,7 @@ int c_remove_spy_points(){
     }
     number_of_spy_points = 0;
     dg_flag_word &= ~((UW16)DG_FLAG_SPY);
-  
+
     return BP_TRUE;
 }
 
@@ -220,16 +220,16 @@ int c_backtrace(){
     BPLONG uptoCallNo,Backtrace,L;
     BPLONG_PTR f,prev_f;
     SYM_REC_PTR traced_call_psc;
-  
+
     traced_call_psc = BP_NEW_SYM("_$traced_call",1);
 
     uptoCallNo = ARG(1,2);
     Backtrace = ARG(2,2);
-  
+
     L = nil_sym;
     DEREF(uptoCallNo);
     uptoCallNo = INTVAL(uptoCallNo);
-  
+
     f = arreg;
     for (;;){
         BPLONG traced_call,callNo;
@@ -264,10 +264,10 @@ int c_backtrace(){
             return bp_unify(L,Backtrace);
         }
         f = prev_f;
-    } 
+    }
 }
 
-     
+
 int c_get_dg_print_depth(){
     BPLONG Depth = ARG(1,1);
     unify(Depth,MAKEINT(dg_print_depth));
@@ -286,16 +286,16 @@ int c_get_dg_choice_point(){
     BPLONG uptoCallNo,CP;
     BPLONG_PTR f,prev_f;
     SYM_REC_PTR traced_call_psc;
-  
+
     traced_call_psc = BP_NEW_SYM("_$traced_call",1);
     uptoCallNo = ARG(1,2);
     CP = ARG(2,2);
-  
+
     DEREF(uptoCallNo);
     uptoCallNo = INTVAL(uptoCallNo);
 
     //  printf("uptoCallNo=%d\n",uptoCallNo);
-  
+
     f = breg;
     for (;;){
         BPLONG traced_call,callNo;
@@ -317,8 +317,8 @@ int c_get_dg_choice_point(){
             return BP_FALSE;
         }
         f = prev_f;
-    } 
-}  
+    }
+}
 
 int c_dg_in_undo_mode(){
     return (dg_undo_mode==1) ? BP_TRUE : BP_FALSE;
@@ -326,29 +326,24 @@ int c_dg_in_undo_mode(){
 
 void Cboot_debug()
 {
-    insert_cpred("c_init_dg_flag",1,c_init_dg_flag); 
-    insert_cpred("c_get_dg_flag",1,c_get_dg_flag); 
-    insert_cpred("c_set_dg_flag",1,c_set_dg_flag); 
-    insert_cpred("c_add_spy_point",2,c_add_spy_point); 
-    insert_cpred("c_remove_spy_point",2,c_remove_spy_point); 
-    insert_cpred("c_remove_spy_points",0,c_remove_spy_points); 
-    insert_cpred("c_get_spy_points",1,c_get_spy_points); 
-    insert_cpred("c_is_debug_mode",0,c_is_debug_mode); 
-    insert_cpred("c_is_spy_mode",0,c_is_spy_mode); 
-    insert_cpred("c_next_global_call_number",1,c_next_global_call_number); 
-    insert_cpred("c_is_spy_point",1,c_is_spy_point); 
-    insert_cpred("c_set_skip_call_no",1,c_set_skip_call_no); 
-    insert_cpred("c_is_skip_call_no",1,c_is_skip_call_no); 
-    insert_cpred("c_backtrace",2,c_backtrace); 
+    insert_cpred("c_init_dg_flag",1,c_init_dg_flag);
+    insert_cpred("c_get_dg_flag",1,c_get_dg_flag);
+    insert_cpred("c_set_dg_flag",1,c_set_dg_flag);
+    insert_cpred("c_add_spy_point",2,c_add_spy_point);
+    insert_cpred("c_remove_spy_point",2,c_remove_spy_point);
+    insert_cpred("c_remove_spy_points",0,c_remove_spy_points);
+    insert_cpred("c_get_spy_points",1,c_get_spy_points);
+    insert_cpred("c_is_debug_mode",0,c_is_debug_mode);
+    insert_cpred("c_is_spy_mode",0,c_is_spy_mode);
+    insert_cpred("c_next_global_call_number",1,c_next_global_call_number);
+    insert_cpred("c_is_spy_point",1,c_is_spy_point);
+    insert_cpred("c_set_skip_call_no",1,c_set_skip_call_no);
+    insert_cpred("c_is_skip_call_no",1,c_is_skip_call_no);
+    insert_cpred("c_backtrace",2,c_backtrace);
     insert_cpred("c_set_dg_print_depth",1,c_set_dg_print_depth);
     insert_cpred("c_get_dg_print_depth",1,c_get_dg_print_depth);
     insert_cpred("c_set_global_call_number",1,c_set_global_call_number);
     insert_cpred("c_get_dg_choice_point",2,c_get_dg_choice_point);
     insert_cpred("c_dg_in_undo_mode",0,c_dg_in_undo_mode);
-  
 }
-
-
-
-
 

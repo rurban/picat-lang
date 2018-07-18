@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #define EPSILON           1.0e-8
@@ -96,7 +96,7 @@
 #ifdef LINUX
 #ifdef M64BITS
 #define ADDTAG(op,tag)         ((BPLONG)(op) | tag)
-#define UNTAG_ADDR(op)         op &= VAL_MASK0 
+#define UNTAG_ADDR(op)         op &= VAL_MASK0
 #define UNTAGGED_ADDR(op)      (BPULONG)(((BPLONG)op) & VAL_MASK0)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #else
@@ -107,7 +107,7 @@
 #endif
 #else
 #define ADDTAG(op,tag)         ((BPLONG)(op) | tag)
-#define UNTAG_ADDR(op)         op &= VAL_MASK0 
+#define UNTAG_ADDR(op)         op &= VAL_MASK0
 #define UNTAGGED_ADDR(op)      (BPULONG)(((BPLONG)(op)) & VAL_MASK0)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #endif
@@ -462,8 +462,8 @@
 
 #define A_DV_bit_vector_ptr(dv_ptr) (dv_ptr+1)
 #define DV_bit_vector_ptr(dv_ptr) FOLLOW(dv_ptr+1)
-/* 
-   bit_vector_ptr points to a variable-sized structure of the following fields 
+/*
+   bit_vector_ptr points to a variable-sized structure of the following fields
    low_ptr
    up_ptr
    low_ptr : word
@@ -514,7 +514,7 @@
 #endif
 
 /****************** bit vector **************************/
-/* 
+/*
    WORD_NUMBER(val)
    val              word_number
    32..63            1

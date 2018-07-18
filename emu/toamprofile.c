@@ -4,22 +4,22 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 /*
-  #define ToamProfile 
+  #define ToamProfile
 */
-#ifdef ToamProfile 
+#ifdef ToamProfile
 #include  <stdio.h>
 #include "inst.h"
 #include "bprolog.h"
 
 BPLONG total_insts, prev_inst =0;
 
-BPLONG execution_profile[MAXINST],seq_profile[MAXINST][MAXINST];  
+BPLONG execution_profile[MAXINST],seq_profile[MAXINST][MAXINST];
 
-BPLONG trace_inst[1000]; 
+BPLONG trace_inst[1000];
 BPLONG trace_rear=0;
 
 BPLONG_PTR i_local_top,i_heap_top,i_trail_top,i_choice_top;
@@ -39,7 +39,7 @@ bookkeep_inst_init(){
 }
 
 extern char *inst_name[];
-     
+
 bookkeep_inst_print(){
     int i;
     printf("trace_rear=%d\n",trace_rear);
@@ -58,7 +58,7 @@ BPLONG_PTR l,h,t;
     if (h > m_heap_top)  m_heap_top = h;
     if (t < m_trail_top)   m_trail_top = t;
 }
-  
+
 initialize_execution_profile(){
     BPLONG i;
 
@@ -98,7 +98,7 @@ access_counters(){
     trail_space = ARG(6,8);
     choice_space = ARG(7,8);
     table_space = ARG(8,8);
-  
+
     unify(insts,MAKEINT(total_insts));
     unify(local_space,MAKEINT(abs((m_local_top - i_local_top))));
     unify(heap_space,MAKEINT(abs((m_heap_top - i_heap_top))));

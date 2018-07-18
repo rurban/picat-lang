@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #ifndef BP_BASIC_H
@@ -25,7 +25,7 @@ extern int exec_trace[];
 #define BP_MININT_1W -BP_MAXINT_1W
 #else
 #define BP_NEG_1 -1
-#define BP_MAXINT_1W 268435455   
+#define BP_MAXINT_1W 268435455
 #define BP_MININT_1W -BP_MAXINT_1W
 #endif
 
@@ -58,8 +58,8 @@ extern int exec_trace[];
 #define OUT_OF_MEMORY 4
 
 #define SMALL_MARGIN 1250
-// #define LARGE_MARGIN 12500 
-#define LARGE_MARGIN 125000 
+// #define LARGE_MARGIN 12500
+#define LARGE_MARGIN 125000
 
 /* maximum and minimum integers that are represented in one word */
 #define MAX_CHARS_IN_POOL 10000
@@ -92,11 +92,11 @@ typedef unsigned long int   BPULONG;  /* 32 or 64 bits */
 #endif
 typedef unsigned int        UW32;     /* 32 bits */
 
-typedef CHAR  *CHAR_PTR; 
+typedef CHAR  *CHAR_PTR;
 typedef BYTE  *BYTE_PTR;
 typedef UW16  *UW16_PTR;
 typedef BPLONG  *BPLONG_PTR;
-typedef UW32  *UW32_PTR; 
+typedef UW32  *UW32_PTR;
 
 #ifdef M64BITS
 #define NBITS_IN_LONG 64
@@ -124,14 +124,14 @@ typedef struct event_func_data {
 } EVENT_FUNC;
 
 /* An interpreted predicate (consulted or dynamic) is stored as a record of the following form:
-   ref_count :   Number of unfinished calls of clause(Head,Body) 
-   retr_count :  Number of unfinished calls of retract(Clause). 
+   ref_count :   Number of unfinished calls of clause(Head,Body)
+   retr_count :  Number of unfinished calls of retract(Clause).
                  The space of a retracted clause can be freed if (retra_count<=1 && ref_count==0).
    cl_count :    Number of clauses in the predicate
    bucket_size : Hashtable size. Initial value = number of clauses if static; 3 if dynamic
                  Hashtable size is doubled automatically if the count is greater than bucket_size.
    hashtable:    Pointer to the hashtable
-*/		 
+*/		
 typedef struct {
   BPLONG ref_count;
   BPLONG retr_count;
@@ -172,9 +172,9 @@ typedef InterpretedClause *InterpretedClausePtr;
 
 /* used for hash-consing for the table area */
 typedef struct {
-  BPLONG_PTR htable; 
-  BPLONG size;     
-  BPLONG count;    
+  BPLONG_PTR htable;
+  BPLONG size;
+  BPLONG count;
 } GTERMS_HTABLE;
 
 typedef GTERMS_HTABLE *GTERMS_HTABLE_PTR;
@@ -270,7 +270,7 @@ extern int curr_toam_status;
 #define INLINE
 #else
 #ifdef WIN32
-#define INLINE 
+#define INLINE
 #else
 #define INLINE inline
 #endif
@@ -351,7 +351,7 @@ extern BPLONG_PTR  triggeredCs[MAXTRIGGERS];
 extern int  event_flag[MAXTRIGGERS];
 extern BPLONG  event_object[MAXTRIGGERS];
 extern BPLONG_PTR  triggering_frame[MAXTRIGGERS];  /* list of awaken frames  */
-extern BPLONG  trigger_no;          
+extern BPLONG  trigger_no;
 extern SYM_REC_PTR  hash_table[BUCKET_CHAIN];
 extern BPLONG  char_sym_table[AlphabetSize];
 extern BPLONG  number_of_symbols;
@@ -539,7 +539,7 @@ extern BPLONG num_stack_expansions;
 extern BPLONG num_trail_expansions;
 extern BPLONG num_parea_expansions;
 
-extern SYM_REC_PTR 
+extern SYM_REC_PTR
   str_BUILTIN_ERROR1,
   str_BUILTIN_ERROR2,
   str_BUILTIN_ERROR3,
@@ -554,12 +554,12 @@ extern SYM_REC_PTR
   str_TYPE_ERROR,
   str_SYNTAX_ERROR;
 
-extern BPLONG 
+extern BPLONG
   et_OUT_OF_MEMORY,
   et_OUT_OF_MEMORY_STACK,
   et_OUT_OF_MEMORY_TABLE,
   et_UPDATE,
-  et_ACCESS, 
+  et_ACCESS,
   et_ATOM,
   et_ATOMIC,
   et_BINARY_STREAM,
@@ -568,12 +568,12 @@ extern BPLONG
   et_CHARACTER,
   et_CHARACTER_CODE,
   et_COMPOUND,
-  et_CREATE, 
+  et_CREATE,
   et_EVALUABLE,
   et_FLAG,
   et_FLAG_VALUE,
   et_FLOAT_OVERFLOW,
-  et_INPUT, 
+  et_INPUT,
   et_INTEGER,
   et_INT_OVERFLOW,
   et_IN_BYTE,
@@ -585,21 +585,21 @@ extern BPLONG
   et_LIST,
   et_MAX_ARITY,
   et_MAX_INTEGER,
-  et_MODIFY, 
+  et_MODIFY,
   et_NON_EMPTY_LIST,
   et_NOT_LESS_THAN_ZERO,
   et_NUMBER,
-  et_OPEN, 
+  et_OPEN,
   et_OPERATOR,
   et_OPERATOR_PRIORITY,
-  et_OUTPUT, 
+  et_OUTPUT,
   et_PAST_END_OF_STREAM,
   et_PREDICATE_INDICATOR,
   et_PRIVATE_PROCEDURE,
   et_PROCEDURE,
   et_PROLOG_FLAG,
   et_READ_OPTION,
-  et_REPOSITION, 
+  et_REPOSITION,
   et_SOURCE_SINK,
   et_STATIC_PROCEDURE,
   et_STREAM,

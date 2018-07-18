@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #define AR_AR_ADDR(ar)                  ar
@@ -69,7 +69,7 @@
    It's a tabled frame, or a frame for catch/3 or call_cleanup/2
 */
 #define IS_CATCHER_OR_TABLE_FRAME(f) ((AR_BTM(f) & TABLE_FRAME_TAG)==TABLE_FRAME_TAG)
-#define IS_CATCHER_FRAME(f) ((AR_BTM(f) & TAG_MASK)==CATCHER_FRAME_TAG)  
+#define IS_CATCHER_FRAME(f) ((AR_BTM(f) & TAG_MASK)==CATCHER_FRAME_TAG)
 #define IS_NONDET_FRAME(f) ((AR_BTM(f) & NONDET_FRAME_TAG)==NONDET_FRAME_TAG)
 #define IS_SUSP_FRAME(f) ((AR_BTM(f) & TAG_MASK)==SUSP_FRAME_TAG)
 #define IS_TABLE_FRAME(f) ((AR_BTM(f) & TAG_MASK)==TABLE_FRAME_TAG)
@@ -102,7 +102,7 @@ subgoalTableEntry ->
                 NEXT
                 ANSWER_TABLE
 		        STATE           // looping or normal or revised
-                MASTER_AR       // point to the frame of the master. If 
+                MASTER_AR       // point to the frame of the master. If
                                 // complete, MASTER_AR becomes SUBGOAL_COMPLETE
 		        SCC_ROOT        // root subgoal of the SCC this subgoal belongs to
 		        SCC_ELMS        // list of nodes in the SCC rooted at this node
@@ -112,9 +112,9 @@ subgoalTableEntry ->
    The STATE slot stores the following information
    ...  4           3           2          1         0
    -----------------------------------------------------------
-      promoted | looping | evaluated  | iteration | revised   | 
+      promoted | looping | evaluated  | iteration | revised   |
    ------------------------------------------------------------
-    iteration -- 1: iteration; 0: normal 
+    iteration -- 1: iteration; 0: normal
     evaluated - 1: the subgoal has been evaluated; 0: not evaluated
     looping -- 1: a looping node 0: not a looping node
 
@@ -157,11 +157,11 @@ subgoalTableEntry ->
 #define SET_SUBGOAL_LOOPING(subgoal_entry)								\
   if (GT_STATE(subgoal_entry) & SUBGOAL_LOOPING_BIT);					\
   else																	\
-    {GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_LOOPING_BIT;} 
+    {GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_LOOPING_BIT;}
 
 #define SUBGOAL_IS_LOOPING(subgoal_entry) (GT_STATE(subgoal_entry) & SUBGOAL_LOOPING_BIT)
 
-#define SET_SUBGOAL_ANS_REVISED(subgoal_entry) GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_ANS_REVISED_BIT; 
+#define SET_SUBGOAL_ANS_REVISED(subgoal_entry) GT_STATE(subgoal_entry) = GT_STATE(subgoal_entry) | SUBGOAL_ANS_REVISED_BIT;
 
 #define SUBGOAL_ANS_IS_REVISED(subgoal_entry) (GT_STATE(subgoal_entry) & SUBGOAL_ANS_REVISED_BIT)
 

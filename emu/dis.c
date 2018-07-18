@@ -4,14 +4,14 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
 #include "inst.h"
 #include "term.h"
 /*
-  #define DEBUG_DIS 
+  #define DEBUG_DIS
 */
 static FILE *filedes;
 
@@ -22,7 +22,7 @@ void dis()
 #else
     filedes = fopen("dump.pil", "w");
 #endif
-  
+
     dis_data();
     dis_text();
     fflush(filedes);
@@ -36,7 +36,7 @@ void dis_data()
 
     fprintf(filedes, "\n/* data below: name, arity, type, axnd entry */\n\n");
     printf("==> dis_data\n");
-   
+
     for (i = 0; i < BUCKET_CHAIN; ++i) {
         psc_ptr = hash_table[i];
         while (psc_ptr!=NULL) {
@@ -62,10 +62,10 @@ void dis_data()
   void symbol_table_statistics(int *num_of_empty_buckets, int *len_of_longest_chain){
   SYM_REC_PTR psc_ptr;
   int i,count;
-  
+
   *num_of_empty_buckets = 0;
   *len_of_longest_chain = 0;
-  
+
   for (i = 0; i < BUCKET_CHAIN; ++i) {
   psc_ptr = hash_table[i];
   count = 0;
@@ -75,7 +75,7 @@ void dis_data()
   }
   if (count==0)
   *num_of_empty_buckets = *num_of_empty_buckets+1;
-  if (count > *len_of_longest_chain)    
+  if (count > *len_of_longest_chain)
   *len_of_longest_chain = count;
   }
   }
@@ -87,12 +87,12 @@ void dis_text()
     cpreg = inst_begin;
 
     printf("inst_begin=%lx\n",(unsigned long int) inst_begin);
-    do { 
+    do {
         fprintf(filedes, "\nNew segment below \n\n");
         while (*cpreg != endfile)
             print_inst(filedes);
         cpreg++;cpreg++;
-    } while ((cpreg = (BPLONG_PTR)*cpreg));  
+    } while ((cpreg = (BPLONG_PTR)*cpreg));
 }
 
 void print_inst(filedes)
@@ -106,19 +106,19 @@ void print_inst(filedes)
         fprintf(filedes, "%lx\t", (unsigned long int) cpreg);
     opcode = *cpreg++;
 
-    //  printf("dis %s\n",inst_name[opcode]); 
-  
+    //  printf("dis %s\n",inst_name[opcode]);
+
     if (opcode == tabsize) {
         i=*cpreg++;
-        fprintf(filedes, "\t " BPULONG_FMT_STR "\n",i); 
+        fprintf(filedes, "\t " BPULONG_FMT_STR "\n",i);
 
         while (i>0) {
             if (num_line) fprintf(filedes, "%lx\t",(unsigned long int) cpreg);
-            fprintf(filedes, "\t " BPULONG_FMT_STR "\n",*cpreg++); 
+            fprintf(filedes, "\t " BPULONG_FMT_STR "\n",*cpreg++);
             i--;
         }
     } else {
-#include "dis_inst.h" 
+#include "dis_inst.h"
     }
 }  /* end of print_inst */
 
@@ -126,14 +126,14 @@ void dis_addr(filedes,operand)
     FILE *filedes;
     BPLONG operand;
 {
-    fprintf(filedes, "' " BPULONG_FMT_STR "'",(operand)); 
+    fprintf(filedes, "' " BPULONG_FMT_STR "'",(operand));
 }
 
 void dis_y(filedes,operand)
     FILE *filedes;
     BPLONG operand;
 {
-    fprintf(filedes, " %d",(int)operand); 
+    fprintf(filedes, " %d",(int)operand);
 }
 
 void dis_constant(filedes,operand)
@@ -141,7 +141,7 @@ void dis_constant(filedes,operand)
     BPLONG operand;
 {
     SYM_REC_PTR sym_ptr;
-    if (ISINT(operand)) fprintf(filedes, "c(%d)",(int)INTVAL(operand)); 
+    if (ISINT(operand)) fprintf(filedes, "c(%d)",(int)INTVAL(operand));
     else {
         sym_ptr = (SYM_REC_PTR)UNTAGGED_ADDR(operand);
         fprintf(filedes, "c('%s')",GET_NAME(sym_ptr));
@@ -152,7 +152,7 @@ void dis_literal(filedes,operand)
     FILE *filedes;
     BPLONG operand;
 {
-    fprintf(filedes, " %d",(int)operand); 
+    fprintf(filedes, " %d",(int)operand);
 }
 
 void dis_z(filedes,operand)
@@ -162,12 +162,12 @@ void dis_z(filedes,operand)
     if (TAG(operand)==ATM){
         dis_constant(filedes,operand);
     } else if (TAG(operand)==0){ /* vy */
-        if (operand==0) 
-            fprintf(filedes, " w"); 
-        else 
-            fprintf(filedes, " v(%d)",(int)(operand>>2)); 
+        if (operand==0)
+            fprintf(filedes, " w");
+        else
+            fprintf(filedes, " v(%d)",(int)(operand>>2));
     } else {
-        fprintf(filedes, " u(%d)",(int)(operand>>2)); 
+        fprintf(filedes, " u(%d)",(int)(operand>>2));
     }
 }
 
@@ -200,9 +200,4 @@ void dis_zs(filedes,n)
         if (n>=1) fprintf(filedes,",");
     }
 }
-
-
-
-  
-
 

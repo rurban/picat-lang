@@ -2,14 +2,14 @@
  *   File   : bigint.c
  *   Author : Neng-Fa ZHOU
  *   Updated: Last updated Aug. 2013
- *   Purpose: Simple (and slow) implementation of big integers 
+ *   Purpose: Simple (and slow) implementation of big integers
  *            Based on the  C++ Big Integer Library
  *            http://mattmccutchen.net/bigint/
  *            Matt McCutchen <matt@mattmccutchen.net>
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <string.h>
@@ -21,17 +21,17 @@
 
 /* A big integer is represented as a structure $bigint(SignSize,Ds)
    where Ds is a list of base-(2^28) "digits" (from the most significant
-   to the least significant digits), and SignSize is a primitive integer 
-   whose sign indicates the sign of the big integer, and magnitude 
-   indicates the length of Ds. A big integer x must be 
+   to the least significant digits), and SignSize is a primitive integer
+   whose sign indicates the sign of the big integer, and magnitude
+   indicates the length of Ds. A big integer x must be
 
    x > 268435455  or x < -268435455
 
-   Example: 
+   Example:
 
-   1111222233334444555566667777888899990000 
+   1111222233334444555566667777888899990000
 
-   is represented as 
+   is represented as
 
    $bigint(5,[214013,165733330,21745286,83495097,146178544]).
 
@@ -55,7 +55,7 @@
             borrow = 0;                         \
         }                                       \
     }
-  
+
 
 #define BP_DECOMPOSE_BIGINT(op,sign,size,DLst){                 \
         BPLONG_PTR ptr;                                         \
@@ -103,14 +103,14 @@
         BP_MAKE_BIGINT_FROM_DLST(sign,size,DLst,op);    \
     }
 
-  
+
 int c_test_bigint(){
     BPLONG res;
-  
+
     res = bp_mul_bigint_bigint(bp_int_to_bigint(-536870910),bp_int_to_bigint(1));
     write_term(res);
-  
-  
+
+
     /*
       printf("bp_int_to_bigint(999999999) \n");
       write_term(bp_int_to_bigint(999999999L)); printf("\n");
@@ -121,7 +121,7 @@ int c_test_bigint(){
       res = bp_call_string("fail");
       printf("res=%d exception=%x\n",res,exception);
     */
-  
+
 
     /*
       BPLONG m3 = bp_int_to_bigint(-3);
@@ -169,7 +169,7 @@ int c_test_bigint(){
       BPLONG op = bp_int_to_bigint(536870910);
       BPLONG mop = bp_sub_bigint_bigint(zero,op);
       bp_print_bigint(mop);
-      printf("-op= "); write_term(mop);  printf("\n");  
+      printf("-op= "); write_term(mop);  printf("\n");
       BPLONG ten = bp_int_to_bigint(10);
       BPLONG di = bp_div_bigint_bigint(op,ten);
       BPLONG re = bp_mod_bigint_bigint(op,ten);
@@ -179,8 +179,8 @@ int c_test_bigint(){
       printf("re= ");write_term(re); printf("\n");
     */
     return BP_TRUE;
-}  
-  
+}
+
 
 /* decrease the size if the leading digit is zero */
 INLINE void zap_leading_zeros(BPLONG_PTR xsize_ptr, UBIGINT x){
@@ -197,13 +197,13 @@ BPLONG bp_int_to_bigint(BPLONG a) {
     BPLONG op;
     UBIGINT x;
 
-    sign = 1; 
+    sign = 1;
     if (a<0){
         sign = -1; a = -a;
-    } 
+    }
     LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",8);
     x = local_top - 8;  /* enough room for the digits */
-    i = 0; 
+    i = 0;
     while (a!=0){
         x[i] = a % BP_BIGINT_BASE;
         a /= BP_BIGINT_BASE;
@@ -253,7 +253,7 @@ BPLONG bp_bigint_to_native_long(BPLONG op) {
     return bp_ubig_to_int(size,x);
 }
 
-// size > 0 
+// size > 0
 double bp_ubig_to_double(BPLONG size, UBIGINT x)
 {
     double d;
@@ -284,19 +284,19 @@ BPLONG bp_double_to_bigint(double a) {
     int sign,i,size;
     BPLONG op;
     UBIGINT x;
-  
-    sign = 1; 
+
+    sign = 1;
     if (a<0){
         sign = -1; a = -a;
-    } 
+    }
     modf(a,&a);
 
     LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",100);
     x = local_top - 100;  /* enough for the digits? */
-    i = 0; 
+    i = 0;
 
     while (a>=BP_BIGINT_BASE){
-        f = a/BP_BIGINT_BASE;    
+        f = a/BP_BIGINT_BASE;
         modf(f,&f);
         x[i] = (BPLONG)(a-f*BP_BIGINT_BASE);
         a = f;
@@ -312,7 +312,7 @@ BPLONG bp_double_to_bigint(double a) {
 /* y = y+1 */
 void bp_inc_ubig(BPLONG_PTR ysize_ptr, UBIGINT y){
     BPLONG i,sum,carry,ysize;
-  
+
     ysize = *ysize_ptr;
     sum = y[0]+1;
     BIGINT_COMPUTE_CARRY_VAL(sum,y[0],carry);
@@ -324,13 +324,13 @@ void bp_inc_ubig(BPLONG_PTR ysize_ptr, UBIGINT y){
     if (carry==1){
         y[ysize] = 1;
         *ysize_ptr = ysize+1;
-    } 
+    }
 }
 
 /* z = x+y */
 void bp_add_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_PTR zsize_ptr, UBIGINT z){
     BPLONG i,sum,carry;
-  
+
     if (xsize>ysize){
         BPLONG tmp_size;
         UBIGINT tmp;
@@ -361,7 +361,7 @@ void bp_add_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
 /* y = y-1 */
 void bp_dec_ubig(BPLONG_PTR ysize_ptr, UBIGINT y){
     BPLONG i, borrow,temp,ysize;
-  
+
     ysize = *ysize_ptr;
     temp = y[0]-1;
     BIGINT_COMPUTE_BORROW_VAL(temp,y[0],borrow);
@@ -376,7 +376,7 @@ void bp_dec_ubig(BPLONG_PTR ysize_ptr, UBIGINT y){
 /* z = y-x, y>=x */
 void bp_sub_ubig_ubig(BPLONG ysize, UBIGINT y, BPLONG xsize, UBIGINT x, BPLONG_PTR zsize_ptr, UBIGINT z){
     BPLONG i, borrow,temp;
-  
+
     borrow = 0;
     for (i=0; i<xsize;i++){
         temp = y[i]-x[i]-borrow;
@@ -392,7 +392,7 @@ void bp_sub_ubig_ubig(BPLONG ysize, UBIGINT y, BPLONG xsize, UBIGINT x, BPLONG_P
     *zsize_ptr = ysize;
     zap_leading_zeros(zsize_ptr,z);
 }
-    
+
 /* returns the ith digit of x << y,
    (0 =< y <= 27) and (0 =< i <= xsize)
 */
@@ -403,7 +403,7 @@ INLINE BPLONG get_shifted_digit(BPLONG xsize, UBIGINT x, BPLONG i, BPLONG y){
     return part1 | part2;
 }
 
-/* z = x*y, x>0, y>0, z has been allocated 
+/* z = x*y, x>0, y>0, z has been allocated
  * Overall method:
  *
  * Set z = 0.
@@ -451,7 +451,7 @@ void bp_mul_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
  *        Turn on bit i2 of block i of the quotient q.
  *        Copy subtractBuf back into r.
  *    Otherwise bit i2 of block i of q remains off, and r is unchanged.
- * 
+ *
  * Eventually q will contain the entire quotient, and r will
  * be left with the remainder.
  */
@@ -459,11 +459,11 @@ void bp_div_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
     BPLONG i, j, k,i2, temp,borrow,qsize,rsize;
 
     qsize = xsize-ysize+1;
-    // copy x to r 
+    // copy x to r
     for (i=0; i<xsize; i++) r[i] = x[i];
-    rsize = xsize+1; 
+    rsize = xsize+1;
     r[xsize] = 0;
-  
+
     // Zero out the quotient
     for (i = 0; i < qsize; i++) q[i] = 0;
 
@@ -478,7 +478,7 @@ void bp_div_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
             i2--;
             /*
              * Subtract y, shifted left i blocks and i2 bits, from r,
-             * and store the answer in subtractBuf.  
+             * and store the answer in subtractBuf.
              */
             borrow = 0;
             for (j = 0, k = i; j <= ysize; j++, k++) {
@@ -496,14 +496,14 @@ void bp_div_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
                     k--;
                     r[k] = subtractBuf[k];
                 }
-            } 
+            }
         }
     }
     // Zap possible leading zero in quotient
     if (q[qsize - 1] == 0) qsize--;
     *qsize_ptr = qsize;
     // Zap any/all leading zeros in remainder
-    *rsize_ptr = rsize;  
+    *rsize_ptr = rsize;
     zap_leading_zeros(rsize_ptr,r);
 }
 
@@ -552,7 +552,7 @@ void bp_xor_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
 
 /* y>0 */
 void bp_shiftl_ubig_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR zsize_ptr, UBIGINT z){
-    BPLONG i,j,zsize,shiftBlocks,shiftBits;  
+    BPLONG i,j,zsize,shiftBlocks,shiftBits;
 
     shiftBlocks =  y / 28;
     shiftBits = y % 28;
@@ -568,7 +568,7 @@ void bp_shiftl_ubig_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR zsize_ptr,
 
 /* y>0 */
 void bp_shiftr_ubig_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR zsize_ptr, UBIGINT z){
-    BPLONG i,j,zsize,rightShiftBlocks,leftShiftBits;  
+    BPLONG i,j,zsize,rightShiftBlocks,leftShiftBits;
 
     // This calculation is wacky, but expressing the shift as a left bit shift
     // within each block lets us use getShiftedBlock.
@@ -593,7 +593,7 @@ void bp_shiftr_ubig_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR zsize_ptr,
 /* xsize>0, x = ~x */
 void bp_onescomplement_ubig(BPLONG_PTR xsize_ptr, UBIGINT x){
     BPLONG i,xsize;
-  
+
     xsize = *xsize_ptr;
 
     for (i = 0; i < xsize; i++){
@@ -620,7 +620,7 @@ void bp_twoscomplement_ubig(BPLONG xsize, UBIGINT x){
         BIGINT_COMPUTE_CARRY_VAL(x[i],x[i],carry);
         i++;
     }
-    x[xsize-1] |= BP_BIGINT_BASE;  // the imaginary sign bit 
+    x[xsize-1] |= BP_BIGINT_BASE;  // the imaginary sign bit
     /*
       printf("2's complement :");
       for (i=xsize-1;i>=0;i--) printf("x[%d]=%d ",i, x[i]);
@@ -636,7 +636,7 @@ void bp_twoscomplement_magnitude(BPLONG_PTR zsize_ptr, UBIGINT z){
 
 /* x is two's complement of a positive bigint, y>0, the imaginary sign bit stays while being shifted right */
 void bp_shiftr_twoscomplement_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR zsize_ptr, UBIGINT z){
-    BPLONG i,j,zsize,rightShiftBlocks,leftShiftBits,remainingBits;  
+    BPLONG i,j,zsize,rightShiftBlocks,leftShiftBits,remainingBits;
 
     // This calculation is wacky, but expressing the shift as a left bit shift
     // within each block lets us use getShiftedBlock.
@@ -657,7 +657,7 @@ void bp_shiftr_twoscomplement_int(BPLONG xsize, UBIGINT x, BPLONG y, BPLONG_PTR 
     for (j=i+1;j<zsize;j++){
         z[j] = MASK_LOW28;
     }
-    z[zsize-1] |= BP_BIGINT_BASE; // the imaginary sign bit 
+    z[zsize-1] |= BP_BIGINT_BASE; // the imaginary sign bit
     *zsize_ptr = zsize;
 }
 
@@ -688,7 +688,7 @@ BPLONG bp_neg_bigint(BPLONG op){
     BP_MAKE_BIGINT_FROM_DLST(sign,size,DLst,op);
     return op;
 }
-  
+
 
 /* sign(op), op is known to be a bigint */
 int bp_sign_bigint(BPLONG op){
@@ -704,7 +704,7 @@ int bp_size_bigint(BPLONG op){
     BP_DECOMPOSE_BIGINT(op,sign,size,DLst);
     return size;
 }
-  
+
 
 /* Compare the magnitudes of two unsigned bigints that are of the same length */
 int bp_compare_mag_mag(BPLONG size, UBIGINT x, UBIGINT y){
@@ -715,7 +715,7 @@ int bp_compare_mag_mag(BPLONG size, UBIGINT x, UBIGINT y){
     }
     return 0;
 }
-    
+
 /* op1+op2, op1 and op2 are known to be bigints */
 BPLONG bp_add_bigint_bigint(BPLONG op1,BPLONG op2) {
     UBIGINT x,y,z;
@@ -724,7 +724,7 @@ BPLONG bp_add_bigint_bigint(BPLONG op1,BPLONG op2) {
 
     BP_DECOMPOSE_BIGINT(op1,xsign,xsize,xDLst);
     BP_DECOMPOSE_BIGINT(op2,ysign,ysize,yDLst);
-  
+
     max_size = (xsize>ysize) ? xsize : ysize;
     LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",4*(max_size+1));
     z = local_top-max_size-1;
@@ -736,10 +736,10 @@ BPLONG bp_add_bigint_bigint(BPLONG op1,BPLONG op2) {
     // If the arguments have the same sign, take the
     // common sign and add their magnitudes.
     if (xsign>0 && ysign>0){
-        zsign = 1; 
+        zsign = 1;
         bp_add_ubig_ubig(xsize, x, ysize, y, &zsize, z);
     } else if (xsign<0 && ysign<0){
-        zsign = -1; 
+        zsign = -1;
         bp_add_ubig_ubig(xsize, x, ysize, y, &zsize, z);
     } else if (xsize>ysize){
         zsign = xsign;
@@ -752,10 +752,10 @@ BPLONG bp_add_bigint_bigint(BPLONG op1,BPLONG op2) {
         if (comp_res==0) {
             return BP_ZERO; /* primitive 0 */
         } else if (comp_res>0) {
-            zsign = xsign; 
+            zsign = xsign;
             bp_sub_ubig_ubig(xsize, x, ysize, y, &zsize, z);
         } else {
-            zsign = ysign; 
+            zsign = ysign;
             bp_sub_ubig_ubig(ysize, y, xsize, x, &zsize, z);
         }
     }
@@ -788,10 +788,10 @@ BPLONG bp_sub_bigint_bigint(BPLONG op1,BPLONG op2){
     // If the arguments have the same sign, take the
     // common sign and add their magnitudes.
     if (xsign>0 && ysign<0){
-        zsign = 1; 
+        zsign = 1;
         bp_add_ubig_ubig(xsize, x, ysize, y, &zsize, z);
     } else if (xsign<0 && ysign>0){
-        zsign = -1; 
+        zsign = -1;
         bp_add_ubig_ubig(xsize, x, ysize, y, &zsize, z);
     } else if (xsize>ysize){
         zsign = xsign;
@@ -804,10 +804,10 @@ BPLONG bp_sub_bigint_bigint(BPLONG op1,BPLONG op2){
         if (comp_res==0) {
             return BP_ZERO; /* primitive 0 */
         } else if (comp_res>0) {
-            zsign = xsign; 
+            zsign = xsign;
             bp_sub_ubig_ubig(xsize, x, ysize, y, &zsize, z);
         } else {
-            zsign = -1*ysign; 
+            zsign = -1*ysign;
             bp_sub_ubig_ubig(ysize, y, xsize, x, &zsize, z);
         }
     }
@@ -841,15 +841,15 @@ BPLONG bp_mul_bigint_bigint(BPLONG op1,BPLONG op2) {
     // common sign and add their magnitudes.
     if (xsign>0){
         if (ysign>0){
-            zsign = 1; 
+            zsign = 1;
         } else {
-            zsign = -1; 
+            zsign = -1;
         }
     } else {
         if (ysign>0){
-            zsign = -1; 
+            zsign = -1;
         } else {
-            zsign = 1; 
+            zsign = 1;
         }
     }
     bp_mul_ubig_ubig(xsize, x, ysize, y, &zsize, z);
@@ -885,14 +885,14 @@ BPLONG bp_div_bigint_bigint(BPLONG op1,BPLONG op2) {
     if (xsize==0) return BP_ZERO; /* x==0 */
 
     if (xsign == ysign){
-        qsign = 1; 
+        qsign = 1;
     } else {
-        qsign = -1; 
+        qsign = -1;
     }
 
-    /* 
+    /*
      * It appears that we need a total of 3 corrections:
-     * Decrease the magnitude of x; 
+     * Decrease the magnitude of x;
      * Increase the magnitude of q;
      * Find r = (y - 1) - r and give it the desired sign.
      */
@@ -907,11 +907,11 @@ BPLONG bp_div_bigint_bigint(BPLONG op1,BPLONG op2) {
         } else {
             return BP_MONE;
         }
-    }    
+    }
     bp_div_ubig_ubig(xsize, x, ysize, y, &qsize, q, &rsize, r, tempBuff);
     if (qsign == -1){
         bp_inc_ubig(&qsize, q);
-    }  
+    }
 
     /* q!= 0 once here */
     if (qsize==1) return MAKEINT(qsign*q[0]);
@@ -941,14 +941,14 @@ BPLONG bp_mod_bigint_bigint(BPLONG op1,BPLONG op2) {
     if (xsize==0) return BP_ZERO;
 
     if (xsign == ysign){
-        qsign = 1; 
+        qsign = 1;
     } else {
-        qsign = -1; 
+        qsign = -1;
     }
 
-    /* 
+    /*
      * It appears that we need a total of 3 corrections:
-     * Decrease the magnitude of x; 
+     * Decrease the magnitude of x;
      * Increase the magnitude of q;
      * Find r = (y - 1) - r and give it the desired sign.
      */
@@ -965,7 +965,7 @@ BPLONG bp_mod_bigint_bigint(BPLONG op1,BPLONG op2) {
         // Modify the remainder.
         bp_sub_ubig_ubig(ysize,y,rsize,r,&rsize,r);
         bp_dec_ubig(&rsize,r);
-    }  
+    }
 
     if (rsize==0) return BP_ZERO;
     if (rsize==1) return MAKEINT(ysign*r[0]);
@@ -981,7 +981,7 @@ int bp_compare_bigint_bigint(BPLONG op1,BPLONG op2){ /* stack overflow not check
     UBIGINT x,y;
     BPLONG xsize, ysize, xsign, ysign, xDLst, yDLst;
 
-    //  printf("compre bigint "); write_term(op1); printf(" "); write_term(op2); printf("\n"); 
+    //  printf("compre bigint "); write_term(op1); printf(" "); write_term(op2); printf("\n");
     BP_DECOMPOSE_BIGINT(op1,xsign,xsize,xDLst);
     BP_DECOMPOSE_BIGINT(op2,ysign,ysize,yDLst);
 
@@ -1013,7 +1013,7 @@ BPLONG bp_and_bigint_bigint(BPLONG op1, BPLONG op2){
     BP_DECOMPOSE_BIGINT(op2,ysign,ysize,yDLst);
 
     size = (xsize>ysize) ? xsize : ysize;
-  
+
     LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",5*(size+1));
     x1 = local_top - size-1;
     y1 = x1 - size-1;
@@ -1023,14 +1023,14 @@ BPLONG bp_and_bigint_bigint(BPLONG op1, BPLONG op2){
     BP_MAKE_UBIG_FROM_DLST(xDLst,xsize,x);
     BP_MAKE_UBIG_FROM_DLST(yDLst,ysize,y);
 
-    if (xsize<size) 
+    if (xsize<size)
         bp_copy_ubig(xsize,x,size,x1);
-    else 
+    else
         x1 = x;
 
-    if (ysize<size) 
+    if (ysize<size)
         bp_copy_ubig(ysize,y,size,y1);
-    else 
+    else
         y1 = y;
 
     if (xsign<0) bp_twoscomplement_ubig(size,x1);
@@ -1041,11 +1041,11 @@ BPLONG bp_and_bigint_bigint(BPLONG op1, BPLONG op2){
     if (zsize==0)
         return BP_ZERO;
     if (zsize==1) /* must be positive */
-        return MAKEINT(z[0]);    
+        return MAKEINT(z[0]);
     if (z[zsize-1]>=BP_BIGINT_BASE){ /* negative */
         bp_twoscomplement_magnitude(&zsize,z);
         if (zsize==0) return BP_ZERO;
-        if (zsize==1) return MAKEINT(-z[0]);    
+        if (zsize==1) return MAKEINT(-z[0]);
 #ifdef M64BITS
         if (zsize==2) return MAKEINT(-(z[1]*BP_BIGINT_BASE+z[0]));
 #endif
@@ -1068,7 +1068,7 @@ BPLONG bp_or_bigint_bigint(BPLONG op1, BPLONG op2){
     BP_DECOMPOSE_BIGINT(op2,ysign,ysize,yDLst);
 
     size = (xsize>ysize) ? xsize : ysize;
-  
+
     LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",5*(size+1));
     x1 = local_top - size-1;
     y1 = x1 - size-1;
@@ -1078,14 +1078,14 @@ BPLONG bp_or_bigint_bigint(BPLONG op1, BPLONG op2){
     BP_MAKE_UBIG_FROM_DLST(xDLst,xsize,x);
     BP_MAKE_UBIG_FROM_DLST(yDLst,ysize,y);
 
-    if (xsize<size) 
+    if (xsize<size)
         bp_copy_ubig(xsize,x,size,x1);
-    else 
+    else
         x1 = x;
 
-    if (ysize<size) 
+    if (ysize<size)
         bp_copy_ubig(ysize,y,size,y1);
-    else 
+    else
         y1 = y;
 
     if (xsign<0) bp_twoscomplement_ubig(size,x1);
@@ -1098,7 +1098,7 @@ BPLONG bp_or_bigint_bigint(BPLONG op1, BPLONG op2){
     if (z[zsize-1]>=BP_BIGINT_BASE){ /* negative */
         bp_twoscomplement_magnitude(&zsize,z);
         if (zsize==0) return BP_ZERO;
-        if (zsize==1) return MAKEINT(-z[0]);    
+        if (zsize==1) return MAKEINT(-z[0]);
 #ifdef M64BITS
         if (zsize==2) return MAKEINT(-(z[1]*BP_BIGINT_BASE+z[0]));
 #endif
@@ -1121,7 +1121,7 @@ BPLONG bp_xor_bigint_bigint(BPLONG op1, BPLONG op2){
     BP_DECOMPOSE_BIGINT(op2,ysign,ysize,yDLst);
 
     size = (xsize>ysize) ? xsize : ysize;
-  
+
     LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",5*(size+1));
     x1 = local_top - size-1;
     y1 = x1 - size-1;
@@ -1131,14 +1131,14 @@ BPLONG bp_xor_bigint_bigint(BPLONG op1, BPLONG op2){
     BP_MAKE_UBIG_FROM_DLST(xDLst,xsize,x);
     BP_MAKE_UBIG_FROM_DLST(yDLst,ysize,y);
 
-    if (xsize<size) 
+    if (xsize<size)
         bp_copy_ubig(xsize,x,size,x1);
-    else 
+    else
         x1 = x;
 
-    if (ysize<size) 
+    if (ysize<size)
         bp_copy_ubig(ysize,y,size,y1);
-    else 
+    else
         y1 = y;
 
     if (xsign<0) bp_twoscomplement_ubig(size,x1);
@@ -1149,11 +1149,11 @@ BPLONG bp_xor_bigint_bigint(BPLONG op1, BPLONG op2){
     if (zsize==0)
         return BP_ZERO;
     if (zsize==1) /* must be positive */
-        return MAKEINT(z[0]);    
+        return MAKEINT(z[0]);
     if (z[zsize-1]>=BP_BIGINT_BASE){ /* negative */
         bp_twoscomplement_magnitude(&zsize,z);
         if (zsize==0)  return BP_ZERO;
-        if (zsize==1) return MAKEINT(-z[0]);    
+        if (zsize==1) return MAKEINT(-z[0]);
 #ifdef M64BITS
         if (zsize==2) return MAKEINT(-(z[1]*BP_BIGINT_BASE+z[0]));
 #endif
@@ -1182,10 +1182,10 @@ BPLONG bp_shiftl_bigint_int(BPLONG op1, BPLONG op2){
     BP_DECOMPOSE_BIGINT(op1,xsign,xsize,xDLst);
 
     zsize = xsize + 10 + op2;
-    LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",3*(xsize+zsize));  
+    LOCAL_OVERFLOW_CHECK_WITH_MARGIN("bigint",3*(xsize+zsize));
     x = local_top-xsize-1;
     z = x - zsize-1;
-  
+
     BP_MAKE_UBIG_FROM_DLST(xDLst,xsize,x);
 
     bp_shiftl_ubig_int(xsize,x,op2,&zsize,z);
@@ -1233,7 +1233,7 @@ BPLONG bp_shiftr_bigint_int(BPLONG op1, BPLONG op2){
         //    printf("after  shiftr "); for (i=xsize-1;i>=0;i--) printf("z[%d]=%d ",i,z[i]); printf("\n");
         bp_twoscomplement_magnitude(&zsize,z);
         if (zsize==0) return BP_ZERO;
-        if (zsize==1) return MAKEINT(-z[0]);    
+        if (zsize==1) return MAKEINT(-z[0]);
 #ifdef M64BITS
         if (zsize==2) return MAKEINT(-(z[1]*BP_BIGINT_BASE+z[0]));
 #endif
@@ -1267,7 +1267,7 @@ BPLONG bp_updiv_bigint_bigint(BPLONG op1, BPLONG op2){
                 tmp = bp_add_bigint_bigint(tmp,bp_int_to_bigint(1));
                 if (tmp==BP_ERROR) return BP_ERROR;
             }
-        } 
+        }
     } else {
         if (ISINT(tmp)){
             tmp = MAKEINT(-INTVAL(tmp));
@@ -1303,7 +1303,7 @@ BPLONG bp_lowdiv_bigint_bigint(BPLONG op1, BPLONG op2){
     }
     return tmp;
 }
-  
+
 
 BPLONG bp_gcd_bigint_bigint(BPLONG i1,BPLONG i2){
     BPLONG temp;
@@ -1318,7 +1318,7 @@ BPLONG bp_gcd_bigint_bigint(BPLONG i1,BPLONG i2){
     for (;;){
         temp = bp_mod_bigint_bigint(i2,i1);
         if (temp==BP_ERROR) return BP_ERROR;
-        if (temp==BP_ZERO) 
+        if (temp==BP_ZERO)
             return bp_add_bigint_bigint(i1,bp_int_to_bigint(0));
         i2 = i1;
         if (ISINT(temp)){
@@ -1350,7 +1350,7 @@ BPLONG bp_pow_bigint_int(BPLONG base,BPLONG ex){
     return result;
 }
 
-/* write a bigint into a string buffer whose size is buf_size, and return the starting index. 
+/* write a bigint into a string buffer whose size is buf_size, and return the starting index.
    op must be a bigint.
 */
 int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size) {
@@ -1388,7 +1388,7 @@ int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size) {
         }
         size = qsize;
     } while (size>1);
-                                
+
     sprintf(loc_buf,"%d",(int)x[0]); /* write the first block */
     j=strlen(loc_buf);
     if (i<=j){                    /* leave a slot for the sign */
@@ -1442,6 +1442,3 @@ int b_BUILD_56B_INT_ccf(BPLONG w1, BPLONG w0, BPLONG v){
     return BP_TRUE;
 }
 
-  
-  
-  
