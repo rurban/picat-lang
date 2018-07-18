@@ -137,8 +137,6 @@ static BPLONG file_tab_end = 0; /* last used entry in file_table */
 /* index of current input (output) stream in file_table */
 static BPLONG in_file_i, out_file_i;
 
-int graphic_char(char ch);
-
 /**********************************************************************/
 void replace_str_char(char *buf,char och, char nch){
     int i = 0;
@@ -542,8 +540,7 @@ int bp_write_pname_update_pos(name_ptr, length)
     return BP_TRUE;
 }
 
-int graphic_char(ch)
-    char ch;
+int graphic_char(char ch)
 {
     switch (ch) {
     case '/':

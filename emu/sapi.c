@@ -14,6 +14,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 /* extern char *malloc();*/
 
@@ -579,7 +582,6 @@ SP_pred_ref SP_pred(unsigned long name_atom,long arity,unsigned long module_atom
 }
 
 int SP_query(SP_pred_ref predicate, ...){
-    SYM_REC_PTR sym_ptr;
     va_list ap;
     SP_term_ref arg;
     BPLONG query;
@@ -588,7 +590,7 @@ int SP_query(SP_pred_ref predicate, ...){
     char *name;
 
     arity = GET_ARITY(predicate);
-    printf("arity=%d\n",arity);
+    printf("arity="BPLONG_FMT_STR"\n",arity);
 
     if (arity==0){
         query = ADDTAG((BPLONG)predicate,ATM);
