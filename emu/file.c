@@ -547,8 +547,7 @@ int bp_write_pname_update_pos(name_ptr, length)
     return BP_TRUE;
 }
 
-int graphic_char(ch)
-    char ch;
+int graphic_char(char ch)
 {
     switch (ch) {
     case '/':

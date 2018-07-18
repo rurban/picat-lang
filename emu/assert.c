@@ -1237,7 +1237,6 @@ int b_PICAT_GLOBAL_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val) {
     BPLONG_PTR trail_top0, kvp_ptr_ptr;
     MAP_RECORD_PTR mr_ptr;
     KEY_VAL_PAIR_PTR kvp_ptr;
-    BPLONG initial_diff0;
 
     DEREF(key);
     if (ISREF(key)) {

@@ -1403,7 +1403,7 @@ int c_SHOW_NONDET_FRAME() {
     op1 = ARG(1, 1);
     op1 = INTVAL(op1);
     tempreg = (BPLONG_PTR)*arreg;
-    printf("AR=   = " BPULONG_FMT_STR "\n", tempreg);
+    printf("AR=   = " BPULONG_FMT_STR "\n", (BPULONG)tempreg);
     printf("(AR)  = " BPULONG_FMT_STR "\n", *tempreg);
     printf("CPS   = " BPULONG_FMT_STR "\n", *(tempreg-1));
     printf("TOP   = " BPULONG_FMT_STR "\n", *(tempreg-2));

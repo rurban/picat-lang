@@ -2156,7 +2156,6 @@ BPLONG bp_float_round(op1)
     if (ISINT(op1) || IS_BIGINT(op1)) {
         return op1;
     } else {
-        int sign;
         f = floatval(op1);
 #ifdef M64BITS
         f = roundl(f);

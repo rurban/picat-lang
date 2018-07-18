@@ -20,6 +20,9 @@
 #include <unistd.h>
 #endif
 #include <stdio.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 /* extern char *malloc();*/
 
@@ -584,8 +587,7 @@ SP_pred_ref SP_pred(BPULONG name_atom, long arity, BPULONG module_atom) {
     return SP_predicate(GET_NAME(sym_ptr), arity, NULL);
 }
 
-int SP_query(SP_pred_ref predicate, ...) {
-    SYM_REC_PTR sym_ptr;
+int SP_query(SP_pred_ref predicate, ...){
     va_list ap;
     SP_term_ref arg;
     BPLONG query;

@@ -97,8 +97,8 @@ void prep_espresso() {
     echo_unknown_commands = TRUE;
 }
 
-void run_espresso(pPLA PLA) {
-    pcover F, Fold, Dold;
+void run_espresso(pPLA PLA){
+    pcover Fold;
     bool error, exact_cover;
     cost_t cost;
 
