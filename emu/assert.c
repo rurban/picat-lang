@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <string.h>
 #include <stdlib.h>
@@ -73,7 +73,7 @@ void initialize_free_records(){
         free_record_count[i] = 0;
     }
 }
-    
+
 BPLONG total_free_records_size(){
     int i;
     BPLONG total = 0;
@@ -89,10 +89,10 @@ int c_print_pred_ref_count(){
     SYM_REC_PTR sym_ptr;
     InterpretedPredPtr pred_ptr;
     BPLONG pred;
-  
+
     Head = ARG(1,2);
     No = ARG(2,2);
-  
+
     DEREF(Head);DEREF(No);
     sym_ptr = GET_SYM_REC(Head);
     if (GET_ETYPE(sym_ptr)==T_DYNA){
@@ -102,13 +102,13 @@ int c_print_pred_ref_count(){
     }
     return BP_TRUE;
 }
-  
+
 int c_set_dyn_hashtable_size(){
     BPLONG_PTR top;
     BPLONG size = ARG(1,1);
     DEREF(size);
     dyn_hashtable_size = INTVAL(size);
-  
+
     return BP_TRUE;
 }
 
@@ -170,7 +170,7 @@ int b_ABOLISH_cc(f,n)
     BPLONG_PTR top;
     InterpretedPredPtr pred_ptr;
     BPLONG pred;
-  
+
     DEREF(f);DEREF(n);
     //  printf("ABOLISHING ");write_term(f);write_term(n);printf("\n");
     GET_GLOBAL_SYM(f,n,sym_ptr);
@@ -191,7 +191,7 @@ int b_ABOLISH_cc(f,n)
 }
 
 void abolish_pred(pred_ptr)
-    InterpretedPredPtr pred_ptr;     
+    InterpretedPredPtr pred_ptr;
 {
     BPLONG_PTR hashtable,cell_ptr;
     InterpretedClausePtr clause_record_ptr;
@@ -230,7 +230,7 @@ void abolish_pred(pred_ptr)
     }
 }
 
-/* a clause record takes form struct(CellRef,Head,Body,Birth,Death) where CellRef refers to the cell that 
+/* a clause record takes form struct(CellRef,Head,Body,Birth,Death) where CellRef refers to the cell that
    wrapes this record on the last chain of the predicate
 */
 void release_clause_record_space(InterpretedClausePtr clause_record_ptr){
@@ -260,7 +260,7 @@ start:
             release_term_space(FOLLOW(ptr+i));
         }
         term = FOLLOW(ptr+arity);
-        RELEASE_FREE_RECORD(ptr,arity+1);    
+        RELEASE_FREE_RECORD(ptr,arity+1);
         goto start;
     }
 }
@@ -281,7 +281,7 @@ int b_REMOVE_CLAUSE_c(clause_record)
     if (clause_record_ptr->death_time_stamp!=BP_MAXINT_1W) return BP_TRUE; /* has been removed already */
     Head = clause_record_ptr->head;  /* struct(CellRef,Head,Body,Birth,Death) */
     sym_ptr = GET_SYM_REC(Head);
-  
+
     pred = (BPLONG)GET_EP(sym_ptr);
     pred_ptr = INTERPRETED_PRED_PTR(pred);
 
@@ -303,24 +303,24 @@ void locate_and_free_clause_record(pred_ptr,clause_record)
     BPLONG_PTR cell_ptr,hashtable;
     InterpretedClausePtr clause_record_ptr;
     InterpretedPredBucketPtr bucket_ptr;
-  
+
     clause_record_ptr  = (InterpretedClausePtr)UNTAGGED_ADDR(clause_record);
     hashtable = pred_ptr->hashtable;
     bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(hashtable+pred_ptr->bucket_size);
     cell_ptr = (BPLONG_PTR)UNTAGGED_ADDR(clause_record_ptr->cl_ref); /* clause_record_ptr points to struct(CellRef,Head,Body,Birth,Death) */
     disconnect_cell_of_removed_clause(bucket_ptr,cell_ptr);
-  
+
     hashval = hashval_in_assert(clause_record_ptr);
     if (hashval==0){/* consider buckets 0-size-1 */
         for (i=0;i<pred_ptr->bucket_size;i++){
-            bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(hashtable+i); 
+            bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(hashtable+i);
             free_cell_of_removed_in_bucket(pred_ptr,bucket_ptr,clause_record);
         }
     } else {
         bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(hashtable+hashval%pred_ptr->bucket_size);
         free_cell_of_removed_in_bucket(pred_ptr,bucket_ptr,clause_record);
     }
-  
+
     if (pred_ptr->ref_count==0 && pred_ptr->retr_count<=1){  /* this pred is being accessed only by this retract call */
         release_clause_record_space(clause_record_ptr);
         RELEASE_FREE_RECORD(cell_ptr,3);
@@ -339,7 +339,7 @@ void free_cell_of_removed_in_bucket(pred_ptr,bucket_ptr,removed_clause_record)
     list = bucket_ptr->list;
     while (ISLIST(list)){
         cell_ptr = (BPLONG_PTR)UNTAGGED_ADDR(list);
-        clause_record = FOLLOW(cell_ptr); 
+        clause_record = FOLLOW(cell_ptr);
         if (clause_record == removed_clause_record) {
             disconnect_cell_of_removed_clause(bucket_ptr,cell_ptr);
             if (pred_ptr->ref_count==0 && pred_ptr->retr_count<=1){
@@ -385,15 +385,15 @@ void disconnect_cell_of_removed_clause(bucket_ptr,cell_ptr)
         FOLLOW(cell_ptr+2) = (BPLONG)NULL;
     }
 }
-  
+
 /** top level, called by Prolog **/
 int c_initialize_interpreted_pred()
 {
     SYM_REC_PTR sym_ptr;
     BPLONG f,n,type,size;
 
-    f = ARG(1,4); 
-    n = ARG(2,4); 
+    f = ARG(1,4);
+    n = ARG(2,4);
     type = ARG(3,4); DEREF_NONVAR(type); type = INTVAL(type);
     size = ARG(4,4); DEREF_NONVAR(size); size = INTVAL(size);
     size = bp_hsize(size); /* get the next prime number */
@@ -410,7 +410,7 @@ int b_ASSERTA_cc(BPLONG Head,BPLONG Body)
     InterpretedPredPtr pred_ptr;
     BPLONG res,pred;
 
-    //  printf("asserta "); write_term(Head); printf(":-");write_term(Body); printf("\n"); 
+    //  printf("asserta "); write_term(Head); printf(":-");write_term(Body); printf("\n");
     DEREF(Head);
     sym_ptr = GET_SYM_REC(Head);
     pred = (BPLONG)GET_EP(sym_ptr);
@@ -441,7 +441,7 @@ int b_ASSERTZ_cc(BPLONG Head,BPLONG Body)
     InterpretedPredPtr pred_ptr;
     BPLONG res,pred;
 
-    //    printf("assertz "); write_term(Head); printf(":-");write_term(Body); printf("\n"); 
+    //    printf("assertz "); write_term(Head); printf(":-");write_term(Body); printf("\n");
 
     DEREF(Head);
     sym_ptr = GET_SYM_REC(Head);
@@ -451,8 +451,8 @@ int b_ASSERTZ_cc(BPLONG Head,BPLONG Body)
             GET_ETYPE(sym_ptr) = T_DYNA;
         }
         pred_ptr = INTERPRETED_PRED_PTR(pred);
-        if (pred_ptr->cl_count > pred_ptr->bucket_size) 
-            if (rehash_interpreted_pred(pred_ptr)==BP_ERROR) return BP_ERROR;    
+        if (pred_ptr->cl_count > pred_ptr->bucket_size)
+            if (rehash_interpreted_pred(pred_ptr)==BP_ERROR) return BP_ERROR;
     } else {
         pred_ptr = initialize_interpreted_pred(sym_ptr,T_DYNA,dyn_hashtable_size);
         if (pred_ptr==NULL) return BP_ERROR;
@@ -471,7 +471,7 @@ int b_DYN_PRED_CLAUSE_COUNT_cf(BPLONG Head,BPLONG Count){
     InterpretedPredPtr pred_ptr;
     BPLONG pred,cl_count;
 
-    //    printf("assertz "); write_term(Head); printf(":-");write_term(Body); printf("\n"); 
+    //    printf("assertz "); write_term(Head); printf(":-");write_term(Body); printf("\n");
 
     DEREF(Head);
     sym_ptr = GET_SYM_REC(Head);
@@ -494,7 +494,7 @@ InterpretedPredBucketPtr new_interpreted_bucket(){
     BPLONG_PTR ptr;
     InterpretedPredBucketPtr bucket_ptr;
 
-    ALLOCATE_RECORD_IN_ASSERT(ptr,2);  
+    ALLOCATE_RECORD_IN_ASSERT(ptr,2);
     if (ptr==NULL){
         exception = et_OUT_OF_MEMORY;
         return NULL;
@@ -510,10 +510,10 @@ BPLONG_PTR new_interpreted_pred_hashtable(size)
 {
     BPLONG_PTR hashtable;
     int i;
-  
+
     hashtable = (BPLONG_PTR)malloc(sizeof(BPLONG)*(size+1));
     if (hashtable==NULL){
-        exception = et_OUT_OF_MEMORY;    
+        exception = et_OUT_OF_MEMORY;
         return NULL;
     }
     for (i=0;i<=size;i++){
@@ -524,7 +524,7 @@ BPLONG_PTR new_interpreted_pred_hashtable(size)
     }
     return hashtable;
 }
-    
+
 
 InterpretedPredPtr new_interpreted_pred_record(size)
     BPLONG size;
@@ -550,7 +550,7 @@ InterpretedPredPtr new_interpreted_pred_record(size)
 
 InterpretedPredPtr initialize_interpreted_pred(sym_ptr,type,size)
     SYM_REC_PTR sym_ptr;
-BPLONG type,size; 
+BPLONG type,size;
 {
     InterpretedPredPtr pred_ptr;
     BPLONG_PTR ptr;
@@ -578,7 +578,7 @@ BPLONG type,size;
 
 
 /*
-  extend the hashtable when the number of clauses exceeds 2*(the hashtable size), 
+  extend the hashtable when the number of clauses exceeds 2*(the hashtable size),
   reusing the old hashtable as possible:
 
   1. Move all the clauses list to the new hashtable as it is.
@@ -586,7 +586,7 @@ BPLONG type,size;
   3. Move the last chain (hashtable+oldsize) to the new hashtable. For each clause whose hash value is 0,
   add a list cell to each of the newly added chains (oldsize+1,oldsize+2,...,newsize)
   4. Move the other chains to the new hashtable.
-  5. The list structures are kept the same. Let (C1,C2) be a list. If C1 is deleted, 
+  5. The list structures are kept the same. Let (C1,C2) be a list. If C1 is deleted,
   C2 is the next clause after C1 after copy.
 */
 int rehash_interpreted_pred(pred_ptr)
@@ -619,7 +619,7 @@ int rehash_interpreted_pred(pred_ptr)
         while (ISLIST(list)){
             cell_ptr = (BPLONG_PTR)UNTAGGED_ADDR(list);
             list = FOLLOW(cell_ptr+1);
-            RELEASE_FREE_RECORD(cell_ptr,3);    
+            RELEASE_FREE_RECORD(cell_ptr,3);
         }
         bucket_ptr->tail = NULL;
         bucket_ptr->list = nil_sym;
@@ -631,7 +631,7 @@ int rehash_interpreted_pred(pred_ptr)
             return BP_ERROR;
         }
     }
-    
+
     /* re-assert all the clauses on the chain (old_size) */
     bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(new_hashtable+new_size);
     list = bucket_ptr->list;
@@ -665,7 +665,7 @@ BPLONG head,body;
     BPLONG clause_record,tmp;
     InterpretedClausePtr clause_record_ptr;
     BPLONG varno = 1;
-  
+
     ALLOCATE_CLAUSE_RECORD(clause_record_ptr);
     if (clause_record_ptr==NULL){
         exception = et_OUT_OF_MEMORY;
@@ -720,13 +720,13 @@ BPLONG head,body;
     InterpretedPredBucketPtr bucket_ptr;
     int i,hashval;
     InterpretedClausePtr clause_record_ptr;
-  
+
     hashtable = pred_ptr->hashtable;
     pred_ptr->cl_count++;
     clause_record = create_clause_record(pred_ptr,head,body);
     if (clause_record==BP_ERROR) return BP_ERROR;
     clause_record_ptr = (InterpretedClausePtr)UNTAGGED_ADDR(clause_record);
-  
+
     hashval = hashval_in_assert(clause_record_ptr);
     if (hashval==0){ /* no arg or first arg is var */
         for (i=0;i<pred_ptr->bucket_size;i++){
@@ -735,7 +735,7 @@ BPLONG head,body;
         }
     } else {
         if (pred_ptr->bucket_size != 0){  /* how can pred_ptr->bucket_size be 0? */
-            i = hashval%pred_ptr->bucket_size; 
+            i = hashval%pred_ptr->bucket_size;
             bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(hashtable+i);
             if (asserta_clause_record(bucket_ptr,clause_record)==NULL) return BP_ERROR;
         }
@@ -752,7 +752,7 @@ BPLONG_PTR assertz_clause_record(bucket_ptr,clause_record)
     BPLONG clause_record;
 {
     BPLONG_PTR cell_ptr,ptr;
-  
+
     /*  assert_print_cls(bucket_ptr->list); */
     ALLOCATE_RECORD_IN_ASSERT(ptr,3);
     if (ptr==NULL){
@@ -786,7 +786,7 @@ BPLONG head,body;
     int i,hashval;
     BPLONG_PTR cell_ptr;
     InterpretedClausePtr clause_record_ptr;
-  
+
     //  printf("=>assertz_interpreted_pred pred_ptr=%x",pred_ptr); write_term(head); write_term(body); printf("\n");
 
     hashtable = pred_ptr->hashtable;
@@ -819,8 +819,8 @@ BPLONG hashval_in_assert(clause_record_ptr)
     InterpretedClausePtr clause_record_ptr;
 {
     BPLONG head,arg1,hashcode;
-  
-    head = clause_record_ptr->head; 
+
+    head = clause_record_ptr->head;
     if (ISATOM(head)) return 0;
     arg1 = FOLLOW((BPLONG_PTR)UNTAGGED_ADDR(head)+1); /* arg(1,Head,Arg1) */
 
@@ -833,13 +833,13 @@ int b_ASSERTABLE_c(Head)
 {
     SYM_REC_PTR sym_ptr;
     BPLONG_PTR top;
-  
+
     DEREF(Head);
     if (ISSTRUCT(Head)) {
         sym_ptr = (SYM_REC_PTR)FOLLOW(UNTAGGED_ADDR(Head));
         if (sym_ptr==bigint_psc || sym_ptr==float_psc)
             return BP_FALSE;
-    }  else if (ISATOM(Head)) 
+    }  else if (ISATOM(Head))
         sym_ptr = (SYM_REC_PTR)UNTAGGED_ADDR(Head);
     else return BP_FALSE;
     return (GET_ETYPE(sym_ptr)==T_ORDI || GET_ETYPE(sym_ptr)==T_DYNA) ? BP_TRUE : BP_FALSE;
@@ -852,9 +852,9 @@ int b_RETRACTABLE_c(Head)
     BPLONG_PTR top;
 
     DEREF(Head);
-    if (ISSTRUCT(Head)) 
+    if (ISSTRUCT(Head))
         sym_ptr = (SYM_REC_PTR)FOLLOW(UNTAGGED_ADDR(Head));
-    else if (ISATOM(Head)) 
+    else if (ISATOM(Head))
         sym_ptr = (SYM_REC_PTR)UNTAGGED_ADDR(Head);
     else return BP_FALSE;
     return (GET_ETYPE(sym_ptr)==T_ORDI || GET_ETYPE(sym_ptr)==T_DYNA) ? BP_TRUE : BP_FALSE;
@@ -883,7 +883,7 @@ int b_GET_PRED_PTR_cff(Head,PredPtr,IsDynamic)
         }
         return BP_ERROR;
     }
-  
+
     if (GET_ETYPE(sym_ptr)==T_DYNA){
 #ifdef NO_ISO_ASSERT
         is_dynamic = BP_MONE;
@@ -906,7 +906,7 @@ int b_GET_PRED_PTR_cff(Head,PredPtr,IsDynamic)
         ASSIGN_f_atom(IsDynamic,is_dynamic);
         return BP_TRUE;
     }
-    return BP_FALSE;  
+    return BP_FALSE;
 }
 
 
@@ -936,7 +936,7 @@ int b_GET_CLAUSES_cfff(Head,Clauses,Key,TimeStamp)
     }
     bucket_ptr = (InterpretedPredBucketPtr)FOLLOW(pred_ptr->hashtable+i);
     ASSIGN_f_atom(TimeStamp,MAKEINT(pred_ptr->time_stamp));
-    ASSIGN_sv_heap_term(Clauses,bucket_ptr->list); 
+    ASSIGN_sv_heap_term(Clauses,bucket_ptr->list);
     return BP_TRUE;
 }
 
@@ -974,7 +974,7 @@ BPLONG numberVarCopyToParea(term,varno)
         size = arity+1;
         ALLOCATE_RECORD_IN_ASSERT(ptr,size);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;    
+            exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
         FOLLOW(ptr) = FOLLOW(term_ptr);
@@ -1006,7 +1006,7 @@ BPLONG numberVarCopyListToParea(term,varno)
         UNTAG_ADDR(term);
         ALLOCATE_RECORD_IN_ASSERT(ptr,2);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;    
+            exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
         FOLLOW(ret_term_ptr) = ADDTAG(ptr,LST);
@@ -1037,14 +1037,14 @@ BPLONG numberVarCopyCommaToParea(term,varno)
         if (FOLLOW(term_ptr)!=(BPLONG)comma_psc) break;
         ALLOCATE_RECORD_IN_ASSERT(ptr,3);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;    
+            exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
         FOLLOW(ret_term_ptr) = ADDTAG(ptr,STR);
         FOLLOW(ptr) = (BPLONG)comma_psc;
         tmp = numberVarCopyToParea(FOLLOW(term_ptr+1),varno);
         if (tmp==BP_ERROR) return BP_ERROR;
-        FOLLOW(ptr+1) = tmp; 
+        FOLLOW(ptr+1) = tmp;
         ret_term_ptr = ptr+2;
         term = FOLLOW(term_ptr+2);
         DEREF(term);
@@ -1058,8 +1058,8 @@ BPLONG numberVarCopyCommaToParea(term,varno)
 /*  defined basic.h, also see table_maps in table.c
 
     There is a big difference between a global map and a table map:
-    a global map hashes a key-value pair by using a hash code generated 
-    from the main functor of the key, while a table map hashes a key-value 
+    a global map hashes a key-value pair by using a hash code generated
+    from the main functor of the key, while a table map hashes a key-value
     pair by using a hash code generated from the entire key.
 
     typedef struct {
@@ -1081,18 +1081,18 @@ BPLONG numberVarCopyCommaToParea(term,varno)
 
 void init_picat_global_maps(){
     BPLONG i;
-  
+
     for (i = 0; i < NUM_PICAT_GLOBAL_MAPS; i++){
         picat_global_maps[i] = NULL;
     }
 }
 
 /* Return the number of the map with map_id. If no map with the id was found,
-   then create a new map and register it into global_maps. Linear prob is used 
+   then create a new map and register it into global_maps. Linear prob is used
    to look for the map with map_id.
 
-   Each entry in global_maps is a pointer to a MAP_RECORD, which stores the 
-   information about the map, including the size of the bucket table, the number 
+   Each entry in global_maps is a pointer to a MAP_RECORD, which stores the
+   information about the map, including the size of the bucket table, the number
    of key-value pairs (count), and a pointer to the bucket table (htable).
 */
 int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num){
@@ -1101,9 +1101,9 @@ int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num){
     MAP_RECORD_PTR map_ptr;
 
     this_hcode = bp_hashval(map_id);
-    slot_i0 = slot_i = (this_hcode % NUM_PICAT_GLOBAL_MAPS);  
-  
-    // linear prob 
+    slot_i0 = slot_i = (this_hcode % NUM_PICAT_GLOBAL_MAPS);
+
+    // linear prob
     while ((BPLONG_PTR)picat_global_maps[slot_i] != NULL){
         if (key_identical(picat_global_map_ids[slot_i], map_id)){
             return unify(map_num,MAKEINT(slot_i));
@@ -1125,14 +1125,14 @@ int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num){
     if (tmp_ptr == NULL) myquit(OUT_OF_MEMORY,"global_maps");
     map_ptr = (MAP_RECORD_PTR)tmp_ptr;
     map_ptr->count = 0;
-    map_ptr->size = 7;    // initial size 
+    map_ptr->size = 7;    // initial size
     tmp_ptr = (BPLONG_PTR)malloc(7*sizeof(BPLONG_PTR));
     map_ptr->htable = tmp_ptr;
     for (i = 0; i < 7; i++)
         FOLLOW(tmp_ptr+i) = (BPLONG)NULL;
-  
+
     picat_global_maps[slot_i] = (BPLONG_PTR)map_ptr;
-  
+
     picat_global_map_ids[slot_i] = map_id_cp;
     return unify(map_num,MAKEINT(slot_i));
 }
@@ -1191,7 +1191,7 @@ int b_PICAT_GLOBAL_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
     mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
     BP_HASH_CODE1(key,this_hcode,lab);
 
-    kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size)); 
+    kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size));
     kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
 
     initial_diff0 = (BPULONG)trail_up_addr-(BPULONG)trail_top;
@@ -1208,7 +1208,7 @@ int b_PICAT_GLOBAL_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
             goto lookup_end;
         }
     }
-    // come here if lookup failed 
+    // come here if lookup failed
 
     varno = 0;
     key_cp = numberVarCopyToParea(key,&varno);
@@ -1244,14 +1244,14 @@ int b_PICAT_GLOBAL_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val){
         exception = nonvariable_expected;
         return BP_ERROR;
     }
-        
+
     DEREF_NONVAR(map_num);
     map_num = INTVAL(map_num);
     mr_ptr = (MAP_RECORD_PTR)picat_global_maps[map_num];
 
     BP_HASH_CODE1(key,this_hcode,lab);
-  
-    kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size)); 
+
+    kvp_ptr_ptr = (BPLONG_PTR)(mr_ptr->htable + (this_hcode % mr_ptr->size));
     kvp_ptr = (KEY_VAL_PAIR_PTR)FOLLOW(kvp_ptr_ptr);
 
     while (kvp_ptr != NULL){ /* lookup */

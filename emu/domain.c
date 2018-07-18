@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <string.h>
@@ -28,7 +28,7 @@ static SYM_REC_PTR cpcon_k2_ptr;
 int c_DM_CREATE_BV_DVAR(){
     BPLONG Var,From,To;
     BPLONG_PTR top;
-  
+
     Var = ARG(1,3);
     From = ARG(2,3);
     To  = ARG(3,3);
@@ -45,11 +45,11 @@ int c_DM_CREATE_BV_DVAR(){
 
 int c_DM_CREATE_DVAR(){
     BPLONG Var,From,To;
-  
+
     Var = ARG(1,3);
     From = ARG(2,3);
     To  = ARG(3,3);
-  
+
     return b_DM_CREATE_DVAR(Var,From,To);
 }
 
@@ -62,7 +62,7 @@ int b_DM_CREATE_DVAR(Var,From,To)
     DEREF(From);DEREF(To);
 
     if (ISINT(From)){
-        From = INTVAL(From); 
+        From = INTVAL(From);
     } else {
         //    printf("%% WARNING: lower bound changed to: %ld\n",BP_MININT_1W);
         From = BP_MININT_1W;
@@ -84,14 +84,14 @@ int c_DM_CREATE_DVARS(){
     BPLONG_PTR sreg;
     BPLONG_PTR top;
     int res;
-  
+
     Vars = ARG(1,3);
     From = ARG(2,3);
     To  = ARG(3,3);
-  
+
     DEREF(From);DEREF(To);
     if (ISINT(From)){
-        From = INTVAL(From); 
+        From = INTVAL(From);
     } else {
         //    printf("\% WARNING: lower bound changed to: %ld\n",BP_MININT_1W);
         From = BP_MININT_1W;
@@ -122,13 +122,13 @@ int aux_create_domain_var(Var,from,to)
 BPLONG from,to;
 {
     BPLONG_PTR dv_ptr;
-  
+
     if (ISREF(Var)){
         CREATE_SUSP_VAR_nocs(Var);
         DV_first(dv_ptr) = from;
         DV_last(dv_ptr) = to;
         DV_size(dv_ptr) = to-from+1;
-        DV_type(dv_ptr) = IT_DOMAIN; 
+        DV_type(dv_ptr) = IT_DOMAIN;
         return 1;
     } else if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
@@ -138,7 +138,7 @@ BPLONG from,to;
             DV_size(dv_ptr) = to-from+1;
             top = A_DV_type(dv_ptr);
             PUSHTRAIL_H_ATOMIC(top,FOLLOW(top));
-            DV_type(dv_ptr) = IT_DOMAIN; 
+            DV_type(dv_ptr) = IT_DOMAIN;
             return 1;
         } else {
             return domain_region_noint(dv_ptr,from,to);
@@ -156,13 +156,13 @@ int aux_create_bv_domain_var(Var,from,to)
 BPLONG from,to;
 {
     BPLONG_PTR dv_ptr;
-  
+
     if (ISREF(Var)){
         CREATE_SUSP_VAR_nocs(Var);
         DV_first(dv_ptr) = from;
         DV_last(dv_ptr) = to;
         DV_size(dv_ptr) = to-from+1;
-        it_to_bv(dv_ptr); 
+        it_to_bv(dv_ptr);
         return 1;
     } else if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
@@ -170,7 +170,7 @@ BPLONG from,to;
             DV_first(dv_ptr) = from;
             DV_last(dv_ptr) = to;
             DV_size(dv_ptr) = to-from+1;
-            it_to_bv(dv_ptr); 
+            it_to_bv(dv_ptr);
             return 1;
         } else {
             return domain_region_noint(dv_ptr,from,to);
@@ -189,18 +189,18 @@ BPLONG_PTR dm_clone(dv_ptr)
 {
     BPLONG_PTR dv_ptr_cp;
 
-    dv_ptr_cp = heap_top; 
-    DV_var(dv_ptr_cp) =  ((BPLONG)heap_top | SUSP); 
+    dv_ptr_cp = heap_top;
+    DV_var(dv_ptr_cp) =  ((BPLONG)heap_top | SUSP);
     DV_type(dv_ptr_cp) = DV_type(dv_ptr); /* share the same bit vector */
-    DV_first(dv_ptr_cp) = DV_first(dv_ptr); 
-    DV_last(dv_ptr_cp) = DV_last(dv_ptr); 
-    DV_size(dv_ptr_cp) = DV_size(dv_ptr); 
-    DV_ins_cs(dv_ptr_cp) = nil_sym; 
-    DV_minmax_cs(dv_ptr_cp) = nil_sym; 
-    DV_dom_cs(dv_ptr_cp) = nil_sym; 
-    DV_outer_dom_cs(dv_ptr_cp) = nil_sym; 
-    DV_attached(dv_ptr_cp) = DV_attached(dv_ptr); 
-    heap_top += SIZE_OF_DV; 
+    DV_first(dv_ptr_cp) = DV_first(dv_ptr);
+    DV_last(dv_ptr_cp) = DV_last(dv_ptr);
+    DV_size(dv_ptr_cp) = DV_size(dv_ptr);
+    DV_ins_cs(dv_ptr_cp) = nil_sym;
+    DV_minmax_cs(dv_ptr_cp) = nil_sym;
+    DV_dom_cs(dv_ptr_cp) = nil_sym;
+    DV_outer_dom_cs(dv_ptr_cp) = nil_sym;
+    DV_attached(dv_ptr_cp) = DV_attached(dv_ptr);
+    heap_top += SIZE_OF_DV;
     return dv_ptr_cp;
 }
 
@@ -215,19 +215,19 @@ int create_susp_var(Var)
     BPLONG Var;
 {
     BPLONG_PTR dv_ptr;
-  
+
     DEREF(Var);
     if (ISREF(Var)){
         CREATE_SUSP_VAR_nocs(Var);
         return 1;
-    } else 
+    } else
         return 0;
 }
 
 int fd_vector_min_max(){
     BPLONG low,up;
     BPLONG_PTR top;
-  
+
     low = ARG(1,2);
     up = ARG(2,2);
     DEREF(low); DEREF(up);
@@ -272,7 +272,7 @@ void it_to_bv(dv_ptr)
 
     FOLLOW(heap_top++) = from*NBITS_IN_LONG;     /* BV_low_val */
     FOLLOW(heap_top++) = (to+1)*NBITS_IN_LONG-1; /* BV_up_val */
-  
+
     size = (to-from+1);
     if (local_top-heap_top-size <= SMALL_MARGIN){
         myquit(STACK_OVERFLOW,"ib");
@@ -313,7 +313,7 @@ void it_to_bv_with_hole(dv_ptr,elm)
     FOLLOW(top) = (BPLONG)heap_top;
 
     offset = elm-from*NBITS_IN_LONG;
-  
+
     FOLLOW(heap_top++) = from*NBITS_IN_LONG;        /* BV_low_val */
     FOLLOW(heap_top++) = (to+1)*NBITS_IN_LONG-1;    /* BV_up_val */
 
@@ -385,7 +385,7 @@ int b_DM_DISJOINT_cc(Var1,Var2)
     BPLONG Var1,Var2;
 {
     BPLONG_PTR dv_ptr1,dv_ptr2;
-  
+
     DEREF_NONVAR(Var1);
     DEREF_NONVAR(Var2);
 
@@ -397,7 +397,7 @@ int b_DM_DISJOINT_cc(Var1,Var2)
         }
         /* Var2 must be an int */
         return (dm_true(dv_ptr1,INTVAL(Var2)) ? BP_FALSE : BP_TRUE);
-    } 
+    }
     /* Var1 must be an int */
     if (IS_SUSP_VAR(Var2)){
         dv_ptr2 = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var2);
@@ -411,8 +411,8 @@ int b_DM_DISJOINT_cc(Var1,Var2)
 int c_DM_INCLUDE(){
     BPLONG Var1,Var2;
 
-    Var1 = ARG(1,2); 
-    Var2 = ARG(2,2); 
+    Var1 = ARG(1,2);
+    Var2 = ARG(2,2);
 
     return b_DM_INCLUDE(Var1,Var2);
 }
@@ -438,9 +438,9 @@ int b_DM_INCLUDE(Var1,Var2)
     return Var1==Var2 ? BP_TRUE : BP_FALSE;
 }
 
-/* preconditions: (1) dv_ptr1 has at least the same size as dv_ptr2; 
+/* preconditions: (1) dv_ptr1 has at least the same size as dv_ptr2;
    (2) dv_ptr1 has at least the same range as dv_ptr2; and
-   (3) dv_ptr1 is a bit vector 
+   (3) dv_ptr1 is a bit vector
 */
 int domain_include_bv(dv_ptr1,dv_ptr2)
     BPLONG_PTR dv_ptr1,dv_ptr2;
@@ -467,7 +467,7 @@ int domain_include_bv(dv_ptr1,dv_ptr2)
             w_ptr1++; w1 = FOLLOW(w_ptr1);
             w_ptr2++; w2 = FOLLOW(w_ptr2);
         }
-        mask = ((BPULONG)MASK_FF >> (NBITS_IN_LONG-last_offset-1)); 
+        mask = ((BPULONG)MASK_FF >> (NBITS_IN_LONG-last_offset-1));
         w1 &= mask;
         w2 &= mask;
         /*    printf("w1 = %x w2 =%x (~w1 & w2)=%x\n",w1,w2,~w1&w2); */
@@ -509,8 +509,8 @@ int varorint_set_false(X,elm)
     domain_set_false_noint(dv_ptr,elm);
     return BP_TRUE;
 }
-  
-    
+
+
 /* Precondition: dv_ptr is not bound */
 void domain_set_false_noint(dv_ptr,elm)
     BPLONG_PTR dv_ptr;
@@ -518,7 +518,7 @@ void domain_set_false_noint(dv_ptr,elm)
 {
     BPLONG first,last,count;
     BPLONG_PTR top;
-  
+
     first = DV_first(dv_ptr);
     last = DV_last(dv_ptr);
     if (elm >first && elm<last){
@@ -533,9 +533,9 @@ void domain_set_false_noint(dv_ptr,elm)
     if (elm==first){
         count = DV_size(dv_ptr);
         if (count == 2){
-            ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));      
+            ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));
             return;
-        } 
+        }
         INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(elm));
         if (IS_IT_DOMAIN(dv_ptr)){
             elm++;
@@ -544,11 +544,11 @@ void domain_set_false_noint(dv_ptr,elm)
         }
         UPDATE_FIRST_SIZE(dv_ptr,first,elm,count-1);
         return;
-    } 
+    }
     if (elm==last){
         count = DV_size(dv_ptr);
         if (count==2){
-            ASSIGN_DVAR(dv_ptr,MAKEINT(first));      
+            ASSIGN_DVAR(dv_ptr,MAKEINT(first));
             return;
         }
         INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(elm));
@@ -569,7 +569,7 @@ int domain_set_false_aux(dv_ptr,elm)
 {
     BPLONG first,last,count;
     BPLONG_PTR top;
-  
+
     if (ISINT(FOLLOW(dv_ptr))){
         return (INTVAL(FOLLOW(dv_ptr))==elm) ? BP_FALSE : BP_TRUE;
     }
@@ -587,9 +587,9 @@ int domain_set_false_aux(dv_ptr,elm)
     if (elm==first){
         count = DV_size(dv_ptr);
         if (count == 2){
-            ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));      
+            ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));
             return 1;
-        } 
+        }
         INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(elm));
         if (IS_IT_DOMAIN(dv_ptr)){
             elm++;
@@ -598,11 +598,11 @@ int domain_set_false_aux(dv_ptr,elm)
         }
         UPDATE_FIRST_SIZE(dv_ptr,first,elm,count-1);
         return 1;
-    } 
+    }
     if (elm==last){
         count = DV_size(dv_ptr);
         if (count==2){
-            ASSIGN_DVAR(dv_ptr,MAKEINT(first));      
+            ASSIGN_DVAR(dv_ptr,MAKEINT(first));
             return 1;
         }
         INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(elm));
@@ -624,7 +624,7 @@ int domain_set_false_bv(dv_ptr,elm)
 {
     BPLONG first,last,count;
     BPLONG_PTR top;
-  
+
     if (ISINT(FOLLOW(dv_ptr))){
         return (INTVAL(FOLLOW(dv_ptr))==elm) ? BP_FALSE : BP_TRUE;
     }
@@ -637,9 +637,9 @@ int domain_set_false_bv(dv_ptr,elm)
     if (elm==first){
         count = DV_size(dv_ptr);
         if (count == 2){
-            ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));      
+            ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));
             return 1;
-        } 
+        }
         INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(elm));
         if (IS_IT_DOMAIN(dv_ptr)){
             elm++;
@@ -648,11 +648,11 @@ int domain_set_false_bv(dv_ptr,elm)
         }
         UPDATE_FIRST_SIZE(dv_ptr,first,elm,count-1);
         return 1;
-    } 
+    }
     if (elm==last){
         count = DV_size(dv_ptr);
         if (count==2){
-            ASSIGN_DVAR(dv_ptr,MAKEINT(first));      
+            ASSIGN_DVAR(dv_ptr,MAKEINT(first));
             return 1;
         }
         INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(elm));
@@ -675,12 +675,12 @@ void domain_exclude_first_bv(dv_ptr)
     BPLONG count,elm,first;
     BPULONG w,mask,offset;
     BPLONG_PTR top,w_ptr,bv_ptr;
-  
+
     count = DV_size(dv_ptr);
     if (count == 2){
-        ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));      
+        ASSIGN_DVAR(dv_ptr,MAKEINT(DV_last(dv_ptr)));
         return;
-    } 
+    }
     first = DV_first(dv_ptr);
     INSERT_TRIGGER_outer_dom(dv_ptr,MAKEINT(first));
     elm = first+1;
@@ -696,7 +696,7 @@ void domain_exclude_last_bv(dv_ptr)
     BPLONG count,elm,last;
     BPLONG_PTR top,bv_ptr,w_ptr;
     BPULONG w,offset,mask;
-  
+
     count = DV_size(dv_ptr);
     if (count==2){
         ASSIGN_DVAR(dv_ptr,MAKEINT(DV_first(dv_ptr)));
@@ -710,7 +710,7 @@ void domain_exclude_last_bv(dv_ptr)
     UPDATE_LAST_SIZE(dv_ptr,last,elm,count-1);
 }
 
-void exclude_inner_elm_bv(dv_ptr,elm) 
+void exclude_inner_elm_bv(dv_ptr,elm)
     BPLONG_PTR dv_ptr;
     BPLONG elm;
 {
@@ -750,7 +750,7 @@ int exclude_dom_aux(dv_ptr_x,dv_ptr_y)
         if (first>=last) return BP_TRUE;
         first++;
         if (!IS_IT_DOMAIN(dv_ptr_x)) first = domain_next_bv(dv_ptr_x,first);
-    } 
+    }
 }
 
 /* for each element y in dev_ptr_y, if y is NOT included in dv_ptr_x then exclude y */
@@ -766,7 +766,7 @@ int exclude_dom_comp_aux(dv_ptr_x,dv_ptr_y)
             if (domain_set_false_aux(dv_ptr_y,first)==0) return 0;
         }
         first++;
-    } 
+    }
     return BP_TRUE;
 }
 
@@ -795,7 +795,7 @@ int b_DM_NEXT_ccf(DVar,E,NextE)
     }
     if (IS_IT_DOMAIN(dv_ptr))
         elm += 1;
-    else 
+    else
         elm = domain_next_bv(dv_ptr,elm+1);
     ASSIGN_f_atom(NextE,MAKEINT(elm));
     return 1;
@@ -814,7 +814,7 @@ BPLONG domain_next_bv(dv_ptr,elm)
     /*  printf("low=%d up=%d elm=%d offset=%d w=%x\n",BV_low_val(bv_ptr),BV_up_val(bv_ptr),elm,offset,w);
      */
     NEXT_IN_WORD(elm,w,w_ptr,offset,mask);
-    NEXT_IN_ELM(elm,w,offset,mask);    
+    NEXT_IN_ELM(elm,w,offset,mask);
     return elm;
 }
 
@@ -841,11 +841,11 @@ int b_DM_PREV_ccf(DVar,E,PrevE)
         elm = DV_last(dv_ptr);
         ASSIGN_f_atom(PrevE,MAKEINT(elm));
         return BP_TRUE;
-    } else if (elm <= DV_first(dv_ptr)) 
+    } else if (elm <= DV_first(dv_ptr))
         return 0;
     if (IS_IT_DOMAIN(dv_ptr))
         elm -= 1;
-    else 
+    else
         elm = domain_prev_bv(dv_ptr,elm-1);
     ASSIGN_f_atom(PrevE,MAKEINT(elm));
     return BP_TRUE;
@@ -861,7 +861,7 @@ BPLONG domain_prev_bv(dv_ptr,elm)
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
     PREV_IN_WORD(elm,w,w_ptr,offset,mask);
-    PREV_IN_ELM(elm,w,offset,mask);    
+    PREV_IN_ELM(elm,w,offset,mask);
     return elm;
 }
 
@@ -872,7 +872,7 @@ int b_DM_TRUE_cc(Var,E)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var); 
+    DEREF(Var);
     DEREF(E);
     if (!IS_SUSP_VAR(Var)){
         return unify(Var,E);
@@ -887,7 +887,7 @@ int b_DM_FALSE_cc(Var,E)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var); 
+    DEREF(Var);
     DEREF(E);
     if (!IS_SUSP_VAR(Var)){
         return (Var!=E) ? BP_TRUE : BP_FALSE;
@@ -903,7 +903,7 @@ int b_DM_INNER_TRUE_cc(Var,E)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var); 
+    DEREF(Var);
     DEREF(E);
     if (!ISINT(E)) return 0;
     E = INTVAL(E);
@@ -927,14 +927,14 @@ int varorint_dm_true(X,elm)
     return dm_true(dv_ptr,elm);
 }
 
-  
+
 int dm_true(dv_ptr,elm)
     BPLONG_PTR dv_ptr;
     BPLONG elm;
 {
     BPLONG_PTR w_ptr,bv_ptr;
     BPULONG w,mask,offset;
-  
+
     if (elm<=DV_first(dv_ptr)){
         if (elm==DV_first(dv_ptr)) return BP_TRUE;
         return BP_FALSE;
@@ -943,10 +943,10 @@ int dm_true(dv_ptr,elm)
         if (elm==DV_last(dv_ptr)) return BP_TRUE;
         return BP_FALSE;
     }
-  
+
     if (IS_IT_DOMAIN(dv_ptr))
         return 1;
-  
+
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
     mask = ((BPULONG)0x1 << offset);
@@ -996,7 +996,7 @@ int b_DM_MIN_MAX_cff(Var,Min,Max)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var);  
+    DEREF(Var);
     if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
         if (!IS_UN_DOMAIN(dv_ptr)){
@@ -1021,7 +1021,7 @@ int b_DM_MIN_cf(Var,Min)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var);  
+    DEREF(Var);
     if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
         if (!IS_UN_DOMAIN(dv_ptr)){
@@ -1044,7 +1044,7 @@ int b_DM_MAX_cf(Var,Max)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var);  
+    DEREF(Var);
     if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
         if (!IS_UN_DOMAIN(dv_ptr)){
@@ -1067,7 +1067,7 @@ int b_DM_COUNT_cf(Var,Count)
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
 
-    DEREF(Var); 
+    DEREF(Var);
     if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
         ASSIGN_f_atom(Count,MAKEINT(DV_size(dv_ptr)));
@@ -1083,7 +1083,7 @@ BPLONG from,to;
     BPLONG_PTR w_ptr,bv_ptr;
     BPULONG w,mask,offset;
     int count;
-  
+
     count = 0;
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,from,w,w_ptr,offset);
@@ -1107,7 +1107,7 @@ BPLONG from,to;
     BPLONG_PTR w_ptr,bv_ptr;
     BPULONG w,mask,offset;
     int count;
-  
+
     count = 0;
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,from,w,w_ptr,offset);
@@ -1126,8 +1126,8 @@ BPLONG from,to;
     return count;
 }
 
-/* 
-   c_reachability_test(VarsVect) 
+/*
+   c_reachability_test(VarsVect)
    the graph represented by the fd variables is a SCC.
 */
 int c_reachability_test(){
@@ -1135,16 +1135,16 @@ int c_reachability_test(){
     BPLONG_PTR var_vect_ptr,scc_nodes,front,rear,dv_ptr;
     SYM_REC_PTR sym_ptr;
 
-    VarsVect = ARG(1,1); 
+    VarsVect = ARG(1,1);
     DEREF_NONVAR(VarsVect);
     var_vect_ptr = (BPLONG_PTR)UNTAGGED_ADDR(VarsVect);
     sym_ptr = (SYM_REC_PTR)FOLLOW(var_vect_ptr);
     N = GET_ARITY(sym_ptr);
-  
+
     QUIT_IF_OVERFLOW_HEAP(2*N+100);
     scc_nodes = heap_top;
     scc_nodes[1] = 1;
-    for (i=2;i<=N;i++){ 
+    for (i=2;i<=N;i++){
         scc_nodes[i] = 0;  /* 0 means not in scc */
     }
     front = rear = heap_top+N+1;
@@ -1158,8 +1158,8 @@ int c_reachability_test(){
             last = DV_last(dv_ptr);
             for (;;){
                 if (scc_nodes[elm]==0){ /* not in scc */
-                    scc_nodes[elm] = 1; 
-                    FOLLOW(rear++) = elm; count++; 
+                    scc_nodes[elm] = 1;
+                    FOLLOW(rear++) = elm; count++;
                     if (count==N) return BP_TRUE;
                 }
                 if (elm==last) break;
@@ -1169,8 +1169,8 @@ int c_reachability_test(){
         } else {
             elm = INTVAL(var);
             if (scc_nodes[elm]==0){
-                scc_nodes[elm] = 1; 
-                FOLLOW(rear++) = elm; count++; 
+                scc_nodes[elm] = 1;
+                FOLLOW(rear++) = elm; count++;
                 if (count==N) return BP_TRUE;
             }
         }
@@ -1178,7 +1178,7 @@ int c_reachability_test(){
     if (count==N) return BP_TRUE; else return BP_FALSE;
 }
 
-/* 
+/*
    c_subcircuit_test(Begin,VarsVect).
    nodes that are not reachable from Begin cannot be in the circuit.
 */
@@ -1187,8 +1187,8 @@ int c_subcircuit_test(){
     BPLONG_PTR var_vect_ptr,scc_nodes,front,rear,dv_ptr;
     SYM_REC_PTR sym_ptr;
 
-    Begin = ARG(1,2); 
-    VarsVect = ARG(2,2); 
+    Begin = ARG(1,2);
+    VarsVect = ARG(2,2);
     DEREF_NONVAR(Begin);
     DEREF_NONVAR(VarsVect);
 
@@ -1197,10 +1197,10 @@ int c_subcircuit_test(){
     sym_ptr = (SYM_REC_PTR)FOLLOW(var_vect_ptr);
     N = GET_ARITY(sym_ptr);
     Begin = INTVAL(Begin);
-  
+
     QUIT_IF_OVERFLOW_HEAP(2*N+100);
     scc_nodes = heap_top;
-    for (i=1;i<=N;i++){ 
+    for (i=1;i<=N;i++){
         scc_nodes[i] = 0;  /* 0 means not reachable */
     }
     scc_nodes[Begin] = 1;
@@ -1215,8 +1215,8 @@ int c_subcircuit_test(){
             last = DV_last(dv_ptr);
             for (;;){
                 if (scc_nodes[elm]==0){ /* not visited yet */
-                    scc_nodes[elm] = 1; 
-                    FOLLOW(rear++) = elm; 
+                    scc_nodes[elm] = 1;
+                    FOLLOW(rear++) = elm;
                 }
                 if (elm==last) break;
                 elm++;
@@ -1225,12 +1225,12 @@ int c_subcircuit_test(){
         } else {
             elm = INTVAL(var);
             if (scc_nodes[elm]==0){
-                scc_nodes[elm] = 1; 
-                FOLLOW(rear++) = elm; 
+                scc_nodes[elm] = 1;
+                FOLLOW(rear++) = elm;
             }
         }
     }
-    for (i=1;i<=N;i++){ 
+    for (i=1;i<=N;i++){
         if (scc_nodes[i] == 0){
             elm = FOLLOW(var_vect_ptr+i); DEREF_NONVAR(elm);
             if (IS_SUSP_VAR(elm)){
@@ -1246,7 +1246,7 @@ int c_subcircuit_test(){
 }
 
 
-/* 
+/*
    c_path_from_to_reachability_test(f,t,Vector)
    t can be reached from f. DFS is used.
 */
@@ -1281,7 +1281,7 @@ BPLONG_PTR var_vector,visited;
 {
     BPLONG var,next,last;
     BPLONG_PTR dv_ptr;
-  
+
     var = FOLLOW(var_vector+from); DEREF_NONVAR(var);
     if (IS_SUSP_VAR(var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(var);
@@ -1310,7 +1310,7 @@ BPLONG_PTR var_vector,visited;
 
 /* A directed graph is given as a structure v(node(V1,Neibs_1),...,node(Vn,Neibs_n))
    where Vi is a domain variable and Neibs_i is domain variable whose domain
-   contains the successors that can be directed reached from i. Mark each node with 
+   contains the successors that can be directed reached from i. Mark each node with
    Lab such that there is a path from start to end in which all the nodes are marked
    with Lab. The Prolog frame is as follows:
 
@@ -1324,11 +1324,11 @@ int b_PATH_FROM_TO_REACHABLE()
     BPLONG_PTR convec_struct_ptr,graph_struct_ptr;
     SYM_REC_PTR sym_ptr;
     BPLONG i;
-  
+
     /*  printf("=>from_to n"); */
 
     ConnectionVec = FOLLOW(arreg+2); DEREF_NONVAR(ConnectionVec);
-    Graph = FOLLOW(arreg+1);   DEREF_NONVAR(Graph); 
+    Graph = FOLLOW(arreg+1);   DEREF_NONVAR(Graph);
 
     convec_struct_ptr = (BPLONG_PTR)UNTAGGED_ADDR(ConnectionVec);
     sym_ptr = (SYM_REC_PTR)FOLLOW(convec_struct_ptr);
@@ -1345,12 +1345,12 @@ int b_PATH_FROM_TO_REACHABLE()
     ConStartArray = local_top-nConnections-1;
     ConEndArray = ConStartArray-nConnections-1;
     ConLabArray = ConEndArray-nConnections-1;
-    ConFlagArray = ConLabArray-nConnections-1;  
+    ConFlagArray = ConLabArray-nConnections-1;
     //
     VisitedArray = ConFlagArray-n-1;
     LabVarArray = VisitedArray-n-1;
     SuccVarArray = LabVarArray-n-1;
-    for (i=1;i<=n;i++){ 
+    for (i=1;i<=n;i++){
         BPLONG node,SuccVar,LabVar;
         BPLONG_PTR node_ptr;
         node = FOLLOW(graph_struct_ptr+i); DEREF_NONVAR(node);
@@ -1360,12 +1360,12 @@ int b_PATH_FROM_TO_REACHABLE()
         SuccVar = FOLLOW(node_ptr+2); DEREF_NONVAR(SuccVar);
         SuccVarArray[i] = SuccVar;
     }
-  
+
     /* ConnectionVec=v(v(Start_1,End_1,Lab_1,Flag_1),v(Start_2,End_2,Lab_2,Flag_2),...) */
     for (i=1;i<=nConnections;i++){
         BPLONG Con,Flag,TaggedLab;
         BPLONG_PTR con_struct_ptr;
-    
+
         Con = FOLLOW(convec_struct_ptr+i); DEREF_NONVAR(Con);
         con_struct_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Con);
 
@@ -1404,14 +1404,14 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
       write_term(Graph);
       printf("\n");
     */
-    for (i=1;i<=n;i++){ 
+    for (i=1;i<=n;i++){
         VisitedArray[i] = 0;
     }
 
     check_reach_withno_cut(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray);
 
     /* no node that is unreachable can be marked with Lab */
-    for (i=1;i<=n;i++){ 
+    for (i=1;i<=n;i++){
         if (VisitedArray[i]==0){
             BPLONG LabVar;
             LabVar = LabVarArray[i];
@@ -1421,7 +1421,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
                 BPLONG_PTR dv_ptr;
                 dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
                 domain_set_false_noint(dv_ptr,Lab);
-                LabVarArray[i] = FOLLOW(dv_ptr); 
+                LabVarArray[i] = FOLLOW(dv_ptr);
             }
         }
     }
@@ -1431,7 +1431,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         BPLONG LabVar;
         BPLONG_PTR dv_ptr;
         if (i!=Start && i!=End && path_from_to_node_degree(n,i,Lab,TaggedLab,LabVarArray,SuccVarArray)==2){
-            LabVar = LabVarArray[i]; 
+            LabVar = LabVarArray[i];
             if (IS_SUSP_VAR(LabVar)){
                 dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
                 if (dm_true(dv_ptr,Lab)){ /* test if i is a cutting node only if the domain contains Lab */
@@ -1439,8 +1439,8 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
                     for (j=1;j<=n;j++) VisitedArray[j] = 0;
                     check_reach_with_one_cut(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray,i);
                     if (VisitedArray[End]==0){ /* i is a cutting node */
-                        // printf("cnf %d ",i); 
-                        ASSIGN_DVAR(dv_ptr,TaggedLab); 
+                        // printf("cnf %d ",i);
+                        ASSIGN_DVAR(dv_ptr,TaggedLab);
                         LabVarArray[i] = TaggedLab;
                     }
                 }
@@ -1467,7 +1467,7 @@ BPLONG_PTR LabVarArray,SuccVarArray;
         curNodeNum = DV_first(dv_ptr);
         lastNodeNum = DV_last(dv_ptr);
         for (;;){
-            LabVar = LabVarArray[curNodeNum]; 
+            LabVar = LabVarArray[curNodeNum];
             if (ISINT(LabVar)){
                 if (LabVar==TaggedLab){
                     degree++;
@@ -1491,7 +1491,7 @@ BPLONG_PTR LabVarArray,SuccVarArray;
         if (ISINT(LabVar)){
             if (LabVar==TaggedLab){
                 return 1;
-            } 
+            }
         } else {
             BPLONG_PTR lab_dv_ptr;
             lab_dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
@@ -1511,7 +1511,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
     BPLONG_PTR q_front,q_rear;
 
     q_front = q_rear = SuccVarArray-1; /* reuse the control stack  for the queue */
-    FOLLOW(q_rear--) = Start; 
+    FOLLOW(q_rear--) = Start;
     VisitedArray[Start] = 1;
     while (q_front>q_rear){
         curNodeNum = FOLLOW(q_front--);
@@ -1519,7 +1519,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         if (ISINT(SuccVar)){ /* only one successor */
             BPLONG succNodeNum = INTVAL(SuccVar);
             if (VisitedArray[succNodeNum]==0){
-                LabVar = LabVarArray[succNodeNum]; 
+                LabVar = LabVarArray[succNodeNum];
                 if (ISINT(LabVar)){
                     if (LabVar==TaggedLab){
                         VisitedArray[succNodeNum] = 1;
@@ -1537,7 +1537,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         } else { /* multiple succesor nodes */
             BPLONG_PTR dv_ptr;
             BPLONG succNodeNum,lastNodeNum;
-      
+
             dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(SuccVar);
             succNodeNum = DV_first(dv_ptr);
             lastNodeNum = DV_last(dv_ptr);
@@ -1545,7 +1545,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 
             for (;;){
                 if (VisitedArray[succNodeNum]==0){
-                    LabVar = LabVarArray[succNodeNum]; 
+                    LabVar = LabVarArray[succNodeNum];
                     if (ISINT(LabVar)){
                         if (LabVar==TaggedLab){
                             VisitedArray[succNodeNum] = 1;
@@ -1576,7 +1576,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
     BPLONG_PTR q_front,q_rear;
 
     q_front = q_rear = SuccVarArray-1; /* reuse the control stack  for the queue */
-    FOLLOW(q_rear--) = Start; 
+    FOLLOW(q_rear--) = Start;
     VisitedArray[Start] = 1;
     while (q_front>q_rear){
         curNodeNum = FOLLOW(q_front--);
@@ -1584,7 +1584,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         if (ISINT(SuccVar)){ /* only one successor */
             BPLONG succNodeNum = INTVAL(SuccVar);
             if (VisitedArray[succNodeNum]==0 && succNodeNum!=cutNodeNum){
-                LabVar = LabVarArray[succNodeNum]; 
+                LabVar = LabVarArray[succNodeNum];
                 if (ISINT(LabVar)){
                     if (LabVar==TaggedLab){
                         VisitedArray[succNodeNum] = 1;
@@ -1602,7 +1602,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         } else { /* multiple succesor nodes */
             BPLONG_PTR dv_ptr;
             BPLONG succNodeNum,lastNodeNum;
-      
+
             dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(SuccVar);
             succNodeNum = DV_first(dv_ptr);
             lastNodeNum = DV_last(dv_ptr);
@@ -1610,7 +1610,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 
             for (;;){
                 if (VisitedArray[succNodeNum]==0 && succNodeNum!=cutNodeNum){
-                    LabVar = LabVarArray[succNodeNum]; 
+                    LabVar = LabVarArray[succNodeNum];
                     if (ISINT(LabVar)){
                         if (LabVar==TaggedLab){
                             VisitedArray[succNodeNum] = 1;
@@ -1639,8 +1639,8 @@ void check_two_cuts_in_two_connections(n,firstCon,nConnections,ConStartArray,Con
 BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,ConFlagArray,LabVarArray,SuccVarArray,VisitedArray;
 {
     BPLONG Start,End,Lab,TaggedLab,LabVar,v1,v2;
-    BPLONG_PTR dv_ptr;  
-  
+    BPLONG_PTR dv_ptr;
+
     Start = ConStartArray[firstCon];
     End = ConEndArray[firstCon];
     Lab = ConLabArray[firstCon];
@@ -1650,13 +1650,13 @@ BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,ConFlagArray,LabVarArray,SuccVa
     /* check if <v1,v2> are cutting nodes */
     for (v1=1;v1<n;v1++){
         if (v1!=Start && v1!=End){
-            LabVar = LabVarArray[v1]; 
+            LabVar = LabVarArray[v1];
             if (IS_SUSP_VAR(LabVar)){
                 dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
                 if (DV_size(dv_ptr)>2 && dm_true(dv_ptr,Lab)){
                     for (v2=v1+1; v2<=n; v2++){
                         if (v2!=Start && v2!=End){
-                            LabVar = LabVarArray[v2]; 
+                            LabVar = LabVarArray[v2];
                             if (IS_SUSP_VAR(LabVar)){
                                 dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
                                 if (DV_size(dv_ptr)>2 && dm_true(dv_ptr,Lab)){
@@ -1677,7 +1677,7 @@ BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,ConFlagArray,LabVarArray,SuccVa
 }
 
 /* v1 and v2 have been found to be cutting nodes for the kth connection with l1,
-   check if they are cutting nodes for another connection with label l2. If so, 
+   check if they are cutting nodes for another connection with label l2. If so,
    then no labels other than l1 and l2 are allowed for v1 and v2.
 */
 void check_cuts_in_another_connection(v1,v2,n,firstCon,firstLab,nConnections,ConStartArray,ConEndArray,ConLabArray,LabVarArray,SuccVarArray,VisitedArray)
@@ -1694,12 +1694,12 @@ BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,LabVarArray,SuccVarArray,Visite
             End = ConEndArray[secondCon];
             Lab = ConLabArray[secondCon];
             TaggedLab = MAKEINT(Lab);
-      
-            LabVar = LabVarArray[v1]; 
+
+            LabVar = LabVarArray[v1];
             if (IS_SUSP_VAR(LabVar)){
                 dv_ptr1 = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
                 if (DV_size(dv_ptr1)>2 && dm_true(dv_ptr1,Lab)){
-                    LabVar = LabVarArray[v2]; 
+                    LabVar = LabVarArray[v2];
                     if (IS_SUSP_VAR(LabVar)){
                         dv_ptr2 = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(LabVar);
                         if (DV_size(dv_ptr2)>2 && dm_true(dv_ptr2,Lab)){
@@ -1708,9 +1708,9 @@ BPLONG_PTR ConStartArray,ConEndArray,ConLabArray,LabVarArray,SuccVarArray,Visite
                             check_reach_with_two_cuts(Start,Lab,TaggedLab,LabVarArray,SuccVarArray,VisitedArray,v1,v2);
                             if (VisitedArray[End]==0){ /* v1 and v2 are also cutting nodes of the jth connection */
                                 domain_reduce_to_two(dv_ptr1,firstLab,Lab);
-                                LabVarArray[v1] = FOLLOW(dv_ptr1); 
+                                LabVarArray[v1] = FOLLOW(dv_ptr1);
                                 domain_reduce_to_two(dv_ptr2,firstLab,Lab);
-                                LabVarArray[v2] = FOLLOW(dv_ptr2); 
+                                LabVarArray[v2] = FOLLOW(dv_ptr2);
                                 /* printf("TWO CUTTING NODES %d %d\n",v1,v2); */
                             }
                         }
@@ -1730,7 +1730,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
     BPLONG_PTR q_front,q_rear;
 
     q_front = q_rear = SuccVarArray-1; /* reuse the control stack  for the queue */
-    FOLLOW(q_rear--) = Start; 
+    FOLLOW(q_rear--) = Start;
     VisitedArray[Start] = 1;
     while (q_front>q_rear){
         curNodeNum = FOLLOW(q_front--);
@@ -1738,7 +1738,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         if (ISINT(SuccVar)){ /* only one successor */
             BPLONG succNodeNum = INTVAL(SuccVar);
             if (VisitedArray[succNodeNum]==0 && succNodeNum!=cutNodeNum1 && succNodeNum!=cutNodeNum2){
-                LabVar = LabVarArray[succNodeNum]; 
+                LabVar = LabVarArray[succNodeNum];
                 if (ISINT(LabVar)){
                     if (LabVar==TaggedLab){
                         VisitedArray[succNodeNum] = 1;
@@ -1756,7 +1756,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
         } else { /* multiple succesor nodes */
             BPLONG_PTR dv_ptr;
             BPLONG succNodeNum,lastNodeNum;
-      
+
             dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(SuccVar);
             succNodeNum = DV_first(dv_ptr);
             lastNodeNum = DV_last(dv_ptr);
@@ -1764,7 +1764,7 @@ BPLONG_PTR LabVarArray,SuccVarArray,VisitedArray;
 
             for (;;){
                 if (VisitedArray[succNodeNum]==0 && succNodeNum!=cutNodeNum1  && succNodeNum!=cutNodeNum2){
-                    LabVar = LabVarArray[succNodeNum]; 
+                    LabVar = LabVarArray[succNodeNum];
                     if (ISINT(LabVar)){
                         if (LabVar==TaggedLab){
                             VisitedArray[succNodeNum] = 1;
@@ -1809,7 +1809,7 @@ BPLONG val1,val2;
   dvar(X) :
   b_DM_COUNT_cf(X,Size),
   c_alldistinct_count_subsets(X,L,R,Size,NumElms,M),
-  (M>Size -> 
+  (M>Size ->
   fail
   ;
   M=:=Size ->
@@ -1824,7 +1824,7 @@ BPLONG val1,val2;
   $alldistinct_exclude_hall_set(X,[Y|Ys]):-dvar(Y) :
   (b_DM_INCLUDE(X,Y)->true; c_exclude_dom(X,Y)),
   $alldistinct_exclude_hall_set(X,Ys).
-  $alldistinct_exclude_hall_set(X,[_|Ys]):-true : 
+  $alldistinct_exclude_hall_set(X,[_|Ys]):-true :
   $alldistinct_exclude_hall_set(X,Ys).
 */
 int b_ALLDISTINCT_CHECK_HALL_VAR_cccc(X,NumElmsLeft,L,R)
@@ -1841,14 +1841,14 @@ int b_ALLDISTINCT_CHECK_HALL_VAR_cccc(X,NumElmsLeft,L,R)
       write_term(L); printf(" ");
       write_term(R); printf("\n");
     */
-    DEREF_NONVAR(X); 
+    DEREF_NONVAR(X);
     if (!IS_SUSP_VAR(X)) return BP_TRUE; /* does nothing */
-    dv_ptr1 = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X); 
+    dv_ptr1 = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     DEREF_NONVAR(NumElmsLeft); NumElmsLeft=INTVAL(NumElmsLeft);
     DEREF_NONVAR(L); DEREF_NONVAR(R);
-  
+
     L0 = L;  NumElmsLeft0 = NumElmsLeft;
-    ALIGN(CHAR_PTR,curr_fence); 
+    ALIGN(CHAR_PTR,curr_fence);
     flag_ptr = (BPLONG_PTR)curr_fence;  /* used to indicate which domain is a subset of X */
 
     size = DV_size(dv_ptr1);
@@ -1879,7 +1879,7 @@ start_count:
 
     if (count>size) return BP_FALSE;
     if (count<size) return BP_TRUE;
-  
+
     processing_part = 1;
     NumElmsLeft = NumElmsLeft0;
     L = L0;
@@ -1927,7 +1927,7 @@ void print_domain(dv_ptr)
 
     first = DV_first(dv_ptr);
     last = DV_last(dv_ptr);
-  
+
     if (IS_IT_DOMAIN(dv_ptr)){
         fprintf(curr_out,"::[" BPLONG_FMT_STR " .." BPLONG_FMT_STR "]",first,last);
     } else {
@@ -1982,10 +1982,10 @@ int dm_intersect(dv_ptr_x,dv_ptr_y)
     BPLONG_PTR dv_ptr_x,dv_ptr_y;
 {
     BPLONG first,last;
-  
+
     if (IS_IT_DOMAIN(dv_ptr_y)){
         return  domain_region_noint(dv_ptr_x,DV_first(dv_ptr_y),DV_last(dv_ptr_y));
-    } 
+    }
     first = DV_first(dv_ptr_y);
     if (first<DV_first(dv_ptr_x)) first=DV_first(dv_ptr_x);
     last = DV_last(dv_ptr_y);
@@ -2006,8 +2006,8 @@ int b_DM_INTERSECT2(X,Low,Up)
     BPLONG X,Low,Up;
 {
     BPLONG_PTR dv_ptr;
-    DEREF_NONVAR(Low); 
-    DEREF_NONVAR(Up); 
+    DEREF_NONVAR(Low);
+    DEREF_NONVAR(Up);
     DEREF_NONVAR(X);
     if (IS_SUSP_VAR(X)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
@@ -2024,7 +2024,7 @@ int b_DM_INTERSECT2(X,Low,Up)
     }
 
     Low = INTVAL(Low);
-    Up = INTVAL(Up);      
+    Up = INTVAL(Up);
     if (dm_true(dv_ptr,Low)){
         if (dm_true(dv_ptr,Up)){
             domain_region_noint(dv_ptr,Low,Up);
@@ -2036,10 +2036,10 @@ int b_DM_INTERSECT2(X,Low,Up)
             return BP_TRUE;
         }
     } else {
-        if (dm_true(dv_ptr,Up)){    
+        if (dm_true(dv_ptr,Up)){
             ASSIGN_DVAR(dv_ptr,MAKEINT(Up));
             return BP_TRUE;
-        } else 
+        } else
             return BP_FALSE;
     }
 }
@@ -2052,7 +2052,7 @@ int dm_disjoint(dv_ptr1,dv_ptr2)
     BPLONG_PTR w_ptr1,bv_ptr1,w_ptr2,bv_ptr2,last_w_ptr1;
     BPULONG w1,offset,w2,last_w1,last_offset;
 
-    min = DV_first(dv_ptr1); min2 = DV_first(dv_ptr2); 
+    min = DV_first(dv_ptr1); min2 = DV_first(dv_ptr2);
     if (min==min2){
         return BP_FALSE;
     }
@@ -2096,12 +2096,12 @@ int dm_disjoint(dv_ptr1,dv_ptr2)
 int c_var_notin_ints(){
     BPLONG X,D;
 
-    X = ARG(1,2); 
+    X = ARG(1,2);
     D = ARG(2,2);
     return b_VAR_NOTIN_D_cc(X,D);
 }
-  
-/* 
+
+/*
    Exclude elements in List from the domain of X
    where List is a list of integers or integer intervals
 */
@@ -2115,7 +2115,7 @@ int b_VAR_NOTIN_D_cc(X,List)
 
     if (ISINT(X)){
         return check_var_notin_d(INTVAL(X),List);
-    } 
+    }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     /*minX = DV_first(dv_ptr);*/
     DEREF_NONVAR(List);
@@ -2172,8 +2172,8 @@ int check_var_notin_d(x,List)
     return BP_TRUE;
 }
 
-/* 
-   Enforce that tasks are disjunctive with this task (start,duration) 
+/*
+   Enforce that tasks are disjunctive with this task (start,duration)
    est -- earliest start time
    lst -- latest start time
    eet -- earliest end time
@@ -2198,7 +2198,7 @@ int b_TASKS_EXCLUDE_NOGOOD_INTERVAL_ccc(start,duration,tasks)
     BPLONG_PTR dv_ptr,ptr;
     BPLONG est0,lst0,task,duration0;
 
-    DEREF_NONVAR(start); 
+    DEREF_NONVAR(start);
     DEREF_NONVAR(duration); duration0 = INTVAL(duration);
     if (IS_SUSP_VAR(start)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start);
@@ -2206,13 +2206,13 @@ int b_TASKS_EXCLUDE_NOGOOD_INTERVAL_ccc(start,duration,tasks)
         lst0 = DV_last(dv_ptr);
     } else {
         est0 = lst0 = INTVAL(start);
-    }    
+    }
     DEREF_NONVAR(tasks);
     while (ISLIST(tasks)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(tasks);
         task = FOLLOW(ptr); DEREF_NONVAR(task);
-        tasks = FOLLOW(ptr+1); DEREF_NONVAR(tasks); 
-    
+        tasks = FOLLOW(ptr+1); DEREF_NONVAR(tasks);
+
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(task);
         start = FOLLOW(ptr+1); DEREF_NONVAR(start);
         duration = FOLLOW(ptr+2); DEREF_NONVAR(duration); duration = INTVAL(duration);
@@ -2221,7 +2221,7 @@ int b_TASKS_EXCLUDE_NOGOOD_INTERVAL_ccc(start,duration,tasks)
     return BP_TRUE;
 }
 
-/* 
+/*
    $disjunctive_tasks(D0,...,Dn,S0,...,Sn)
    The tasks (S0,D0),...,(Sn,Dn) are mutually disjunctive.
    Triggered when the bound of S0 is updated.
@@ -2239,22 +2239,22 @@ int b_DISJUNCTIVE_TASKS_AC(n)
     starts_ptr--;
 
     //  write_term(start);write_term(duration0);printf("\n");
-    DEREF_NONVAR(start); 
-    DEREF_NONVAR(duration0); 
-    duration0 = INTVAL(duration0); 
+    DEREF_NONVAR(start);
+    DEREF_NONVAR(duration0);
+    duration0 = INTVAL(duration0);
     if (IS_SUSP_VAR(start)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start);
         est0 = DV_first(dv_ptr);
         lst0 = DV_last(dv_ptr);
     } else {
         est0 = lst0 = INTVAL(start);
-    }    
+    }
     while (starts_ptr>arreg){
         start = FOLLOW(starts_ptr); DEREF_NONVAR(start);
         duration = FOLLOW(starts_ptr+n); DEREF_NONVAR(duration); duration = INTVAL(duration);
         TASKS_ARC_CONSISTENT(est0,lst0,duration0,start,duration);
         starts_ptr--;
-    } 
+    }
     return BP_TRUE;
 }
 
@@ -2295,8 +2295,8 @@ int b_DISJUNCTIVE_TASKS_AC(n)
     }
 
 /* Q and T
-   if (acc_est+acc_duration1>acc_lct1)  T << Q 
-   if (acc_est1+acc_duration1>acc_lct)  Q << T 
+   if (acc_est+acc_duration1>acc_lct1)  T << Q
+   if (acc_est1+acc_duration1>acc_lct)  Q << T
 */
 #define EDGE_FINDER(acc_est,acc_lct,acc_duration,start,duration){       \
         if (ISINT(start)){                                              \
@@ -2369,7 +2369,7 @@ int b_DISJUNCTIVE_TASKS_EF(n)
     n = INTVAL(n); m = n-1; /* m : number of tasks except for the seed task */
     start = FOLLOW(arreg+n); DEREF_NONVAR(start); /* S0 */
     duration0 = FOLLOW(arreg+n+n); /* D0 */
-    DEREF_NONVAR(duration0); duration0 = INTVAL(duration0); 
+    DEREF_NONVAR(duration0); duration0 = INTVAL(duration0);
 
     if (IS_SUSP_VAR(start)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(start);
@@ -2377,18 +2377,18 @@ int b_DISJUNCTIVE_TASKS_EF(n)
         lst0 = DV_last(dv_ptr);
     } else {
         est0 = lst0 = INTVAL(start);
-    }    
+    }
     lct0 = lst0+duration0;
 
     for (i=n-1;i>=1;i--){
-        t_starts[n-i-1] = FOLLOW(arreg+i); 
+        t_starts[n-i-1] = FOLLOW(arreg+i);
         duration = FOLLOW(arreg+n+i);  /* Di */
         DEREF_NONVAR(duration);
         t_durations[n-i-1] = INTVAL(duration);
     }
 
 /* edge finding: For each set Q={T1,T2,..T_{i-1}} where Ti=(Si,Di)
-   if est(Q)+d(Q)+Di > lct(Q U {Ti}) then Ti << Q (i.e., Si=<lct(Q)-Di-d(Q)) 
+   if est(Q)+d(Q)+Di > lct(Q U {Ti}) then Ti << Q (i.e., Si=<lct(Q)-Di-d(Q))
    if est(Q U {Ti}) + d(Q) + Di > lct(Q) then Q << Ti (i.e., Si>=lst(Q)+d(Q))
 */
 /* forward */
@@ -2404,17 +2404,17 @@ int b_DISJUNCTIVE_TASKS_EF(n)
         durations[m-i-1] = t_durations[i];
     }
     FORWARD_EDGE_FINDER;
-  
+
 // in-out 1
-    h = m/2; 
+    h = m/2;
     j=0;
     for (i=h;i>=0;i--){
-        starts[j] = t_starts[i]; 
+        starts[j] = t_starts[i];
         durations[j] = t_durations[i];
         j++;
     }
     for (i=h+1;i<m;i++){
-        starts[j] = t_starts[i]; 
+        starts[j] = t_starts[i];
         durations[j] = t_durations[i];
         j++;
     }
@@ -2423,12 +2423,12 @@ int b_DISJUNCTIVE_TASKS_EF(n)
 // in-out 2
     j=0;
     for (i=h+1;i<m;i++){
-        starts[j] = t_starts[i]; 
+        starts[j] = t_starts[i];
         durations[j] = t_durations[i];
         j++;
     }
     for (i=h;i>=0;i--){
-        starts[j] = t_starts[i]; 
+        starts[j] = t_starts[i];
         durations[j] = t_durations[i];
         j++;
     }
@@ -2437,39 +2437,39 @@ int b_DISJUNCTIVE_TASKS_EF(n)
 /* merge 1 */
     i = 0; j = m-1; h=0;
     while (i<j){
-        starts[h] = t_starts[i]; 
+        starts[h] = t_starts[i];
         durations[h] = t_durations[i];
         h++;
-        starts[h] = t_starts[j]; 
+        starts[h] = t_starts[j];
         durations[h] = t_durations[j];
         h++;  i++; j--;
     }
-    starts[h] = t_starts[i]; 
+    starts[h] = t_starts[i];
     durations[h] = t_durations[i];
-    FORWARD_EDGE_FINDER;  
-  
+    FORWARD_EDGE_FINDER;
+
 /* merge 2 */
     i = m/2; j = i+1; h=0;
     while (i>=0 && j<m){
-        starts[h] = t_starts[i]; 
+        starts[h] = t_starts[i];
         durations[h] = t_durations[i];
         h++;
-        starts[h] = t_starts[j]; 
+        starts[h] = t_starts[j];
         durations[h] = t_durations[j];
         h++;  i--; j++;
     }
     while (i>=0){
-        starts[h] = t_starts[i]; 
+        starts[h] = t_starts[i];
         durations[h] = t_durations[i];
-        h++;  i--; 
-    } 
+        h++;  i--;
+    }
     while (j<m){
-        starts[h] = t_starts[j]; 
+        starts[h] = t_starts[j];
         durations[h] = t_durations[j];
         h++;  j++;
     }
-    FORWARD_EDGE_FINDER;    
-    
+    FORWARD_EDGE_FINDER;
+
     return BP_TRUE;
 }
 
@@ -2492,7 +2492,7 @@ int b_EXCLUDE_NOGOOD_INTERVAL_ccc(Var,Low,Up)
 }
 
 /*
-  X :: List 
+  X :: List
   where List is a sorted list of integers and integer intervals.
 */
 int c_integers_intervals_list(){
@@ -2651,31 +2651,31 @@ void exclude_inner_interval_bv(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
 BPLONG from,to;
 {
-    BPULONG w,mask,offset; 
+    BPULONG w,mask,offset;
     BPLONG_PTR w_ptr,bv_ptr,last_trailed_addr;
     BPLONG count = DV_size(dv_ptr);
 
     last_trailed_addr = NULL;
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
-    WORD_OFFSET(bv_ptr,from,w,w_ptr,offset); 
+    WORD_OFFSET(bv_ptr,from,w,w_ptr,offset);
     while (from<=to){
-        mask = ((BPULONG)0x1 << offset); 
+        mask = ((BPULONG)0x1 << offset);
         if (w & mask){
-            if (last_trailed_addr!=w_ptr){ 
-                PUSHTRAIL_H_ATOMIC(w_ptr,w); 
-                last_trailed_addr = w_ptr; 
-            } 
-            w = FOLLOW(w_ptr) = (w & ~mask); 
+            if (last_trailed_addr!=w_ptr){
+                PUSHTRAIL_H_ATOMIC(w_ptr,w);
+                last_trailed_addr = w_ptr;
+            }
+            w = FOLLOW(w_ptr) = (w & ~mask);
             INSERT_TRIGGER_dom(dv_ptr,MAKEINT(from));
-            count--; 
+            count--;
         }
-        from++; 
-        offset++; 
+        from++;
+        offset++;
         if (offset==NBITS_IN_LONG){offset=0; w_ptr++; w = FOLLOW(w_ptr);}
     }
-    if (last_trailed_addr!=NULL){ 
-        UPDATE_SIZE(dv_ptr,DV_size(dv_ptr),count); 
-    } 
+    if (last_trailed_addr!=NULL){
+        UPDATE_SIZE(dv_ptr,DV_size(dv_ptr),count);
+    }
 }
 
 int domain_exclude_interval_aux(dv_ptr,from,to)
@@ -2709,7 +2709,7 @@ int domain_exclude_interval_noint(dv_ptr,from,to)
     BPLONG_PTR dv_ptr;
 BPLONG from,to;
 {
-  
+
     // printf("exclude_interval  %x %d %d\n",dv_ptr,from,to);
     if (from<=DV_first(dv_ptr)){
         return domain_region_noint(dv_ptr,to+1,DV_last(dv_ptr));
@@ -2759,11 +2759,11 @@ void  min_max4(BPLONG val1, BPLONG val2, BPLONG val3, BPLONG val4, BPLONG_PTR p_
     BPLONG low,up;
 
     low = up = val1;
-    if (val2<low) low = val2; 
+    if (val2<low) low = val2;
     if (val2>up) up = val2;
-    if (val3<low) low = val3; 
+    if (val3<low) low = val3;
     if (val3>up) up = val3;
-    if (val4<low) low = val4; 
+    if (val4<low) low = val4;
     if (val4>up) up = val4;
     *p_low = low;
     *p_up = up;
@@ -2773,9 +2773,9 @@ BPLONG min4(BPLONG val1, BPLONG val2, BPLONG val3, BPLONG val4){
     BPLONG low;
 
     low = val1;
-    if (val2<low) low = val2; 
-    if (val3<low) low = val3; 
-    if (val4<low) low = val4; 
+    if (val2<low) low = val2;
+    if (val3<low) low = val3;
+    if (val4<low) low = val4;
     return low;
 }
 
@@ -2856,7 +2856,7 @@ void exclude_unsupported_y_constr_xy_eq_c(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
     } /* end of loop_Y */
 }
 
-/* X*Y = Z: 
+/* X*Y = Z:
    For each element eZ in Z's domain, if there are no eX in X's domain and eY in Y's domain
    such that eX*eY = eZ, then exclude eZ from Z's domain. Special attention needed when X=Y!
 */
@@ -2881,7 +2881,7 @@ void exclude_unsupported_z_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
             if (eZ>0){
                 eX = (BPLONG)sqrt(eZ);
                 if (eX*eX==eZ) supported = 1;
-            } 
+            }
         } else {
             eX = minX;
             for (;;){ /* loop_X: enumerate X's domain */
@@ -2917,8 +2917,8 @@ int c_CLPFD_ADD_AC_ccc(){
     Y = ARG(2,3); DEREF_NONVAR(Y);
     Z = ARG(3,3); DEREF_NONVAR(Z);
 
-    //  printf("=> ADD_AC "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n"); 
-  
+    //  printf("=> ADD_AC "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
+
     if (!IS_SUSP_VAR(Z)) return BP_TRUE;
     dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
     minZ = DV_first(dv_ptr_z);
@@ -2957,7 +2957,7 @@ int c_CLPFD_ADD_AC_ccc(){
         }
     } else {                          /* Y is an int */
         elmY = INTVAL(Y);
-        for (;;){                       /* iterate over X */    
+        for (;;){                       /* iterate over X */
             *(ptr+elmX+elmY-minZ) = 1;
             if (elmX == maxX) break;      /* exit loop of X */
             elmX++;
@@ -2972,7 +2972,7 @@ int c_CLPFD_ADD_AC_ccc(){
         }
         elmZ++;
     }
-    //  printf("<= ADD_AC "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n"); 
+    //  printf("<= ADD_AC "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
     return BP_TRUE;
 }
 
@@ -3062,7 +3062,7 @@ x_is_int:
             lowZ = minX*minY;
             upZ = maxX*maxY;
         } else {
-            min_max4(minX*minY,minX*maxY,maxX*minY,maxX*maxY,&lowZ,&upZ);  
+            min_max4(minX*minY,minX*maxY,maxX*minY,maxX*maxY,&lowZ,&upZ);
         }
         if (IS_SUSP_VAR(Z)){
             if (domain_region_noint(dv_ptr_z,lowZ,upZ)==BP_FALSE) return BP_FALSE;
@@ -3079,24 +3079,24 @@ x_is_int:
 
     if (minZ == BP_MININT_1W || maxZ == BP_MAXINT_1W)   return BP_TRUE;
     if (minX>=0 && minY>=0 && minZ>0){
-        if (domain_region_noint(dv_ptr_x,minX,maxZ)==BP_FALSE) return BP_FALSE;    
+        if (domain_region_noint(dv_ptr_x,minX,maxZ)==BP_FALSE) return BP_FALSE;
         if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
         maxX = DV_last(dv_ptr_x);
-        if (domain_region_noint(dv_ptr_y,minY,maxZ)==BP_FALSE) return BP_FALSE;    
+        if (domain_region_noint(dv_ptr_y,minY,maxZ)==BP_FALSE) return BP_FALSE;
         if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         maxY = DV_last(dv_ptr_y);
     }
     if ((minX > 0 && maxX < BP_MAXINT_1W) || (maxX < 0 && minX > BP_MININT_1W)){
         lowY = min4(sound_low_div(minZ,minX), sound_low_div(minZ,maxX), sound_low_div(maxZ,minX), sound_low_div(maxZ,maxX));
         upY = max4(sound_up_div(minZ,minX), sound_up_div(minZ,maxX), sound_up_div(maxZ,minX), sound_up_div(maxZ,maxX));
-        if (domain_region_noint(dv_ptr_y,lowY,upY)==BP_FALSE) return BP_FALSE;    
+        if (domain_region_noint(dv_ptr_y,lowY,upY)==BP_FALSE) return BP_FALSE;
         if (ISINT(FOLLOW(dv_ptr_y))) return BP_TRUE;
         minY = DV_first(dv_ptr_y); maxY = DV_last(dv_ptr_y);
     }
     if ((minY > 0 &&  maxY < BP_MAXINT_1W)  || (maxY <0 && minY > BP_MININT_1W)){
         lowX = min4(sound_low_div(minZ,minY), sound_low_div(minZ,maxY), sound_low_div(maxZ,minY), sound_low_div(maxZ,maxY));
         upX = max4(sound_up_div(minZ,minY), sound_up_div(minZ,maxY), sound_up_div(maxZ,minY), sound_up_div(maxZ,maxY));
-        if (domain_region_noint(dv_ptr_x,lowX,upX)==BP_FALSE) return BP_FALSE;    
+        if (domain_region_noint(dv_ptr_x,lowX,upX)==BP_FALSE) return BP_FALSE;
         if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
     }
 
@@ -3108,7 +3108,7 @@ x_is_int:
         }
         if (IS_SMALL_DOMAIN(dv_ptr_x) && maxY-minY <= 65536){
             exclude_unsupported_y_constr_xy_eq_z(dv_ptr_y,dv_ptr_x,dv_ptr_z);
-            if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;      
+            if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
         }
         if (IS_SMALL_DOMAIN2(minZ,maxZ)) exclude_unsupported_z_constr_xy_eq_z(dv_ptr_x,dv_ptr_y,dv_ptr_z);
     } else {
@@ -3119,7 +3119,7 @@ x_is_int:
         }
         if (IS_SMALL_DOMAIN(dv_ptr_x) && maxY-minY <= 65536){
             exclude_unsupported_y_constr_xy_eq_c(dv_ptr_y,dv_ptr_x,Z);
-            if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;      
+            if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
         }
     }
     // printf("<= multi "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
@@ -3136,7 +3136,7 @@ BPLONG con05_hashtable_get(table,key)
     BPLONG buckets;
     BPLONG_PTR ptr,top;
     BPLONG index,size;
-  
+
     /*  write_term(key);printf("   "); write_term(table);printf("\n"); */
     DEREF_NONVAR(table);
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(table);
@@ -3186,7 +3186,7 @@ int c_cpcon_decrement_counters(){
             low = FOLLOW(interval_ptr+1);DEREF_NONVAR(low); low = INTVAL(low);
             up = FOLLOW(interval_ptr+2);DEREF_NONVAR(up); up = INTVAL(up);
             for (elm=low;elm<=up;elm++){
-                if (cpcon_decrement_counter(Counters,J,elm,dv_ptr)==BP_FALSE) return BP_FALSE;    
+                if (cpcon_decrement_counter(Counters,J,elm,dv_ptr)==BP_FALSE) return BP_FALSE;
                 if (ISINT(FOLLOW(dv_ptr))) return BP_TRUE;
             }
         }
@@ -3222,9 +3222,9 @@ BPLONG_PTR dv_ptr;
     }
     return BP_TRUE;
 }
-  
+
 /* op is a boolean domain variable */
-int b_BOOL_DVAR_c(BPLONG op)     
+int b_BOOL_DVAR_c(BPLONG op)
 {
     BPLONG_PTR dv_ptr;
 
@@ -3245,7 +3245,7 @@ void Cboot_domain(){
 
     fd_region_low = -3200;
     fd_region_up = 3200;
-  
+
     insert_cpred("c_DM_CREATE_DVARS",3,c_DM_CREATE_DVARS);
     insert_cpred("c_DM_CREATE_DVAR",3,c_DM_CREATE_DVAR);
     insert_cpred("c_DM_CREATE_BV_DVAR",3,c_DM_CREATE_BV_DVAR);
@@ -3255,9 +3255,9 @@ void Cboot_domain(){
     insert_cpred("c_DM_INCLUDE",2,c_DM_INCLUDE);
     insert_cpred("fd_vector_min_max",2,fd_vector_min_max);
     insert_cpred("c_VV_EQ_C_CON",3,c_VV_EQ_C_CON);
-    insert_cpred("c_V_EQ_VC_CON",3,c_V_EQ_VC_CON);  
-    insert_cpred("c_UU_EQ_C_CON",5,c_UU_EQ_C_CON);  
-    insert_cpred("c_U_EQ_UC_CON",5,c_U_EQ_UC_CON);  
+    insert_cpred("c_V_EQ_VC_CON",3,c_V_EQ_VC_CON);
+    insert_cpred("c_UU_EQ_C_CON",5,c_UU_EQ_C_CON);
+    insert_cpred("c_U_EQ_UC_CON",5,c_U_EQ_UC_CON);
 
     insert_cpred("c_reachability_test",1,c_reachability_test);
     insert_cpred("c_subcircuit_test",2,c_subcircuit_test);
@@ -3271,4 +3271,3 @@ void Cboot_domain(){
     insert_cpred("c_CLPFD_ADD_AC_ccc",3,c_CLPFD_ADD_AC_ccc);
 }
 
-    

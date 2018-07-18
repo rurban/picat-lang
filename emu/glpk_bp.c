@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include  <stdlib.h>
 #ifdef GLPK
@@ -41,7 +41,7 @@ extern double floatval();
     }
 
 #define FREE_IF_NOT_NULL(ptr) if (ptr!=NULL) free(ptr)
- 
+
 #define RELEASE_SOL_SPACE {                     \
         FREE_IF_NOT_NULL(x);                    \
     }
@@ -74,12 +74,12 @@ int c_lp_solve(){
     int  *rn, *cn;
     double  *rmatval,*x;
     double dob_val;
-  
-  
+
+
     NCols = ARG(1,8); DEREF_NONVAR(NCols); NCols=INTVAL(NCols);
     NRows = ARG(2,8); DEREF_NONVAR(NRows); NRows=INTVAL(NRows);
     NNZs = ARG(3,8); DEREF_NONVAR(NNZs); NNZs=INTVAL(NNZs);
-    VarAttrs=ARG(4,8); DEREF_NONVAR(VarAttrs); 
+    VarAttrs=ARG(4,8); DEREF_NONVAR(VarAttrs);
     ObjVector=ARG(5,8); DEREF_NONVAR(ObjVector);
     ObjSense=ARG(6,8); DEREF_NONVAR(ObjSense); ObjSense=INTVAL(ObjSense);
     Constrs=ARG(7,8);DEREF_NONVAR(Constrs);
@@ -106,9 +106,9 @@ int c_lp_solve(){
     glp_add_cols(lp,NCols);
 
     if (ObjSense==0)
-        glp_set_obj_dir(lp, GLP_MIN); 
-    else 
-        glp_set_obj_dir(lp, GLP_MAX); 
+        glp_set_obj_dir(lp, GLP_MIN);
+    else
+        glp_set_obj_dir(lp, GLP_MAX);
 
     /* coefficients of the objective expression */
     //  printf("ObjSense=%d\n",ObjSense);
@@ -118,7 +118,7 @@ int c_lp_solve(){
         temp = FOLLOW(ptr+i);
         DEREF(temp);
         GLP_SET_OBJ_COEF(lp,i,temp,0.0);
-        //      printf("obj[%d]=",i);write_term(temp);printf("\n"); 
+        //      printf("obj[%d]=",i);write_term(temp);printf("\n");
     }
 
     /* lower and upper bounds */
@@ -130,13 +130,13 @@ int c_lp_solve(){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(lst);
         VarAttr = FOLLOW(ptr); DEREF_NONVAR(VarAttr);
         lst = FOLLOW(ptr+1); DEREF_NONVAR(lst);
-    
+
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(VarAttr); /* $cplex_x(ColNo,Type,L,U,Constrs) */
         lower = FOLLOW(ptr+3); DEREF(lower);
         upper = FOLLOW(ptr+4); DEREF(upper);
 
         GLP_SET_COL_BOUNDS(lp,i,lower,upper);
-        //      printf("col[%d] ",i); write_term(lower); printf(" "); write_term(upper); printf("\n"); 
+        //      printf("col[%d] ",i); write_term(lower); printf(" "); write_term(upper); printf("\n");
 
         varType = FOLLOW(ptr+2); DEREF(varType);
         if (!ISREF(varType)){
@@ -145,10 +145,10 @@ int c_lp_solve(){
 
         i++;
     }
-  
+
     if (is_mip){
         /*    lpx_set_class(lp,GLP_MIP); */
-    
+
         i = 1;
         lst = VarAttrs;
         while (ISLIST(lst)){
@@ -157,7 +157,7 @@ int c_lp_solve(){
             ptr = (BPLONG_PTR)UNTAGGED_ADDR(lst);
             VarAttr = FOLLOW(ptr); DEREF_NONVAR(VarAttr);
             lst = FOLLOW(ptr+1); DEREF_NONVAR(lst);
-    
+
             ptr = (BPLONG_PTR)UNTAGGED_ADDR(VarAttr); /* $cplex_x(ColNo,Type,L,U,Constrs) */
             varType = FOLLOW(ptr+2); DEREF(varType);
             if (!ISREF(varType)){
@@ -184,12 +184,12 @@ int c_lp_solve(){
         //      printf("constr:"); write_term(Constr); printf("\n");
 
         Constrs = FOLLOW(ptr+1); DEREF_NONVAR(Constrs);
-    
+
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Constr); /* $cplex_c(NNZs,CoeCols,Const,ConstrType) */
-        CoeCols = FOLLOW(ptr+2); DEREF_NONVAR(CoeCols); 
-        Const = FOLLOW(ptr+3); DEREF_NONVAR(Const); 
+        CoeCols = FOLLOW(ptr+2); DEREF_NONVAR(CoeCols);
+        Const = FOLLOW(ptr+3); DEREF_NONVAR(Const);
         ConstrType = FOLLOW(ptr+4); DEREF_NONVAR(ConstrType); ConstrType=INTVAL(ConstrType);
-    
+
         dob_val = (ISINT(Const)) ? (double)INTVAL(Const) : floatval(Const);
         if (ConstrType==0)
             glp_set_row_bnds(lp,row,GLP_FX,dob_val,dob_val);
@@ -197,16 +197,16 @@ int c_lp_solve(){
             glp_set_row_bnds(lp,row,GLP_UP,0.0,dob_val);
 
         while (ISLIST(CoeCols)){ /* [(Coe1,Col1),...,(ColN,ColN)] */
-            ptr = (BPLONG_PTR)UNTAGGED_ADDR(CoeCols); 
+            ptr = (BPLONG_PTR)UNTAGGED_ADDR(CoeCols);
             pair = FOLLOW(ptr); DEREF_NONVAR(pair);
             CoeCols = FOLLOW(ptr+1); DEREF_NONVAR(CoeCols);
-      
+
             ptr = (BPLONG_PTR)UNTAGGED_ADDR(pair);       /* (Coe,Col) */
-            Col = FOLLOW(ptr+2); DEREF_NONVAR(Col); 
+            Col = FOLLOW(ptr+2); DEREF_NONVAR(Col);
 
-            rn[i] = row; cn[i] = (INTVAL(Col)+1); 
+            rn[i] = row; cn[i] = (INTVAL(Col)+1);
 
-            Coe = FOLLOW(ptr+1); DEREF_NONVAR(Coe); 
+            Coe = FOLLOW(ptr+1); DEREF_NONVAR(Coe);
             dob_val = (ISINT(Coe)) ? (double)INTVAL(Coe) : floatval(Coe);
             rmatval[i] = -dob_val;
 
@@ -235,7 +235,7 @@ int c_lp_solve(){
 exit_glpk:
     // printf("exit status = %d\n",status);
     if (status!=LPX_E_OK){
-        RELEASE_PROB_SPACE;    
+        RELEASE_PROB_SPACE;
         switch (status){
         case LPX_E_FAULT:
             return glpk_error("unable to start search");
@@ -251,11 +251,11 @@ exit_glpk:
             return BP_FALSE;
         }
     }
-  
+
     x = (double *) malloc (NCols * sizeof(double));
 
     if ( x == NULL){
-        RELEASE_PROB_SPACE;    
+        RELEASE_PROB_SPACE;
         return glpk_error("No enough memory (GLPK)");
     }
 

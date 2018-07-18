@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -17,28 +17,28 @@
 #define A2_GET(a,i,j,nj) FOLLOW(a+i*nj+j)
 #define A3_GET(a,i,j,k,nj,nk) FOLLOW(a+(i*nj+j)*nk+k)
 
-/* 
-   Create a new bit vector fd variable. The bit vector has the range from..to and 
-   the initial attribute values (first,last,and size) are given. The bit vector 
-   has all the bits set to 0 if bv_word=0x0. In this case, the elements are to 
+/*
+   Create a new bit vector fd variable. The bit vector has the range from..to and
+   the initial attribute values (first,last,and size) are given. The bit vector
+   has all the bits set to 0 if bv_word=0x0. In this case, the elements are to
    be added to the domain later. This is unusual but convenient.
 */
 
 BPLONG_PTR new_bv_domain_var(from,to,first,last,size,bv_word)
     BPLONG from,to,first,last,size;
 BPULONG bv_word;
-{       
+{
     BPLONG_PTR dv_ptr,top;
     BPLONG i;
-  
-    dv_ptr = heap_top; 
-    DV_var(dv_ptr) =  ((BPLONG)heap_top | SUSP); 
-    DV_ins_cs(dv_ptr) = nil_sym; 
-    DV_minmax_cs(dv_ptr) = nil_sym; 
-    DV_dom_cs(dv_ptr) = nil_sym; 
-    DV_outer_dom_cs(dv_ptr) = nil_sym; 
-    DV_attached(dv_ptr) = nil_sym; 
-    heap_top += SIZE_OF_DV; 
+
+    dv_ptr = heap_top;
+    DV_var(dv_ptr) =  ((BPLONG)heap_top | SUSP);
+    DV_ins_cs(dv_ptr) = nil_sym;
+    DV_minmax_cs(dv_ptr) = nil_sym;
+    DV_dom_cs(dv_ptr) = nil_sym;
+    DV_outer_dom_cs(dv_ptr) = nil_sym;
+    DV_attached(dv_ptr) = nil_sym;
+    heap_top += SIZE_OF_DV;
 
     DV_first(dv_ptr) = first;
     DV_last(dv_ptr) = last;
@@ -52,7 +52,7 @@ BPULONG bv_word;
 
     FOLLOW(heap_top++) = from*NBITS_IN_LONG;     /* BV_low_val */
     FOLLOW(heap_top++) = (to+1)*NBITS_IN_LONG-1; /* BV_up_val */
-  
+
     for (i=from; i<=to; i++){
         *heap_top++ = bv_word;
     }
@@ -65,8 +65,8 @@ BPULONG bv_word;
 }
 
 /*
-  updates are not trailed because it is assumed that 
-  no choice point has been created since creation of 
+  updates are not trailed because it is assumed that
+  no choice point has been created since creation of
   the domain variable
 */
 void domain_set_true_bv(dv_ptr,elm)
@@ -75,7 +75,7 @@ void domain_set_true_bv(dv_ptr,elm)
 {
     BPULONG w,mask,offset;
     BPLONG_PTR w_ptr,bv_ptr;
-  
+
     bv_ptr = (BPLONG_PTR)DV_bit_vector_ptr(dv_ptr);
     WORD_OFFSET(bv_ptr,elm,w,w_ptr,offset);
     mask = ((BPULONG)0x1 << offset);
@@ -93,17 +93,17 @@ void domain_set_true_bv(dv_ptr,elm)
 /* no bit-vector is used if last = first+1 */
 BPLONG_PTR new_it_domain_var(first,last)
     BPLONG first,last;
-{       
+{
     BPLONG_PTR dv_ptr;
-  
-    dv_ptr = heap_top; 
-    DV_var(dv_ptr) =  ((BPLONG)heap_top | SUSP); 
-    DV_ins_cs(dv_ptr) = nil_sym; 
-    DV_minmax_cs(dv_ptr) = nil_sym; 
-    DV_dom_cs(dv_ptr) = nil_sym; 
-    DV_outer_dom_cs(dv_ptr) = nil_sym; 
-    DV_attached(dv_ptr) = nil_sym; 
-    heap_top += SIZE_OF_DV; 
+
+    dv_ptr = heap_top;
+    DV_var(dv_ptr) =  ((BPLONG)heap_top | SUSP);
+    DV_ins_cs(dv_ptr) = nil_sym;
+    DV_minmax_cs(dv_ptr) = nil_sym;
+    DV_dom_cs(dv_ptr) = nil_sym;
+    DV_outer_dom_cs(dv_ptr) = nil_sym;
+    DV_attached(dv_ptr) = nil_sym;
+    heap_top += SIZE_OF_DV;
 
     if (local_top-heap_top <= LARGE_MARGIN){
         myquit(STACK_OVERFLOW,"cfd 1");
@@ -112,7 +112,7 @@ BPLONG_PTR new_it_domain_var(first,last)
     DV_first(dv_ptr) = first;
     DV_last(dv_ptr) = last;
     DV_size(dv_ptr) = last-first+1;
-    DV_type(dv_ptr) = IT_DOMAIN; 
+    DV_type(dv_ptr) = IT_DOMAIN;
 
     return dv_ptr;
 }
@@ -126,7 +126,7 @@ int b_CFD_COMPUTE_MINS_MAXS(Arity,Tuples,Mins,Maxs)
     DEREF_NONVAR(Arity); n = INTVAL(Arity);
 
     /* compute MinArray[i] and MaxArray[i] */
-    MinArray = local_top - n - 1; 
+    MinArray = local_top - n - 1;
     MaxArray = MinArray - n - 1;
 
     if (MaxArray-heap_top <= LARGE_MARGIN){
@@ -138,7 +138,7 @@ int b_CFD_COMPUTE_MINS_MAXS(Arity,Tuples,Mins,Maxs)
         MaxArray[i] = BP_MININT_1W;
     }
     DEREF_NONVAR(Tuples);
-    while (ISLIST(Tuples)){  
+    while (ISLIST(Tuples)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Tuples);
         tuple = FOLLOW(ptr); DEREF_NONVAR(tuple);
         Tuples = FOLLOW(ptr+1); DEREF_NONVAR(Tuples);
@@ -152,7 +152,7 @@ int b_CFD_COMPUTE_MINS_MAXS(Arity,Tuples,Mins,Maxs)
             if (e > MaxArray[i]){MaxArray[i] = e;}
         }
     }
-  
+
     DEREF_NONVAR(Mins);
     mins_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Mins);
     DEREF_NONVAR(Maxs);
@@ -183,7 +183,7 @@ BPLONG_PTR MinArray;
             BPLONG_PTR arg_ptr;
             if (MinArray[i]<0){
                 arg_ptr = ptr+i;
-                e = FOLLOW(arg_ptr); DEREF_NONVAR(e); 
+                e = FOLLOW(arg_ptr); DEREF_NONVAR(e);
                 e = INTVAL(e)-MinArray[i];
                 PUSHTRAIL_h(arg_ptr);
                 FOLLOW(arg_ptr) = MAKEINT(e);
@@ -199,11 +199,11 @@ int b_CFD_TRANSFORM_TUPLES(Arity,Tuples,Mins)
     BPLONG i,n;
 
     DEREF_NONVAR(Arity); n = INTVAL(Arity);
-  
+
     DEREF_NONVAR(Mins);
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(Mins);
     MinArray = local_top-n-1;
-  
+
     if (MinArray-heap_top <= LARGE_MARGIN){
         myquit(STACK_OVERFLOW,"cfd 3");
     }
@@ -216,7 +216,7 @@ int b_CFD_TRANSFORM_TUPLES(Arity,Tuples,Mins)
     cfd_transform_tuples(n,Tuples,MinArray);
     return BP_TRUE;
 }
-  
+
 /* b_CFD_BUILD_TRIES_IN(Maxes,Tuples,A2Tries) converts tuples into tries.
 
    Maxs=t(M1,...,Mn),
@@ -225,12 +225,12 @@ int b_CFD_TRANSFORM_TUPLES(Arity,Tuples,Mins)
 
    A2Tries=t(t(_,T12,...,T1n),
    ...,
-   t(Tn1,Tn2,...,Tn(n-1),_)) 
-   
+   t(Tn1,Tn2,...,Tn(n-1),_))
+
    Tij takes the form trie(Sij0,...,Sijk,...) where Sijk denotes k's supports (fd var) in Vj
    (k is an element in Vi's domain).
 
-   For each tuple t(a1,...,an) and for each pair (i j) (1=<i<j<=n), 
+   For each tuple t(a1,...,an) and for each pair (i j) (1=<i<j<=n),
    add aj as a support of ai and add ai as a support of aj.
 
    Note that the tuples have been normalized such that the minimum is 0.
@@ -244,16 +244,16 @@ int b_CFD_BUILD_TRIES_IN(Maxs,Tuples,A2Tries)
     SYM_REC_PTR sym_ptr;
     BPLONG max_domain_size();
 
-    DEREF_NONVAR(Maxs); 
+    DEREF_NONVAR(Maxs);
     maxs_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Maxs);
     sym_ptr = (SYM_REC_PTR)FOLLOW(maxs_ptr);  n = GET_ARITY(sym_ptr);
-    DEREF_NONVAR(Tuples);   
+    DEREF_NONVAR(Tuples);
 
     //  printf("=>BUILD_TRIES_IN %x %x\n",local_top,heap_top);
 
     local_top0 = local_top; /* reuse the Prolog stack */
     local_top -= n;
-    CompVarMaxArray = local_top; 
+    CompVarMaxArray = local_top;
     nk = 0; /* nk is the largest value in any domain */
 
     if (local_top-heap_top <= LARGE_MARGIN){
@@ -281,7 +281,7 @@ int b_CFD_BUILD_TRIES_IN(Maxs,Tuples,A2Tries)
 
     compute_mins_maxs_in(n,nk,Tuples,MinArray,MaxArray);
 
-    DEREF_NONVAR(A2Tries);  
+    DEREF_NONVAR(A2Tries);
     tries_ptr = (BPLONG_PTR)UNTAGGED_ADDR(A2Tries);
     initialize_supports(n,nk,tries_ptr,CompVarMaxArray,MinArray,MaxArray);
 
@@ -295,7 +295,7 @@ int b_CFD_BUILD_TRIES_IN(Maxs,Tuples,A2Tries)
 }
 
 /* b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries) converts tuples into tries.
-   for each tuple (a1,...,an) that is not in HTable and for each pair (i j) (1=<i<j<=n), 
+   for each tuple (a1,...,an) that is not in HTable and for each pair (i j) (1=<i<j<=n),
    add aj as a support of ai in i and add ai as a support of aj in j.
 */
 int b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries)
@@ -306,20 +306,20 @@ int b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries)
     BPLONG compvar,tuple,n,nk,array_size,i,htable_size;
     SYM_REC_PTR sym_ptr;
     BPLONG max_domain_size();
-  
-    DEREF_NONVAR(HTable); 
+
+    DEREF_NONVAR(HTable);
     htable_ptr = (BPLONG_PTR)UNTAGGED_ADDR(HTable);
-    sym_ptr = (SYM_REC_PTR)FOLLOW(htable_ptr);  
+    sym_ptr = (SYM_REC_PTR)FOLLOW(htable_ptr);
     htable_size = GET_ARITY(sym_ptr);
 
     DEREF_NONVAR(CompVars); /* CompVars=t(V1,...,Vn) */
     comp_vars_ptr = (BPLONG_PTR)UNTAGGED_ADDR(CompVars);
     sym_ptr = (SYM_REC_PTR)FOLLOW(comp_vars_ptr);  n = GET_ARITY(sym_ptr);
 
-  
-    DEREF_NONVAR(A2Tries);  /* A2Tries=t(t(_,T12,...,T1n),...,t(Tn1,Tn2,...,Tn(n-1),_))  
+
+    DEREF_NONVAR(A2Tries);  /* A2Tries=t(t(_,T12,...,T1n),...,t(Tn1,Tn2,...,Tn(n-1),_))
                                where Tij is a trie trie(Sij0,Sij1,...,Sijk)*/
-  
+
     local_top0 = local_top; /* reuse the Prolog stack */
 
     /* copy CompVars to CompVarArray */
@@ -345,7 +345,7 @@ int b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries)
         if (nk<CompVarMaxArray[i]) nk = CompVarMaxArray[i];
         CompVarArray[i] = compvar;
     }
-  
+
     /* compute minimum and maximum supports in Vj of each element in Vi */
     nk++;
     array_size = n*n*nk+1;
@@ -363,7 +363,7 @@ int b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries)
     }
 
     tuple_ptr = local_top; /* space for a tuple */
-    FOLLOW(tuple_ptr) = (BPLONG)sym_ptr; 
+    FOLLOW(tuple_ptr) = (BPLONG)sym_ptr;
     tuple = ADDTAG(tuple_ptr,STR);
 
 
@@ -406,13 +406,13 @@ BPLONG Tuples;
 BPLONG_PTR MinArray,MaxArray;
 {
     BPLONG i,j;
-  
-    while (ISLIST(Tuples)){  
+
+    while (ISLIST(Tuples)){
         BPLONG tuple;
         BPLONG_PTR tuples_ptr,tuple_ptr;
         tuples_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Tuples);
         tuple = FOLLOW(tuples_ptr); DEREF_NONVAR(tuple);
-        tuple_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tuple); 
+        tuple_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tuple);
         Tuples = FOLLOW(tuples_ptr+1); DEREF_NONVAR(Tuples);
 
         for (i=1;i<=n;i++){
@@ -423,7 +423,7 @@ BPLONG_PTR MinArray,MaxArray;
             for (j=i+1;j<n;j++){
                 BPLONG ai,aj;
                 ai = FOLLOW(local_top-i);
-                aj = FOLLOW(local_top-j);       
+                aj = FOLLOW(local_top-j);
                 if (aj<A3_GET(MinArray,i,j,ai,n,nk)) A3_GET(MinArray,i,j,ai,n,nk) = aj;
                 if (aj>A3_GET(MaxArray,i,j,ai,n,nk)) A3_GET(MaxArray,i,j,ai,n,nk) = aj;
                 if (ai<A3_GET(MinArray,j,i,aj,n,nk)) A3_GET(MinArray,j,i,aj,n,nk) = ai;
@@ -439,7 +439,7 @@ void compute_mins_maxs_notin(arg_no,n,nk,htable_ptr,htable_size,tuple_ptr,CompVa
 BPLONG_PTR tuple_ptr,CompVarArray,MinArray,MaxArray,htable_ptr;
 {
     BPLONG compvar,i,j;
-  
+
     if (arg_no==n){
         if (!htable_contains_tuple(htable_ptr,htable_size,tuple_ptr,n)){
             for (i=0;i<n;i++){
@@ -449,7 +449,7 @@ BPLONG_PTR tuple_ptr,CompVarArray,MinArray,MaxArray,htable_ptr;
                 for (j=i+1;j<n;j++){
                     BPLONG ai,aj;
                     ai = FOLLOW(local_top-i);
-                    aj = FOLLOW(local_top-j);   
+                    aj = FOLLOW(local_top-j);
                     if (aj<A3_GET(MinArray,i,j,ai,n,nk)) A3_GET(MinArray,i,j,ai,n,nk) = aj;
                     if (aj>A3_GET(MaxArray,i,j,ai,n,nk)) A3_GET(MaxArray,i,j,ai,n,nk) = aj;
                     if (ai<A3_GET(MinArray,j,i,aj,n,nk)) A3_GET(MinArray,j,i,aj,n,nk) = ai;
@@ -522,12 +522,12 @@ BPLONG_PTR tries_ptr,MinArray,MaxArray;
 {
 
     BPLONG i,j;
-    while (ISLIST(Tuples)){  
+    while (ISLIST(Tuples)){
         BPLONG_PTR tuples_ptr,tuple_ptr;
         BPLONG tuple;
         tuples_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Tuples);
         tuple = FOLLOW(tuples_ptr); DEREF_NONVAR(tuple);
-        tuple_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tuple); 
+        tuple_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tuple);
         Tuples = FOLLOW(tuples_ptr+1); DEREF_NONVAR(Tuples);
 
         for (i=1;i<=n;i++){
@@ -546,7 +546,7 @@ BPLONG_PTR tries_ptr,MinArray,MaxArray;
                 BPLONG_PTR dv_ptr,tries_ij_ptr;
 
                 if (i==j) continue;
-                aj = FOLLOW(local_top-j);       
+                aj = FOLLOW(local_top-j);
                 tries_ij = FOLLOW(tries_i_ptr+j+1); DEREF_NONVAR(tries_ij);
                 tries_ij_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tries_ij);
 
@@ -566,7 +566,7 @@ void compute_supports_notin(arg_no,n,htable_ptr,htable_size,tuple_ptr,CompVarArr
     BPLONG arg_no,n;
 BPLONG htable_size;
 BPLONG_PTR tuple_ptr,CompVarArray,tries_ptr,MinArray,MaxArray,htable_ptr;
-{     
+{
     BPLONG i,j;
 
     if (arg_no==n){
@@ -587,7 +587,7 @@ BPLONG_PTR tuple_ptr,CompVarArray,tries_ptr,MinArray,MaxArray,htable_ptr;
                     BPLONG_PTR dv_ptr,tries_ij_ptr;
 
                     if (i==j) continue;
-                    aj = FOLLOW(local_top-j);   
+                    aj = FOLLOW(local_top-j);
                     tries_ij = FOLLOW(tries_i_ptr+j+1); DEREF_NONVAR(tries_ij);
                     tries_ij_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tries_ij);
 
@@ -600,7 +600,7 @@ BPLONG_PTR tuple_ptr,CompVarArray,tries_ptr,MinArray,MaxArray,htable_ptr;
                     }
                 }
             }
-        } 
+        }
     } else {
         BPLONG compvar = CompVarArray[arg_no];
         if (ISINT(compvar)){
@@ -661,7 +661,7 @@ BPLONG_PTR trie_xy_ptr;
     return BP_TRUE;
 }
 
-/* For each element in each domain, exclude the element from the domain 
+/* For each element in each domain, exclude the element from the domain
    if it has no support in the domain of any of the connected variables. */
 int b_CFD_REMOVE_AC_UNSUPPORTED(CompVars,Tries)
     BPLONG CompVars,Tries;
@@ -670,7 +670,7 @@ int b_CFD_REMOVE_AC_UNSUPPORTED(CompVars,Tries)
     BPLONG_PTR comp_vars_ptr,tries_ptr;
     SYM_REC_PTR sym_ptr;
 
-    //  printf("=>b_CFD_REMOVE_AC_UNSUPPORTED %x %x ",local_top,heap_top); write_term(Tries); printf("\n"); 
+    //  printf("=>b_CFD_REMOVE_AC_UNSUPPORTED %x %x ",local_top,heap_top); write_term(Tries); printf("\n");
     DEREF_NONVAR(CompVars);
     comp_vars_ptr = (BPLONG_PTR)UNTAGGED_ADDR(CompVars);
     sym_ptr = (SYM_REC_PTR)FOLLOW(comp_vars_ptr);
@@ -696,7 +696,7 @@ int b_CFD_REMOVE_AC_UNSUPPORTED(CompVars,Tries)
         BPLONG_PTR tries_i_ptr;
         tries_i = FOLLOW(tries_ptr+i+1); DEREF_NONVAR(tries_i);
         tries_i_ptr = (BPLONG_PTR)UNTAGGED_ADDR(tries_i);
-  
+
         X = FOLLOW(comp_vars_ptr+i+1);
         for (j=0;j<n;j++){
             if (i==j) continue;
@@ -706,7 +706,7 @@ int b_CFD_REMOVE_AC_UNSUPPORTED(CompVars,Tries)
             if (exclude_ac_unsupported_from_fd(X,Y,(BPLONG_PTR)UNTAGGED_ADDR(trie))==BP_FALSE) return BP_FALSE;
         }
     }
-    //  printf("<=b_CFD_REMOVE_AC_UNSUPPORTED %x %x ",local_top,heap_top); printf("\n"); 
+    //  printf("<=b_CFD_REMOVE_AC_UNSUPPORTED %x %x ",local_top,heap_top); printf("\n");
     return BP_TRUE;
 }
 
@@ -725,20 +725,20 @@ int b_CFD_INS(X,Constr)
     DEREF_NONVAR(X); X = INTVAL(X);
     DEREF_NONVAR(Constr);
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(Constr);
-    Y = FOLLOW(ptr+1); 
-    TrieXY = FOLLOW(ptr+2); 
-    DEREF_NONVAR(TrieXY); 
+    Y = FOLLOW(ptr+1);
+    TrieXY = FOLLOW(ptr+2);
+    DEREF_NONVAR(TrieXY);
     trie_ptr = (BPLONG_PTR)UNTAGGED_ADDR(TrieXY);
     Sx = FOLLOW(trie_ptr+X+1); DEREF_NONVAR(Sx);
 
-    DEREF_NONVAR(Y); 
+    DEREF_NONVAR(Y);
     if (ISINT(Y)){
         if (ISINT(Sx)){
             return (Y==Sx);
         } else { /* IS_SUSP_VAR(Sx) */
             dv_ptr_sx = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Sx);
             return dm_true(dv_ptr_sx,INTVAL(Y));
-        } 
+        }
     } else {
         dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
         if (ISINT(Sx)) {
@@ -747,14 +747,14 @@ int b_CFD_INS(X,Constr)
                 return BP_TRUE;
             } else return BP_FALSE;
         } else { /* IS_SUSP_VAR(Sx) */
-            dv_ptr_sx = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Sx);    
+            dv_ptr_sx = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Sx);
             return dm_intersect(dv_ptr_y,dv_ptr_sx);
         }
     }
 }
 
 /* Called when Ex is excluded from X. Constr = t(Y,TrieXY,TrieYX).
-   Let Dy be Y's domain and Sx be X's supports. For each element y in Sx/\Dy, 
+   Let Dy be Y's domain and Sx be X's supports. For each element y in Sx/\Dy,
    exclude y from Dy if y is not supported by any value in X's domain.
 */
 int b_CFD_DOM(X,Ex,Constr)
@@ -763,7 +763,7 @@ int b_CFD_DOM(X,Ex,Constr)
     BPLONG y,Y,Sx,Sy,last,TrieXY,TrieYX;
     BPLONG_PTR ptr,trie_ptr,dv_ptr_sx,dv_ptr_sy,dv_ptr_x,dv_ptr_y;
 
-    //  printf("=>cfd_mac_bin_dom %d",x); write_term(Y); printf(";;");write_term(TrieXY);printf(";;"); write_term(TrieYX); printf("\n"); 
+    //  printf("=>cfd_mac_bin_dom %d",x); write_term(Y); printf(";;");write_term(TrieXY);printf(";;"); write_term(TrieYX); printf("\n");
     DEREF_NONVAR(X); if (ISINT(X)) return BP_TRUE; /* will be taken care of by b_CFD_INS */
 
     DEREF_NONVAR(Constr);
@@ -775,17 +775,17 @@ int b_CFD_DOM(X,Ex,Constr)
     dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
     Ex = INTVAL(Ex);
 
-    TrieXY = FOLLOW(ptr+2); 
-    DEREF_NONVAR(TrieXY); 
+    TrieXY = FOLLOW(ptr+2);
+    DEREF_NONVAR(TrieXY);
     trie_ptr = (BPLONG_PTR)UNTAGGED_ADDR(TrieXY);
     Sx = FOLLOW(trie_ptr+Ex+1); DEREF_NONVAR(Sx);
 
-    TrieYX = FOLLOW(ptr+3); 
-    DEREF_NONVAR(TrieYX); 
+    TrieYX = FOLLOW(ptr+3);
+    DEREF_NONVAR(TrieYX);
     trie_ptr = (BPLONG_PTR)UNTAGGED_ADDR(TrieYX);
 
     if (ISINT(Sx)){
-        y = last = INTVAL(Sx); 
+        y = last = INTVAL(Sx);
     } else if (IS_SUSP_VAR(Sx)){
         dv_ptr_sx = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Sx);
         y = DV_first(dv_ptr_sx);
@@ -793,7 +793,7 @@ int b_CFD_DOM(X,Ex,Constr)
     }
     for (;;){
         if (dm_true(dv_ptr_y,y)){
-            Sy = FOLLOW(trie_ptr+y+1); 
+            Sy = FOLLOW(trie_ptr+y+1);
             DEREF_NONVAR(Sy);
             if (ISINT(Sy)){
                 if (!dm_true(dv_ptr_x,INTVAL(Sy)))
@@ -829,7 +829,7 @@ int b_CFD_DIFF_TUPLE(Tuple,CompVars)
     for (i=1;i<=n;i++){
         BPLONG compvar,e;
         compvar = FOLLOW(comp_vars_ptr+i); DEREF_NONVAR(compvar);
-        e = FOLLOW(tuple_ptr+i); DEREF_NONVAR(e); 
+        e = FOLLOW(tuple_ptr+i); DEREF_NONVAR(e);
         if (e!=compvar){
             if (IS_SUSP_VAR(compvar)){
                 compvar0 = compvar;
@@ -844,9 +844,9 @@ int b_CFD_DIFF_TUPLE(Tuple,CompVars)
     domain_set_false_noint(dv_ptr,INTVAL(e0));
     return BP_TRUE;
 }
-  
+
 /* Let CompVars=t(a1,...,a(i-1),V,a(i+1),...,an) where V is the only variable remaining.
-   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is not in the 
+   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is not in the
    hash table, then exclude k from the domain of V.
 */
 int b_CFD_IN_FORWARD_CHECKING(HTable,CompVars)
@@ -856,7 +856,7 @@ int b_CFD_IN_FORWARD_CHECKING(HTable,CompVars)
     BPLONG_PTR tuple_ptr,comp_vars_ptr,htable_ptr,dv_ptr;
     SYM_REC_PTR sym_ptr;
 
-    //  printf("=>_in_fc \n"); write_term(CompVars);  printf("\n"); write_term(HTable); printf("\n");  
+    //  printf("=>_in_fc \n"); write_term(CompVars);  printf("\n"); write_term(HTable); printf("\n");
     DEREF_NONVAR(HTable);
     htable_ptr = (BPLONG_PTR)UNTAGGED_ADDR(HTable);
     sym_ptr = (SYM_REC_PTR)FOLLOW(htable_ptr);
@@ -873,13 +873,13 @@ int b_CFD_IN_FORWARD_CHECKING(HTable,CompVars)
         myquit(STACK_OVERFLOW,"cfd 12");
     }
 
-    FOLLOW(tuple_ptr) = (BPLONG)sym_ptr; 
+    FOLLOW(tuple_ptr) = (BPLONG)sym_ptr;
     compvar = 0;
     for (i=1;i<=n;i++){
         BPLONG t;
         t = FOLLOW(comp_vars_ptr+i);DEREF_NONVAR(t);
         if (ISINT(t)){
-            FOLLOW(tuple_ptr+i) = t; 
+            FOLLOW(tuple_ptr+i) = t;
         } else {
             compvar = t;
             j = i;
@@ -888,8 +888,8 @@ int b_CFD_IN_FORWARD_CHECKING(HTable,CompVars)
     if (compvar==0){
         if (htable_contains_tuple(htable_ptr,htable_size,tuple_ptr,n)) return BP_TRUE; else return BP_FALSE;
     }
-  
-    dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(compvar); 
+
+    dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(compvar);
     k = DV_first(dv_ptr);
     last = DV_last(dv_ptr);
 
@@ -898,17 +898,17 @@ int b_CFD_IN_FORWARD_CHECKING(HTable,CompVars)
         if (!htable_contains_tuple(htable_ptr,htable_size,tuple_ptr,n)){
             if (domain_set_false_aux(dv_ptr,k)==BP_FALSE) return BP_FALSE;
         }
-    
+
         if (k==last) break; /* break for (;;) */
         k++;
         if (!IS_IT_DOMAIN(dv_ptr)) k = domain_next_bv(dv_ptr,k);
     }
-    //  printf("<=_in_fc \n"); write_term(CompVars);  printf("\n");  
+    //  printf("<=_in_fc \n"); write_term(CompVars);  printf("\n");
     return BP_TRUE;
 }
 
 /* Let CompVars=t(a1,...,a(i-1),V,a(i+1),...,an) where V is the only variable remaining.
-   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is in the negative 
+   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is in the negative
    table, then exclude k from the domain of V.
 */
 int b_CFD_NOTIN_FORWARD_CHECKING(HTable,CompVars)
@@ -935,13 +935,13 @@ int b_CFD_NOTIN_FORWARD_CHECKING(HTable,CompVars)
         myquit(STACK_OVERFLOW,"cfd 12");
     }
 
-    FOLLOW(tuple_ptr) = (BPLONG)sym_ptr; 
+    FOLLOW(tuple_ptr) = (BPLONG)sym_ptr;
     compvar = 0;
     for (i=1;i<=n;i++){
         BPLONG t;
         t = FOLLOW(comp_vars_ptr+i);DEREF_NONVAR(t);
         if (ISINT(t)){
-            FOLLOW(tuple_ptr+i) = t; 
+            FOLLOW(tuple_ptr+i) = t;
         } else {
             compvar = t;
             j = i;
@@ -950,8 +950,8 @@ int b_CFD_NOTIN_FORWARD_CHECKING(HTable,CompVars)
     if (compvar==0){
         if (htable_contains_tuple(htable_ptr,htable_size,tuple_ptr,n)) return BP_FALSE; else return BP_TRUE;
     }
-  
-    dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(compvar); 
+
+    dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(compvar);
     k = DV_first(dv_ptr);
     last = DV_last(dv_ptr);
 
@@ -960,12 +960,12 @@ int b_CFD_NOTIN_FORWARD_CHECKING(HTable,CompVars)
         if (htable_contains_tuple(htable_ptr,htable_size,tuple_ptr,n)){
             if (domain_set_false_aux(dv_ptr,k)==BP_FALSE) return BP_FALSE;
         }
-    
+
         if (k==last) break; /* break for (;;) */
         k++;
         if (!IS_IT_DOMAIN(dv_ptr)) k = domain_next_bv(dv_ptr,k);
     }
-  
+
     return BP_TRUE;
 }
 

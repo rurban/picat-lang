@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <signal.h>
@@ -13,9 +13,9 @@
 #include "clpfd.h"
 #include "gc.h"
 /*
-#define ToamProfile 
+#define ToamProfile
 */
-extern BPLONG_PTR expand_trail(); 
+extern BPLONG_PTR expand_trail();
 extern BPLONG next_alive_susp_call();
 
 void (*user_signal_action[NSIG])(int,void *);
@@ -73,13 +73,13 @@ extern BPLONG no_gcs;
     op1 = *P++; if (op1!=0) YC(op1) = FOLLOW(sreg);	\
     sreg++;											\
     arity--;										\
-  } while (arity>0)					
+  } while (arity>0)
 
 #define PASS_U_ARGS(arity)						\
   while (arity>0){								\
     *LOCAL_TOP-- = YC(*P++);					\
     arity--;									\
-  } 
+  }
 
 #define PASS_Z_ARGS(arity) {					\
     while (arity>0){							\
@@ -116,7 +116,7 @@ extern BPLONG no_gcs;
       op = (BPLONG)H;							\
       NEW_HEAP_FREE;							\
     }											\
-  } 
+  }
 
 
 #define OP_ZC_DEREF(op)							\
@@ -130,7 +130,7 @@ extern BPLONG no_gcs;
       op = (BPLONG)H;							\
       NEW_HEAP_FREE;							\
     }											\
-  } 
+  }
 
 #define OP_NOVY_DEREF(op)						\
   if (IS_YU_OPERAND(op)) {						\
@@ -328,7 +328,7 @@ extern BPLONG no_gcs;
 #define GLOBALIZE_WHEN_NEEDED(op,lab){			\
     SWITCH_OP_STACK_VAR(op,lab,					\
 						{GLOBALIZE(op);},		\
-						{});} 
+						{});}
 
 #define GLOBALIZE(op){							\
     PUSHTRAIL_s(op);							\
@@ -428,12 +428,12 @@ extern BPLONG no_gcs;
 
 #define SET_FORK1 AR_CPF(AR) = *(P+1)
 
-/* handle simple cases before calling bp_call_term_catch(term) 
+/* handle simple cases before calling bp_call_term_catch(term)
    if term == true, do nothing
    if term == dec_ref then frame must be (1,dec_ref,PredPtr,_,Cleanup,Head,Body), call b_DEC_PRED_REF_COUNTc(PredPtr)
    if term == dec_retr then frame must be (1,dec_ref,PredPtr,_,Cleanup,Head,Body), call b_DEC_PRED_RETR_COUNT_c(PredPtr)
-   
-   GC is disenabled before bp_call_term_catche since the number of variables that need to be initialized in the 
+
+   GC is disenabled before bp_call_term_catche since the number of variables that need to be initialized in the
    current frame is unkonwn after cut.
 
    printf("<=bp_call_term breg=%x local_top=%x ar=%x",B,LOCAL_TOP,AR); write_term(term); printf("\n"); \
@@ -543,11 +543,11 @@ extern BPLONG no_gcs;
 #define RETURN_DET														\
   P = (BPLONG_PTR)AR_CPS(AR);											\
   if (AR_IS_TOP(AR)) LOCAL_TOP = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(AR)); \
-  AR = (BPLONG_PTR)AR_AR(AR);  
+  AR = (BPLONG_PTR)AR_AR(AR);
 
 #define RETURN_NONDET							\
   P = (BPLONG_PTR)AR_CPS(AR);					\
-  AR = (BPLONG_PTR)AR_AR(AR); 
+  AR = (BPLONG_PTR)AR_AR(AR);
 
 #define BIND_SUSPVAR_VALUE(op1,op2) {			\
     BIND_SUSPVAR_VALUE_AUX(op1,op2);			\
@@ -594,7 +594,7 @@ extern BPLONG no_gcs;
     if (toam_signal_vec & INTERRUPT){exception = interrupt_sym; goto interrupt_handler;} \
     if (toam_signal_vec & EVENT_POOL_NONEMPTY) post_event_pool();		\
     if (trigger_no != 0)  goto trigger_on_handler;						\
-  } 
+  }
 
 #define CONNECT_SUSP_FRAME {					\
     AR_PREV(AR) = (BPLONG)SF;					\
@@ -619,7 +619,7 @@ extern BPLONG no_gcs;
   AR_BTM(frame_c) = ADDTAG((BPLONG)LOCAL_TOP,SUSP_FRAME_TAG);		\
   AR_TOP(frame_c) = (BPLONG)sp_c;									\
   AR_STATUS(frame_c) = SUSP_CLONE;									\
-  LOCAL_TOP = sp_c; 
+  LOCAL_TOP = sp_c;
 
 #define CONNECT_WOKEN_FRAME(frame) {			\
     AR_AR(frame) = (BPLONG)AR;					\
@@ -656,7 +656,7 @@ extern BPLONG no_gcs;
     }																	\
     CONNECT_WOKEN_FRAME(frame);											\
     P = (BPLONG_PTR)FOLLOW(AR_REEP(AR));								\
-  } 
+  }
 
 #define CONNECT_WOKEN_FRAME_dom(frame,elm)								\
   if (FRAME_IS_SLEEP(frame)) {											\
@@ -676,7 +676,7 @@ extern BPLONG no_gcs;
     AR_OUT(frame_c) = elm;												\
     CONNECT_WOKEN_FRAME(frame_c);										\
     P = (BPLONG_PTR)FOLLOW(AR_REEP(AR));								\
-  } 
+  }
 
 
 
@@ -693,7 +693,7 @@ extern BPLONG no_gcs;
     AR_OUT(frame) = elm;												\
     CONNECT_WOKEN_FRAME(frame);											\
     P = (BPLONG_PTR)FOLLOW(AR_REEP(AR));								\
-  } 
+  }
 
 #define MIN_AVAIL_WORDS 1000000
 
@@ -730,7 +730,7 @@ extern BPLONG no_gcs;
   toam_LOCAL_OVERFLOW_CHECK(7);					\
 
 /*
-  #define INVOKE_GC INVOKE_GC_UNCOND 
+  #define INVOKE_GC INVOKE_GC_UNCOND
 */
 
 #define INVOKE_GC {										\
@@ -751,7 +751,7 @@ extern BPLONG no_gcs;
   }
 
 /*
-  #define INVOKE_GC_NONDET INVOKE_GC_UNCOND 	
+  #define INVOKE_GC_NONDET INVOKE_GC_UNCOND
 */
 
 /*
@@ -788,7 +788,7 @@ extern BPLONG no_gcs;
 	}																	\
 	toam_LOCAL_OVERFLOW_CHECK(5);										\
   }
-  
+
 #define REAL_INITIALIZE_STACK_VARS(N){			\
     top = AR-N;									\
     while (top>LOCAL_TOP){						\
@@ -810,7 +810,7 @@ extern BPLONG no_gcs;
       }																	\
       propagate_scc_root((BPLONG_PTR)AR_AR(AR),subgoal_entry,scc_root,scc_root_ar); \
     }																	\
-  } 
+  }
 
 #define RESET_SUBGOAL_AR(f){											\
     if (IS_TABLE_FRAME(f)){												\
@@ -822,6 +822,4 @@ extern BPLONG no_gcs;
 	}																	\
   }
 
-
- 
 
