@@ -1165,7 +1165,7 @@ char *nogl_getline(prompt)
 {
     char c;
     int i = 0;
-    printf(prompt);
+    printf("%s", prompt);
     fflush(curr_out);
     while ((c = getc(curr_in))>=0){
         if (i >= BUF_SIZE) quit("\n*** Error: nogl_getline input buffer overflow\n");

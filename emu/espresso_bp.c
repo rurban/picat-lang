@@ -97,7 +97,7 @@ void prep_espresso(){
 }
 
 void run_espresso(pPLA PLA){
-    pcover F, Fold, Dold;
+    pcover Fold;
     bool error, exact_cover;
     cost_t cost;
 
