@@ -1164,7 +1164,7 @@ char *nogl_getline(prompt)
 {
     char c;
     int i = 0;
-    printf(prompt);
+    printf("%s", prompt);
     while ((c = getc(curr_in))>=0){
         if (i>=BUF_SIZE) gl_error("\n*** Error: nogl_getline input buffer overflow\n");
         gl_buf[i++] = c;
