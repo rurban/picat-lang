@@ -9,6 +9,10 @@
 // Author: Stefan Moebius (mail@stefanmoebius.de)
 // Licence: Can be used freely (Public Domain)
 //-------------------------------------------------------------------------------------------------------------
+
+#include <stdlib.h>
+#include <stdio.h>
+
 #define BP_TRUE 1
 #define BP_FALSE 0
 #define QC_MAXVARS 7
@@ -74,7 +78,8 @@ void outputTerm(int bitfield, int mask, int num) {
 }
 
 //Determines whether "value" contains "part"
-int contains(value, mask, part, partmask) {
+//Determines whether "value" contains "part"
+int contains(int value, int mask, int part, int partmask) {
     if ((value & partmask) == (part & partmask)) {
         if ((mask & partmask) == partmask)
             return BP_TRUE;
@@ -109,7 +114,7 @@ int espresso_main() {
     output_res(num, prim_count);
 }
 
-int init_qc() {
+void init_qc(void){
     int x = 0;
     int y = 0;
 
