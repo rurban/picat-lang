@@ -1815,25 +1815,7 @@ typedef struct {
 #include "bp_bc.h"
 #endif
 
-/* Load byte codes stored in C arrays */
-int load_byte_code_from_c_array(){
-    void load_syms_from_c_array();
-    void load_text_from_c_array();
-    void load_hashtab_from_c_array();
-
-    load_syms_from_c_array();
-    load_text_from_c_array();
-    load_hashtab_from_c_array();
-
-    *inst_addr++ = endfile;
-    *inst_addr = 0;              /* force 0 address (BPLONG) */
-    last_text  = (BPLONG_PTR)inst_addr;
-    inst_addr++;
-    curr_fence = (CHAR_PTR)inst_addr;
-    return BP_TRUE;
-}
-
-void load_syms_from_c_array(){
+static void load_syms_from_c_array(){
     BPLONG i;
     BPLONG num_of_syms = sizeof(bc_syms)/sizeof(BC_SYM);
 
@@ -1848,7 +1830,7 @@ void load_syms_from_c_array(){
         set_real_ep(reloc_table[i], curr_fence);
 }
 
-void load_text_from_c_array(){
+static void load_text_from_c_array(){
     BPLONG n;
     SYM_REC_PTR sym_ptr;
     BPLONG current_opcode = 0;
@@ -1879,7 +1861,7 @@ void load_text_from_c_array(){
     }
 }
 
-void load_hashtab_from_c_array(){
+static void load_hashtab_from_c_array(){
     BPLONG hash_inst_addr,alt, clause_no;
     BPLONG count,hash_array_size;
 
@@ -1951,4 +1933,19 @@ void load_hashtab_from_c_array(){
         }
         inst_addr = gen_index(hash_inst_addr,clause_no,alt);
     }
+}
+
+/* Load byte codes stored in C arrays */
+int load_byte_code_from_c_array(){
+
+    load_syms_from_c_array();
+    load_text_from_c_array();
+    load_hashtab_from_c_array();
+
+    *inst_addr++ = endfile;
+    *inst_addr = 0;              /* force 0 address (BPLONG) */
+    last_text  = (BPLONG_PTR)inst_addr;
+    inst_addr++;
+    curr_fence = (CHAR_PTR)inst_addr;
+    return BP_TRUE;
 }
