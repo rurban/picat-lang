@@ -91,9 +91,9 @@ void init_signals() {
         printf("can't catch SIGINT\n");
 #ifdef BPSOLVER
     if (signal(SIGXCPU, exception_handler) == SIG_ERR)
-        printf("can't catch SIGINT\n");
+        printf("can't catch SIGXCPU\n");
     if (signal(SIGSEGV, exception_handler) == SIG_ERR)
-        printf("can't catch SIGINT\n");
+        printf("can't catch SIGSEGV\n");
 #endif
 }
 
