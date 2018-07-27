@@ -1797,21 +1797,21 @@ typedef struct {
     char *name;
 } BC_SYM;
 
-#ifdef PRISM
+#if defined PRISM
 #include "picat_prism_bc.h"
-#elif FZN_PICAT_SAT
+#elif defined FZN_PICAT_SAT
 #include "fzn_picat_sat_bc.h"
-#elif FZN_PICAT_CP
+#elif defined FZN_PICAT_CP
 #include "fzn_picat_cp_bc.h"
-#elif FZN_PICAT_MIP
+#elif defined FZN_PICAT_MIP
 #include "fzn_picat_mip_bc.h"
-#elif FZN_PICAT_SMT
+#elif defined FZN_PICAT_SMT
 #include "fzn_picat_smt_bc.h"
-#elif PB_PICAT
+#elif defined PB_PICAT
 #include "pb_picat_bc.h"
-#elif XCSP_PICAT
+#elif defined XCSP_PICAT
 #include "xcsp_picat_bc.h"
-#elif PICAT
+#elif defined PICAT
 #include "picat_bc.h"
 #else
 #include "bp_bc.h"
