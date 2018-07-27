@@ -1797,34 +1797,22 @@ typedef struct {
     char *name;
 } BC_SYM;
 
-#ifdef PRISM
+#if defined PRISM
 #include "picat_prism_bc.h"
-#else
-#ifdef FZN_PICAT_SAT
+#elif defined FZN_PICAT_SAT
 #include "fzn_picat_sat_bc.h"
-#else
-#ifdef FZN_PICAT_CP
+#elif defined FZN_PICAT_CP
 #include "fzn_picat_cp_bc.h"
-#else
-#ifdef FZN_PICAT_MIP
+#elif defined FZN_PICAT_MIP
 #include "fzn_picat_mip_bc.h"
-#else
-#ifdef PB_PICAT
+#elif defined PB_PICAT
 #include "pb_picat_bc.h"
-#else
-#ifdef XCSP_PICAT
+#elif defined XCSP_PICAT
 #include "xcsp_picat_bc.h"
-#else
-#ifdef PICAT
+#elif defined PICAT
 #include "picat_bc.h"
 #else
 #include "bp_bc.h"
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
 #endif
 
 /* Load byte codes stored in C arrays */
