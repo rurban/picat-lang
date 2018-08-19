@@ -464,7 +464,7 @@ start:
 
         susp_var_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(term);
         FOLLOW(local_top) = (BPLONG)susp_var_ptr;
-        PUSHTRAILC(ADDTAG3(susp_var_ptr,TRAIL_VAL_NONATOMIC),FOLLOW(susp_var_ptr));
+        PUSHTRAILC(ADDTAG3(susp_var_ptr,TRAIL_VAL_NONATOMIC),term);
         FOLLOW(susp_var_ptr) = (BPLONG)local_top;  /* form a cycle */
         local_top--;
         LOCAL_OVERFLOW_CHECK("vars_set 2");

@@ -20,10 +20,15 @@
 #include <string.h>
 #include "event.h"
 
-BPLONG  stack_size_limit = 100000000;
-BPLONG  stack_size    = 8000000;  
+BPLONG  stack_size_limit = 1000000000;
+#ifdef BPSOLVER
+BPLONG  stack_size    = 250000000;
+BPLONG  trail_size  = 4000000;
+#else
+BPLONG  stack_size    = 8000000;
+BPLONG  trail_size  = 2000000;
+#endif
 BPLONG  parea_size = 2000000;
-BPLONG  trail_size  = 1000000;
 BPLONG  table_size = 1000000;
 
 void print_picat_usage(){
@@ -89,7 +94,7 @@ void init_toam(argc, argv)
                     print_picat_usage();
                     exit(0);
                 } else if (*(str+2) == 'v' || strcmp(str+2,"version")==0){
-                    printf("Picat version 2.4#4\n");
+                    printf("Picat version 2.4#8\n");
                     exit(0);
                 }
                                 

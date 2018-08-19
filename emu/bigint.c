@@ -2,7 +2,7 @@
  *   File   : bigint.c
  *   Author : Neng-Fa ZHOU
  *   Updated: Last updated Aug. 2013
- *   Purpose: Simple (and slow) implementation of big integers 
+ *   Purpose: Simple (but slow) implementation of arithmetic on big integers 
  *            Based on the  C++ Big Integer Library
  *            http://mattmccutchen.net/bigint/
  *            Matt McCutchen <matt@mattmccutchen.net>
@@ -689,7 +689,6 @@ BPLONG bp_neg_bigint(BPLONG op){
     return op;
 }
   
-
 /* sign(op), op is known to be a bigint */
 int bp_sign_bigint(BPLONG op){
     BPLONG size, sign, DLst;
@@ -699,13 +698,17 @@ int bp_sign_bigint(BPLONG op){
 }
 
 /* number of "digits" in op */
-int bp_size_bigint(BPLONG op){
-    BPLONG size, sign, DLst;
-    BP_DECOMPOSE_BIGINT(op,sign,size,DLst);
-    return size;
+int c_bigint_sign_size(){
+  BPLONG size, sign, DLst;
+  BPLONG op = ARG(1,3);   /* op must be a big integer */
+
+  DEREF(op);
+  BP_DECOMPOSE_BIGINT(op,sign,size,DLst);
+  unify(MAKEINT(sign),ARG(2,3));
+  unify(MAKEINT(size),ARG(3,3));
+  return BP_TRUE;
 }
   
-
 /* Compare the magnitudes of two unsigned bigints that are of the same length */
 int bp_compare_mag_mag(BPLONG size, UBIGINT x, UBIGINT y){
     BPLONG i;
@@ -975,7 +978,7 @@ BPLONG bp_mod_bigint_bigint(BPLONG op1,BPLONG op2) {
     BP_MAKE_BIGINT_FROM_UBIG(ysign,rsize,r,op1);
     return op1;
 }
-
+  
 /* op1 vs op2, op1 and op2 are known to be bigints */
 int bp_compare_bigint_bigint(BPLONG op1,BPLONG op2){ /* stack overflow not checked */
     UBIGINT x,y;

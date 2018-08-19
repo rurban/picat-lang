@@ -5875,7 +5875,7 @@ switch (*P++){
     op1 = FOLLOW(sreg);
     SWITCH_OP_INT(op1,rr_add1,{},
                   {op1 = INTVAL(op1) + 1;
-                      if (op1<BP_BIGINT_BASE){
+                      if (op1<=BP_MAXINT_1W){
                           FOLLOW(sreg) = MAKEINT(op1); 
                       } else {
                           SAVE_TOP; 

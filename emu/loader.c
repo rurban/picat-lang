@@ -1011,7 +1011,8 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
 
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((UW32)length) + initval;
-
+	u.i = length;
+	
     u.ptr = key;
     if (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0)) {
         const UW32 *k = (const UW32 *)key;         /* read 32-bit chunks */

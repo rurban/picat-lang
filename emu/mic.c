@@ -1137,6 +1137,9 @@ int b_HASHTABLE_GET_ccf(table,key,value)
     res = hashtable_lookup_chain(FOLLOW(ptr+index),key);
     if (res == 0) return 0;
     DEREF(res); /* avoid creating cyclic terms by setarg? */
+	if (IS_SUSP_VAR(res)){   /* added 8/2018: this bug caused the failure of an intance in XCSP'18 */
+	  res = UNTAGGED_TOPON_ADDR(res);
+	}
     //  printf("%x hashtable_get ", res); write_term(res); printf("\n");
     ASSIGN_sv_heap_term(value,res);
     return BP_TRUE;

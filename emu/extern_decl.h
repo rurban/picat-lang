@@ -231,7 +231,7 @@ extern void bp_copy_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y);
 extern BPLONG bp_abs_bigint(BPLONG op);
 extern BPLONG bp_neg_bigint(BPLONG op);
 extern int bp_sign_bigint(BPLONG op);
-extern int bp_size_bigint(BPLONG op);
+extern int c_bigint_sign_size();
 extern int bp_compare_mag_mag(BPLONG size, UBIGINT x, UBIGINT y);							
 extern BPLONG bp_add_bigint_bigint(BPLONG op1,BPLONG op2);								
 extern BPLONG bp_sub_bigint_bigint(BPLONG op1,BPLONG op2);								
