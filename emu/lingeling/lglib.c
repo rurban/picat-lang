@@ -1181,6 +1181,10 @@ static void lglopenapitrace (LGL * lgl, const char * name) {
   len = strlen (name);
   if (len >= 3 && !strcmp (name + len - 3, ".gz")) {
     len += 20;
+    if (strcspn(name, " '\"\t\n,.;!?\\")) {
+      lglwrn ("invalid LGLAPITRACE '%s", name);
+      return;
+    }
     NEW (cmd, len);
     sprintf (cmd, "gzip -c > %s", name);
     file = popen (cmd, "w");
