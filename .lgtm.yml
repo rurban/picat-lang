@@ -1,0 +1,8 @@
+extraction:
+  cpp:
+    index:
+      build_command:
+        - "make -C emu -f Makefile.picat.linux64"
+#path_classifiers:
+#  generated:
+#    # These files are incorrectly classified as generated.
