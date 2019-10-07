@@ -1,11 +1,11 @@
 /********************************************************************
  *   File   : sapi.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
  *   Purpose: External language interface
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #include <stdlib.h>
@@ -13,10 +13,6 @@
 #include "sapi.h"
 #include <stdarg.h>
 #include <string.h>
-#include <stdio.h>
-#ifndef WIN32
-#include <unistd.h>
-#endif
 
 /* extern char *malloc();*/
 
@@ -50,7 +46,7 @@ void SP_put_term(SP_term_ref to, SP_term_ref from){
 }
 
 /*
-  Assigns to t a new Prolog variable.
+  Assigns to t a new Prolog variable.                                       
 */
 int SP_put_variable(SP_term_ref t){
     SP_term_ref op;
@@ -60,7 +56,7 @@ int SP_put_variable(SP_term_ref t){
 }
 
 /*
-  Assigns to t a Prolog integer from a C long integer.
+  Assigns to t a Prolog integer from a C long integer. 
 */
 int SP_put_integer(SP_term_ref t, long l){
     FOLLOW(t) = MAKEINT(l);
@@ -68,7 +64,7 @@ int SP_put_integer(SP_term_ref t, long l){
 }
 
 /*
-  Assigns to t a Prolog oat from a C double.
+  Assigns to t a Prolog oat from a C double. 
 */
 int SP_put_float(SP_term_ref t, double d){
     FOLLOW(t) = encodefloat1(d);
@@ -77,7 +73,7 @@ int SP_put_float(SP_term_ref t, double d){
 
 /*
   Assigns to t a Prolog atom from a, which must be the canonical representation
-  of a Prolog atom.
+  of a Prolog atom. 
 */
 int SP_put_atom(SP_term_ref t, unsigned long a){
     FOLLOW(t) = ADDTAG(a,ATM);
@@ -85,7 +81,7 @@ int SP_put_atom(SP_term_ref t, unsigned long a){
 }
 
 /*
-  Assigns to t a Prolog atom from a encoded C string
+  Assigns to t a Prolog atom from a encoded C string 
 */
 int SP_put_string(SP_term_ref t, char *name){
     FOLLOW(t) = ADDTAG(insert_sym(name,strlen(name),0),ATM);
@@ -93,7 +89,7 @@ int SP_put_string(SP_term_ref t, char *name){
 }
 
 /*
-  Assigns to t a Prolog integer from a C pointer.
+  Assigns to t a Prolog integer from a C pointer. 
 */
 int SP_put_address(SP_term_ref t, void *pointer){
     FOLLOW(t) = ADDTAG((long)pointer,INT_TAG);
@@ -185,7 +181,7 @@ int SP_cons_functor(SP_term_ref t, unsigned long name, BPLONG arity, ...){
     if (arity==0){
         FOLLOW(t) = ADDTAG((BPLONG)sym_ptr,ATM);
         return SP_SUCCESS;
-    }
+    } 
     FOLLOW(t) = ADDTAG(heap_top,STR);
     FOLLOW(heap_top++) = (BPLONG)sym_ptr;
 
@@ -258,7 +254,7 @@ int SP_get_atom(SP_term_ref t, unsigned long *a){
 }
 
 /* Assigns to *name a pointer to the encoded string representing the name of a
-   Prolog atom.
+   Prolog atom. 
 */
 int SP_get_string(SP_term_ref t, char **name){
     BPLONG_PTR top;
@@ -271,8 +267,8 @@ int SP_get_string(SP_term_ref t, char **name){
     printf("%s\n",*name);
     return SP_SUCCESS;
 }
-
-/*
+  
+/* 
    Assigns to *pointer a C pointer from a Prolog term. The term should be an
    integer whose value should be a valid second argument to SP_put_address()
 */
@@ -330,7 +326,7 @@ int SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *
     len = (len>n ? n : len);
     for (i=0;i<len;i++){
         UNTAG_ADDR(t);
-        code = FOLLOW(t); DEREF(code);
+        code = FOLLOW(t); DEREF(code); 
         if (!ISINT(code)){
             exception = illegal_arguments;
             return SP_ERROR;
@@ -408,7 +404,7 @@ int SP_get_functor(SP_term_ref t, unsigned long *name, BPLONG *arity){
     *arity = INTVAL(n);
     return SP_SUCCESS;
 }
-
+  
 /*
   Assigns to head and tail the head and tail of a Prolog list.
 */
@@ -438,7 +434,7 @@ void SP_get_arg(BPLONG i, SP_term_ref t, SP_term_ref arg){
     DEREF(temp);
     FOLLOW(arg) = temp;
 }
-
+  
 /*******************************************************************/
 /*
   Depending on the type of the term t, one of SP_TYPE_VARIABLE, SP_TYPE_
@@ -580,8 +576,9 @@ SP_pred_ref SP_pred(unsigned long name_atom,long arity,unsigned long module_atom
     SYM_REC_PTR sym_ptr = (SYM_REC_PTR)name_atom;
     return SP_predicate(GET_NAME(sym_ptr),arity,NULL);
 }
-
+  
 int SP_query(SP_pred_ref predicate, ...){
+    SYM_REC_PTR sym_ptr;
     va_list ap;
     SP_term_ref arg;
     BPLONG query;
@@ -590,8 +587,8 @@ int SP_query(SP_pred_ref predicate, ...){
     char *name;
 
     arity = GET_ARITY(predicate);
-    printf("arity="BPLONG_FMT_STR"\n",arity);
-
+    printf("arity=%d\n",arity);
+  
     if (arity==0){
         query = ADDTAG((BPLONG)predicate,ATM);
     } else {

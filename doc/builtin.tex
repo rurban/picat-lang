@@ -103,7 +103,12 @@ January 14, 2013 \\
     \item \texttt{append($X$,$Y$,$Z$,$T$)}\index{\texttt{append/4}}  (nondet)
     \item \texttt{apply($S$,$Arg_1$,$\ldots$,$Arg_n$) = $Val$}\index{\texttt{apply}} 
     \item \texttt{arity($Struct$) = $Arity$}\index{\texttt{arity/1}}
-    \item \texttt{array($Term$)}\index{\texttt{array/1}} 
+    \item \texttt{array($Term$)}\index{\texttt{array/1}}
+    \item \texttt{ascii\_alpha($Term$)}\index{\texttt{ascii\_alpha/1}}
+    \item \texttt{ascii\_alpha\_digit($Term$)}\index{\texttt{ascii\_alpha\_digit/1}}
+    \item \texttt{ascii\_digit($Term$)}\index{\texttt{ascii\_digit/1}}
+    \item \texttt{ascii\_lowercase($Term$)}\index{\texttt{ascii\_lowercase/1}}
+    \item \texttt{ascii\_uppercase($Term$)}\index{\texttt{ascii\_uppercase/1}}
     \item \texttt{atom($Term$)}\index{\texttt{atom/1}} 
     \item \texttt{atom\_chars($Atm$) = $String$}\index{\texttt{atom\_chars/1}}
     \item \texttt{atom\_codes($Atm$) = $List$}\index{\texttt{atom\_codes/1}} 
@@ -111,6 +116,7 @@ January 14, 2013 \\
     \item \texttt{attr\_var($Term$)}\index{\texttt{attr\_var/1}} 
     \item \texttt{avg($ListOrArray$) = $Val$}\index{\texttt{avg/1}}
     \item \texttt{between($From$,$To$,$X$)}\index{\texttt{between/3}} (nondet)
+    \item \texttt{bigint($Term$)}\index{\texttt{bigint/1}}
     \item \texttt{bind\_vars($Term$,$Val$)}\index{\texttt{bind\_vars/2}}
     \item \texttt{call($S$,$Arg_1$,$\ldots$,$Arg_n$)}\index{\texttt{call}} 
     \item \texttt{call\_cleanup($S$,$Cleanup$)}\index{\texttt{call\_cleanup/2}} 
@@ -532,7 +538,7 @@ January 14, 2013 \\
 \end{itemize}
 \end{scriptsize}
 
-\section*{Modules \texttt{cp}, \texttt{sat}, and \texttt{mip}}
+\section*{Modules \texttt{cp}, \texttt{sat}, \texttt{smt}, and \texttt{mip}}
 \begin{scriptsize}
 \begin{itemize}
     \item {\tt \verb+#~+$X$}
@@ -641,6 +647,35 @@ January 14, 2013 \\
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}\index{\texttt{plan\_unbounded/4}}
 \item \texttt{plan\_unbounded($S$,$Plan$)}\index{\texttt{plan\_unbounded/2}}
 \item \texttt{plan\_unbounded($S$,$Plan$,$PlanCost$)}
+\end{itemize}
+\end{scriptsize}
+
+\section*{Module \texttt{nn} (Neural Networks)}
+\begin{scriptsize}
+\begin{itemize}
+\item \texttt{new\_nn($Layers$) = $NN$}\index{\texttt{new\_nn/1}}
+\item \texttt{new\_sparse\_nn($Layers$) = $NN$}\index{\texttt{new\_sparse\_nn/1}}
+\item \texttt{new\_sparse\_nn($Layers$,$Rate$) = $NN$}\index{\texttt{new\_sparse\_nn/2}}
+\item \texttt{new\_standard\_nn($Layers$) = $NN$}\index{\texttt{new\_standard\_nn/1}}
+\item \texttt{nn\_destroy($NN$)}\index{\texttt{nn\_destroy/1}}
+\item \texttt{nn\_destroy\_all}\index{\texttt{nn\_destroy\_all/0}}
+\item \texttt{nn\_load($File$) = $NN$}\index{\texttt{nn\_load/1}}
+\item \texttt{nn\_print($NN$)}\index{\texttt{nn\_print/1}}
+\item \texttt{nn\_run($NN$, $Input$) = $Output$}\index{\texttt{nn\_run/2}}
+\item \texttt{nn\_run($NN$, $Input$, $Opts$) = $Output$}\index{\texttt{nn\_run/3}}
+\item \texttt{nn\_save($NN$,$File$)}\index{\texttt{nn\_save/2}}
+\item \texttt{nn\_set\_activation\_function\_hidden($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_function\_hidden/2}}
+\item \texttt{nn\_set\_activation\_function\_layer($NN$, $Func$, $Layer$)}\index{\texttt{nn\_set\_activation\_function\_layer/3}}
+\item \texttt{nn\_set\_activation\_function\_output($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_function\_output/2}}
+\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_steepness\_hidden/2}}
+\item \texttt{nn\_set\_activation\_steepness\_layer($NN$, $Steepness$, $Layer$)}\index{\texttt{nn\_set\_activation\_steepness\_layer/3}}
+\item \texttt{nn\_set\_activation\_steepness\_output($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_steepness\_output/2}}
+\item \texttt{nn\_train($NN$,$Data$)}\index{\texttt{nn\_train/2}}
+\item \texttt{nn\_train($NN$,$Data$,$Opts$)}\index{\texttt{nn\_train/3}}
+\item \texttt{nn\_train\_data\_get($Data$, $I$) = $Pair$}\index{\texttt{nn\_train\_data\_get/2}}
+\item \texttt{nn\_train\_data\_load($File$) = $Data$}\index{\texttt{nn\_train\_data\_load/1}}
+\item \texttt{nn\_train\_data\_save($Data$, $File$)}\index{\texttt{nn\_train\_data\_save/2}}
+\item \texttt{nn\_train\_data\_size($Data$) = $Size$}\index{\texttt{nn\_train\_data\_size/1}}
 \end{itemize}
 \end{scriptsize}
 

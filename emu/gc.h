@@ -1,10 +1,10 @@
 /********************************************************************
  *   File   : gc.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 typedef struct {
@@ -33,7 +33,7 @@ extern BPLONG cg_all_components;
 	gcQueue[gcQueueRear].addr = (BPLONG_PTR)ptr;	\
 	gcQueue[gcQueueRear].term = cont;				\
 	gcQueueCount++;									\
-  }
+  } 
 
 #define GCQueueAddTerm(cont){						\
 	if (gcQueueCount==gcQueueSize){					\
@@ -42,7 +42,7 @@ extern BPLONG cg_all_components;
 	gcQueueRear = (gcQueueRear+1) %  gcQueueSize;	\
 	gcQueue[gcQueueRear].term = cont;				\
 	gcQueueCount++;									\
-  }
+  } 
 
 #define GCQueueGet(ptr,cont){						\
 	ptr = gcQueue[gcQueueFront].addr;				\

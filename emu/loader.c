@@ -1,10 +1,10 @@
 /********************************************************************
  *   File   : loader.c
- *   Author : Updated by Neng-Fa ZHOU 1994-2018
+ *   Author : Updated by Neng-Fa ZHOU 1994-2019
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #include <string.h>
@@ -37,13 +37,13 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
 #define GEN_COND_JUMP(opcode,arg2,arg3,ep)              \
     *(void **)ep++ = (void **)jmp_table[opcode];        \
     *ep++ = (BPLONG)arg2;                               \
-    *ep++ = (BPLONG)arg3;
+    *ep++ = (BPLONG)arg3; 
 
 #define GEN_HASH_BRANCH(opcode,val,lab_neq,lab_eq,ep)   \
     *(void **)ep++ = (void **)jmp_table[opcode];        \
     *ep++ = (BPLONG)val;                                \
     *ep++ = (BPLONG)lab_neq;                            \
-    *ep++ = (BPLONG)lab_eq;
+    *ep++ = (BPLONG)lab_eq; 
 
 #define GEN_COND_JUMP2(opcode,arg2,ep)                  \
     *(void **)ep++ = (void **)jmp_table[opcode];        \
@@ -56,13 +56,13 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
 #define GEN_COND_JUMP(opcode,arg2,arg3,ep)      \
     *ep++ = opcode;                             \
     *ep++ = (BPLONG)arg2;                       \
-    *ep++ = (BPLONG)arg3;
+    *ep++ = (BPLONG)arg3; 
 
 #define GEN_HASH_BRANCH(opcode,val,lab_neq,lab_eq,ep)   \
     *(void **)ep++ = (void **)opcode;                   \
     *ep++ = (BPLONG)val;                                \
     *ep++ = (BPLONG)lab_neq;                            \
-    *ep++ = (BPLONG)lab_eq;
+    *ep++ = (BPLONG)lab_eq; 
 
 #define GEN_COND_JUMP2(opcode,arg2,ep)          \
     *ep++ = opcode;                             \
@@ -72,7 +72,7 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
     *ep++ = opcode;                             \
     *ep++ = (BPLONG)arg1;
 #endif
-
+      
 #define INVALID_BYTE_CODE {                     \
         exception = invalid_byte_file;          \
         fclose(fp);                             \
@@ -82,7 +82,7 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
 #define CHECK_PCODE(ptr,size)                                           \
     if ((CHAR_PTR)ptr + 1000 + size >= (CHAR_PTR)parea_water_mark){     \
         myquit(PAREA_OVERFLOW,"ld");                                    \
-    }
+    }                                     
 
 /****************************************************************************/
 /* fixes the byte-backwards problem.  It is passed a pointer to a           */
@@ -198,7 +198,7 @@ static BPLONG_PTR last_text;
 BPLONG   eof_flag;
 BPLONG   psc_bytes, text_bytes, index_bytes;
 BYTE   magic;
-BYTE   op_mode;
+BYTE   op_mode; 
 #define OP_MODE_BUILD 0
 #define OP_MODE_FETCH 1
 #define OP_MODE_UNKNOWN 2
@@ -250,15 +250,15 @@ int load_bytecode_header(){
 
     if ((eof_flag = READ_DATA(buf_for_read, 1))) {
         INVALID_BYTE_CODE;
-    }
+    }    
     psc_bytes = BB4(buf_for_read);
     if ((eof_flag = READ_DATA(buf_for_read, 1))){
         INVALID_BYTE_CODE;
-    }
+    }    
     text_bytes = BB4(buf_for_read);
     if ((eof_flag = READ_DATA(buf_for_read, 1))){
         INVALID_BYTE_CODE;
-    }
+    }    
     index_bytes = BB4(buf_for_read);
     return BP_TRUE;
 }
@@ -300,8 +300,8 @@ int loader(file,file_type,load_damon)
             fclose(fp);
             printf("failed loading symbols\n");
             return 1; /* eventually upper level routines will determine */
-        }
-
+        } 
+     
         err_msg = load_text();
         if (err_msg != 0) {
             printf("error " BPLONG_FMT_STR " loading file %s: bad text segment\n", err_msg, file);
@@ -327,7 +327,7 @@ int loader(file,file_type,load_damon)
         curr_fence = (CHAR_PTR)inst_addr;
         old_fp = fp;
         if (disassem!=1 && load_damon!=0){
-            bp_call_term_catch(call_damon_load_atom);
+            bp_call_term_catch(call_damon_load_atom); 
         }
         fp = old_fp;
     }
@@ -361,7 +361,7 @@ int load_syms(file_type)
         /*
           if (dynload == 1 ) {
           strncpy(temp_name,name,temp_len);
-          printf("load (%s,%i)\n",temp_name,temp_len);
+          printf("load (%s,%i)\n",temp_name,temp_len); 
           }
         */
         if (i>=MAXSYMS){
@@ -373,22 +373,22 @@ int load_syms(file_type)
         count += temp_len + 6;
         i++;
     }
-
+   
     if (count!=psc_bytes){
         printf("error in load_syms count=%i,psc_bytes=%i\n",(int)count,(int)psc_bytes);
         return 1;
     }
 
     ALIGN(CHAR_PTR,curr_fence);
-
+   
     for (j = 0; j < i; j++)
         set_real_ep(reloc_table[j], curr_fence);
     return 0;
 }  /* end of load_syms */
 
 /************************************************************************
-   Given the name of a bytecode module, this function binds Lst to a list of
-   public predicate and function symbols defined in the module
+   Given the name of a bytecode module, this function binds Lst to a list of 
+   public predicate and function symbols defined in the module 
 *************************************************************************/
 int c_GET_MODULE_SIGNATURE_cf(){
     BPLONG File;
@@ -422,7 +422,7 @@ int c_GET_MODULE_SIGNATURE_cf(){
     }
     /* printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); */
 
-    READ_DATA_ONLY(&magic, 1);
+    READ_DATA(&magic, 1);
     if (load_bytecode_header()==BP_ERROR)
         return BP_ERROR;
 
@@ -473,13 +473,13 @@ int c_GET_MODULE_SIGNATURE_cf(){
                 ret_lst_ptr = heap_top;
                 heap_top++;
                 //
-                sym_ptr = insert_sym(name, temp_len, 0);
+                sym_ptr = insert_sym(name, temp_len, 0);  
                 FOLLOW(heap_top) = ADDTAG(sym_ptr,ATM);
                 FOLLOW(ret_lst_ptr) = ADDTAG(heap_top,LST);
                 heap_top++;
                 ret_lst_ptr = heap_top;
                 heap_top++;
-
+        
                 LOCAL_OVERFLOW_CHECK("get_syms");
             }
         }
@@ -489,7 +489,7 @@ int c_GET_MODULE_SIGNATURE_cf(){
     fclose(fp);
     unify(ret_lst,ARG(2,2));
     return BP_TRUE;
-}
+}  
 
 /************************************************************************/
 int load_text()
@@ -498,15 +498,15 @@ int load_text()
     BPLONG count = 0;
     BPLONG n;
     SYM_REC_PTR sym_ptr;
-
+   
     /*   printf("==> load_text \n");*/
 
     /* set text segments chain */
     inst_addr = (BPLONG_PTR)curr_fence;
 
-    if (inst_begin == 0)
+    if (inst_begin == 0) 
         inst_begin = (BPLONG_PTR)inst_addr;
-    else
+    else 
         *last_text = (BPLONG)inst_addr;
 
     CHECK_PCODE(curr_fence,sizeof(BPLONG)*text_bytes);
@@ -520,7 +520,7 @@ int load_text()
         *inst_addr++ = current_opcode;
 #endif
 
-#include "load_inst.h"
+#include "load_inst.h" 
         count++;
 
     }
@@ -554,7 +554,7 @@ int load_hashtab()
             return 1;
         alt = BB4(buf_for_read);
         alt = (BPLONG)RELOC_ADDR(alt);
-        if ((eof_flag = get_index_tab(clause_no, &temp_len)))
+        if (eof_flag = get_index_tab(clause_no, &temp_len))
             return eof_flag;
         inst_addr = gen_index(hash_inst_addr,clause_no,alt);
         count += (16 + temp_len);
@@ -580,7 +580,7 @@ int get_index_tab(clause_no,lenptr)
         indextab = (struct hrec *)malloc(sizeof(struct hrec)*size);
         index_table_size = size;
     }
-
+   
     for (j = 0; j < size; j++) {
         indextab[j].l = 0;
         indextab[j].link = (BPLONG_PTR)(&(indextab[j].link));
@@ -653,7 +653,7 @@ BPLONG_PTR gen_index(BPLONG hash_inst_addr,BPLONG clause_no,BPLONG alt)
     temp = (BPLONG_PTR)(hash_inst_addr) + 2;  /* fill the slot in the hash inst*/
     *temp++ = size;
     *temp = (BPLONG)ep1;
-
+   
     for (j = 0; j < size; j++) {
         if (indextab[j].l == 0) {
             *ep1++ = alt;
@@ -730,9 +730,9 @@ struct   hrec *bucket;
     temp = (BPLONG_PTR)&(bucket->link);
     if (bucket->l > 1) {
         temp = (BPLONG_PTR)*temp;
-        while ((BPLONG_PTR)*temp != temp)
-        {
-
+        while ((BPLONG_PTR)*temp != temp) 
+        { 
+          
             /*    printf("type = %i \n", (BPLONG)*temp++);
                   printf("val  = %i \n", (BPLONG)*temp++);
                   printf("label= %x \n", (BPLONG)*temp++);*/
@@ -774,7 +774,7 @@ BPLONG bp_hsize(numentry)
     temp = numentry + 1;
     if ((temp%2)==0) temp++;
     j = temp / 2 + 1;
-    if (j>29) j = 29;
+    if (j>29) j = 29;  
 hashsod:
     for (i = 3; i <= j; i += 2) {
         if ((temp % i) == 0) {
@@ -794,10 +794,10 @@ int dyn_loader(sym_ptr,file_type,load_damon)
     CHAR     s[256], s1[256], s3[256];
     CHAR_PTR s2;
     BPLONG     i;
-
+   
     dynload = 1;
     namestring(sym_ptr, s1);
-    if (*s1 == '/' || *s1 == '.')
+    if (*s1 == '/' || *s1 == '.') 
         return loader(s1,file_type,load_damon);
     else if (file_type != BUILTIN){
         if (*s1 == '~'){
@@ -816,7 +816,7 @@ int dyn_loader(sym_ptr,file_type,load_damon)
                     *(s2+i) = '\0';
                     i--;
                 }
-                scat(s2,&s1[1],s3);
+                scat(s2,&s1[1],s3); 
                 return loader(s3,file_type,load_damon);
             }
         }
@@ -833,7 +833,7 @@ int dyn_loader(sym_ptr,file_type,load_damon)
             i = 0;
             if (*s2 == '\0')    /* file not found */
                 return 1;
-            while (*s2 && *s2 != ' ' && *s2 != ':')
+            while (*s2 && *s2 != ' ' && *s2 != ':') 
                 s[i++] = *s2++;
             s[i++] = '/';
             s[i] = '\0';
@@ -905,7 +905,7 @@ UW32 bp_str_hash( const char *name, int length, UW32 arity){
   the output delta to a Gray code (a^(a>>1)) so a string of 1's (as
   is commonly produced by subtraction) look like a single 1-bit
   difference.
-  * the base values were pseudorandom, all zero but one bit set, or
+  * the base values were pseudorandom, all zero but one bit set, or 
   all zero plus a counter that starts at zero.
 
   Some k values for my "a-=c; a^=rot(c,k); c+=b;" arrangement that
@@ -915,7 +915,7 @@ UW32 bp_str_hash( const char *name, int length, UW32 arity){
   14  9  3  7 17  3
   Well, "9 15 3 18 27 15" didn't quite get 32 bits diffing
   for "differ" defined as + with a one-bit base and a two-bit delta.  I
-  used http://burtleburtle.net/bob/hash/avalanche.html to choose
+  used http://burtleburtle.net/bob/hash/avalanche.html to choose 
   the operations, constants, and arrangements of the variables.
 
   This does not achieve avalanche.  There are input bits of (a,b,c)
@@ -954,7 +954,7 @@ UW32 bp_str_hash( const char *name, int length, UW32 arity){
   the output delta to a Gray code (a^(a>>1)) so a string of 1's (as
   is commonly produced by subtraction) look like a single 1-bit
   difference.
-  * the base values were pseudorandom, all zero but one bit set, or
+  * the base values were pseudorandom, all zero but one bit set, or 
   all zero plus a counter that starts at zero.
 
   These constants passed:
@@ -1011,14 +1011,12 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
 
     /* Set up the internal state */
     a = b = c = 0xdeadbeef + ((UW32)length) + initval;
-	u.i = length;
-	
+    u.i = length;
+        
     u.ptr = key;
     if (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0)) {
         const UW32 *k = (const UW32 *)key;         /* read 32-bit chunks */
-#ifdef VALGRIND
         const BYTE  *k8;
-#endif
 
         /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */
         while (length > 12)
@@ -1032,7 +1030,7 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
         }
 
         /*----------------------------- handle the last (probably partial) block */
-        /*
+        /* 
          * "k[2]&0xffffff" actually reads beyond the end of the string, but
          * then masks off the part it's not allowed to read.  Because the
          * string is aligned, the masked-off tail is in the same word as the
@@ -1233,15 +1231,15 @@ SYM_REC_PTR insert_sym(name, length, arity)
     }
     /* insert */
     number_of_symbols++;
-    if (curr_fence >= (CHAR_PTR)parea_water_mark){
+    if (curr_fence >= (CHAR_PTR)parea_water_mark){ 
         int success = 0;
         ALLOCATE_NEW_PAREA_BLOCK(parea_size,success);
         if (success==0) myquit(OUT_OF_MEMORY,"ld");
-    }
-
+    } 
+  
     ALIGN(CHAR_PTR, curr_fence);  /* insert a sym record */
-    sym_ptr = (SYM_REC_PTR)curr_fence;
-    curr_fence += sizeof(struct sym_rec);
+    sym_ptr = (SYM_REC_PTR)curr_fence;   
+    curr_fence += sizeof(struct sym_rec);  
 
     GET_SPY(sym_ptr)  = 0;
     GET_ETYPE(sym_ptr)  = T_ORDI;
@@ -1252,7 +1250,7 @@ SYM_REC_PTR insert_sym(name, length, arity)
     GET_NAME(sym_ptr)   = curr_fence;
 
     hash_table[bucket_no] = sym_ptr;
-
+   
     for (i = 0; i < length; i++)
         *curr_fence++ = *name++;
     *curr_fence++ = '\0';
@@ -1343,10 +1341,10 @@ int c_CURRENT_PREDICATE(){
         exception = illegal_arguments;   return BP_ERROR;
     }
     n = ARG(2,2);DEREF(n);if (!ISINT(n)){
-        exception = illegal_arguments; return BP_ERROR;
+        exception = illegal_arguments; return BP_ERROR; 
     }
     n = INTVAL(n);
-
+  
     sym_ptr = GET_ATM_SYM_REC(f);
     name = GET_NAME(sym_ptr);
     length = strlen(name);
@@ -1370,16 +1368,16 @@ int c_CURRENT_PREDICATES(){
     SYM_REC_PTR sym_ptr;
 
     list = ARG(1,1);
-
+  
     temp1 = nil_sym;
     for (i = 0; i < BUCKET_CHAIN; ++i) {
         sym_ptr = hash_table[i];
         while (sym_ptr!=NULL){
             switch (GET_ETYPE(sym_ptr)){
-            case T_DYNA:
-            case T_INTP:
-            case T_PRED:
-            case C_PRED:
+            case T_DYNA: 
+            case T_INTP: 
+            case T_PRED: 
+            case C_PRED: 
                 cell = ADDTAG(insert_sym(GET_NAME(sym_ptr),GET_LENGTH(sym_ptr),0),ATM);
                 cell = make_struct2("/",cell,MAKEINT(GET_ARITY(sym_ptr)));
                 temp0 = ADDTAG((BPLONG)heap_top,LST);
@@ -1512,7 +1510,7 @@ int c_LOAD_BYTE_CODE_FROM_BPLISTS(){
 
     psc_bytes = ARG(1,6); DEREF(psc_bytes); psc_bytes = INTVAL(psc_bytes);
     text_bytes = ARG(2,6); DEREF(text_bytes); text_bytes = INTVAL(text_bytes);
-    index_bytes = ARG(3,6); DEREF(index_bytes); index_bytes = INTVAL(index_bytes);
+    index_bytes = ARG(3,6); DEREF(index_bytes); index_bytes = INTVAL(index_bytes);  
     BCSyms = ARG(4,6); DEREF(BCSyms);
     BCInsts = ARG(5,6); DEREF(BCInsts);
     BCHashTabs = ARG(6,6); DEREF(BCHashTabs);
@@ -1522,7 +1520,7 @@ int c_LOAD_BYTE_CODE_FROM_BPLISTS(){
       write_term(BCSyms); printf("\n");
       write_term(BCInsts); printf("\n");
       write_term(BCHashTabs); printf("\n");
-    */
+    */  
 
     total_size = sizeof(BPLONG)*text_bytes + index_bytes + psc_bytes + 1000;
     if ((CHAR_PTR)curr_fence+total_size>(CHAR_PTR)parea_water_mark){
@@ -1537,7 +1535,7 @@ int c_LOAD_BYTE_CODE_FROM_BPLISTS(){
     load_syms_fromlist(BCSyms);
     load_text_fromlist(BCInsts);
     load_hashtab_fromlist(BCHashTabs);
-
+  
     *inst_addr++ = endfile;
     *inst_addr = 0;              /* force 0 address (BPLONG) */
     last_text  = (BPLONG_PTR)inst_addr;
@@ -1546,7 +1544,7 @@ int c_LOAD_BYTE_CODE_FROM_BPLISTS(){
     return BP_TRUE;
 }  /* end of loader */
 
-/* Create symbols
+/* Create symbols 
    Each BCSym takes the form sym(EpOffset,Arity,Len,Sym).
 */
 void load_syms_fromlist(BCSyms)
@@ -1568,16 +1566,16 @@ void load_syms_fromlist(BCSyms)
         ep_offset = FOLLOW(struct_ptr+1); DEREF(ep_offset); ep_offset = INTVAL(ep_offset);
         arity = FOLLOW(struct_ptr+2); DEREF(arity); arity = INTVAL(arity);
         len = FOLLOW(struct_ptr+3); DEREF(len); len = INTVAL(len);
-        atm = FOLLOW(struct_ptr+4); DEREF(atm);
+        atm = FOLLOW(struct_ptr+4); DEREF(atm); 
         sym_ptr = (SYM_REC_PTR)GET_ATM_SYM_REC(atm);
         reloc_table[i] = insert_sym(GET_NAME(sym_ptr), len, arity);
         set_temp_ep(reloc_table[i], ep_offset*sizeof(BPLONG));
-
+    
         i++;
         if (i>=MAXSYMS){
             exception = out_of_range;
             quit("Out of range in symbol table");
-        }
+        }    
     }
     ALIGN(CHAR_PTR,curr_fence);
     for (j = 0; j < i; j++)
@@ -1592,11 +1590,11 @@ void load_text_fromlist(BCInsts)
 
     /* load text */
     inst_addr = (BPLONG_PTR)curr_fence;
-    if (inst_begin == 0)
+    if (inst_begin == 0) 
         inst_begin = (BPLONG_PTR)inst_addr;
-    else
+    else 
         *last_text = (BPLONG)inst_addr;
-
+  
     CHECK_PCODE(curr_fence,sizeof(BPLONG)*text_bytes);
 
     while (ISLIST(BCInsts)){
@@ -1612,7 +1610,7 @@ void load_text_fromlist(BCInsts)
         *inst_addr++ = current_opcode;
 #endif
 
-#include "load_inst_frombplist.h"
+#include "load_inst_frombplist.h" 
     }
 }
 
@@ -1631,10 +1629,10 @@ void load_hashtab_fromlist(BCHashTabs)
         BPLONG_PTR list_ptr, struct_ptr;
 
         list_ptr = (BPLONG_PTR)UNTAGGED_ADDR(BCHashTabs);
-        hashtab = FOLLOW(list_ptr); DEREF(hashtab);
+        hashtab = FOLLOW(list_ptr); DEREF(hashtab); 
         BCHashTabs = FOLLOW(list_ptr+1); DEREF(BCHashTabs);
         struct_ptr = (BPLONG_PTR)UNTAGGED_ADDR(hashtab);
-
+    
         temp = FOLLOW(struct_ptr+1); DEREF(temp); temp=INTVAL(temp);
         hash_inst_addr = (BPLONG)RELOC_ADDR(temp);
 
@@ -1645,7 +1643,7 @@ void load_hashtab_fromlist(BCHashTabs)
         temp = FOLLOW(struct_ptr+4); DEREF(temp); temp=INTVAL(temp);
         alt = (BPLONG)RELOC_ADDR(temp);
 
-        HashArgs = FOLLOW(struct_ptr+5); DEREF(HashArgs);
+        HashArgs = FOLLOW(struct_ptr+5); DEREF(HashArgs); 
 
         get_index_tab_fromlist(HashArgs, clause_no);
         inst_addr = gen_index(hash_inst_addr,clause_no,alt);
@@ -1667,7 +1665,7 @@ void get_index_tab_fromlist(HashArgs, clause_no)
         indextab = (struct hrec *)malloc(sizeof(struct hrec)*size);
         index_table_size = size;
     }
-
+   
     for (j = 0; j < size; j++) {
         indextab[j].l = 0;
         indextab[j].link = (BPLONG_PTR)(&(indextab[j].link));
@@ -1680,20 +1678,20 @@ void get_index_tab_fromlist(HashArgs, clause_no)
         char *nameptr;
 
         list_ptr = (BPLONG_PTR)UNTAGGED_ADDR(HashArgs);
-        hash_item = FOLLOW(list_ptr); DEREF(hash_item);
+        hash_item = FOLLOW(list_ptr); DEREF(hash_item); 
         HashArgs = FOLLOW(list_ptr+1); DEREF(HashArgs);
         struct_ptr = (BPLONG_PTR)UNTAGGED_ADDR(hash_item);
-
+    
         type = FOLLOW(struct_ptr+1); DEREF(type);  /* type = c, i, or t */
         sym_ptr = GET_ATM_SYM_REC(type);
         nameptr = GET_NAME(sym_ptr);
 
         val = FOLLOW(struct_ptr+2); DEREF(val);
         switch (*nameptr) {
-        case 'i':
+        case 'i': 
             ttype=0;
             break;
-        case 's':
+        case 's': 
             val = INTVAL(val);
             val = (BPLONG)reloc_table[val];
             if (val==(BPLONG)list_psc) {
@@ -1702,7 +1700,7 @@ void get_index_tab_fromlist(HashArgs, clause_no)
                 ttype=2;
             }
             break;
-        case 'c':
+        case 'c': 
             val = INTVAL(val);
             val = (BPLONG)reloc_table[val];
             if (val==UNTAGGED_ADDR(nil_sym))
@@ -1797,25 +1795,45 @@ typedef struct {
     char *name;
 } BC_SYM;
 
-#if defined PRISM
+#ifdef PRISM
 #include "picat_prism_bc.h"
-#elif defined FZN_PICAT_SAT
+#elif FZN_PICAT_SAT
 #include "fzn_picat_sat_bc.h"
-#elif defined FZN_PICAT_CP
+#elif FZN_PICAT_CP
 #include "fzn_picat_cp_bc.h"
-#elif defined FZN_PICAT_MIP
+#elif FZN_PICAT_MIP
 #include "fzn_picat_mip_bc.h"
-#elif defined PB_PICAT
+#elif FZN_PICAT_SMT
+#include "fzn_picat_smt_bc.h"
+#elif PB_PICAT
 #include "pb_picat_bc.h"
-#elif defined XCSP_PICAT
+#elif XCSP_PICAT
 #include "xcsp_picat_bc.h"
-#elif defined PICAT
+#elif PICAT
 #include "picat_bc.h"
 #else
 #include "bp_bc.h"
 #endif
 
-static void load_syms_from_c_array(){
+/* Load byte codes stored in C arrays */
+int load_byte_code_from_c_array(){
+    void load_syms_from_c_array();
+    void load_text_from_c_array();
+    void load_hashtab_from_c_array();
+
+    load_syms_from_c_array();
+    load_text_from_c_array();
+    load_hashtab_from_c_array();
+
+    *inst_addr++ = endfile;
+    *inst_addr = 0;              /* force 0 address (BPLONG) */
+    last_text  = (BPLONG_PTR)inst_addr;
+    inst_addr++;
+    curr_fence = (CHAR_PTR)inst_addr;
+    return BP_TRUE;
+}  
+
+void load_syms_from_c_array(){
     BPLONG i;
     BPLONG num_of_syms = sizeof(bc_syms)/sizeof(BC_SYM);
 
@@ -1830,7 +1848,7 @@ static void load_syms_from_c_array(){
         set_real_ep(reloc_table[i], curr_fence);
 }
 
-static void load_text_from_c_array(){
+void load_text_from_c_array(){
     BPLONG n;
     SYM_REC_PTR sym_ptr;
     BPLONG current_opcode = 0;
@@ -1840,9 +1858,9 @@ static void load_text_from_c_array(){
     //  printf("text size=%d\n",text_array_size);
 
     inst_addr = (BPLONG_PTR)curr_fence;
-    if (inst_begin == 0)
+    if (inst_begin == 0) 
         inst_begin = (BPLONG_PTR)inst_addr;
-    else
+    else 
         *last_text = (BPLONG)inst_addr;
     count = 0;
     while (count<text_array_size){
@@ -1857,11 +1875,11 @@ static void load_text_from_c_array(){
 #else
         *inst_addr++ = current_opcode;
 #endif
-#include "load_inst_fromcarray.h"
+#include "load_inst_fromcarray.h" 
     }
 }
 
-static void load_hashtab_from_c_array(){
+void load_hashtab_from_c_array(){
     BPLONG hash_inst_addr,alt, clause_no;
     BPLONG count,hash_array_size;
 
@@ -1879,7 +1897,8 @@ static void load_hashtab_from_c_array(){
     while (count<hash_array_size){
         n_hashtabs++;
         hash_inst_addr = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
-        count++;
+        //        hash_reg = bc_indecies[count++];
+        bc_indecies[count++];
         clause_no = bc_indecies[count++];
         alt = (BPLONG)RELOC_ADDR(bc_indecies[count++]);
 
@@ -1892,22 +1911,22 @@ static void load_hashtab_from_c_array(){
             indextab = (struct hrec *)malloc(sizeof(struct hrec)*size);
             index_table_size = size;
         }
-
+   
         for (j = 0; j < size; j++) {
             indextab[j].l = 0;
             indextab[j].link = (BPLONG_PTR)(&(indextab[j].link));
         }
-
+    
         for (j=0; j<clause_no; j++){
             type = (BYTE)bc_indecies[count++];
             val = bc_indecies[count++];
             //      printf("type=%d val=%d\n",type,val);
             switch (type) {
-            case 'i':
+            case 'i': 
                 ttype=0;
                 val = MAKEINT(val);
                 break;
-            case 's':
+            case 's': 
                 val = (BPLONG)reloc_table[val];
                 if (val==(BPLONG)list_psc) {
                     ttype=1;
@@ -1915,7 +1934,7 @@ static void load_hashtab_from_c_array(){
                     ttype=2;
                 }
                 break;
-            case 'c':
+            case 'c': 
                 val = (BPLONG)reloc_table[val];
                 if (val==UNTAGGED_ADDR(nil_sym))
                     ttype=3;
@@ -1933,19 +1952,4 @@ static void load_hashtab_from_c_array(){
         }
         inst_addr = gen_index(hash_inst_addr,clause_no,alt);
     }
-}
-
-/* Load byte codes stored in C arrays */
-int load_byte_code_from_c_array(){
-
-    load_syms_from_c_array();
-    load_text_from_c_array();
-    load_hashtab_from_c_array();
-
-    *inst_addr++ = endfile;
-    *inst_addr = 0;              /* force 0 address (BPLONG) */
-    last_text  = (BPLONG_PTR)inst_addr;
-    inst_addr++;
-    curr_fence = (CHAR_PTR)inst_addr;
-    return BP_TRUE;
 }

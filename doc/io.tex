@@ -76,7 +76,7 @@ The \texttt{read} functions in the \texttt{io} module take a file descriptor\ind
 \item \texttt{read\_file\_codes() = $List$}\index{\texttt{read\_file\_codes/0}}: This function reads UTF-8 codes of an entire character file from the console into a list. 
 \item \texttt{read\_file\_lines($File$) = $Lines$}\index{\texttt{read\_file\_lines/1}}: This function reads an entire character file into a list of line strings.  
 \item \texttt{read\_file\_lines() = $Lines$}\index{\texttt{read\_file\_lines/0}}: This function reads an entire character file from the console into a list of line strings.  
-\item \texttt{read\_file\_terms($File$) = $Lines$}\index{\texttt{read\_file\_terms/1}}: This function reads an entire text file into a list of terms. In the file, each term must be terminated by '.' followed by at least one white space.
+\item \texttt{read\_file\_terms($File$) = $Lines$}\index{\texttt{read\_file\_terms/1}}: This function reads an entire text file into a list of terms. In the file, each term must be terminated by `.' followed by at least one white space.
 \item \texttt{read\_file\_terms() = $Lines$}\index{\texttt{read\_file\_terms/0}}: This function reads an entire text file from the console into a list of terms.
 \end{itemize}
 
@@ -150,7 +150,7 @@ formatted_print =>
     close(FD).
 \end{verbatim}
 
-This writes ``\texttt{Hello, Bob.  Happy birthday!  You are 7 years old today.  That is 1.17\% older than you were last year}".
+This writes ''\texttt{Hello, Bob.  Happy birthday!  You are 7 years old today.  That is 1.17\% older than you were last year}".
     
 The \texttt{io} module also has the three \texttt{print} predicates.  
 \begin{itemize}
@@ -215,7 +215,7 @@ rw =>
      close(Reader).     
 \end{verbatim}
 
-The above example prints ``\texttt{The name is Bond, James Bond.}" if there are no errors during I/O.  The following five functions and predicates are used for repositioning file locations.
+The above example prints ''\texttt{The name is Bond, James Bond.}" if there are no errors during I/O.  The following five functions and predicates are used for repositioning file locations.
 \begin{itemize}
 \item \texttt{getpos($FD$) = $Pos$}\index{\texttt{getpos/1}}: This function returns the current file position, indicating the offset in the number of bytes from the beginning of the file.
 \item \texttt{setpos($FD$, $Pos$)}\index{\texttt{setpos/2}}: This predicate changes the current file position of the read/write pointer to $Pos$, which is the number of bytes from the beginning of the file.
@@ -281,7 +281,7 @@ Note that a program's file descriptor table\index{file descriptor table} is init
 
 Note that standard input, standard output, and standard error do not need to be explicitly closed, even if they are redirected.  This is why the program does not call \texttt{close}\index{\texttt{close/1}} after the while loop terminates.
 
-The following example shows how to use \texttt{dup2}\index{\texttt{dup2/2}} together with the \texttt{process} module in order to imitate the command ``\texttt{ls -l > dir.txt}".
+The following example shows how to use \texttt{dup2}\index{\texttt{dup2/2}} together with the \texttt{process} module in order to imitate the command ''\texttt{ls -l > dir.txt}".
 
 \subsection*{Example}
 \begin{verbatim}
@@ -294,7 +294,7 @@ ls =>
     process.exec("ls", "-l").
 \end{verbatim}
 
-The \texttt{dup2}\index{\texttt{dup2/2}} predicate redirects standard output to ``\texttt{dir.txt}".  Therefore, when \texttt{exec}\index{\texttt{exec}} is called, the output of ``\texttt{ls}", will also redirect to ``\texttt{dir.txt}".  For more information about the \texttt{exec}\index{\texttt{exec}} predicate, see Chapter \ref{chapter:process}.
+The \texttt{dup2}\index{\texttt{dup2/2}} predicate redirects standard output to ''\texttt{dir.txt}".  Therefore, when \texttt{exec}\index{\texttt{exec}} is called, the output of ''\texttt{ls}", will also redirect to ''\texttt{dir.txt}".  For more information about the \texttt{exec}\index{\texttt{exec}} predicate, see Chapter \ref{chapter:process}.
 
 \section{Temporary Files and Pipes}
 The \texttt{io} module has four functions whose purpose is to create new files and file descriptors\index{file descriptor} for the purposes of communication.

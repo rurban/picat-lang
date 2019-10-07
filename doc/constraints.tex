@@ -11,7 +11,9 @@
 
 }
 \chapter{\label{ch:constraints}Constraints}
-Picat provides three solver modules, including \texttt{cp}, \texttt{sat}, and \texttt{mip}, for modeling and solving constraint\index{constraint} satisfaction and optimization problems (CSPs).  All three of these modules implement the same set of constraints on integer-domain variables. The \texttt{mip} module also supports real-domain variables. In order to use a solver, users must first import the module. In order to make the symbols defined in a module available to the top level of the interpreter, users can use the built-in {\tt load} to load the module or any module that imports the module. As the three modules have the same interface, this chapter describes the three modules together. Figure \ref{tab:cons_ops} shows the constraint\index{constraint} operators that are provided by Picat. Unless it is explicitly specified otherwise, the built-ins that are described in this chapter appear in all three modules. In the built-ins that are presented in this chapter, an integer-domain variable can also be an integer, unless it is explicitly specified to only be a variable.
+Picat provides four solver modules, including \texttt{cp}, \texttt{sat}, \texttt{smt}, and \texttt{mip}, for modeling and solving constraint\index{constraint} satisfaction and optimization problems (CSPs).  All four of these modules implement the same set of constraints on integer-domain variables. The \texttt{mip} module also supports real-domain variables. In order to use a solver, users must first import the module. In order to make the symbols defined in a module available to the top level of the interpreter, users can use the built-in {\tt load} to load the module or any module that imports the module. The \texttt{sat} module is only supported on Linux, MacOS, and Cygwin. The \texttt{mip} module requires Cbc (\url{https://projects.coin-or.org/Cbc}), Gurobi (\url{http://www.gurobi.com/}) or GLPK (\url{https://www.gnu.org/software/glpk/}), and the \texttt{smt} module requires Z3 (\url{https://github.com/Z3Prover/z3/}) or CVC4 (\url{https://cvc4.cs.stanford.edu/}).
+
+As the four modules have the same interface, this chapter describes the four modules together. Figure \ref{tab:cons_ops} shows the constraint\index{constraint} operators that are provided by Picat. Unless it is explicitly specified otherwise, the built-ins that are described in this chapter appear in all four modules. In the built-ins that are presented in this chapter, an integer-domain variable can also be an integer, unless it is explicitly specified to only be a variable.
 
 \begin{table}[ht]
 \caption{\label{tab:cons_ops}Constraint operators in Picat}
@@ -51,7 +53,7 @@ A constraint program normally poses a problem in three steps: (1) generate varia
 \caption{\label{fig:nqueens} A program for N-queens.}
 \end{figure}
 
-This program in Figure \ref{fig:nqueens} imports the \texttt{cp} module in order to solve the $N$-queens problem. The same program runs with the SAT solver if \texttt{sat} is imported, or runs with the LP/MIP solver if \texttt{mip} is imported. The predicate \texttt{Qs :: 1..N} declares the domains of the variables. The operator \verb+#!=+ is used for inequality constraints. In arithmetic constraints, expressions are treated as terms, and it is unnecessary to enclose them with dollar-signs. The predicate \texttt{solve(Qs)}\index{\texttt{solve/1}} calls the solver in order to solve the array of variables \texttt{Qs}. For \texttt{cp}, \texttt{solve([ff],Qs)}\index{\texttt{solve/2}}, which always selects a variable that has the smallest domain (the so-called \emph{first-fail principle}\index{first-fail principle}), can be more efficient than \texttt{solve(Qs)}\index{\texttt{solve/1}}.
+This program in Figure \ref{fig:nqueens} imports the \texttt{cp} module in order to solve the $N$-queens problem. The same program runs with the SAT solver if \texttt{sat} is imported, runs with the SMT solver if \texttt{smt} is imported, and runs with the LP/MIP solver if \texttt{mip} is imported. The predicate \texttt{Qs :: 1..N} declares the domains of the variables. The operator \verb+#!=+ is used for inequality constraints. In arithmetic constraints, expressions are treated as terms, and it is unnecessary to enclose them with dollar-signs. The predicate \texttt{solve(Qs)}\index{\texttt{solve/1}} calls the solver in order to solve the array of variables \texttt{Qs}. For \texttt{cp}, \texttt{solve([ff],Qs)}\index{\texttt{solve/2}}, which always selects a variable that has the smallest domain (the so-called \emph{first-fail principle}\index{first-fail principle}), can be more efficient than \texttt{solve(Qs)}\index{\texttt{solve/1}}.
 
 
 \section{Domain Variables}
@@ -87,7 +89,7 @@ The following built-ins are provided for domain variables.
 \end{itemize}
 
 \section{Table constraints}
-A \emph{table constraint}\index{table constraint}, or an \emph{extensional constraint}\index{extensional constraint}, over a tuple of variables specifies a set of tuples that are allowed (called \emph{positive}) or disallowed (called \emph{negative}) for the variables. A positive constraint takes the form \texttt{table\_in($DVars$,$R$)}\index{\texttt{table\_in/2}}, where $DVars$ is either a tuple of variables $\{X_1,\ldots,X_n\}$ or a list of tuples of variables, and $R$ is a list of tuples of integers in which each tuple takes the form $\{a_1,\ldots,a_n\}$.  A negative constraint takes the form \texttt{table\_notin($DVars$,$R$)}\index{\texttt{table\_notin/2}}.
+A \emph{table constraint}\index{table constraint}, or an \emph{extensional constraint}\index{extensional constraint}, over a tuple of variables specifies a set of tuples that are allowed (called \emph{positive}) or disallowed (called \emph{negative}) for the variables. A positive constraint takes the form \texttt{table\_in($DVars$,$R$)}\index{\texttt{table\_in/2}}, where $DVars$ is either a tuple of variables $\{X_1,\ldots,X_n\}$ or a list of tuples of variables, and $R$ is a list of tuples in which each tuple takes the form $\{a_1,\ldots,a_n\}$, where $a_i$ is an integer or the \textit{don't-care} symbol $*$\index{don't-care symbol}.  A negative constraint takes the form \texttt{table\_notin($DVars$,$R$)}\index{\texttt{table\_notin/2}}.
 
 \subsection*{Example}
 The following example solves a toy crossword puzzle. One variable is used for each cell in the grid, so each slot corresponds to a tuple of variables. Each word is represented as a tuple of integers, and each slot takes on a set of words of the same length as the slot. Recall that the function \texttt{ord($Char$)}\index{\texttt{ord/1}} returns the code of $Char$, and that the function \texttt{chr($Code$)}\index{\texttt{chr/1}} returns the character of $Code$.
@@ -303,7 +305,7 @@ Picat provides the following global constraints.
 
 
 \subsection{Common Solving Options}
-The following options are accepted by all three of the solvers.\footnote{Note that the preceding dollar sign indicates that it is followed by a term, not a function call.}
+The following options are accepted by all four of the solvers.\footnote{Note that the preceding dollar sign indicates that it is followed by a term, not a function call.}
 \begin{itemize}
 \item \texttt{\$min($Var$)}: Minimize the variable $Var$.
 \item \texttt{\$max($Exp$)}: Maximize the variable $Var$.
@@ -348,6 +350,12 @@ The \texttt{cp} module also accepts the following options:
 
 \subsection{Solving Options for \texttt{mip}}
 \begin{itemize}
+\item \texttt{cbc}: \index{\texttt{cbc}}Instruct Picat to use the Cbc MIP solver. Picat uses the following command to call the Cbc solver:
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> \texttt{cbc $TmpFile$ solve -solu $SolFile$ }
+\end{tabbing}
+where $SolFile$ is a file for the solution, and $TmpFile$ is a file that stores the CPLEX-format constraints. Picat throws \texttt{existence\_error} if the command \texttt{cbc} is not available.
 \item \texttt{dump}: Dump the constraints in CPLEX format to \texttt{stdout}.
 \item \texttt{dump($File$)}: Dump the CPLEX format to $File$.
 \item \texttt{glpk}: \index{\texttt{glpk}}Instruct Picat to use the GLPK MIP solver. Picat uses the following command to call the GLPK solver:
@@ -362,9 +370,24 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \> \texttt{gurobi\_cl ResultFile=$SolFile$ $TmpFile$}
 \end{tabbing}
 where $SolFile$ is a file for the solution, and $TmpFile$ is a file that stores the CPLEX-format constraints. Picat throws \texttt{existence\_error} if the command \texttt{gurobi\_cl} is not available.
-% \item \texttt{sol($File$)}: Instruct the mip solver to save the solution into $File$ rather than the default file '\_\_tmp.sol'.
-\item \texttt{tmp($File$)}: Dump the CPLEX format to $File$ rather than the default file '\_\_tmp.lp', before calling the mip solver. The name $File$  must be a string or an atom that has the extension name '.lp'. When this file name is specified, the mip solver will save the solution into a file name that has the same main name as $File$ but the extension name '.sol'.
+% \item \texttt{sol($File$)}: Instruct the mip solver to save the solution into $File$ rather than the default file ``\_\_tmp.sol''.
+\item \texttt{tmp($File$)}: Dump the CPLEX format to $File$ rather than the default file ``\_\_tmp.lp'', before calling the mip solver. The name $File$  must be a string or an atom that has the extension name ``.lp''. When this file name is specified, the mip solver will save the solution into a file name that has the same main name as $File$ but the extension name ``.sol''.
 % \item \texttt{\$format(clp)}: dumps the constraints in B-Prolog format to \texttt{stdout}.
+\end{itemize}
+
+\subsection{Solving Options for \texttt{smt}}
+\begin{itemize}
+\item \texttt{cvc4}: \index{\texttt{cvc3}}Instruct Picat to use the CVC4 SMT solver. Picat uses the following command to call the CVC4 solver:
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> \texttt{cvc4 $TmpFile$ $>$ $SolFile$ }
+\end{tabbing}
+where $TmpFile$ is a file that stores the SMT-LIB2-format constraints, and $SolFile$ is a solution file. Picat throws \texttt{existence\_error} if the command \texttt{cvc4} is not available in the path.
+\item \texttt{dump}: Dump the constraints in SMT-LIB2 format to \texttt{stdout}.
+\item \texttt{dump($File$)}: Dump the SMT-LIB2 format to $File$.
+\item \texttt{logic($Logic$)}: Instruct the SMT solver to use $Logic$ in the solving, where $Logic$ must be an atom or a string, and the specified logic must be available in the SMT solver. The default logic for Z3 is ``LIA'', and the default logic for CVC4 is ``NIA''.
+\item \texttt{tmp($File$)}: Dump the SMT-LIB2 format to $File$ rather than the default file ``\_\_tmp.smt2'', before calling the smt solver. The name $File$  must be a string or an atom that has the extension name ``.smt2''. When this file name is specified, the smt solver will save the solution into a file name that has the same main name as $File$ but the extension name ``.sol''.
+\item \texttt{z3}: \index{\texttt{z3}}Instruct Picat to use the z3 SMT solver. When no SMT solver is specified, Picat first searches for the command \texttt{z3}, and when \texttt{z3} cannot be found it continues to search for the command \texttt{cvc4}.
 \end{itemize}
 \ignore{
 \end{document}

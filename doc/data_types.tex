@@ -24,6 +24,7 @@ The dot operator (\verb+.+) is used in OOP notations for calling predicates and 
 The following functions are provided for all terms:
 \begin{itemize}
 \item \texttt{copy\_term($Term_1$) = $Term_2$}\index{\texttt{copy\_term/1}}: This function copies $Term_1$ into $Term_2$.  If $Term_1$ is an attributed variable\index{attributed variable}, then $Term_2$ will not contain any of the attributes.
+\item \texttt{copy\_term\_shallow($Term_1$) = $Term_2$}\index{\texttt{copy\_term\_shallow/1}}: This function copies the skeleton of $Term_1$ into $Term_2$. If $Term_1$ is a variable or an atomic value, then it returns a complete copy of $Term_1$, the same as \texttt{copy\_term($Term_1$)}; if $Term_1$ is a list, then it returns a cons \texttt{[$H$$|$$T$]} where both the car $H$ and the cdr $T$ are free variables; otherwise, it is the same as \texttt{new\_struct(name($Term_1$),arity($Term_1$))}.
 \item \texttt{hash\_code($Term$) = $Code$}\index{\texttt{hash\_code/1}}: This function returns the hash code of $Term$. If $Term$ is a variable, then the returned hash code is always 0.
 \item \texttt{to\_codes($Term$) = $Codes$}\index{\texttt{to\_codes/1}}: This function returns a list of character codes of $Term$.
 \item \texttt{to\_fstring($Format$, $Args\ldots$)}\index{\texttt{to\_fstring}}: This function converts the arguments in the $Args\ldots$ parameter into a string, according to the format string $Format$, and returns the string. The number of arguments in $Args\ldots$ cannot exceed 10. Format characters are described in Chapter \ref{chapter:io}.
@@ -68,6 +69,11 @@ No atom\index{atom} name can last more than one line.   An atom\index{atom} name
 
 The following built-ins are provided for atoms\index{atom}:
 \begin{itemize}
+\item \texttt{ascii\_alpha($Term$)}\index{\texttt{ascii\_alpha/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English letter.
+\item \texttt{ascii\_alpha\_digit($Term$)}\index{\texttt{ascii\_alpha\_digit/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English letter or one digit.
+\item \texttt{ascii\_digit($Term$)}\index{\texttt{ascii\_digit/1}}: This predicate is true if $Term$ is an atom and the atom is made of one digit.
+\item \texttt{ascii\_lowercase($Term$)}\index{\texttt{ascii\_lowercase/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English lowercase letter.
+\item \texttt{ascii\_uppercase($Term$)}\index{\texttt{ascii\_uppercase/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English uppercase letter.
 \item \texttt{atom($Term$)}\index{\texttt{atom/1}}: This predicate is true if $Term$ is an atom\index{atom}.
 \item \texttt{atom\_chars($Atm$) = $String$}\index{\texttt{atom\_chars/1}}: This function returns string\index{string} that contains the characters of the atom\index{atom} $Atm$. It throws an error if $Atm$ is not an atom\index{atom}.
 \item \texttt{atom\_codes($Atm$) = $List$}\index{\texttt{atom\_codes/1}}: This function returns the list\index{list} of codes of the characters of the atom\index{atom} $Atm$. It throws an error if $Atm$ is not an atom\index{atom}. 
@@ -132,6 +138,7 @@ In addition to the numeric operators, the \texttt{basic} module also provides th
 
 \begin{itemize}
 \item \texttt{between($From$, $To$, $X$)}\index{\texttt{between/3}} (nondet): If $X$ is bound to an integer, then this predicate determines whether $X$ is between $From$ and $To$.  Otherwise, if $X$ is unbound, then this predicate nondeterministically selects $X$ from the integers that are between $From$ and $To$. It is the same as \texttt{member($X$, $From$..$To$)}\index{\texttt{member/2}}.
+\item \texttt{bigint($Term$)}\index{\texttt{bigint/1}}: This predicate is true if $Term$ is a big integer.
 \item \texttt{float($Term$)}\index{\texttt{float/1}}: This predicate is true if $Term$ is a real number\index{number}.
 \item \texttt{int($Term$)}\index{\texttt{int/1}}: This predicate is true if $Term$ is an integer.
 \item \texttt{integer($Term$)}\index{\texttt{integer/1}}: The same as \texttt{int($Term$)}.
@@ -156,7 +163,7 @@ In addition to the numeric operators, the \texttt{basic} module also provides th
 The \texttt{math} module provides more numeric functions.  See Appendix \ref{chapter:math}.
 
 \section{Compound Terms}
-A compound term\index{compound value} can be a \emph{list}\index{list} or a \emph{structure}\index{structure}. Components of compound terms\index{compound value} can be accessed with subscripts. Let $X$ be a variable that references a compound value\index{compound value}, and let $I$ be an integer expression that represents a subscript. The index notation \texttt{$X$[$I$]} is a special function that returns the $I$th component of $X$, counting from the beginning. Subscripts begin at $1$, meaning that $X$[$1$] is the first component of $X$. An index notation can take multiple subscripts. For example, the expression \texttt{X[1,2]} is the same as \texttt{T[2]}, where \texttt{T} is a temporary variable that references the component that is returned by \texttt{X[1]}. The predicate \texttt{compound($Term$)}\index{\texttt{compound/1}} is true if $Term$ is a compound term\index{compound value}.
+A compound term\index{compound value} can be a \emph{list}\index{list} or a \emph{structure}\index{structure}. Components of compound terms\index{compound value} can be accessed with subscripts. Let $X$ be a variable that references a compound value\index{compound value}, and let $I$ be an integer expression that represents a subscript. The index notation \texttt{$X$[$I$]} is a special function that returns the $I$th component of $X$ if $I$ is an integer or a list of components if $I$ is a range in the form of $l..u$, counting from the beginning. Subscripts begin at $1$, meaning that $X$[$1$] is the first component of $X$. An index notation can take multiple subscripts. For example, the expression \texttt{X[1,2]} is the same as \texttt{T[2]}, where \texttt{T} is a temporary variable that references the component that is returned by \texttt{X[1]}. The predicate \texttt{compound($Term$)}\index{\texttt{compound/1}} is true if $Term$ is a compound term\index{compound value}.
 
 \subsection{\label{subsec:lists}Lists}
 A list\index{list} takes the form \texttt{[$t_1$,$\ldots$,$t_{n}$]}, where each $t_i$ ($1\le i \le n$) is a term. Let $L$ be a list\index{list}. The expression \texttt{$L$.length}\index{\texttt{length/1}}, which is the same as the functions \texttt{get($L$,length)}\index{\texttt{get/2}} and \texttt{length($L$)}\index{\texttt{length/1}}, returns the length of $L$. Note that a list is represented internally as a singly-linked list.  Also note that the length of a list is not stored in memory; instead, it is recomputed each time that the function \texttt{length} is called.
@@ -241,7 +248,7 @@ aa \= aaa \= aaa \= aaa \=aaa \= aaa \= aaa \= aaa \kill
 \> \texttt{sort\_down($List$,$KeyIndex$).remove\_dups()}
 \end{tabbing}
 
-\item \texttt{slice($List$,$From$,$To$) = $SList$}\index{\texttt{slice/3}}: This function returns the sliced list of $List$ from index $From$ through index $To$. $From$ must not be less than 1. 
+\item \texttt{slice($List$,$From$,$To$) = $SList$}\index{\texttt{slice/3}}: This function returns the sliced list of $List$ from index $From$ through index $To$. $From$ must not be less than 1. It is the same as the index notation $List$[$From$..$To$].
 
 \item \texttt{slice($List$,$From$) = $SList$}\index{\texttt{slice/2}}: This function is the same as the following.
 \begin{tabbing}
@@ -300,7 +307,7 @@ The following built-ins are provided for structures\index{structure}:
 \end{itemize}
 
 \subsection{\label{subsec:arrays}Arrays}
-An \emph{array}\index{array} takes the form \texttt{\{$t_1$,$\ldots$,$t_{n}$\}}, which is a special structure\index{structure} with the name \texttt{'\{\}'} and arity\index{arity} $n$. Note that, unlike a list, an array always has its length stored in memory, so the function \texttt{length($Array$)} always takes constant time. Also note that Picat supports constant-time access of array elements, so the index notation \texttt{A[I]} takes constant time. 
+An \emph{array}\index{array} takes the form \texttt{\{$t_1$,$\ldots$,$t_{n}$\}}, which is a special structure\index{structure} with the name \texttt{'\{\}'} and arity\index{arity} $n$. Note that, unlike a list, an array always has its length stored in memory, so the function \texttt{length($Array$)} always takes constant time. Also note that Picat supports constant-time access of array elements, so the index notation \texttt{A[I]} takes constant time when $I$ is an integer. 
 
 In addition to the built-ins for structures\index{structure}, the following built-ins are provided for arrays\index{array}:
 \begin{itemize}

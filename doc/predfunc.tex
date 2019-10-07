@@ -152,12 +152,12 @@ where the \texttt{elseif} and \texttt{else} clauses are optional. If the \texttt
 \end{itemize}
 
 \section{Predicate Facts}
-For an extensional relation that contains a large number of tuples, it is tedious to define such a relation as a predicate\index{predicate} with pattern-matching rules. It is worse if the relation has multiple keys. In order to facilitate the definition of extensional relations, Picat allows the inclusion of \emph{predicate facts}\index{predicate fact} in the form \texttt{$p$($t_1$,$\ldots$,$t_n$)} in predicate\index{predicate} definitions. Facts and rules cannot co-exist in predicate definitions and facts must be ground. A predicate\index{predicate} definition that consists of facts must be preceded by an \emph{index declaration}\index{index declaration} in the form 
+For an extensional relation that contains a large number of tuples, it is tedious to define such a relation as a predicate\index{predicate} with pattern-matching rules. It is worse if the relation has multiple keys. In order to facilitate the definition of extensional relations, Picat allows the inclusion of \emph{predicate facts}\index{predicate fact} in the form \texttt{$p$($t_1$,$\ldots$,$t_n$)} in predicate\index{predicate} definitions. Facts and rules cannot co-exist in predicate definitions and facts must be ground. A predicate\index{predicate} definition that consists of facts can be preceded by an \emph{index declaration}\index{index declaration} in the form 
 \begin{tabbing}
 aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \> \texttt{index ($M_{11},M_{12},\ldots,M_{1n}$) $\ldots$ ($M_{m1},M_{m2},\ldots,M_{mn}$)}\index{\texttt{index}} 
 \end{tabbing}
-where each $M_{ij}$ is either $+$ (meaning indexed) or $-$ (meaning not indexed). Facts are translated into pattern-matching rules before they are compiled. 
+where each $M_{ij}$ is either $+$ (meaning indexed) or $-$ (meaning not indexed). If no index declaration is given, then Picat assumes that no arguments are indexed. Facts are translated into pattern-matching rules before they are compiled. 
 
 \subsection*{Example}
 \begin{verbatim}

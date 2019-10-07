@@ -1,38 +1,45 @@
-#ifndef GCC
- case throw_ball:  /* y,y */
-#endif
- lab_throw_ball: 
-    op1 = NextOperandYC;
-    op2 = (BPLONG)NextOperandY;
-	printf("throw_ball %x %x\n",op1,op2);
-    {
-	  void printTable();
-        BPLONG catch_all_flag,except;
-        BPLONG_PTR btm_ptr;
-        BPLONG_PTR af = AR; /* ancestor frame */
-        BPLONG_PTR b = B;
-        while ((BPLONG)af != AR_AR(af)){
-		    while (b <= af){
-                RESET_SUBGOAL_AR(b);
-                if (IS_CATCHER_FRAME(b)){
-                    btm_ptr = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(b)); /* a catcher frame is in the form of p(Flag,Cleanup,Calll,Exception,Recovery,...) */
-                    catch_all_flag = FOLLOW(btm_ptr); 
-                    except = FOLLOW(btm_ptr-3); 
-                    if ((catch_all_flag==BP_ONE || b==af) && is_UNIFIABLE(op1,except)){ /* this catcher catches the exception */
+/* Const-X = Y, X is a bit-vector domain */
+int c_CLPFD_SUB_AC_ccc(){
+  BPLONG Const,X,Y,i,sizeY;
+  BPLONG_PTR dv_ptr_x,dv_ptr_y;
+  BPLONG elmX,maxX,elmY,minY,maxY;
 
-					  printf("pring table \n");
-					  printTable();
-					  
-                        FOLLOW(op2) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)b,INT_TAG);
-                        CONTCASE;
-                    }
-                }
-                b = (BPLONG_PTR)AR_B(b);
-            }
-            af = (BPLONG_PTR)AR_AR(af);
-        }
-        FOLLOW(op2) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)af,INT_TAG);
+  Const = ARG(1,3); DEREF_NONVAR(Const); Const = INTVAL(Const);
+  X = ARG(2,3); DEREF_NONVAR(X);
+  Y = ARG(3,3); DEREF_NONVAR(Y);
 
-		
-        CONTCASE;
-    }
+  //	printf("=> SUB_AC "); write_term(Const); printf(" "); write_term(X); printf(" "); write_term(Y); printf("\n"); 
+  
+  if (!IS_SUSP_VAR(Y)) return BP_TRUE;
+  dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
+  minY = DV_first(dv_ptr_y);
+  maxY = DV_last(dv_ptr_y);
+  sizeY = maxY-minY+1;
+  if (local_top - heap_top <= sizeY || DV_size(dv_ptr_y) > 512){
+	return BP_TRUE;  /* do not enforce AC on Z*/
+  }
+  ptr = local_top-sizeY;
+  for (i = 1; i < sizeY-1; i++){
+	*(ptr+i) = 0;                   /* 0 means unsupported, minY and maxY are supported */
+  }
+  dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
+  elmX = DV_first(dv_ptr_x);
+  maxX = DV_last(dv_ptr_x);
+  for (;;){                         /* iterate over X */
+	*(ptr+(Const-elmX-minY)) = 1;   /* Const-elmX is supported in Y */
+	if (elmX == maxX) break;        /* exit loop of X */
+	elmX++;
+	elmX = domain_next_bv(dv_ptr_x,elmX);
+  }
+
+  elmY = minY+1;
+  for (i = 1; i < sizeY-1; i++){
+	if (*(ptr+i) == 0) {            /* elmY is unsupported */
+	  domain_set_false_noint(dv_ptr_y,elmY);
+	}
+	elmY++;
+  }
+  //	printf("<= SUB_AC "); write_term(Const); printf(" "); write_term(X); printf(" "); write_term(Y); printf("\n"); 
+
+  return BP_TRUE;
+}

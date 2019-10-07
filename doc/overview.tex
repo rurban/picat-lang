@@ -83,7 +83,7 @@ X = [1,2,3,4,5]
 
 Picat allows function\index{function} calls in arguments. For this reason, it requires structures\index{structure} to be preceded with a dollar symbol in order for them to be treated as data. Without the dollar symbol, the command \texttt{S=point(1.0,2.0)} would call the function \texttt{point(1.0,2.0)} and bind \texttt{S} to its return value. In order to ensure safe interpretation of meta-terms in higher-order calls\index{higher-order call}, Picat forbids the creation of terms\index{term} that contain structures\index{structure} with the name \texttt{'.'}, index notations, array comprehensions, list comprehensions, and loops.
 
-For each type, Picat provides a set of built-in functions\index{function} and predicates\index{predicate}. The index notation \texttt{$X$[$I$]}, where $X$ references a compound value\index{compound value} and $I$ is an integer expression, is a special function that returns a single component of $X$. The index of the first element of a list\index{list} or a structure\index{structure} is 1. In order to facilitate type checking at compile time, Picat does not overload arithmetic operators for other purposes, and requires an index expression to be an integer\index{integer}.
+For each type, Picat provides a set of built-in functions\index{function} and predicates\index{predicate}. The index notation \texttt{$X$[$I$]}, where $X$ references a compound value\index{compound value} and $I$ is an integer expression or a range in the form $l..u$, is a special function that returns a single component (when $I$ is an integer) or a list of components (when $I$ is a range) of $X$. The index of the first element of a list\index{list} or a structure\index{structure} is 1. In order to facilitate type checking at compile time, Picat does not overload arithmetic operators for other purposes, and requires an index expression to be an integer\index{integer} or an integer range.
 
 A list comprehension\index{list comprehension}, which takes the following form, is a special functional notation for creating lists:
 \begin{tabbing}
@@ -493,7 +493,7 @@ The Picat module system is static, meaning that the binding of normal calls to t
 \end{enumerate}
 
 \section{\label{section:Constraints}Constraints}
-Picat can be used as a modeling and solving language for constraint\index{constraint} satisfaction and optimization problems.  A constraint\index{constraint} program normally poses a problem in three steps: (1) generate variables; (2) generate constraints\index{constraint} over the variables; and (3) call \texttt{solve}\index{\texttt{solve/1}}\index{\texttt{solve/2}} to find a valuation for the variables that satisfies the constraints\index{constraint}, and possibly optimizes an objective function. Picat provides three solver modules, including \texttt{cp}, \texttt{sat}, and \texttt{mip}.
+Picat can be used as a modeling and solving language for constraint\index{constraint} satisfaction and optimization problems.  A constraint\index{constraint} program normally poses a problem in three steps: (1) generate variables; (2) generate constraints\index{constraint} over the variables; and (3) call \texttt{solve}\index{\texttt{solve/1}}\index{\texttt{solve/2}} to find a valuation for the variables that satisfies the constraints\index{constraint}, and possibly optimizes an objective function. Picat provides four solver modules, including \texttt{cp}, \texttt{sat}, \texttt{smt}, and \texttt{mip}.
 
 \subsection*{Example}
 \begin{verbatim}
@@ -537,16 +537,15 @@ sudoku =>
 
 instance(N,A) =>
     N=9,
-    A={{5,3,_,_,7,_,_,_,_},
-       {6,_,_,1,9,5,_,_,_},
-       {_,9,8,_,_,_,_,6,_},
-       {8,_,_,_,6,_,_,_,3},
-       {4,_,_,8,_,3,_,_,1},
-       {7,_,_,_,2,_,_,_,6},
-       {_,_,_,_,_,_,_,_,_},
-       {_,_,_,_,_,_,_,_,_},
-       {_,_,_,_,_,_,_,_,_},
-       {_,_,_,_,_,_,_,_,_}}.
+    A = {{2,_,_,6,7,_,_,_,_},
+         {_,_,6,_,_,_,2,_,1},
+         {4,_,_,_,_,_,8,_,_},
+         {5,_,_,_,_,9,3,_,_},
+         {_,3,_,_,_,_,_,5,_},
+         {_,_,2,8,_,_,_,_,7},
+         {_,_,1,_,_,_,_,_,4},
+         {7,_,8,_,_,_,6,_,_},
+         {_,_,_,_,5,3,_,_,8}}.
 \end{verbatim}
 Recall that variables that occur within a loop, and do not occur before the loop in the outer scope\index{scope}, are local\index{local variable} to each iteration of the loop. For example, in the third \texttt{foreach}\index{foreach loop} statement of the \texttt{sudoku} predicate, the variables \texttt{Row}, \texttt{Col}, and \texttt{Square} are local\index{local variable}, and each iteration of the loop has its own values for these variables.
 

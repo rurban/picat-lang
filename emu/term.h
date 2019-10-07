@@ -1,10 +1,10 @@
 /********************************************************************
  *   File   : term.h
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #define EPSILON           1.0e-8
@@ -95,20 +95,20 @@
 
 #ifdef LINUX
 #ifdef M64BITS
-#define ADDTAG(op,tag)         ((BPLONG)(op) | tag)
-#define UNTAG_ADDR(op)         op &= VAL_MASK0
-#define UNTAGGED_ADDR(op)      (BPULONG)(((BPLONG)op) & VAL_MASK0)
+#define ADDTAG(op,tag)    ((BPLONG)(op) | tag)
+#define UNTAG_ADDR(op)         op &= VAL_MASK0 
+#define UNTAGGED_ADDR(op)      (((BPLONG)op) & VAL_MASK0)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #else
-#define ADDTAG(op,tag)         (((BPLONG)(op) & ~TOP_BIT) | tag)
+#define ADDTAG(op,tag)    (((BPLONG)(op) & ~TOP_BIT) | tag)
 #define UNTAG_ADDR(op)         op = ((op & VAL_MASK0) | addr_top_bit)
-#define UNTAGGED_ADDR(op)      (BPULONG)((((BPLONG)(op)) & VAL_MASK0) | addr_top_bit)
+#define UNTAGGED_ADDR(op)      ((((BPLONG)(op)) & VAL_MASK0) | addr_top_bit)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #endif
 #else
-#define ADDTAG(op,tag)         ((BPLONG)(op) | tag)
-#define UNTAG_ADDR(op)         op &= VAL_MASK0
-#define UNTAGGED_ADDR(op)      (BPULONG)(((BPLONG)(op)) & VAL_MASK0)
+#define ADDTAG(op,tag)    ((BPLONG)(op) | tag)
+#define UNTAG_ADDR(op)         op &= VAL_MASK0 
+#define UNTAGGED_ADDR(op)      (((BPLONG)(op)) & VAL_MASK0)
 #define UNTAGGED_TOPON_ADDR(op) UNTAGGED_ADDR(op)
 #endif
 
@@ -125,7 +125,7 @@
 
 #define DEREF(op)								\
   while (ISREF(op)) {							\
-    top = (BPLONG_PTR)FOLLOW(op);			    \
+    top =  (BPLONG_PTR)FOLLOW(op);			    \
     if ((BPLONG)top==op)						\
       break;									\
     op = (BPLONG)top;							\
@@ -395,7 +395,7 @@
 
 #define INSERT_TRIGGER_minmax(dv_ptr)									\
   if (DV_minmax_cs(dv_ptr) != (BPLONG)nil_sym) {						\
-    if (trigger_no>=MAXTRIGGERS) quit("Event queue overflowed (bound)\n"); \
+    if (trigger_no >= MAXTRIGGERS) quit("Event queue overflowed (bound)\n"); \
     else {																\
 	  toam_signal_vec |= TRIGGER_ON;									\
 	  triggeredCs[++trigger_no] = A_DV_minmax_cs(dv_ptr);				\
@@ -407,7 +407,7 @@
 /* record the triggering frame also */
 #define INSERT_TRIGGER_minmax_checkseed(dv_ptr,fp)						\
   if (DV_minmax_cs(dv_ptr) != (BPLONG)nil_sym) {						\
-    if (trigger_no>=MAXTRIGGERS) quit("Event queue overflowed (bound1)\n"); \
+    if (trigger_no >= MAXTRIGGERS) quit("Event queue overflowed (bound1)\n"); \
     else {																\
 	  toam_signal_vec |= TRIGGER_ON;									\
 	  triggeredCs[++trigger_no] = A_DV_minmax_cs(dv_ptr);				\
@@ -417,10 +417,12 @@
   }
 
 /* Notice that agents watching dom_any events are also attached to DV_dom_cs */
+/* events are ignored when the queue is full */
+/*	quit("Event queue overflowed (dom_any)\n"); */
 #define INSERT_TRIGGER_dom(dv_ptr,elm)									\
   if (DV_dom_cs(dv_ptr) != (BPLONG)nil_sym) {							\
-	if (trigger_no>=MAXTRIGGERS) quit("Event queue overflowed (dom)\n"); \
-	else {																\
+	if (trigger_no >= MAXTRIGGERS){										\
+	} else {															\
 	  toam_signal_vec |= TRIGGER_ON;									\
 	  triggeredCs[++trigger_no] = A_DV_dom_cs(dv_ptr);					\
 	  event_flag[trigger_no] = EVENT_DVAR_DOM;							\
@@ -429,8 +431,8 @@
   }
 
 #define INSERT_TRIGGER_outer_dom0(dv_ptr,elm)							\
-  if (trigger_no>=MAXTRIGGERS) quit("Event queue overflowed (dom_any)\n"); \
-  else {																\
+  if (trigger_no >= MAXTRIGGERS){										\
+  } else {																\
 	toam_signal_vec |= TRIGGER_ON;										\
 	triggeredCs[++trigger_no] = A_DV_outer_dom_cs(dv_ptr);				\
 	event_flag[trigger_no] = EVENT_DVAR_OUTER_DOM;						\
@@ -462,8 +464,8 @@
 
 #define A_DV_bit_vector_ptr(dv_ptr) (dv_ptr+1)
 #define DV_bit_vector_ptr(dv_ptr) FOLLOW(dv_ptr+1)
-/*
-   bit_vector_ptr points to a variable-sized structure of the following fields
+/* 
+   bit_vector_ptr points to a variable-sized structure of the following fields 
    low_ptr
    up_ptr
    low_ptr : word
@@ -514,7 +516,7 @@
 #endif
 
 /****************** bit vector **************************/
-/*
+/* 
    WORD_NUMBER(val)
    val              word_number
    32..63            1

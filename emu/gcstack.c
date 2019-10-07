@@ -1,11 +1,11 @@
 /********************************************************************
  *   File   : gcStack.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
  *   Purpose: stack garbage collector
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #include <stdlib.h>
@@ -40,24 +40,24 @@ int garbage_collector()
 {
     extern BPLONG cputime();
     BPLONG msec0;
-
+  
     msec0 = cputime();
 
     if (toam_signal_vec != 0 || in_critical_region != 0) return BP_TRUE;
-
+  
     gc_is_working = 1;
 
-    //  printf("==>GC local_top=%x heap_top=%x b(%x)->h =%x, hbreg=%x\n",local_top,heap_top,breg,AR_H(breg),hbreg);
+    //  printf("==>GC local_top=%x heap_top=%x b(%x)->h =%x, hbreg=%x\n",local_top,heap_top,breg,AR_H(breg),hbreg); 
     // show_ar_chain_upto_b(arreg);
     //  check_susp_frames_reep("=>GC");
     /*
       show_ar_chain_upto_b(arreg);
     */
     /* show_ar_chain(arreg); */
-    gc_initialize_ar_chain();
+    gc_initialize_ar_chain(); 
 
-    if (sfreg<breg)
-        if (gc_globalize_sf_chain()==BP_ERROR) return BP_ERROR;
+    if (sfreg<breg) 
+        if (gc_globalize_sf_chain()==BP_ERROR) return BP_ERROR; 
     no_gcs++;
     /* printf("=>packTrail\n"); */
     packEntireTrail();
@@ -70,7 +70,7 @@ int garbage_collector()
 
     gc_is_working = 0;
     //  check_susp_frames_reep("<=GC");
-    //  printf("<==GC local_top=%x heap_top=%x\n",local_top,heap_top);
+    //  printf("<==GC local_top=%x heap_top=%x\n",local_top,heap_top); 
     //  show_ar_chain_upto_b(arreg);
     //  show_ar_chain(arreg);
     gc_time += (cputime()-msec0);
@@ -82,7 +82,7 @@ void gc_initialize_ar_chain(){
     int n,b_initialized;
 
     b_initialized = 0;
-
+  
     NO_RESERVED_SLOTS(arreg,n);
     f = arreg;
     for (;;){
@@ -94,8 +94,8 @@ void gc_initialize_ar_chain(){
         cp = (BPLONG_PTR)AR_CPS(f);
         n = *(cp-1);
         f = (BPLONG_PTR)AR_AR(f);
-    }
-
+    } 
+  
     if (b_initialized==0){
         cp = (BPLONG_PTR)AR_CPF(breg);
         n = *(cp-1);
@@ -104,7 +104,7 @@ void gc_initialize_ar_chain(){
 }
 
 /*
-  Before dead suspension frames are garbage collected,  gc_globalize_sf_chain()
+  Before dead suspension frames are garbage collected,  gc_globalize_sf_chain() 
   globalizes local variables in them so that no other stack slots reference them.
 */
 int gc_globalize_sf_chain(){
@@ -113,10 +113,10 @@ int gc_globalize_sf_chain(){
 
     mask_size = ((BPULONG)breg-(BPULONG)local_top)/NBITS_IN_LONG+2; /* masking bits */
     if (allocateMaskArea(mask_size)==BP_ERROR) return BP_ERROR;
-
+  
     mark_stack_references_ar_chain();
     mark_stack_references_sf_chain();
-
+  
     f = sfreg;
     while (f<breg){
         if (FRAME_IS_DEAD(f)){
@@ -135,9 +135,9 @@ void mark_stack_references_ar_chain(){
             mark_stack_references_frame(f);
         }
         f = (BPLONG_PTR)AR_AR(f);
-    }
+    } 
 }
-
+  
 void mark_stack_references_sf_chain(){
     BPLONG_PTR f;
     f = sfreg;
@@ -156,7 +156,7 @@ void mark_stack_references_frame(f)
     BPLONG_PTR sp,top;
 
     sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(f));
-    while (sp>f){
+    while (sp>f){ 
         term = FOLLOW(sp);
         if (ISREF(term) && (BPLONG_PTR)term > local_top && (BPLONG_PTR)term < breg){
             GCSetMaskBit(term,local_top);
@@ -183,7 +183,7 @@ void globalize_stack_vars_in_frame(f,size)
     BPLONG_PTR sp,top;
 
     sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(f));
-    while (sp>f){
+    while (sp>f){ 
         if (FOLLOW(sp)==(BPLONG)sp && gcIsMarked(sp,local_top)==1){
             FOLLOW(heap_top) = FOLLOW(sp) = (BPLONG)heap_top;
             heap_top++;
@@ -205,7 +205,7 @@ void globalize_stack_vars_in_frame(f,size)
 }
 
 int allocateCopyArea(size)
-    BPLONG size;
+    BPLONG size; 
 {
     if (copy_area_allocated==0){
         size = (size>1000000 ? size : 1000000);
@@ -215,7 +215,7 @@ int allocateCopyArea(size)
         /*  printf("new block allocated %x %x words\n",copy_area_low,copy_area_high); */
         copy_area_allocated = 1;
     } else { /* reuse already allocated copy area */
-        if (size <= (BPLONG)((BPULONG)copy_area_high-(BPULONG)copy_area_low)/sizeof(BPLONG)){
+        if (size <= (BPLONG)((BPULONG)copy_area_high-(BPULONG)copy_area_low)/sizeof(BPLONG)){ 
             return BP_TRUE;
         } else {
             /*      BPLONG doubleSize = 2*(((BPULONG)copy_area_high-(BPULONG)copy_area_low)/sizeof(BPLONG)); */
@@ -239,10 +239,10 @@ int gcStack()
     mask_size = ((BPULONG)heap_top-(BPULONG)stack_low_addr)/NBITS_IN_LONG+2; /* masking bits */
 
     if (allocateMaskArea(mask_size)==BP_ERROR) return BP_ERROR;
-
-    size = ((BPULONG)UNTAGGED_ADDR(AR_BTM(breg)) - (BPULONG)local_top)/sizeof(BPLONG);
+  
+    size = ((BPULONG)UNTAGGED_ADDR(AR_BTM(breg)) - (BPULONG)local_top)/sizeof(BPLONG); 
     if (allocateCopyArea(size)==BP_ERROR) return BP_ERROR;
-
+  
     copy_local_top = copy_area_high;
 
     gcInitDynamicArray();
@@ -256,7 +256,7 @@ int gcStack()
     /* gcStackMarkTriggeredCs(); */
 
     gcQueueInit; /* store all the suspension frames to be moved out */
-    sfreg = gcMoveAliveFramesOutSf();
+    sfreg = gcMoveAliveFramesOutSf(); 
     arreg = gcMoveAliveFramesOutAr();
     gcResetSuspVars();
 
@@ -277,7 +277,7 @@ void gcMoveFrameSlotOut(term,des)
     BPLONG term;
     BPLONG_PTR des;
 {
-
+  
 start:
     /*  printf("move frame term %x des=%x\n",term,SP_AFTER_GC(des));  */
     /*
@@ -297,7 +297,7 @@ start:
                 FOLLOW(des) = (BPLONG)SP_AFTER_GC(des);
                 FOLLOW(term) = (BPLONG)des;
                 /*
-                  FOLLOW(des) = FOLLOW(term) = (BPLONG)heap_top; FOLLOW(heap_top) = (BPLONG)heap_top; heap_top++;  globalize it
+                  FOLLOW(des) = FOLLOW(term) = (BPLONG)heap_top; FOLLOW(heap_top) = (BPLONG)heap_top; heap_top++;  globalize it 
                   if (heap_top>=local_top) quit("Stack overflow during GC\n");
                 */
                 return;
@@ -330,9 +330,9 @@ BPLONG_PTR gcMoveFrameOut(src_f,nReservedSlots)
     des_sp = copy_local_top;
     frame_type = (AR_BTM(src_f) & TAG_MASK);
     src_sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(src_f));
-    while (src_sp>src_f){
+    while (src_sp>src_f){ 
         gcMoveFrameSlotOut(FOLLOW(src_sp),des_sp);
-        src_sp--;des_sp--;
+        src_sp--;des_sp--; 
     }
 
     des_f = des_sp;
@@ -341,10 +341,10 @@ BPLONG_PTR gcMoveFrameOut(src_f,nReservedSlots)
     AR_B(des_f) = AR_B(src_f);  /* if it is a FLAT_B_FRAME */
 
     if (nReservedSlots>=NONDET_FRAME_SIZE){
-        AR_SF(des_f) = AR_SF(src_f);
-        AR_H(des_f) = AR_H(src_f);
-        AR_T(des_f) = AR_T(src_f);
-        AR_CPF(des_f) = AR_CPF(src_f);
+        AR_SF(des_f) = AR_SF(src_f); 
+        AR_H(des_f) = AR_H(src_f); 
+        AR_T(des_f) = AR_T(src_f); 
+        AR_CPF(des_f) = AR_CPF(src_f); 
     }
 
     src_sp = src_f-nReservedSlots;
@@ -397,9 +397,9 @@ BPLONG_PTR gcReverseArChain(f,prev)
     BPLONG_PTR f,prev;
 {
     BPLONG_PTR tmp;
-
+  
     while (f!=prev){
-        tmp = (BPLONG_PTR)AR_AR(prev);
+        tmp = (BPLONG_PTR)AR_AR(prev);  
         AR_AR(prev) = (BPLONG)f;
         f = prev;   /* return gcReverseArChain(prev,tmp); */
         prev = tmp;
@@ -410,11 +410,11 @@ BPLONG_PTR gcReverseArChain(f,prev)
 /*
   Move out frames on the AR chain that are younger than breg.
   prev -> f -> ....
-  f1 refers to the frame originally pointed to by f after the fame is moved out to
-  the copy area, new_prev refers to the frame of f after it is moved back from the
+  f1 refers to the frame originally pointed to by f after the fame is moved out to 
+  the copy area, new_prev refers to the frame of f after it is moved back from the 
   copy area.
 */
-
+   
 BPLONG_PTR gcMoveAliveFramesOutReversedAr(prev,f)
     BPLONG_PTR prev,f;
 {
@@ -449,8 +449,8 @@ start:
     prev = new_prev; /* return gcMoveAliveFramesOutReversedAr(new_prev,new_f); */
     f = new_f;
     goto start;
-}
-
+}  
+  
 /* move the activation frames chain arreg into the temp area */
 BPLONG_PTR gcMoveAliveFramesOutAr()
 {
@@ -464,25 +464,25 @@ BPLONG_PTR gcMoveAliveFramesOutAr()
 
 /**************************************************************
   Reset cs lists (offsets of frame pointers) on suspension variables. Before garbage-collecting
-  the stack, gcStackMarkSuspVars collects all those suspension variables into a dynamic array that
-  contain cs list elements younger than B. Before moving stack frames back to the control stack,
-  gcResetSuspVars adjust the frame pointers on the suspension variables. No frame pointers can be
+  the stack, gcStackMarkSuspVars collects all those suspension variables into a dynamic array that 
+  contain cs list elements younger than B. Before moving stack frames back to the control stack, 
+  gcResetSuspVars adjust the frame pointers on the suspension variables. No frame pointers can be 
   reset more than once. To ensure that, we mark all the frame pointers before resetting them.
 
-  gcStackMarkSuspVars scan the suspension frames younger than B for suspension variables that
-  may have suspension frames younger than B attached to them.
+  gcStackMarkSuspVars scan the suspension frames younger than B for suspension variables that  
+  may have suspension frames younger than B attached to them. 
 
-  gcTrailMarkSuspVars scans the trailed items in the top segment of the trail stack for old suspension
-  variables that may have suspension frames younger than B attached to them.
+  gcTrailMarkSuspVars scans the trailed items in the top segment of the trail stack for old suspension 
+  variables that may have suspension frames younger than B attached to them. 
 
-  Since no gc is invoked when there are events raised, it is unnecessary to collect
-  suspension variables in triggered constraints.
+  Since no gc is invoked when there are events raised, it is unnecessary to collect 
+  suspension variables in triggered constraints. 
 ******************************************************************/
 void gcStackMarkSuspVars(){
     BPLONG_PTR f,sp;
 
     f = sfreg;
-    while (f<breg) {
+    while (f<breg) { 
         sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(f));
         while (sp > f){
             gcMarkSuspVarsTerm(FOLLOW(sp));
@@ -506,7 +506,7 @@ void gcTrailMarkSuspVars(){
     curr_t = trail_top+1;
     last_t = (BPLONG_PTR)AR_T(breg);
     while (curr_t < last_t){
-        addr = (BPLONG_PTR)FOLLOW(curr_t);
+        addr = (BPLONG_PTR)FOLLOW(curr_t); 
         if (TAG(addr)==TRAIL_VAR){
             gcMarkSuspVarsTerm(FOLLOW(addr));
         } else if (TAG(addr)==TRAIL_VAL_NONATOMIC){
@@ -546,7 +546,7 @@ cont:
             term = FOLLOW(ptr+1);
             goto cont;
         }
-    } else if (ISSTRUCT(term)){
+    } else if (ISSTRUCT(term)){ 
         BPLONG i,arity;
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
         if (IS_HEAP_REFERENCE(ptr) && gcIsMarked(ptr,stack_low_addr)==0){
@@ -572,7 +572,7 @@ void gcMarkSuspVarsCs(cs)
         sf = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(constr));
         if (sf<breg && ISINT(constr)){
             FOLLOW(ptr) = ADDTAG(((BPULONG)stack_up_addr-(BPULONG)sf),ATM); /* mark it by turning the tag from INT to ATM */
-        }
+        } 
         cs = FOLLOW(ptr+1); /* cdr */
     }
 }
@@ -589,7 +589,7 @@ void gcResetSuspVars(){
         gcResetCs(A_DV_outer_dom_cs(dv_ptr),DV_outer_dom_cs(dv_ptr));
     }
 }
-
+    
 void gcResetTriggeredCs()
 {
     BPLONG i;
@@ -608,7 +608,7 @@ void gcResetCs(addr,list)
 
 start:
     if (ISLIST(list)){
-        ptr = (BPLONG_PTR)UNTAGGED_ADDR(list);
+        ptr = (BPLONG_PTR)UNTAGGED_ADDR(list); 
         constr = FOLLOW(ptr); /* car */
         sf = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(constr)); /* frame pointer */
         if (sf<breg && ISATOM(constr)){
@@ -617,8 +617,8 @@ start:
                 goto start;
             }
             des_sf = (BPLONG_PTR)AR_PREV(sf); /* it was moved here */
-            FOLLOW(ptr) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)SP_AFTER_GC(des_sf),INT_TAG);
-        }
+            FOLLOW(ptr) = ADDTAG((BPULONG)stack_up_addr-(BPULONG)SP_AFTER_GC(des_sf),INT_TAG); 
+        } 
         FOLLOW(addr) = list;
         addr = ptr+1;
         list = FOLLOW(addr);

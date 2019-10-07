@@ -1,11 +1,11 @@
 /********************************************************************
- *   File   : clause.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   File   : clause.c 
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
  *   Purpose: auxiliary functions for defining clause/2
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 #include "bprolog.h"
 #include "dynamic.h"
@@ -20,7 +20,7 @@ int aux_copy_clause(ref,head,body)
     BPLONG  head_arg,cl_head_arg;
     BPLONG  varNo;
     int arity,i;
-
+  
     clause_record_ptr = (InterpretedClausePtr)UNTAGGED_ADDR(ref);
     cl_head = clause_record_ptr->head; /* clause(CellRef,Head,Body,TimeStamp) */
     cl_body = clause_record_ptr->body;
@@ -28,9 +28,9 @@ int aux_copy_clause(ref,head,body)
     PREPARE_UNNUMBER_TERM(local_top);
 
     //   printf("=>clause "); write_term(cl_head); write_term(cl_body);  printf("\n");
-    gcQueueInit;
-    GCQueueAdd(body,cl_body);
-    DEREF_NONVAR(head);
+    gcQueueInit; 
+    GCQueueAdd(body,cl_body);    
+    DEREF_NONVAR(head); 
     if (ISSTRUCT(head)){
         head_ptr = (BPLONG_PTR)UNTAGGED_ADDR(head);
         arity = GET_ARITY((SYM_REC_PTR)FOLLOW(head_ptr));
@@ -42,7 +42,7 @@ int aux_copy_clause(ref,head,body)
         cl_head_arg = FOLLOW(cl_head_ptr+1);
         goto lab_after_get;
     }
-
+  
 loop:
     GCQueuePop(head_arg,cl_head_arg);
 lab_after_get:
@@ -79,7 +79,7 @@ lab_after_get:
                           GCQueueAdd(FOLLOW(head_ptr+i),FOLLOW(cl_head_ptr+i));
                       }
                   } else {return BP_FALSE;}},
-
+            
               {if (!unify(head_arg,unnumberVarTermOpt(cl_head_arg))) return BP_FALSE;});
 
     if (gcQueueCount>0) goto loop;

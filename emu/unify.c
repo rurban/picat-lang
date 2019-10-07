@@ -1,10 +1,10 @@
 /********************************************************************
  *   File   : unify.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #include "basic.h"
@@ -46,7 +46,7 @@ int unify(op1, op2)
 nunify:
     switch (TAG(op1)){
     case REF:
-        NDEREF(op1,nunify);
+        NDEREF(op1,nunify); 
         SWITCH_OP_VAR(op2,unify_v_d,
                       {if (op1 != op2) {
                               if ((BPULONG)op1 < (BPULONG)op2) {
@@ -101,7 +101,7 @@ nunify:
                           goto nunify;},
                       {goto bind_value_susp;});
         return 0;
-
+    
     case STR:
         if (op1<0) goto unify_susp_d;
         SWITCH_OP_STRUCT(op2,unify_str_d,
@@ -125,11 +125,11 @@ nunify:
                          {goto bind_value_susp;});
         return 0;
     }
-
+                 
     SWITCH_OP_VAR(op2,unify_susp_d,
-                  {dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op1);
+                  {dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op1); 
                       FOLLOW(op2) =(BPLONG)dv_ptr;
-                      PUSHTRAIL(op2);
+                      PUSHTRAIL(op2); 
                       return 1;},
                   {if (op1==op2) return 1; else return unify_suspvar_suspvar(op1,op2);},
                   {goto bind_susp_value;});
@@ -138,21 +138,21 @@ nunify:
 bind_value_susp:
     tmp_op = op1; op1 = op2; op2 = tmp_op;
 bind_susp_value:
-    top = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op1);
+    top = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op1); 
     if (!IS_UN_DOMAIN(top)){
         if (!ISINT(op2)) return 0;
         tmp_op = INTVAL(op2);
         if (!dm_true(top,tmp_op)) return 0;
     }
-    INSERT_TRIGGER_var_ins(top);
-    PUSHTRAIL_H_NONATOMIC(top,op1);
-    FOLLOW(top) = op2;
+    INSERT_TRIGGER_var_ins(top); 
+    PUSHTRAIL_H_NONATOMIC(top,op1); 
+    FOLLOW(top) = op2; 
     return 1;
 }
 
 /*
   op1: non-stack var
-  op2: a var
+  op2: a var 
 */
 void unify_nsv_v(op1,op2)
     register  BPLONG op1,op2;
@@ -206,7 +206,7 @@ int unify_str_str(op1,op2)
     op2 = *((BPLONG_PTR) op2 + arity);
     return unify(op1,op2);
 }
-
+  
 int is_IDENTICAL(op1, op2)
     BPLONG op1, op2;
 {
@@ -218,7 +218,7 @@ int bp_identical(op1, op2)
 {
     register BPLONG_PTR top;
     register BPLONG     arity, i;
-
+  
     DEREF(op2);
     SWITCH_OP(op1,nidentical,
               {if (op1 == op2) return 1;},
@@ -242,7 +242,7 @@ int bp_identical(op1, op2)
                               return 0;
                           else {
                               arity = GET_ARITY((SYM_REC_PTR)(FOLLOW(op1)));
-                              for (i = 1; i < arity; i++)
+                              for (i = 1; i < arity; i++) 
                                   if (!bp_identical(*((BPLONG_PTR)op1 + i), *((BPLONG_PTR)op2 + i))) return 0;
                               op1 = *((BPLONG_PTR)op1 + arity);
                               op2 = *((BPLONG_PTR)op2 + arity);DEREF(op2);
@@ -261,8 +261,8 @@ int is_UNIFIABLE(t1,t2)
     BPLONG_PTR trail_top0,hbreg0;
     BPLONG initial_diff0,trigger_no0;
     int res;
-
-    /* Logically equivalent to not(not(t1 = t2)).
+  
+    /* Logically equivalent to not(not(t1 = t2)). 
        Does not work well if suspension variables are included. */
     DEREF(t1); DEREF(t2);
     if (ISREF(t1) || ISREF(t2)) return BP_TRUE;
@@ -275,12 +275,12 @@ int is_UNIFIABLE(t1,t2)
     res =unify(t1, t2);
     trail_top0 = (BPLONG_PTR)((BPULONG)trail_up_addr-initial_diff0);
     UNDO_TRAILING;
-
+  
     trigger_no = trigger_no0;
     hbreg = hbreg0;
     return res;
 }
-
+  
 int c_UNIFIABLE(){
     register BPLONG op1,op2;
     op1 = ARG(1,2); op2 = ARG(2,2);
@@ -307,7 +307,7 @@ int unify_suspvar_suspvar(op1,op2)
             UNIFY_DVAR_SUSP(dv_ptr2,dv_ptr1);
             return BP_TRUE;
         }
-        else {
+        else { 
             BPLONG_PTR top;
             if (dv_ptr1<dv_ptr2) top = dm_clone(dv_ptr1); else top = dm_clone(dv_ptr2);
             bind_susp_susp(top,dv_ptr1);
@@ -348,7 +348,7 @@ bvdvar_bvdvar:
             elm = domain_next_bv(dv_ptr2,first);
             if (elm!=first){
                 updated=1;
-                first=elm;
+                first=elm; 
             }
         }
         updated=1;
@@ -358,7 +358,7 @@ bvdvar_bvdvar:
             elm = domain_prev_bv(dv_ptr2,last);
             if (elm!=last){
                 updated=1;
-                last=elm;
+                last=elm; 
             }
         }
         if (first>last) return 0;
@@ -369,7 +369,7 @@ bvdvar_bvdvar:
                 return 1;
             } else return 0;
         }
-
+    
         if (!exclude_dom_comp_aux(dv_ptr1,dv_ptr2) || !exclude_dom_comp_aux(dv_ptr2,dv_ptr1)) return 0; /* bit vector intersection */
 
         count = count_domain_elms(dv_ptr2,first,last);
@@ -407,7 +407,7 @@ itdvar_itdvar:
         return BP_TRUE;
     }
 
-itdvar_bvdvar:
+itdvar_bvdvar: 
     {
         first = domain_next_bv(dv_ptr2,first);
         last = domain_prev_bv(dv_ptr2,last);
@@ -434,7 +434,7 @@ itdvar_bvdvar:
         return BP_TRUE;
     }
 }
-
+  
 /* let dv_ptr2 point to dv_ptr1 */
 int bind_susp_susp(dv_ptr1,dv_ptr2)
     BPLONG_PTR dv_ptr1,dv_ptr2;
@@ -450,13 +450,13 @@ int bind_susp_susp(dv_ptr1,dv_ptr2)
       printf("dv_ins_cs2");write_term(DV_ins_cs(dv_ptr2));
       printf("\n");
     */
-    if (DV_ins_cs(dv_ptr2)!=nil_sym)
+    if (DV_ins_cs(dv_ptr2)!=nil_sym) 
         merge_cs(A_DV_ins_cs(dv_ptr1),DV_ins_cs(dv_ptr2));
-    if (DV_minmax_cs(dv_ptr2)!=nil_sym)
+    if (DV_minmax_cs(dv_ptr2)!=nil_sym) 
         merge_cs(A_DV_minmax_cs(dv_ptr1),DV_minmax_cs(dv_ptr2));
-    if (DV_dom_cs(dv_ptr2)!=nil_sym)
+    if (DV_dom_cs(dv_ptr2)!=nil_sym) 
         merge_cs(A_DV_dom_cs(dv_ptr1),DV_dom_cs(dv_ptr2));
-    if (DV_outer_dom_cs(dv_ptr2)!=nil_sym)
+    if (DV_outer_dom_cs(dv_ptr2)!=nil_sym) 
         merge_cs(A_DV_outer_dom_cs(dv_ptr1),DV_outer_dom_cs(dv_ptr2));
 
     // printf("dv_ins_cs1");write_term(DV_ins_cs(dv_ptr1)); printf("\n\n");
@@ -495,9 +495,9 @@ void merge_cs(addr_head_cs1,cs2)
         constr_ar = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(elm));
         if ((AR_STATUS(constr_ar) & TOP_BIT_MASK)  || FRAME_IS_DEAD(constr_ar)){ /* exists in cs1, then drop it */
         } else {
-            NEW_LIST_NODE(elm,new_cs2,new_cs2);
+            NEW_LIST_NODE(elm,new_cs2,new_cs2); 
             if (local_top-heap_top<=LARGE_MARGIN) myquit(STACK_OVERFLOW,"un");
-        }
+        } 
         cs2 = FOLLOW(ptr+1);
     }
 
@@ -528,11 +528,11 @@ int key_identical(op1, op2)
 {
     register BPLONG_PTR top;
     register BPLONG     arity, i;
-
+  
 key_identical_start:
     switch (TAG(op1)){
     case REF:
-        NDEREF(op1,key_identical_start);
+        NDEREF(op1,key_identical_start); 
         SWITCH_OP_VAR(op2,key_identical_v_d,
                       {return 1;},
                       {return 1;},
@@ -566,7 +566,7 @@ key_identical_start:
                           goto key_identical_start;},
                       {return 0;});
         return 0;
-
+    
     case STR:
         if (op1<0) return 0;
         SWITCH_OP_STRUCT(op2,key_identical_str_d,
@@ -590,9 +590,9 @@ key_identical_start:
     }
     return 0;
 }
-
-
-/*
+                 
+  
+/* 
    t2 is a numbered term, which needs to be dereferenced
 */
 int unifyNumberedTerms(BPLONG t1, BPLONG t2){
@@ -604,8 +604,8 @@ beginning:
     SWITCH_OP_NOSUSP(t1,
                      start,
                      {NDEREF(t1,start);
-                         ASSIGN_TRAIL_VALUE(t1,NumberVar(global_var_num));
-                         global_var_num++;
+                         ASSIGN_TRAIL_VALUE(t1,NumberVar(global_var_num));  
+                         global_var_num++; 
                          return (FOLLOW(t1)==t2);
                      },
                      {return (t1==t2);},
@@ -621,7 +621,7 @@ beginning:
                      },
                      {if (t1<0){
                              return 0;
-                         }
+                         } 
                          if (!ISSTRUCT(t2)) return 0;
                          UNTAG_ADDR(t1); UNTAG_ADDR(t2);
                          if (FOLLOW(t1)!=FOLLOW(t2)) return 0;
@@ -633,7 +633,6 @@ beginning:
                          }
                          return 1;
                      });
-    return 0;
 }
 
 int c_SAME_ADDR(){
@@ -645,4 +644,4 @@ int c_SAME_ADDR(){
     DEREF(X); DEREF(Y);
     return (X==Y) ? BP_TRUE : BP_FALSE;
 }
-
+  

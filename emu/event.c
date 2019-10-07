@@ -1,11 +1,11 @@
 /********************************************************************
  *   File   : event.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
  *   Purpose: event handling functions
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #ifdef _WIN32
@@ -39,13 +39,13 @@ static BPLONG bpp_java_obj = MAKEINT(0);
 #ifdef _WIN32
 #define bp_sleep(interval) Sleep(interval)
 CRITICAL_SECTION csCriticalSection;
-#define ENTER_CRITICAL_SECTION  EnterCriticalSection(&csCriticalSection);
-#define LEAVE_CRITICAL_SECTION  LeaveCriticalSection(&csCriticalSection);
+#define ENTER_CRITICAL_SECTION  EnterCriticalSection(&csCriticalSection); 
+#define LEAVE_CRITICAL_SECTION  LeaveCriticalSection(&csCriticalSection); 
 #else
 pthread_mutex_t csCriticalSection;
 #define bp_sleep(interval) usleep(interval*1000)
-#define ENTER_CRITICAL_SECTION  pthread_mutex_lock(&csCriticalSection);
-#define LEAVE_CRITICAL_SECTION  pthread_mutex_unlock(&csCriticalSection);
+#define ENTER_CRITICAL_SECTION  pthread_mutex_lock(&csCriticalSection); 
+#define LEAVE_CRITICAL_SECTION  pthread_mutex_unlock(&csCriticalSection); 
 #endif
 
 char *eventNoNameTable[] = {
@@ -96,21 +96,21 @@ SYM_REC_PTR cg_label_psc;
 SYM_REC_PTR cg_textbox_psc;
 SYM_REC_PTR cg_textField_psc;
 SYM_REC_PTR cg_textArea_psc;
-SYM_REC_PTR cg_menuBar_psc;
+SYM_REC_PTR cg_menuBar_psc; 
 SYM_REC_PTR cg_menu_psc;
 SYM_REC_PTR cg_menuItem_psc;
 SYM_REC_PTR cg_checkboxMenuItem_psc;
-SYM_REC_PTR cg_checkbox_psc;
+SYM_REC_PTR cg_checkbox_psc;       
 SYM_REC_PTR cg_list_psc;
 SYM_REC_PTR cg_choice_psc;
 /* SYM_REC_PTR cg_dialog_psc; */
-SYM_REC_PTR cg_fileDialog_psc;
-SYM_REC_PTR cg_scrollbar_psc;
+SYM_REC_PTR cg_fileDialog_psc; 
+SYM_REC_PTR cg_scrollbar_psc; 
 
 int c_post_event(){
-    BPLONG x = ARG(1,3);
+    BPLONG x = ARG(1,3); 
     BPLONG no = ARG(2,3);
-    BPLONG e = ARG(3,3);
+    BPLONG e = ARG(3,3);  
 
     return b_POST_EVENT_ccc(x,no,e);
 }
@@ -120,7 +120,7 @@ int b_POST_EVENT_ccc(x,no,e)
 {
     BPLONG_PTR dv_ptr;
 
-    DEREF(x);
+    DEREF(x); 
     if (!IS_SUSP_VAR(x)){
         if (ISREF(x)) return BP_TRUE;
         exception = illegal_arguments;
@@ -128,7 +128,7 @@ int b_POST_EVENT_ccc(x,no,e)
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(x);
     DEREF(no); no = INTVAL(no);
-    DEREF(e);
+    DEREF(e); 
     switch (no){
     case EVENT_VAR_INS:
         INSERT_TRIGGER_var_ins(dv_ptr);
@@ -136,10 +136,10 @@ int b_POST_EVENT_ccc(x,no,e)
     case EVENT_DVAR_MINMAX:
         INSERT_TRIGGER_minmax(dv_ptr);
         break;
-    case EVENT_DVAR_DOM:
+    case EVENT_DVAR_DOM:    
         INSERT_TRIGGER_dom(dv_ptr,e) ;
         break;
-    case EVENT_DVAR_OUTER_DOM:
+    case EVENT_DVAR_OUTER_DOM:    
         INSERT_TRIGGER_outer_dom(dv_ptr,e) ;
         break;
     case EVENT_GENERAL:
@@ -153,13 +153,13 @@ int b_POST_EVENT_ccc(x,no,e)
    and Prolog cannot access Java's representation of components.
    Java and Prolog communicate through component id. Whenver an
    event occurs in a component, Prolog is notified about the id.
-   Since Prolog maintains a database of all the components (pointered
+   Since Prolog maintains a database of all the components (pointered 
    to by breg0), it can get the id of the component.
 */
 void cg_initialize(){
     BPLONG i;
     BPLONG comp,default_window;
-
+  
     /* create a component for the default window */
     comp = ADDTAG(heap_top,STR);
     FOLLOW(heap_top) = (BPLONG)cg_component_psc;
@@ -182,13 +182,13 @@ void cg_initialize(){
     /* initialize CG global variables */
     FOLLOW(breg0+1) = default_window;
     /* write_term(default_window); */
-    /* done in init.c
+    /* done in init.c 
        for (i=2;i<=NUM_CG_GLOBALS;i++){
-       FOLLOW(breg0+i) = (BPLONG)(breg0+i);
+       FOLLOW(breg0+i) = (BPLONG)(breg0+i); 
        }
     */
 #ifdef _WIN32
-    InitializeCriticalSection(&csCriticalSection);
+    InitializeCriticalSection(&csCriticalSection); 
 #else
     pthread_mutex_init(&csCriticalSection,NULL);
 #endif
@@ -214,7 +214,7 @@ int cg_is_component(op)
     BPLONG_PTR ptr = (BPLONG_PTR)UNTAGGED_ADDR(op);
     SYM_REC_PTR sym_ptr = (SYM_REC_PTR)FOLLOW(ptr);
     char *name = GET_NAME(sym_ptr);
-
+  
     if (*name=='_'){
         return  (sym_ptr== cg_component_psc ||
                  sym_ptr== cg_window_psc ||
@@ -238,10 +238,10 @@ int cg_is_component(op)
                  sym_ptr==cg_menu_psc ||
                  sym_ptr==cg_menuItem_psc ||
                  sym_ptr==cg_checkboxMenuItem_psc ||
-                 sym_ptr==cg_checkbox_psc ||
+                 sym_ptr==cg_checkbox_psc ||       
                  sym_ptr==cg_list_psc ||
                  sym_ptr==cg_choice_psc ||
-                 sym_ptr==cg_scrollbar_psc ||
+                 sym_ptr==cg_scrollbar_psc || 
                  sym_ptr==cg_fileDialog_psc);
     } else return 0;
 }
@@ -295,7 +295,7 @@ int is_correct_event_source(event_no,source)
 
     switch (event_no){
     case ActionPerformed:
-        return (sym_ptr == cg_button_psc || sym_ptr == cg_menuItem_psc || sym_ptr == cg_checkboxMenuItem_psc || cg_menu_psc || sym_ptr == cg_textField_psc
+        return (sym_ptr == cg_button_psc || sym_ptr == cg_menuItem_psc || sym_ptr == cg_checkboxMenuItem_psc || cg_menu_psc || sym_ptr == cg_textField_psc 
                 || sym_ptr == cg_list_psc);
 
     case MouseClicked:
@@ -310,8 +310,8 @@ int is_correct_event_source(event_no,source)
     case KeyPressed:
     case KeyReleased:
     case KeyTyped:
-        return (sym_ptr == cg_button_psc || sym_ptr == cg_textField_psc || sym_ptr == cg_textArea_psc
-                || sym_ptr == cg_list_psc ||  sym_ptr == cg_checkbox_psc || sym_ptr == cg_choice_psc
+        return (sym_ptr == cg_button_psc || sym_ptr == cg_textField_psc || sym_ptr == cg_textArea_psc 
+                || sym_ptr == cg_list_psc ||  sym_ptr == cg_checkbox_psc || sym_ptr == cg_choice_psc 
                 || sym_ptr == cg_window_psc || sym_ptr == cg_fileDialog_psc);
 
     case WindowClosing:
@@ -336,7 +336,7 @@ int is_correct_event_source(event_no,source)
 
     case AdjustmentValueChanged:
         return (sym_ptr == cg_scrollbar_psc);
-
+    
     case TimeOut:
         return (sym_ptr == timer_psc);
     default:
@@ -344,14 +344,14 @@ int is_correct_event_source(event_no,source)
         return 0;
     }
 }
-
+    
 BPLONG event_handler_type(frame)
     BPLONG_PTR frame;
 {
     BPLONG_PTR ptr = (BPLONG_PTR)AR_REEP(frame)+4; /* size of delay inst - 1*/
     if (FOLLOW(ptr)==trigger_cg_event_handler)
         return FOLLOW(ptr+1);
-    else
+    else 
         return 0;
 }
 /****************************************************************************
@@ -422,7 +422,7 @@ BPLONG cg_lookup_component(type,comp_no)
     // if (gc_is_working) {quit("Strange");}
     list = FOLLOW(breg0+(type-ActionPerformed+2));
     /*
-      printf("lookup event handler comp_no= "); write_term(comp_no);
+      printf("lookup event handler comp_no= "); write_term(comp_no); 
       printf("list=%x,breg=%x breg->t=%x heap_top=%x trail_top=%x\n",list,breg,AR_T(breg),heap_top,trail_top);
     */
     DEREF(list);
@@ -446,7 +446,7 @@ BPLONG register_event_source(event_no,source)
     BPLONG comp_no;
     BPLONG res;
     /*
-      printf("register_event_source %d",event_no); write_term(source); printf("\n");
+      printf("register_event_source %d",event_no); write_term(source); printf("\n"); 
     */
     DEREF(source);
     if (!is_correct_event_source(event_no,source)){
@@ -455,7 +455,7 @@ BPLONG register_event_source(event_no,source)
     }
     ENTER_CRITICAL_SECTION;
     comp_no = cg_get_component_no(source);
-    attach_event_source(FOLLOW(breg0+(event_no-ActionPerformed+2)),source,comp_no,event_no);
+    attach_event_source(FOLLOW(breg0+(event_no-ActionPerformed+2)),source,comp_no,event_no); 
     res = cg_get_component_event_handler(source);
     LEAVE_CRITICAL_SECTION;
     return res;
@@ -481,7 +481,7 @@ void attach_event_source(list,source,source_no,event_no)
     ASSIGN_v_heap_term(list,tmp);
 
     /*  printf("register_event_source comp_no=%d event_no=%d\n",INTVAL(source_no),event_no);  */
-#ifdef JAVA
+#ifdef JAVA  
     javaRegisterEventListener(INTVAL(source_no),event_no);
 #endif
 }
@@ -542,7 +542,7 @@ BPLONG cg_get_component_no(comp)
     }
 }
 
-/* $timer(Component_no,EventVar,Interval,Status,_)
+/* $timer(Component_no,EventVar,Interval,Status,_) 
    fork a process that wakes up every Interval milliseconds
    and posts a time event.
 */
@@ -565,7 +565,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
         BPLONG component_no, interval,status;
         BPLONG_PTR ptr;
         BPLONG timer;
-
+  
         component_no = *(BPLONG *)timer_no;
         /* must be synchronized with the garbage collector */
         for (;;){
@@ -574,8 +574,8 @@ DWORD WINAPI timerThread(LPVOID timer_no){
             in_critical_region = 1;
             timer = cg_lookup_component(TimeOut,component_no);
             if (timer==0){
-                in_critical_region = 0;
-                LEAVE_CRITICAL_SECTION;
+                in_critical_region = 0;    
+                LEAVE_CRITICAL_SECTION;    
 #ifdef _WIN32
                 ExitThread(0);
 #else
@@ -586,19 +586,19 @@ DWORD WINAPI timerThread(LPVOID timer_no){
             ptr = (BPLONG_PTR)UNTAGGED_ADDR(timer);
             interval = GET_TIMER_INTERVAL(ptr); DEREF(interval); interval = INTVAL(interval);
 
-            in_critical_region = 0;
-            LEAVE_CRITICAL_SECTION;
-
+            in_critical_region = 0;    
+            LEAVE_CRITICAL_SECTION;    
+    
             bp_sleep(interval);
 
             ENTER_CRITICAL_SECTION;
             /* busy waiting, wait until gc is not working */
-            while (gc_is_working) bp_sleep(5);
+            while (gc_is_working) bp_sleep(5); 
             in_critical_region = 1;
             timer = cg_lookup_component(TimeOut,component_no);
             if (timer==0){
                 in_critical_region = 0;
-                LEAVE_CRITICAL_SECTION;
+                LEAVE_CRITICAL_SECTION;    
                 return 0;
             }
             DEREF(timer);
@@ -606,7 +606,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
             status = GET_TIMER_STATUS(ptr); DEREF(status); status = INTVAL(status);
 
             if (status == TIMER_STATUS_RUN){
-                add_to_event_pool(component_no,TimeOut,(void *) MAKEINT(TimeOut));
+                add_to_event_pool(component_no,TimeOut,(void *) MAKEINT(TimeOut));      
             }
             in_critical_region = 0;
             LEAVE_CRITICAL_SECTION;
@@ -636,26 +636,26 @@ DWORD WINAPI timerThread(LPVOID timer_no){
         in_critical_region = 1;
         timer = ARG(1,1); DEREF(timer); ptr = (BPLONG_PTR)UNTAGGED_ADDR(timer);
         timer_no_ptr = (BPLONG_PTR)malloc(sizeof(BPLONG));
-        timer_no = GET_TIMER_NO(ptr); DEREF(timer_no);
+        timer_no = GET_TIMER_NO(ptr); DEREF(timer_no); 
         register_event_source(TimeOut,timer); /* register the timer as a CG component */
-        FOLLOW(timer_no_ptr) = timer_no;
+        FOLLOW(timer_no_ptr) = timer_no; 
 
 #ifdef _WIN32
         threadHandle = CreateThread(NULL,1000, timerThread,timer_no_ptr, 0, &pid);
-        if (threadHandle==NULL){
+        if (threadHandle==NULL){ 
             quit("Failed to create a timer\n");
-        }
-#else
+        } 
+#else 
         if (pthread_create( &pid, NULL, timerThread, (void*)timer_no_ptr)!=0){
             quit("Failed to create a timer\n");
-        }
+        } 
         pthread_detach(pid);
 #endif
         unify(GET_TIMER_PID(ptr), MAKE_INT_OR_BIGINT((BPLONG)pid));
         in_critical_region = 0;
         return BP_TRUE;
     }
-
+ 
     int c_kill_timer(){
         BPLONG timer;
         BPLONG_PTR ptr;
@@ -668,7 +668,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
           #endif
         */
 
-        timer = ARG(1,1); DEREF(timer);
+        timer = ARG(1,1); DEREF(timer); 
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(timer);
         PUSHTRAIL_H_ATOMIC(GET_TIMER_STATUS_ADDR(ptr),GET_TIMER_STATUS(ptr));
         GET_TIMER_STATUS(ptr) = MAKEINT(TIMER_STATUS_DEAD);
@@ -685,17 +685,17 @@ DWORD WINAPI timerThread(LPVOID timer_no){
           #endif
         */
         return BP_TRUE;
-    }
+    }  
 
     int c_sleep(){
         BPLONG ms;
         ms = ARG(1,1);
-        DEREF(ms);
+        DEREF(ms); 
         ms = INTVAL(ms);
         bp_sleep(ms);
         return 1;
     }
-
+  
     void add_to_event_pool(no,type,event_object)
         BPLONG no;
     BPLONG type;
@@ -710,7 +710,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
         event_pool[event_count].no = no;
         event_pool[event_count].type = type;
         event_pool[event_count].event_object = event_object;
-        event_count++;
+        event_count++; 
         toam_signal_vec |= EVENT_POOL_NONEMPTY;
     }
 
@@ -742,7 +742,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
     void *eo;
     {
         BPLONG_PTR sv_ptr = (BPLONG_PTR)UNTAGGED_ADDR(handler);
-
+  
         /*
           extern BPLONG no_gcs;
           printf("post %d\n",type);
@@ -754,7 +754,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
     int c_global_set_bpp(){
         BPLONG_PTR top;
         BPLONG op = ARG(1,1);
-
+  
         DEREF(op);
         bpp_java_obj = op;
         return 1;
@@ -762,7 +762,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
 
     int c_global_get_bpp(){
         BPLONG op = ARG(1,1);
-
+  
         return unify(op,bpp_java_obj);
     }
 
@@ -787,7 +787,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
         case EVENT_DVAR_MINMAX:
             ASSIGN_v_heap_term(lists,DV_minmax_cs(dv_ptr));
             return BP_TRUE;
-
+    
         case EVENT_DVAR_OUTER_DOM:
             ASSIGN_v_heap_term(lists,DV_outer_dom_cs(dv_ptr));
             return BP_TRUE;
@@ -803,7 +803,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
     {
         BPLONG_PTR ptr1,ptr2;
         BPLONG lst;
-
+  
         DEREF(lists);
         /*  printf("occur_in_conjunctive_channels %d",INTVAL(frame_offset));write_term(lists);printf("\n"); */
         while (ISLIST(lists)){
@@ -830,7 +830,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
     {
         BPLONG_PTR ptr1,ptr2;
         BPLONG lst;
-
+  
         DEREF(lists);
         /*  printf("occur_in_conjunctive_channels %d",INTVAL(frame_offset));write_term(lists);printf("\n"); */
         while (ISLIST(lists)){

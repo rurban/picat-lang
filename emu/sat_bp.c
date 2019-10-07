@@ -1,23 +1,30 @@
 /********************************************************************
  *   File   : sat_bp.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2018
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
  *   Purpose: SAT interface for B-Prolog and Picat
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  ********************************************************************/
 
 #include "bprolog.h"
 
 #ifdef SAT
-#ifdef GLUCOSE
-#include "glucose_interface.h"
+/*
+  #if defined GLUCOSE
+  #include "glucose_interface.h"
 
-static int is_pglu = 0; //used to check if Glucose Multisolver being used.
+  static int is_pglu = 0; //used to check if Glucose Multisolver being used.
+  #define SAT_SATISFIABLE res == 1
+  #define SAT_GET_BINDING(varNum) (((is_pglu ? pglu_get_binding(varNum) : glu_get_binding(varNum)) == 1) ? BP_ONE : BP_ZERO)
+
+*/
+#if defined MAPLESAT
+#include "maple_interface.h"
+
 #define SAT_SATISFIABLE res == 1
-#define SAT_GET_BINDING(varNum) (((is_pglu ? pglu_get_binding(varNum) : glu_get_binding(varNum)) == 1) ? BP_ONE : BP_ZERO)
-
+#define SAT_GET_BINDING(varNum) (((maple_get_binding(varNum)) == 1) ? BP_ONE : BP_ZERO)
 
 #else
 #include "lingeling/lglib.h"
@@ -40,14 +47,25 @@ static int num_threads = 0;
 
 
 #ifdef SAT
-#ifdef GLUCOSE
-#define SAT_INIT is_pglu = 0; glu_init()
-#define SAT_ADD(i) glu_add_lit(i)
-#define SAT_START glu_start_solver()
+/*
+  #if defined GLUCOSE
+  #define SAT_INIT is_pglu = 0; glu_init()
+  #define SAT_ADD(i) glu_add_lit(i)
+  #define SAT_START glu_start_solver()
 
-#define PSAT_INIT(n) is_pglu = 1; pglu_init()
-#define PSAT_ADD(i) pglu_add_lit(i)
-#define PSAT_START pglu_start_solver()
+  #define PSAT_INIT(n) is_pglu = 1; pglu_init()
+  #define PSAT_ADD(i) pglu_add_lit(i)
+  #define PSAT_START pglu_start_solver()
+
+*/
+#if defined MAPLESAT
+#define SAT_INIT maple_init()
+#define SAT_ADD(i) maple_add_lit(i)
+#define SAT_START maple_start_solver()
+
+#define PSAT_INIT(n) maple_init()
+#define PSAT_ADD(i) maple_add_lit(i)
+#define PSAT_START maple_start_solver()
 
 #else
 #define SAT_INIT if (bp_lgl != NULL) lglrelease(bp_lgl); bp_lgl = lglinit()
@@ -65,16 +83,16 @@ extern void plgl_add_lit0();
 #endif
 
 int b_SAT_GET_INC_VAR_NUM_f(BPLONG Num){
-#ifndef GLUCOSE
+#ifndef MAPLESAT
     extern void plgl_resize_dyn_arrays();
 #endif
     ASSIGN_f_atom(Num,MAKEINT(sat_nvars));
     sat_nvars++;
-#ifndef GLUCOSE
+#ifndef MAPLESAT
     if (num_threads > 0 && sat_nvars > sat_nvars_limit){
         plgl_resize_dyn_arrays();
     }
-#endif
+#endif  
     return BP_TRUE;
 }
 
@@ -83,7 +101,7 @@ int c_sat_start_count(){
     BPLONG num = ARG(1,1);
     DEREF_NONVAR(num);
     sat_nvars = sat_nvars_limit = (int)INTVAL(num);
-
+  
     sat_dump_or_count_flag = 1;
     num_cls = 0;
     return BP_TRUE;
@@ -100,7 +118,7 @@ int c_sat_start_dump(){
     BPLONG num = ARG(1,1);
     DEREF_NONVAR(num);
     sat_nvars = sat_nvars_limit = (int)INTVAL(num);
-
+  
     sat_dump_flag = 1;
     sat_dump_or_count_flag = 1;
     num_cls = 0;
@@ -117,26 +135,26 @@ int c_sat_stop_dump(){
 #ifdef SAT
 /* cl is a list of literals */
 int b_SAT_ADD_CL_c(BPLONG cl){
-    BPLONG_PTR ptr, lit_ptr;
+    BPLONG_PTR ptr, lit_ptr; 
 
     lit_ptr = local_top; /* reuse Picat't local stack , asumming that the gap is big enough for holding the literals */
     DEREF_NONVAR(cl);
 
     //  printf(" => add_cl "); write_term(cl); printf("\n");
-
+        
     /* skip this clause if it contains 't' */
     while (ISLIST(cl)){
         BPLONG lit;
         BPLONG_PTR lst_ptr;
         lst_ptr = (BPLONG_PTR)UNTAGGED_ADDR(cl);
-        lit = FOLLOW(lst_ptr); DEREF_NONVAR(lit);
+        lit = FOLLOW(lst_ptr); DEREF_NONVAR(lit); 
         if (lit == t_atom){
             return BP_TRUE;
         }
         if (lit != f_atom){
             *lit_ptr-- = lit;
         }
-
+                
         cl = FOLLOW(lst_ptr+1); DEREF_NONVAR(cl);
     }
 
@@ -144,7 +162,7 @@ int b_SAT_ADD_CL_c(BPLONG cl){
         num_cls++;
         if (sat_dump_flag == 1) {
             for (ptr = local_top; ptr != lit_ptr; ptr--){
-                write_term(*ptr);
+                write_term(*ptr); 
                 write_space();
             }
             write_term(BP_ZERO);
@@ -155,16 +173,16 @@ int b_SAT_ADD_CL_c(BPLONG cl){
             for (ptr = local_top; ptr != lit_ptr; ptr--){
                 PSAT_ADD(INTVAL(*ptr));
             }
-            PSAT_ADD(0);
-        }
+            PSAT_ADD(0);            
+        } 
         else {
             for (ptr = local_top; ptr != lit_ptr; ptr--){
                 SAT_ADD(INTVAL(*ptr));
             }
-            SAT_ADD(0);
-        }
+            SAT_ADD(0);           
+        }               
     }
-
+        
     return BP_TRUE;
 }
 
@@ -175,7 +193,7 @@ int c_sat_init(){
     num_threads = (int)INTVAL(NThreads);
     NVars = ARG(2,2);  DEREF_NONVAR(NVars);  /* NOTE!! this is just an initial number, more bool variables could be generated by the compiler. */
     sat_nvars =  sat_nvars_limit = (int)INTVAL(NVars);
-
+  
     if (num_threads > 0){  /* use plingeling */ /* or multisolver for glucose */
         PSAT_INIT(num_threads);
     } else {
@@ -189,11 +207,11 @@ int c_sat_start(){
     BPLONG_PTR top;
 
     lst = ARG(1,1);
-    DEREF_NONVAR(lst);
+    DEREF_NONVAR(lst); 
 
 
     //  printf("=>sat_start "); write_term(lst); printf("\n");
-
+        
     if (num_threads > 0){
         res = PSAT_START;
     } else {
@@ -218,7 +236,7 @@ int c_sat_start(){
             lst = FOLLOW(ptr+1); DEREF(lst);
         }
         return BP_TRUE;
-    }
+    } 
     return BP_FALSE;
 }
 #else
@@ -244,7 +262,7 @@ void Cboot_sat(){
     insert_cpred("c_sat_start",1,c_sat_start);
 }
 
-/*
+/* 
    If BV is a variable, then return the number attribute attached to BV.
    BV can be the negation of another variable '$\\'(BV1) or a constant (0 or 1).
    If BV=0, then Num=f; otherwise if BV=1, then Num=t.
@@ -253,7 +271,7 @@ int b_SAT_RETRIEVE_BNUM_cff(BPLONG BV, BPLONG Num, BPLONG MNum){
 lab_start:
     DEREF_NONVAR(BV);
     //  printf("=> BNUM %x ",BV); write_term(BV); printf("\n");
-
+  
     if (ISINT(BV)){
         if (BV == BP_ONE){
             ASSIGN_f_atom(Num,t_atom);
@@ -265,7 +283,7 @@ lab_start:
     } else if (IS_SUSP_VAR(BV)){
         BPLONG varNum;
         BPLONG_PTR sv_ptr;
-
+        
         sv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(BV);
         varNum = fast_get_attr(sv_ptr,et_NUMBER);
         DEREF_NONVAR(varNum);
@@ -296,10 +314,10 @@ int c_sat_propagate_dom_bits(){
 
     X = ARG(1,2);
     LogBitVect = ARG(2,2);
-
+  
     DEREF_NONVAR(X);
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
-
+  
     DEREF_NONVAR(LogBitVect);
     vect_ptr = (BPLONG_PTR)UNTAGGED_ADDR(LogBitVect);
     sym_ptr = (SYM_REC_PTR)FOLLOW(vect_ptr);
@@ -311,7 +329,7 @@ int c_sat_propagate_dom_bits(){
     for (i = 0; i < n; i++){
         mark_vect[i] = 0;
     }
-
+  
     elm = DV_first(dv_ptr);
     last = DV_last(dv_ptr);
     for (;;){
@@ -325,7 +343,7 @@ int c_sat_propagate_dom_bits(){
 
         if (elm == last) break;
         elm++;
-        if (!IS_IT_DOMAIN(dv_ptr)) elm = domain_next_bv(dv_ptr,elm);
+        if (!IS_IT_DOMAIN(dv_ptr)) elm = domain_next_bv(dv_ptr,elm); 
     }
 
     for (i = 0; i < n; i++){
