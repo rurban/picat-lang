@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <string.h>
 #include "bprolog.h"
@@ -59,7 +59,7 @@ int c_frozen_cf(){
 
     var = ARG(1,2);
     return_goal = ARG(2,2);
-  
+
     DEREF(var);
     list = heap_top;
     goal = (BPLONG)list;
@@ -81,7 +81,7 @@ int c_frozen_cf(){
         dcs = (BPLONG_PTR)DV_outer_dom_cs(dv_ptr);
         list = frozen_cs(dcs,list);
         if ((BPLONG)list== -1) return BP_ERROR;
-    
+
         FOLLOW(list) = nil_sym;
 
         return unify(return_goal,goal);
@@ -103,7 +103,7 @@ BPLONG_PTR frozen_cs(cs,Plist)
             tmp = build_delayed_call_on_the_heap(frame);
             if (tmp== -1) return (BPLONG_PTR)-1;
             FOLLOW(Plist) = ADDTAG(heap_top,LST);
-            NEW_HEAP_NODE(tmp); 
+            NEW_HEAP_NODE(tmp);
             Plist = heap_top;heap_top++;
         }
         cs = (BPLONG_PTR)LIST_NEXT(cs);
@@ -140,8 +140,8 @@ int c_frozen_f(){
     return unify(P_goal,bp_build_nil());
 }
 
-/* 
-   susp_attach_term(Var,Term) 
+/*
+   susp_attach_term(Var,Term)
    attach T to the suspension variable Var.
    Exception if Var is non-variable
 */
@@ -150,7 +150,7 @@ int b_SUSP_ATTACH_TERM_cc(Var,Term)
 {
 
     BPLONG_PTR top,dv_ptr;
-  
+
     DEREF(Var);
     DEREF(Term);
     if (ISREF(Term)){
@@ -162,7 +162,7 @@ int b_SUSP_ATTACH_TERM_cc(Var,Term)
         DV_attached(dv_ptr) = Term;
         return 1;
     } else if (IS_SUSP_VAR(Var)){
-        dv_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Var);    
+        dv_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Var);
         top = A_DV_attached(dv_ptr);
         PUSHTRAIL_H_NONATOMIC(top,FOLLOW(top));
         DV_attached(dv_ptr) = Term;
@@ -173,8 +173,8 @@ int b_SUSP_ATTACH_TERM_cc(Var,Term)
     }
 }
 
-/* 
-   susp_attached_term(Var,Term) 
+/*
+   susp_attached_term(Var,Term)
    the attached term to Var is Term
    Exception if Var is not a suspension variable
 */
@@ -182,8 +182,8 @@ int b_SUSP_ATTACHED_TERM_cf(Var,Term)
     BPLONG Var,Term;
 {
     BPLONG_PTR top,dv_ptr;
-  
-    DEREF(Var); 
+
+    DEREF(Var);
     if (!IS_SUSP_VAR(Var)){
         exception = illegal_arguments;
         return BP_ERROR;
@@ -198,7 +198,7 @@ int b_SUSP_VAR_c(var)
     BPLONG var;
 {
     BPLONG_PTR top;
-  
+
     DEREF(var);
     if (IS_SUSP_VAR(var)) return 1; else return 0;
 }
@@ -209,9 +209,9 @@ BPLONG next_alive_susp_call(cs_list,breg)
     BPLONG_PTR breg;
 {
     BPLONG_PTR constr_ar,ptr;
-  
-    while (cs_list!=nil_sym){ 
-        ptr = (BPLONG_PTR)UNTAGGED_ADDR(cs_list); 
+
+    while (cs_list!=nil_sym){
+        ptr = (BPLONG_PTR)UNTAGGED_ADDR(cs_list);
         constr_ar = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(FOLLOW(ptr)));
         if (AR_STATUS(constr_ar)==SUSP_EXIT && constr_ar<breg){  /* permanently dead */
             /*
@@ -228,11 +228,11 @@ void print_cs(cs_list)
     BPLONG cs_list;
 {
     BPLONG_PTR constr_ar,ptr;
-  
-    while (cs_list!=nil_sym){ 
-        ptr = (BPLONG_PTR)UNTAGGED_ADDR(cs_list); 
+
+    while (cs_list!=nil_sym){
+        ptr = (BPLONG_PTR)UNTAGGED_ADDR(cs_list);
         constr_ar = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(FOLLOW(ptr)));
-        if (AR_STATUS(constr_ar)==SUSP_EXIT){ 
+        if (AR_STATUS(constr_ar)==SUSP_EXIT){
             printf("-");
         } else {
             printf("*");

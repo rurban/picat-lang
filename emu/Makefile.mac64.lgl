@@ -21,7 +21,7 @@ OBJ = dis.o init.o init_sym.o loader.o inst_inf.o main.o toam.o unify.o \
     kapi.o getline.o table.o gcstack.o gcheap.o gcqueue.o debug.o \
     expand.o bigint.o sapi.o sat_bp.o lglbnr.o lglib.o plglib.o espresso_bp.o \
 	picat_utilities.o fann.o fann_cascade.o fann_error.o fann_io.o fann_train.o fann_train_data.o fann_interface.o
-	
+
 
 ESP = espresso/
 
@@ -34,18 +34,18 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 			 $(ESP)signature_exact.o $(ESP)sminterf.o $(ESP)solution.o $(ESP)sparse.o $(ESP)unate.o $(ESP)util_signature.o \
 			 $(ESP)verify.o $(ESP)espresso.o
 
-picat : $(OBJ) 
+picat : $(OBJ)
 	cd espresso && make -f Makefile.mac64 && cd .. && $(CXX) -o picat $(ESPRESSO_OBJ) $(OBJ)  $(LFLAGS)
 clean :
 	rm -f *.o picat
-dis.o   : dis.c term.h inst.h basic.h 
-	$(CC) $(CFLAGS) dis.c 
+dis.o   : dis.c term.h inst.h basic.h
+	$(CC) $(CFLAGS) dis.c
 init.o  : init.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) init.c
 init_sym.o  : init_sym.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) init_sym.c
 loader.o : loader.c term.h basic.h inst.h picat_bc.h
-	$(CC) $(CFLAGS) loader.c 
+	$(CC) $(CFLAGS) loader.c
 inst_inf.o  : inst_inf.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) inst_inf.c
 main.o  : main.c term.h inst.h basic.h
@@ -55,29 +55,29 @@ toam.o  : toam.c term.h inst.h basicd.h basic.h toam.h event.h frame.h emu_inst.
 toamprofile.o  : toamprofile.c term.h inst.h basicd.h basic.h toam.h event.h frame.h
 	$(CC) $(CFLAGS) toamprofile.c
 unify.o : unify.c term.h basic.h event.h bapi.h frame.h
-	$(CC) $(CFLAGS) unify.c 
+	$(CC) $(CFLAGS) unify.c
 file.o    : file.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) file.c 
+	$(CC) $(CFLAGS) file.c
 domain.o    : domain.c term.h basic.h bapi.h event.h frame.h
-	$(CC) $(CFLAGS) domain.c 
+	$(CC) $(CFLAGS) domain.c
 cfd.o    : cfd.c term.h basic.h bapi.h event.h frame.h
-	$(CC) $(CFLAGS) cfd.c 
+	$(CC) $(CFLAGS) cfd.c
 float1.o    : float1.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) float1.c 
+	$(CC) $(CFLAGS) float1.c
 arith.o    : arith.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) arith.c 
+	$(CC) $(CFLAGS) arith.c
 bigint.o    : bigint.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) bigint.c 
+	$(CC) $(CFLAGS) bigint.c
 token.o    : token.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) token.c 
-global.o    : global.c term.h basic.h bapi.h 
-	$(CC) $(CFLAGS) global.c 
+	$(CC) $(CFLAGS) token.c
+global.o    : global.c term.h basic.h bapi.h
+	$(CC) $(CFLAGS) global.c
 builtins.o    : builtins.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) builtins.c 
+	$(CC) $(CFLAGS) builtins.c
 mic.o    : mic.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) mic.c 
+	$(CC) $(CFLAGS) mic.c
 numbervars.o    : numbervars.c term.h basic.h bapi.h
-	$(CC) $(CFLAGS) numbervars.c 
+	$(CC) $(CFLAGS) numbervars.c
 cpreds.o    : cpreds.c term.h basic.h bapi.h
 	$(CC) $(CFLAGS) cpreds.c
 univ.o    : univ.c term.h basic.h bapi.h
@@ -88,39 +88,39 @@ findall.o    : findall.c term.h basic.h bapi.h
 	$(CC) $(CFLAGS) findall.c
 clause.o    : clause.c term.h basic.h bapi.h dynamic.h
 	$(CC) $(CFLAGS) clause.c
-delay.o    : delay.c term.h basic.h bapi.h 
+delay.o    : delay.c term.h basic.h bapi.h
 	$(CC) $(CFLAGS) delay.c
 clpfd.o : clpfd.c term.h basic.h bapi.h event.h frame.h
-	$(CC) $(CFLAGS) clpfd.c 
+	$(CC) $(CFLAGS) clpfd.c
 clpfd_libs.o : clpfd_libs.c term.h basic.h bapi.h event.h frame.h
-	$(CC) $(CFLAGS) clpfd_libs.c 
+	$(CC) $(CFLAGS) clpfd_libs.c
 kapi.o : kapi.c term.h basic.h bapi.h kapi.h
-	$(CC) $(CFLAGS) kapi.c 
+	$(CC) $(CFLAGS) kapi.c
 event.o : event.c term.h basic.h bapi.h kapi.h event.h
-	$(CC) $(CFLAGS) event.c 
+	$(CC) $(CFLAGS) event.c
 table.o : table.c term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) table.c 
+	$(CC) $(CFLAGS) table.c
 debug.o : debug.c term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) debug.c 
+	$(CC) $(CFLAGS) debug.c
 gcstack.o : gcstack.c gc.h term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) gcstack.c 
+	$(CC) $(CFLAGS) gcstack.c
 gcheap.o : gcheap.c gc.h term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) gcheap.c 
+	$(CC) $(CFLAGS) gcheap.c
 gQueue.o : gcqueue.c gc.h term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) gcqueue.c 
+	$(CC) $(CFLAGS) gcqueue.c
 expand.o : expand.c gc.h term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) expand.c 
+	$(CC) $(CFLAGS) expand.c
 espresso_bp.o : espresso_bp.c term.h basic.h bapi.h frame.h
 	$(CC) $(CFLAGS) -Iespresso espresso_bp.c
 sapi.o : sapi.c sapi.h term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) sapi.c 
+	$(CC) $(CFLAGS) sapi.c
 sat_bp.o : sat_bp.c term.h basic.h bapi.h frame.h
-	$(CC) $(CFLAGS) sat_bp.c 
-lglbnr.o : lingeling/lglbnr.c 
+	$(CC) $(CFLAGS) sat_bp.c
+lglbnr.o : lingeling/lglbnr.c
 	$(CC) $(CFLAGS) $(LGLFLAG) -Ilingeling lingeling/lglbnr.c
-lglib.o : lingeling/lglib.c 
+lglib.o : lingeling/lglib.c
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/lglib.c
-plglib.o : lingeling/plglib.c 
+plglib.o : lingeling/plglib.c
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/plglib.c
 picat_utilities.o : picat_utilities.c
 	$(CC) $(CFLAGS) picat_utilities.c

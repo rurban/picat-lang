@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "bprolog.h"
@@ -113,7 +113,7 @@ int PuInt(term,i)
     BPLONG i;
 {
     BPLONG op;
-  
+
     op = MAKEINT(i);
     return unify(term,op);
 }
@@ -141,7 +141,7 @@ int PuAddr(term,a)
 
     temp = ADDTAG(heap_top,STR);
     NEW_HEAP_NODE((BPLONG)objectRef);  /* '$addr'(int1,int2) */
-    NEW_HEAP_NODE(MAKEINT(((BPULONG)a<<HALF_WORD_LONG)>>HALF_WORD_LONG));     
+    NEW_HEAP_NODE(MAKEINT(((BPULONG)a<<HALF_WORD_LONG)>>HALF_WORD_LONG));
     NEW_HEAP_NODE(MAKEINT(((BPULONG)a >>HALF_WORD_LONG)));
     return unify(term,temp);
 }
@@ -237,7 +237,7 @@ BPLONG Plistn(length)
     BPLONG length;
 {
     BPLONG lst,tail,tmp;
-  
+
     if (length<=0) return picat_build_nil();
     else {
         length--;
@@ -297,9 +297,9 @@ void plc_sup(){
 
 
 
-  
 
-  
+
+
 
 
 

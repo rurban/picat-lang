@@ -1,8 +1,8 @@
 #ifndef GETLINE_H
 #define GETLINE_H
 
-/* unix systems can #define POSIX to use termios, otherwise 
- * the bsd or sysv interface will be used 
+/* unix systems can #define POSIX to use termios, otherwise
+ * the bsd or sysv interface will be used
  */
 
 #if __STDC__ > 0
@@ -22,8 +22,8 @@ extern int	(*gl_tab_hook)(char *, int, int *);
 
 #else	/* not __STDC__ */
 
-char           *bp_getline();	
-char           *nogl_getline();	
+char           *bp_getline();
+char           *nogl_getline();
 void            gl_setwidth();
 void            gl_histadd();
 void		gl_strwidth();

@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -41,7 +41,7 @@ BPLONG univ_lst2str(L)
     if (ISLIST(L)){
         if (ISREF(Head)){
             exception = et_INSTANTIATION_ERROR;
-            return BP_ERROR;    
+            return BP_ERROR;
         } else if (!ISATOM(Head)){
             exception = c_type_error(et_ATOM,Head);
             return BP_ERROR;
@@ -63,7 +63,7 @@ BPLONG univ_lst2str(L)
         exception = c_type_error(et_LIST,orig_L);
         return BP_ERROR;
     }
-    
+
     n = list_length(L,orig_L);
     if (n<0) return BP_ERROR; /* exception set */
     if (n>MAX_ARITY){
@@ -71,7 +71,7 @@ BPLONG univ_lst2str(L)
         return BP_ERROR;
     }
     if (local_top-heap_top <= n + LARGE_MARGIN) {
-        myquit(STACK_OVERFLOW,"univ"); 
+        myquit(STACK_OVERFLOW,"univ");
     }
     if (Head == period_sym && n==2){ /* LST */
         top1 = ADDTAG(heap_top,LST);
@@ -110,7 +110,7 @@ BPLONG univ_str2lst(op1)
     case ATM:
         n = 0;
         Head = op1;
-        ptr = NULL;                                                                                                             
+        ptr = NULL;
         break;
     case LST:
         n = 2;
@@ -128,14 +128,14 @@ BPLONG univ_str2lst(op1)
             Head = ADDTAG(insert_sym(GET_NAME(psc_ptr),GET_LENGTH(psc_ptr),0),ATM);
         }
         break;
-    default:                                                                                                            
-        fprintf(stderr,"No case for op1 in univ_str2lst()\n");                                                          
-        n = 0;                                                                                                          
-        ptr = NULL;                                                                                                             
-        Head = 0;                                                                                                               
+    default:
+        fprintf(stderr,"No case for op1 in univ_str2lst()\n");
+        n = 0;
+        ptr = NULL;
+        Head = 0;
     }
     if (local_top-heap_top <= 2*n + LARGE_MARGIN) {
-        myquit(STACK_OVERFLOW,"univ"); 
+        myquit(STACK_OVERFLOW,"univ");
     }
     tempL = ADDTAG(heap_top,LST);
     NEW_HEAP_NODE(Head);

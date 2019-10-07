@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 /* SICStus Prolog APIs */
@@ -16,7 +16,7 @@
 #define SP_TYPE_VARIABLE BP_TYPE_VARIABLE
 #define SP_TYPE_INTEGER BP_TYPE_INTEGER
 #define SP_TYPE_FLOAT BP_TYPE_FLOAT
-#define SP_TYPE_ATOM BP_TYPE_ATOM 
+#define SP_TYPE_ATOM BP_TYPE_ATOM
 #define SP_TYPE_COMPOUND BP_TYPE_COMPOUND
 
 int SP_errno;

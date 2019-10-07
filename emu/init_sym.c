@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -20,7 +20,7 @@ void init_sym(){
     nil_sym = ADDTAG(insert_sym("[]", 2, 0),ATM);
     period_sym = ADDTAG(insert_sym(".",1,0),ATM);
     call_damon_load_atom = ADDTAG(insert_sym("$call_damon_load",16,0),ATM);
-  
+
     list_psc = insert_sym(".", 1, 2);
     list_psc_int = ADDTAG((BPLONG)list_psc,INT_TAG);
 #ifdef M64BITS
@@ -58,11 +58,11 @@ void init_sym(){
     plan_psc = BP_NEW_SYM("_$plan",2);
     register_event_listener = BP_NEW_SYM("registerEventListener",2);
     picat_log_psc = BP_NEW_SYM("_$picat_log",0);
-        
+
     windows_atom = ADDTAG(insert_sym("windows",7,0),ATM);
     cygwin_atom = ADDTAG(insert_sym("cygwin",6,0),ATM);
     unix_atom = ADDTAG(insert_sym("unix",4,0),ATM);
-        
+
     thread_psc = BP_NEW_SYM("$thread",4);
     hashtable_psc = BP_NEW_SYM("$hshtb",2);
     ghashtable_psc = BP_NEW_SYM("$ghshtb",2);
@@ -76,7 +76,7 @@ void init_sym(){
     forward_exception_psc = BP_NEW_SYM("$forward_exception",1);
     c_object_ref_sym = BP_NEW_SYM("$addr",1);
     star_atom = ADDTAG(BP_NEW_SYM("*",0),ATM);
-  
+
     interrupt_sym = ADDTAG(BP_NEW_SYM("interrupt",0),ATM);
     ball_psc = BP_NEW_SYM("$ball",0);
     equal_psc = BP_NEW_SYM("=",2);
@@ -85,7 +85,7 @@ void init_sym(){
     eof_atom = ADDTAG(BP_NEW_SYM("end_of_file",0),ATM);
     true_atom = ADDTAG(BP_NEW_SYM("true",0),ATM);
     t_atom = ADDTAG(BP_NEW_SYM("t",0),ATM);
-    f_atom = ADDTAG(BP_NEW_SYM("f",0),ATM);             
+    f_atom = ADDTAG(BP_NEW_SYM("f",0),ATM);
     dec_ref_atom = ADDTAG(BP_NEW_SYM("_$dec_ref",0),ATM);
     dec_retr_atom = ADDTAG(BP_NEW_SYM("_$dec_retr",0),ATM);
     dots_atom = ADDTAG(BP_NEW_SYM("...",0),ATM);
@@ -233,7 +233,7 @@ void init_error_sym(){
         et_OUT_OF_MEMORY = ADDTAG((BPLONG)ptr,STR); /* resource_error(out_of_memory) */
         FOLLOW(ptr++) = (BPLONG)str_RESOURCE_ERROR;
         FOLLOW(ptr++) = bp_out_of_memory_atom;
-     
+
         et_OUT_OF_MEMORY_STACK = ADDTAG((BPLONG)ptr,STR); /* error(_,_) */
         FOLLOW(ptr++) = (BPLONG)error_psc;
         FOLLOW(ptr++) = et_OUT_OF_MEMORY;
@@ -257,8 +257,8 @@ void init_char_sym() {
     }
 }
 
-  
 
- 
+
+
 
 

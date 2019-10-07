@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -17,7 +17,7 @@ extern BPLONG gc_time;
 /*
   #define DEBUG_EXPAND
 */
-#define VALIDATE_HEAP_PTR(ptr) 
+#define VALIDATE_HEAP_PTR(ptr)
 #define VALIDATE_STACK_PTR(ptr)
 
 /*
@@ -33,7 +33,7 @@ extern BPLONG gc_time;
 ***********************************************************************************/
 
 /***********************************************************************************
- expand the trail stack, and return the new trail_top 
+ expand the trail stack, and return the new trail_top
    1. the trail stack is expanded after the available space is below a threshold  (trail_water_mark)
    2. reset B->T for each choice point frame B
    3. copy the contents in verbtim to the new trail stack.
@@ -45,7 +45,7 @@ BPLONG_PTR expand_trail(trail_top,breg)
     BPLONG_PTR new_trail_low_addr,new_trail_up_addr,my_breg,top;
     BPLONG diff,new_trail_size;
     BPLONG msec0;
-  
+
     msec0 = cputime();
 
     /*  printf("EXPAND_TRAIL %d\n",trail_size); */
@@ -63,7 +63,7 @@ BPLONG_PTR expand_trail(trail_top,breg)
     num_trail_expansions++;
 
     new_trail_up_addr = new_trail_low_addr + new_trail_size -1;
-  
+
     my_breg = breg;
     for (;;){
         top = (BPLONG_PTR)AR_T(my_breg);
@@ -77,7 +77,7 @@ BPLONG_PTR expand_trail(trail_top,breg)
     diff = (BPULONG)trail_up_addr-(BPULONG)trail_top;
     trail_up_addr = new_trail_up_addr;
     trail_size = new_trail_size;
-    free(trail_low_addr); 
+    free(trail_low_addr);
     trail_low_addr = new_trail_low_addr;
     trail_water_mark = trail_low_addr+LARGE_MARGIN;
     trail_water_mark0 = trail_low_addr+2;
@@ -138,8 +138,8 @@ void unmark_sf_chain(sf)
 }
 
 /***********************************************************************************
-  1. a new and larger stack-heap area is allocated after the available space 
-     in the current area is below certain threshold after GC and there is no 
+  1. a new and larger stack-heap area is allocated after the available space
+     in the current area is below certain threshold after GC and there is no
      event to be handled.
   2. copy stack frames and the heap to the new area.
   3. nullify untagged cells (attributes of suspension variables) in all reachable terms
@@ -152,7 +152,7 @@ int expand_local_global_stacks(BPLONG preferred_size){
     BPLONG_PTR new_stack_low_addr,new_stack_up_addr;
     BPLONG new_stack_size,diff_h,diff_s;
     BPLONG msec0,maxs;
-  
+
 
     /* precondition (toam_signal_vec == 0) so no need to consider TriggeredCs[..] */
 
@@ -166,11 +166,11 @@ int expand_local_global_stacks(BPLONG preferred_size){
     */
     msec0 = cputime();
 #ifdef DEBUG_EXPAND
-    new_stack_size = stack_size+1004; 
+    new_stack_size = stack_size+1004;
 #else
-    if (preferred_size==0) 
-        new_stack_size = 2*stack_size; 
-    else 
+    if (preferred_size==0)
+        new_stack_size = 2*stack_size;
+    else
         new_stack_size = preferred_size;
 #endif
 
@@ -179,7 +179,7 @@ int expand_local_global_stacks(BPLONG preferred_size){
     BP_MALLOC(new_stack_low_addr,new_stack_size);
     if (new_stack_low_addr==NULL){
         if (preferred_size!=0) return BP_ERROR;
-        new_stack_size = stack_size+1000000L; 
+        new_stack_size = stack_size+1000000L;
         BP_MALLOC(new_stack_low_addr,new_stack_size);
         if (new_stack_low_addr==NULL){
             return BP_ERROR;
@@ -189,8 +189,8 @@ int expand_local_global_stacks(BPLONG preferred_size){
     num_stack_expansions++;
     // printf("expanding the stack...");
     NO_RESERVED_SLOTS(arreg,maxs);
-    expand_initialize_frames(maxs); 
-  
+    expand_initialize_frames(maxs);
+
     new_stack_up_addr = new_stack_low_addr + new_stack_size -1;
     diff_h = (BPULONG)new_stack_low_addr-(BPULONG)stack_low_addr; /* add this to heap pointers */
     diff_s = (BPULONG)new_stack_up_addr-(BPULONG)stack_up_addr;   /* add this to stack pointers */
@@ -220,7 +220,7 @@ int expand_local_global_stacks(BPLONG preferred_size){
       track_stack_ref_on_heap();
       printf("<=expand_stack\n");
       printf("\n******************************\n");
-      show_stack_image(); 
+      show_stack_image();
       write_regs();
     */
     gc_time += (cputime()-msec0);
@@ -245,7 +245,7 @@ void expand_initialize_frames(maxs)
         if (b==(BPLONG_PTR)AR_B(b)) break;
         b = (BPLONG_PTR)AR_B(b);
     }
-  
+
     /* reset AR of initialized frames */
     unmark_ar_chain(arreg);
     unmark_b_chain(breg);
@@ -264,7 +264,7 @@ void expand_initialize_ar_chain(f,maxs)
         cp = (BPLONG_PTR)AR_CPS(f);
         maxs = *(cp-1);
         f = prev_f;
-    } 
+    }
 }
 
 void initialize_frame(f,maxs)
@@ -275,9 +275,9 @@ void initialize_frame(f,maxs)
     if (IS_SUSP_FRAME(f)) return; /* done already */
     ptr = f-maxs;
     top = (BPLONG_PTR)AR_TOP(f);
-    while (ptr>top){ 
+    while (ptr>top){
         FOLLOW(ptr) = (BPLONG)ptr;
-        ptr--; 
+        ptr--;
     }
 }
 
@@ -287,10 +287,10 @@ int expandStackNullifyUntaggedCells(diff_s)
     BPLONG diff_s;
 {
     BPLONG mask_size;
-  
+
     mask_size = (heap_top-stack_low_addr)/NBITS_IN_LONG+2; /* masking bits */
     if (allocateMaskArea(mask_size)==BP_ERROR) return BP_ERROR; /* allocate and initialize copy area */
-  
+
     expandStackNullifyUntaggedCellsArFrames(arreg,diff_s);
     expandStackNullifyUntaggedCellsBFrames(breg,diff_s);
     expandStackNullifyUntaggedCellsSfFrames(sfreg,diff_s);
@@ -303,7 +303,7 @@ void expandStackNullifyUntaggedCellsBFrames(breg,diff_s)
     BPLONG diff_s;
 {
     BPLONG_PTR breg1;
-  
+
     for (;;){
         expandStackNullifyUntaggedCellsArFrames(breg,diff_s); /* active chain from this choice point */
         breg1 = (BPLONG_PTR)AR_B(breg);
@@ -332,11 +332,11 @@ void expandStackNullifyUntaggedCellsArFrames(ar,diff_s)
     BPLONG diff_s;
 {
     BPLONG_PTR ar1;
-  
+
     for (;;){
         if (AR_BTM(ar)==0) return; /* nullified already */
         expandStackNullifyUntaggedCellsFrame(ar,diff_s);
-        ar1 = (BPLONG_PTR)AR_AR(ar); 
+        ar1 = (BPLONG_PTR)AR_AR(ar);
         if (ar==ar1) return;
         ar = ar1;
     }
@@ -347,7 +347,7 @@ void expandStackNullifyUntaggedCellsFrame(ar,diff_s)
     BPLONG diff_s;
 {
     BPLONG nslots;
-  
+
     VALIDATE_STACK_PTR(ar);
     if (AR_BTM(ar)==0) return; /* nullified already */
     AR_CPS(ar) = 0;
@@ -357,7 +357,7 @@ void expandStackNullifyUntaggedCellsFrame(ar,diff_s)
             BPLONG_PTR subgoal_entry,master_ar;
             subgoal_entry = (BPLONG_PTR)GET_AR_SUBGOAL_TABLE(ar);
             if (subgoal_entry!=(BPLONG_PTR)NULL){ /* reset pointers to the stack in the table area */
-                master_ar = (BPLONG_PTR)GT_TOP_AR(subgoal_entry);    
+                master_ar = (BPLONG_PTR)GT_TOP_AR(subgoal_entry);
                 if (master_ar>local_top && master_ar <=stack_up_addr){
                     GT_TOP_AR(subgoal_entry) = (BPULONG)master_ar + diff_s;
                 }
@@ -414,7 +414,7 @@ void expandStackNullifyUntaggedCellsTrail()
         } else if (TAG(op)==TRAIL_VAL_NONATOMIC){
             expandStackNullifyUntaggedCellsTerm(FOLLOW(addr));
             expandStackNullifyUntaggedCellsTerm(FOLLOW(curr_t+1));
-        } 
+        }
         curr_t += 2;
     }
 }
@@ -454,7 +454,7 @@ loop:
                 tmp = FOLLOW(ptr+1);
                 if (TAG(tmp)!=ATM){GCQueueAddTerm(tmp);}
                 goto loop;
-            } 
+            }
             goto loop; /* not a heap pointer or marked already */
         } else if (ISSTRUCT(term)){
             ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
@@ -511,7 +511,7 @@ BPLONG diff_h,diff_s;
         return (BPLONG_PTR)((BPULONG)addr+diff_h);
     } else if (IS_STACK_REFERENCE(addr)){
         return (BPLONG_PTR)((BPULONG)addr+diff_s);
-    } else 
+    } else
         return addr;
 }
 
@@ -549,7 +549,7 @@ void expandStackResetStack(diff_h,diff_s)
         if (op!=0 && TAG(op)!=ATM){
             addr = (BPLONG_PTR)UNTAGGED_ADDR(op);
             new_ptr = (BPLONG_PTR)((BPULONG)ptr+diff_s);
-            FOLLOW(new_ptr)=ADDTAG((BPLONG)expandStackResetAddr(addr,diff_h,diff_s),(op & TAG_MASK));      
+            FOLLOW(new_ptr)=ADDTAG((BPLONG)expandStackResetAddr(addr,diff_h,diff_s),(op & TAG_MASK));
         }
     }
 }
@@ -562,11 +562,11 @@ void expandStackResetTrail(diff_h,diff_s)
 
     curr_t = trail_top+1;
     while (curr_t < trail_up_addr){
-        op = FOLLOW(curr_t); 
+        op = FOLLOW(curr_t);
         addr = (BPLONG_PTR)UNTAGGED3(op);
         addr_tag = TAG(op);
         FOLLOW(curr_t) = ADDTAG3((BPLONG)expandStackResetAddr(addr,diff_h,diff_s),addr_tag);
-        if (addr_tag==TRAIL_VAR || addr_tag==TRAIL_VAL_NONATOMIC){ 
+        if (addr_tag==TRAIL_VAR || addr_tag==TRAIL_VAL_NONATOMIC){
             op = FOLLOW(curr_t+1);
             if (TAG(op)!=ATM){
                 addr = (BPLONG_PTR)UNTAGGED_ADDR(op);
@@ -596,7 +596,7 @@ Utilities for tracing bugs
   }
   fp = (BPLONG_PTR)AR_PREV(fp);
   }
-  fprintf(curr_out,"\n");                       
+  fprintf(curr_out,"\n");
   return BP_TRUE;
   }
   check_susp_frames_reep(char *mess){
@@ -613,13 +613,13 @@ Utilities for tracing bugs
   }
 
   check_susp_frames(){
-  
+
   BPLONG_PTR fp = sfreg;
   while (fp!=(BPLONG_PTR)AR_AR(fp)){
   BPLONG_PTR sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(fp));
   while (sp>fp){
-  BPLONG op = FOLLOW(sp); 
-  DEREF(op); 
+  BPLONG op = FOLLOW(sp);
+  DEREF(op);
   if (ISREF(op) && ISFREE(op)){
   show_frame(fp);
   printf("Corrupted frame \n");exit(0);}
@@ -642,7 +642,7 @@ Utilities for tracing bugs
   arreg = (BPLONG_PTR)FOLLOW(arreg);
   } while (arreg!=(BPLONG_PTR)FOLLOW(arreg));
   prev_inst = inst;
-  }      
+  }
 
   trackTopoffHeapRef(inst)
   BPLONG  inst;
@@ -671,7 +671,7 @@ Utilities for tracing bugs
   write_term(FOLLOW(ptr)); printf(" ");
   cs_list = LIST_NEXT(ptr);
   }
-  }      
+  }
 
   show_dead_sf_frame(){
   BPLONG_PTR ptr = sfreg;
@@ -711,10 +711,10 @@ Utilities for tracing bugs
   }
   return 0;
   }
-    
+
   show_heap_image(){
   BPLONG_PTR ptr;
-  printf("\nHEAP IMAGE %x %x \n",stack_low_addr,heap_top); 
+  printf("\nHEAP IMAGE %x %x \n",stack_low_addr,heap_top);
   show_mem_image(stack_low_addr,heap_top-1);
   }
 
@@ -735,7 +735,7 @@ Utilities for tracing bugs
   show_heap_susp_vars(){
   BPLONG_PTR ptr,dv_ptr;
 
-  printf("stack_low_addr=%x \n",stack_low_addr); 
+  printf("stack_low_addr=%x \n",stack_low_addr);
   ptr=stack_low_addr;
   while (ptr<heap_top){
   if (IS_SUSP_VAR(FOLLOW(ptr))){
@@ -758,18 +758,18 @@ Utilities for tracing bugs
   BPLONG_PTR dv_ptr;
   {
   printf("SUSP_VAR: %x type=%x first=%x last=%x size=%x\n",dv_ptr,DV_type(dv_ptr),DV_first(dv_ptr),DV_last(dv_ptr),DV_size(dv_ptr));
-  printf("  attached: "); write_term(DV_attached(dv_ptr));printf("\n"); 
-  printf("  ins_cs  : "); write_term(DV_ins_cs(dv_ptr));printf("\n"); 
-  printf("  bound_cs: "); write_term(DV_minmax_cs(dv_ptr));printf("\n"); 
-  printf("  dom_cs  : "); write_term(DV_dom_cs(dv_ptr));printf("\n"); 
-  printf("  dom1_cs : "); write_term(DV_outer_dom_cs(dv_ptr));printf("\n"); 
+  printf("  attached: "); write_term(DV_attached(dv_ptr));printf("\n");
+  printf("  ins_cs  : "); write_term(DV_ins_cs(dv_ptr));printf("\n");
+  printf("  bound_cs: "); write_term(DV_minmax_cs(dv_ptr));printf("\n");
+  printf("  dom_cs  : "); write_term(DV_dom_cs(dv_ptr));printf("\n");
+  printf("  dom1_cs : "); write_term(DV_outer_dom_cs(dv_ptr));printf("\n");
   }
 
 
   show_image(){
   printf("breg=%x\n",breg);
-  //  show_ar_chain(arreg); 
-  show_sf_chain(sfreg); 
+  //  show_ar_chain(arreg);
+  show_sf_chain(sfreg);
 
   show_stack_image();
   show_heap_image();
@@ -780,10 +780,10 @@ Utilities for tracing bugs
 
   show_trail_image(){
   BPLONG_PTR curr_t,addr;
-  
+
   printf("\nTRAIL (breg=%x heap_top=%x hbreg=%x\n",breg,heap_top,hbreg);
   curr_t = trail_top+1;
-  while (curr_t < (BPLONG_PTR)trail_up_addr){ 
+  while (curr_t < (BPLONG_PTR)trail_up_addr){
   addr = (BPLONG_PTR)UNTAGGED3(FOLLOW(curr_t));
   printf("%x:: %x (%x)\n",curr_t,FOLLOW(curr_t),FOLLOW(addr));
   curr_t += 2;
@@ -793,7 +793,7 @@ Utilities for tracing bugs
   show_top_trail_image(){
   BPLONG_PTR curr_t;
   int count = 0;
-  
+
   printf("TRAILTRAILTRAILTRAILTRAILTRAILTRAIL\n");
   curr_t = trail_top+1;
   while (curr_t < (BPLONG_PTR)AR_T(breg)){
@@ -878,7 +878,7 @@ Utilities for tracing bugs
   if ((BPLONG_PTR)AR_SF(ptr)<ptr){
   printf("Strange sf (%x)->SF=%x\n",ptr,AR_SF(ptr));
   #ifdef TRACE_INSTS
-  { 
+  {
   int i;
   for (i=9;i>=0;i--){
   printf("%d: %s\n",i,inst_name[exec_trace[i]]);
@@ -945,7 +945,7 @@ Utilities for tracing bugs
   SYM_REC_PTR sym;
   {
   BPLONG_PTR sp;
-  
+
   sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(ar));
   if (sp==ar){
   fprintf(curr_out,"%s.\n",GET_NAME(sym));
@@ -965,9 +965,9 @@ Utilities for tracing bugs
   {
   BPLONG_PTR sp;
   BPLONG no,op;
-  
+
   NO_RESERVED_SLOTS(ar,no);
-  
+
   printf("*******%x*******(%d,%d)\n",ar,(BPLONG_PTR)(UNTAGGED_ADDR(AR_BTM(ar)))-ar,no);
 
   sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(ar));
@@ -989,9 +989,9 @@ Utilities for tracing bugs
   {
   BPLONG_PTR sp;
   BPLONG no,op;
-  
+
   NO_RESERVED_SLOTS(ar,no);
-  
+
   printf("*******%x*******(%d,%d)\n",ar,(BPLONG_PTR)(UNTAGGED_ADDR(AR_BTM(ar)))-ar,no);
   if ((BPLONG_PTR)(UNTAGGED_ADDR(AR_BTM(ar)))-ar<0){
   printf("STATUS=%lx\n",AR_STATUS(ar));
@@ -1015,7 +1015,7 @@ Utilities for tracing bugs
   printf("%x (%x)  STATUS \n",ar-6,FOLLOW(ar-6));
   printf("%x (%x)  OUT \n",ar-7,FOLLOW(ar-7));
   }
-    
+
   if (no>=NONDET_FRAME_SIZE){
   printf("%x (%x)  B \n",ar-4,FOLLOW(ar-4));
   printf("%x (%x)  CPF \n",ar-5,FOLLOW(ar-5));
@@ -1026,7 +1026,7 @@ Utilities for tracing bugs
 
   sp = ar-no;
   while ((BPULONG)sp>AR_TOP(ar)){
-  printf("%x %x \n",sp,FOLLOW(sp)); 
+  printf("%x %x \n",sp,FOLLOW(sp));
   //op = FOLLOW(sp); DEREF(op);
   //if (ISREF(op) && op>(BPULONG)local_top){ printf("(_s%x)",op); } else{ write_term(op);}; printf("\n");
   sp--;
@@ -1042,7 +1042,7 @@ Utilities for tracing bugs
   if (breg!=ar && breg>(BPLONG_PTR)AR_TOP(ar) && breg<(BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(ar))){
   printf("Strange ar %x (sfreg=%x breg=%x)\n",ar,sfreg,breg);
   #ifdef TRACE_INSTS
-  { 
+  {
   int i;
   for (i=9;i>=0;i--){
   printf("%d: %s\n",i,inst_name[exec_trace[i]]);
@@ -1069,11 +1069,11 @@ Utilities for tracing bugs
 
   hunt_for_corrupted_sf_chain(){
   BPLONG_PTR ptr = sfreg;
-  
+
   while (ptr!=(BPLONG_PTR)AR_PREV(ptr)){
   if ((BPULONG)AR_PREV(ptr)>(BPULONG)stack_up_addr || (BPULONG)AR_PREV(ptr)<(BPULONG)stack_low_addr){
   printf("found corrupted sf chain AR_PREV(%x) = %x\n",ptr,AR_PREV(ptr));
-  printf("trail_top=%x,trail_up_addr=%x stack_low_addr=%x stack_up_addr=%x\n",trail_top,trail_up_addr,stack_low_addr,stack_up_addr);      
+  printf("trail_top=%x,trail_up_addr=%x stack_low_addr=%x stack_up_addr=%x\n",trail_top,trail_up_addr,stack_low_addr,stack_up_addr);
   quit("STRANGE\n");
   }
   ptr = (BPLONG_PTR)AR_PREV(ptr);
@@ -1108,7 +1108,7 @@ Utilities for tracing bugs
   {
   arreg = ar;
   check_ar_chain(ar);
-  check_b_chain(breg); 
+  check_b_chain(breg);
   }
 
   check_ar_chain(ar)
@@ -1225,18 +1225,18 @@ Utilities for tracing bugs
   trackUntrailedCellsSF(sp)
   BPLONG_PTR sp;
   {
-  
+
   while (FOLLOW(sp)!=(BPLONG)sp){
   trackUntrailedCellsFrame(sp);
   sp = (BPLONG_PTR)AR_PREV(sp);
   }
   }
-    
+
 
   trackUntrailedCellsB(sp)
   BPLONG_PTR sp;
   {
-  
+
   while ((BPLONG_PTR)FOLLOW(sp)!=sp){
   trackUntrailedCellsAR(sp);
   sp = (BPLONG_PTR)AR_B(sp);
@@ -1250,7 +1250,7 @@ Utilities for tracing bugs
   BPLONG_PTR sp;
 
   NO_RESERVED_SLOTS(fp,noReservedSlots);
-  
+
   sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(fp));
   while (sp>fp){
   trackUntrailedCell(sp,25);
@@ -1270,7 +1270,7 @@ Utilities for tracing bugs
   BPLONG level;
   {
   BPLONG term = FOLLOW(addr);
-  if (level==0) return; 
+  if (level==0) return;
   start:
   if (TAG(term)==REF){
   if (old_than_b(addr) && INSIDE_HEAP_TOP_SEGMENT(term) && not_trailed(addr)) {printf("Strange untrailed cell (%x %x) breg=%x hbreg=%x stack_low=%x stack_up=%x\n",addr,term,breg,hbreg,stack_low_addr,stack_up_addr);
@@ -1378,7 +1378,7 @@ Utilities for tracing bugs
   for (ptr=breg;(BPLONG_PTR)AR_B(ptr)!=ptr;ptr=(BPLONG_PTR)AR_B(ptr)){
   check_topunset_ar_subgoal_chain(ptr);
   }
-  
+
   for (i=0;i<subgoalTableBucketSize;i++){
   subgoal_entry = (BPLONG_PTR)FOLLOW(subgoalTable+i);
   while (subgoal_entry!=NULL){
@@ -1391,7 +1391,7 @@ Utilities for tracing bugs
   BPLONG_PTR ar;
   {
   BPLONG_PTR ptr,subgoal_entry;
-  
+
   while (ar!=(BPLONG_PTR)AR_AR(ar)){
   if (IS_TABLE_FRAME(ar)){
   subgoal_entry = (BPLONG_PTR)GET_AR_SUBGOAL_TABLE(ar);
@@ -1412,8 +1412,8 @@ Utilities for tracing bugs
   BPLONG_PTR f,sp,top;
   BPLONG_PTR p,mask_end;
   BPLONG mask_size;
-  
-  mask_size = ((BPULONG)heap_top-(BPULONG)stack_low_addr)/NBITS_IN_LONG+2; 
+
+  mask_size = ((BPULONG)heap_top-(BPULONG)stack_low_addr)/NBITS_IN_LONG+2;
   allocateMaskArea(mask_size);
 
   f = sfreg;
@@ -1450,7 +1450,7 @@ Utilities for tracing bugs
   term = FOLLOW(ptr+1);
   goto cont;
   }
-  } else if (ISSTRUCT(term)){ 
+  } else if (ISSTRUCT(term)){
   BPLONG i,arity;
   ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
   if (gcIsMarked(ptr,stack_low_addr)==0){
@@ -1503,12 +1503,12 @@ Utilities for tracing bugs
   show_top_trail_image();
   printf("addr=%x\n",untaggedAddr);
   quit("Strange\n");
-  } 
+  }
   curr_t -= 2;
   }
   }
 
-  
+
   check_corrupted_sf(src)
   char *src;
   {
@@ -1530,7 +1530,7 @@ Utilities for tracing bugs
   curr_t = trail_top+1;
   last_t = (BPLONG_PTR)AR_T(breg);
   while (curr_t < last_t){
-  addr = (BPLONG_PTR)FOLLOW(curr_t); 
+  addr = (BPLONG_PTR)FOLLOW(curr_t);
   if (TAG(addr)==TRAIL_VAR){
   write_term(FOLLOW(addr)); printf("\n");
   }
@@ -1543,13 +1543,13 @@ Utilities for tracing bugs
   BPLONG_PTR curr_t,addr,last_t,ptr;
   BPLONG op;
 
-  printf("=>trackBrokenStr\n"); 
-  show_trail_image(); 
-  
+  printf("=>trackBrokenStr\n");
+  show_trail_image();
+
   curr_t = trail_top+1;
   last_t = (BPLONG_PTR)AR_T(breg);
   while (curr_t < last_t){
-  addr = (BPLONG_PTR)FOLLOW(curr_t); 
+  addr = (BPLONG_PTR)FOLLOW(curr_t);
   if (TAG(addr)==TRAIL_VAR || TAG(addr)==TRAIL_VAL_NONATOMIC){
   op = FOLLOW(UNTAGGED3(addr));
   if (ISSTRUCT(op)){
@@ -1558,7 +1558,7 @@ Utilities for tracing bugs
   printf("Broken structure op=%x sym_ptr=%x parea_low=%x parea_up=%x\n",op,ptr,parea_low_addr,parea_up_addr);
   quit("Strange");
   }
-  }      
+  }
   }
   curr_t += 2;
   }
@@ -1576,7 +1576,7 @@ Utilities for tracing bugs
   curr_t = trail_top+1;
   last_t = (BPLONG_PTR)AR_T(breg);
   while (curr_t < last_t){
-  addr = (BPLONG_PTR)FOLLOW(curr_t); 
+  addr = (BPLONG_PTR)FOLLOW(curr_t);
   if (TAG(addr)==TRAIL_VAR){
   ptr = curr_t+2;
   while (ptr<trail_up_addr){
@@ -1605,7 +1605,7 @@ Utilities for tracing bugs
   curr_t = trail_top+1;
   last_t = (BPLONG_PTR)AR_T(breg);
   while (curr_t < trail_up_addr){
-  addr = (BPLONG_PTR)FOLLOW(curr_t); 
+  addr = (BPLONG_PTR)FOLLOW(curr_t);
   if (TAG(addr)==TRAIL_VAR && FOLLOW(addr)==addr){
   printf("RE TRAIL %x (%x)\n",addr,FOLLOW(addr));
   show_trail_image();
@@ -1664,19 +1664,19 @@ Utilities for tracing bugs
   trackTopOnRefCellsSF(sp)
   BPLONG_PTR sp;
   {
-  
+
   while (FOLLOW(sp)!=(BPLONG)sp){
   trackTopOnRefCellsFrame(sp);
   sp = (BPLONG_PTR)AR_PREV(sp);
   if (sp>stack_up_addr) quit("Broken SF Chain\n");
   }
   }
-    
+
 
   trackTopOnRefCellsB(sp)
   BPLONG_PTR sp;
   {
-  
+
   while ((BPLONG_PTR)FOLLOW(sp)!=sp){
   trackTopOnRefCellsAR(sp);
   sp = (BPLONG_PTR)AR_B(sp);
@@ -1690,7 +1690,7 @@ Utilities for tracing bugs
   BPLONG_PTR sp;
 
   NO_RESERVED_SLOTS(fp,noReservedSlots);
-  
+
   sp = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(fp));
   while (sp>fp){
   trackTopOnRefCell(sp,25);
@@ -1743,7 +1743,7 @@ Utilities for tracing bugs
   int signo;
   {
   printf("SSSSSSSSSSSSSSSSSSSSSSSSSSS\n");
-  show_stack_image1(local_top+1,AR_TOP(breg)); 
+  show_stack_image1(local_top+1,AR_TOP(breg));
   printf("HHHHHHHHHHHHHHHHHHHHHHHHHHHH\n");
   show_heap_image();
   }
@@ -1780,12 +1780,12 @@ Utilities for tracing bugs
   if (ISLIST(cs)){
   printf("(%s)",src);
   do {
-  ptr = (BPLONG_PTR)UNTAGGED_ADDR(cs); 
+  ptr = (BPLONG_PTR)UNTAGGED_ADDR(cs);
   constr = FOLLOW(ptr);
   sf = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(constr));
   printf("[%d]",INTVAL(constr));
   if (!IS_SUSP_FRAME(sf)) quit("Strange");
-  cs = FOLLOW(ptr+1); 
+  cs = FOLLOW(ptr+1);
   } while (ISLIST(cs));
   printf("\n");
   }
@@ -1798,7 +1798,7 @@ Utilities for tracing bugs
   if (ptr<local_top || (breg>(BPLONG_PTR)AR_TOP(ptr) && breg<(BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(ptr)))){
   printf("Strange sf %x (sfreg=%x breg=%x)\n",ptr,sfreg,breg);
   #ifdef TRACE_INSTS
-  { 
+  {
   int i;
   for (i=9;i>=0;i--){
   printf("%d: %s\n",i,inst_name[exec_trace[i]]);
@@ -1828,7 +1828,7 @@ Utilities for tracing bugs
   BPLONG term;
   {
   BPLONG term1;
-  
+
   if (!ISREF(term))
   return 0;
   term1 = FOLLOW(term);
@@ -1864,7 +1864,7 @@ Utilities for tracing bugs
   {
   BPLONG_PTR sp;
   BPLONG n;
-  
+
   while (f<breg){
   NO_RESERVED_SLOTS(f,n);
   printf("tracing f=%x n=%d breg=%x %s\n",f,n,breg,src);
@@ -1895,7 +1895,7 @@ Utilities for tracing bugs
   }
 
   f = (BPLONG_PTR)AR_AR(f);
-  } 
+  }
   }
 
 */

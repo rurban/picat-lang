@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -38,12 +38,12 @@ UW16 dg_flag_word;
 FILE *curr_in, *curr_out;
 
 BPLONG n_backtracks = 0;
-BPLONG_PTR  stack_low_addr; 
-BPLONG_PTR  parea_low_addr = NULL; 
-BPLONG_PTR  parea_water_mark; 
-BPLONG_PTR  trail_low_addr;         
-BPLONG_PTR  trail_water_mark;   
-BPLONG_PTR  trail_water_mark0;   
+BPLONG_PTR  stack_low_addr;
+BPLONG_PTR  parea_low_addr = NULL;
+BPLONG_PTR  parea_water_mark;
+BPLONG_PTR  trail_low_addr;
+BPLONG_PTR  trail_water_mark;
+BPLONG_PTR  trail_water_mark0;
 
 BPLONG_PTR  stack_up_addr;
 BPLONG_PTR  stack_low_addr;
@@ -110,9 +110,9 @@ SYM_REC_PTR  planner_explored_depth_psc;
 BPLONG list_psc_int;
 BPLONG list_psc_hashcode;
 SYM_REC_PTR  error_psc;
-SYM_REC_PTR  v2_psc; 
-SYM_REC_PTR  v3_psc; 
-SYM_REC_PTR  v4_psc; 
+SYM_REC_PTR  v2_psc;
+SYM_REC_PTR  v3_psc;
+SYM_REC_PTR  v4_psc;
 SYM_REC_PTR  findall_result0;
 SYM_REC_PTR  findall_result1;
 SYM_REC_PTR  findall_result2;
@@ -140,7 +140,7 @@ SYM_REC_PTR u_eq_uc_arc;
 SYM_REC_PTR register_event_listener;
 
 /* $addr(int) */
-SYM_REC_PTR c_object_ref_sym; 
+SYM_REC_PTR c_object_ref_sym;
 SYM_REC_PTR picat_log_psc;
 
 BPLONG windows_atom;
@@ -241,7 +241,7 @@ BPLONG num_stack_expansions=0;
 BPLONG num_trail_expansions=0;
 BPLONG num_parea_expansions= -1;
 
-SYM_REC_PTR 
+SYM_REC_PTR
   str_BUILTIN_ERROR1,
   str_BUILTIN_ERROR2,
   str_BUILTIN_ERROR3,
@@ -256,12 +256,12 @@ SYM_REC_PTR
   str_TYPE_ERROR,
   str_SYNTAX_ERROR;
 
-BPLONG 
+BPLONG
   et_OUT_OF_MEMORY,
   et_OUT_OF_MEMORY_STACK,
   et_OUT_OF_MEMORY_TABLE,
   et_UPDATE,
-  et_ACCESS, 
+  et_ACCESS,
   et_ATOM,
   et_ATOMIC,
   et_BINARY_STREAM,
@@ -270,12 +270,12 @@ BPLONG
   et_CHARACTER,
   et_CHARACTER_CODE,
   et_COMPOUND,
-  et_CREATE, 
+  et_CREATE,
   et_EVALUABLE,
   et_FLAG,
   et_FLAG_VALUE,
   et_FLOAT_OVERFLOW,
-  et_INPUT, 
+  et_INPUT,
   et_INTEGER,
   et_INT_OVERFLOW,
   et_IN_BYTE,
@@ -287,21 +287,21 @@ BPLONG
   et_LIST,
   et_MAX_ARITY,
   et_MAX_INTEGER,
-  et_MODIFY, 
+  et_MODIFY,
   et_NON_EMPTY_LIST,
   et_NOT_LESS_THAN_ZERO,
   et_NUMBER,
-  et_OPEN, 
+  et_OPEN,
   et_OPERATOR,
   et_OPERATOR_PRIORITY,
-  et_OUTPUT, 
+  et_OUTPUT,
   et_PAST_END_OF_STREAM,
   et_PREDICATE_INDICATOR,
   et_PRIVATE_PROCEDURE,
   et_PROCEDURE,
   et_PROLOG_FLAG,
   et_READ_OPTION,
-  et_REPOSITION, 
+  et_REPOSITION,
   et_SOURCE_SINK,
   et_STATIC_PROCEDURE,
   et_STREAM,

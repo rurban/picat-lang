@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #ifdef _WIN32
 #include <windows.h>
@@ -56,7 +56,7 @@ void init_toam(argc, argv)
     int  argc;
     char *argv[];
 {
-    BPLONG     i; 
+    BPLONG     i;
     CHAR_PTR  str;
     int success = 0;
 
@@ -70,7 +70,7 @@ void init_toam(argc, argv)
         if (str[0] == '-') {
             switch (str[1]) {
 #ifdef PICAT
-            case 'p': 
+            case 'p':
                 if (strcmp(str+1,"path")==0){
                     i++;
                     if (i > argc){
@@ -86,10 +86,10 @@ void init_toam(argc, argv)
                         */
                         setenv("PICATPATH",argv[i],1);
                     }
-                } 
+                }
                 break;
 
-            case '-': 
+            case '-':
                 if (strcmp(str+2,"help")==0){
                     print_picat_usage();
                     exit(0);
@@ -97,13 +97,13 @@ void init_toam(argc, argv)
                     printf("Picat version 2.7b12_3\n");
                     exit(0);
                 }
-                                
+
             case 'l':
 			    if (strcmp(str+1,"log")==0){  /* enable log printing */
 				  break;
 				}
             case 'g':
-                use_gl_getline = 0; 
+                use_gl_getline = 0;
                 break;
 
             case 'n': num_line = 1; break;
@@ -112,15 +112,15 @@ void init_toam(argc, argv)
 
             case 's': i++;
                 sscanf(argv[i], BPLONG_FMT_STR, &stack_size);
-                if (stack_size<1000000) stack_size=1000000; 
+                if (stack_size<1000000) stack_size=1000000;
                 break;
-                                
+
 #else
-            case 'T': 
-            case 't': 
+            case 'T':
+            case 't':
                 i++;
                 sscanf(argv[i], BPLONG_FMT_STR, &table_size);
-                if (table_size<1000000) table_size=1000000;  
+                if (table_size<1000000) table_size=1000000;
                 break;
 
             case 'l': use_gl_getline = 0; break;
@@ -134,7 +134,7 @@ void init_toam(argc, argv)
             case 'S':
             case 's': i++;
                 sscanf(argv[i], "%ld", &stack_size);
-                if (stack_size<1000000) stack_size=1000000; 
+                if (stack_size<1000000) stack_size=1000000;
                 break;
 
             case 'm': i++;
@@ -154,15 +154,15 @@ void init_toam(argc, argv)
                 break;
 
             case 'g':
-                use_gl_getline = 0; 
+                use_gl_getline = 0;
             case 'i':
                 i++;  break;
 
-            case 'h': 
+            case 'h':
                 printf("Usage: bp [-p P] [-s S] [-b B] [-t T] [-i File] [-g Goal] [-h] [-l] bytecode_1 ... \n");
                 printf("       P -- size for program area\n");
                 printf("       S -- size for global and local stacks\n");
-                printf("       B -- size for trail stack\n");       
+                printf("       B -- size for trail stack\n");
                 printf("       T -- size for table area\n");
                 printf("       l -- not use the command line editor\n");
                 printf("       g -- initial goal\n");
@@ -170,10 +170,10 @@ void init_toam(argc, argv)
                 exit(0);
 #endif
             }
-        }  
+        }
         i++;
-    }  
-    /*   
+    }
+    /*
          str = getenv("PICATPATH");
          if (str != NULL){
          printf("PICATPATH= %s\n",str);
@@ -192,7 +192,7 @@ void init_toam(argc, argv)
     ALLOCATE_NEW_PAREA_BLOCK(parea_size,success);
     if (success==0) quit("Not enough memory (init).\n");
     init_findall_area();
-   
+
 
 #ifdef GC
     gcQueueConstruct();
@@ -202,30 +202,30 @@ void init_toam(argc, argv)
     trail_up_addr = trail_low_addr + trail_size -1;
 
     dg_flag_word = 0;
-  
+
     heap_top  = stack_low_addr;
     trail_top  = trail_up_addr;
 
     addr_fail = (BPLONG_PTR)curr_fence;
-    *(BPLONG_PTR)curr_fence = fail;  
+    *(BPLONG_PTR)curr_fence = fail;
     curr_fence += sizeof(BPLONG);
 
     *(BPLONG_PTR)curr_fence = 9;    /* MaxS for GC */
     curr_fence += sizeof(BPLONG);
     addr_halt = (BPLONG_PTR)curr_fence;
-    *(BPLONG_PTR)curr_fence = halt;    
+    *(BPLONG_PTR)curr_fence = halt;
     curr_fence += sizeof(BPLONG);
 
     *(BPLONG_PTR)curr_fence = 9;    /* MaxS for GC */
     curr_fence += sizeof(BPLONG);
     addr_halt0 = (BPLONG_PTR)curr_fence;
-    *(BPLONG_PTR)curr_fence = halt0;    
+    *(BPLONG_PTR)curr_fence = halt0;
     curr_fence += sizeof(BPLONG);
 
     *(BPLONG_PTR)curr_fence = 13;    /* MaxS for GC */
     curr_fence += sizeof(BPLONG);
     addr_table_consume = (BPLONG_PTR)curr_fence;
-    *(BPLONG_PTR)curr_fence = table_consume;    
+    *(BPLONG_PTR)curr_fence = table_consume;
     curr_fence += sizeof(BPLONG);
 
     local_top = stack_up_addr;
@@ -256,18 +256,18 @@ void init_stack(bsize)
 {
     BPLONG_PTR old_sfreg,old_arreg,old_breg;
     int i;
-  
+
     old_sfreg = sfreg; old_arreg = arreg; old_breg = breg;
-  
+
     sfreg = local_top;
     if (old_sfreg==NULL) old_sfreg = sfreg;
     AR_AR(sfreg) = (BPLONG)local_top;
     AR_CPS(sfreg) = (BPLONG)addr_halt;
     AR_TOP(sfreg) = (BPLONG)(local_top - SUSP_FRAME_SIZE);
     AR_BTM(sfreg) = ADDTAG((BPLONG)local_top,SUSP_FRAME_TAG);
-    AR_REEP(sfreg) = (BPLONG)NULL;     
-    AR_PREV(sfreg) = (BPLONG)old_sfreg;   
-    AR_STATUS(sfreg) = SUSP_EXIT;    
+    AR_REEP(sfreg) = (BPLONG)NULL;
+    AR_PREV(sfreg) = (BPLONG)old_sfreg;
+    AR_STATUS(sfreg) = SUSP_EXIT;
     AR_OUT(sfreg) = BP_ZERO;
     local_top -= SUSP_FRAME_SIZE;
 
@@ -275,20 +275,20 @@ void init_stack(bsize)
         FOLLOW(local_top-i) = (BPLONG)(local_top-i);
     }
     local_top -= bsize; /* for holding global data for CGLIB,if not zero */
-  
+
     breg  = local_top;
     if (old_breg==NULL) old_breg=breg;
     if (old_arreg==NULL) old_arreg = breg;
 
     AR_AR(breg) = (BPLONG)old_arreg;
     AR_CPS(breg) = (BPLONG)addr_halt;    /* CPS : return BP_TRUE on final success */
-    AR_TOP(breg) = (BPLONG)(breg - NONDET_FRAME_SIZE);    
-    AR_BTM(breg) = ADDTAG((BPLONG)(breg+bsize),NONDET_FRAME_TAG); 
-    AR_B(breg) = (BPLONG)old_breg;           
+    AR_TOP(breg) = (BPLONG)(breg - NONDET_FRAME_SIZE);
+    AR_BTM(breg) = ADDTAG((BPLONG)(breg+bsize),NONDET_FRAME_TAG);
+    AR_B(breg) = (BPLONG)old_breg;
     AR_CPF(breg)  = (BPLONG)addr_halt0;  /* CPF : return BP_FALSE on final failure */
-    AR_H(breg) = (BPLONG)heap_top;           
-    AR_T(breg) = (BPLONG)trail_top;          
-    AR_SF(breg) = (BPLONG)sfreg;             
+    AR_H(breg) = (BPLONG)heap_top;
+    AR_T(breg) = (BPLONG)trail_top;
+    AR_SF(breg) = (BPLONG)sfreg;
     hbreg = heap_top;
     local_top = breg-NONDET_FRAME_SIZE;
 
@@ -318,17 +318,17 @@ int init_loading(argc, argv)
 #ifdef PICAT
         if (str[0] == '-') {
             switch (str[1]) {
-            case 'p': 
+            case 'p':
                 if (strcmp(str+1,"path")==0)
                     i++;
-                else 
+                else
                     add_main_arg(str);
                 break;
             case 'l':
                 if (strcmp(str+1,"log")==0){  /* enable log printing */
                     b_GLOBAL_SET_ccc(ADDTAG(picat_log_psc,ATM),MAKEINT(0),MAKEINT(1));
                 } else {
-                    use_gl_getline = 0; 
+                    use_gl_getline = 0;
                 }
                 break;
             case 'v':
@@ -345,17 +345,17 @@ int init_loading(argc, argv)
 #else
         if (str[0] == '-') {
             switch (str[1]) {
-            case 'T': 
-            case 't': 
+            case 'T':
+            case 't':
             case 'S':
             case 's':
-            case 'm': 
+            case 'm':
             case 'P':
-            case 'p': 
+            case 'p':
             case 'B':
-            case 'b': 
+            case 'b':
                 i++; break;
-            default: 
+            default:
                 add_main_arg(argv[i]);
             }
         } else {
@@ -370,7 +370,7 @@ int init_loading(argc, argv)
     }
     return BP_TRUE;
 }
- 
+
 int load_bp_out(){
     char name[256];
     char *s;
@@ -396,7 +396,7 @@ int is_bc_file(main_arg)
 {
     FILE *fp;
     BYTE magic;
-  
+
     if (access(main_arg,0)==0){
 #ifdef MSDOS
         fp = fopen(main_arg, "rb");
@@ -405,10 +405,10 @@ int is_bc_file(main_arg)
 #endif
         if (fp == NULL)
             return BP_FALSE;
-    
+
         fread(&magic, 1, 1, fp);
         if (magic!=71){fclose(fp); return BP_FALSE;}
-     
+
         fread(&magic, 1, 1, fp);
         if (magic!=21){fclose(fp); return BP_FALSE;}
 
@@ -423,7 +423,7 @@ int is_bc_file(main_arg)
     }
     return BP_FALSE;
 }
-     
+
 int load_user_bc_file(name)
     char *name;
 {
@@ -454,10 +454,10 @@ void add_main_arg(main_arg)
     unify(bp_get_car(main_args),parg);
     unify(bp_get_cdr(main_args),tmp);
 }
-    
+
 int c_init_global_each_session(){
 
-    set_global_call_number(1);  
+    set_global_call_number(1);
     return BP_TRUE;
 }
 

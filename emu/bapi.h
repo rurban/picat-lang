@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "frame.h"
@@ -128,14 +128,14 @@
 
 #define ASSIGN_VALUE(var,value)					\
   *(BPLONG_PTR)var = value;						\
-  PUSHTRAIL(var)                 
+  PUSHTRAIL(var)
 
 #define ASSIGN_TRAIL_VALUE(var,value)           \
   *(BPLONG_PTR)var = (BPLONG)(value);			\
   PUSHTRAILC(var,var)
 
 #define ASSIGN(var,value)						\
-  *(BPLONG_PTR)var = value                 
+  *(BPLONG_PTR)var = value
 
 #define LOCAL_OVERFLOW_CHECK(src)					\
 	  if (local_top - heap_top <= LARGE_MARGIN) {	\
@@ -163,7 +163,7 @@
 				{NEW_HEAP_NODE(UNTAGGED_ADDR(op1));},	\
 				{NEW_HEAP_NODE(op1);})
 
-#define GET_CAR(op) FOLLOW((BPLONG_PTR)UNTAGGED_ADDR(op)) 
+#define GET_CAR(op) FOLLOW((BPLONG_PTR)UNTAGGED_ADDR(op))
 #define GET_CDR(op) FOLLOW((BPLONG_PTR)UNTAGGED_ADDR(op)+1)
 #define GET_ARG(op,n) FOLLOW((BPLONG_PTR)UNTAGGED_ADDR(op)+n)
 

@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <stdlib.h>
 #include "bprolog.h"
@@ -17,7 +17,7 @@ int b_IS_CONSULTED_c(goal)
 {
     BPLONG_PTR top;
     SYM_REC_PTR sym_ptr;
-  
+
 is_consulted:
     if (ISREF(goal)){
         NDEREF(goal,is_consulted);
@@ -27,8 +27,8 @@ is_consulted:
         sym_ptr = GET_STR_SYM_REC(goal);
     else if (ISATOM(goal))
         sym_ptr = GET_ATM_SYM_REC(goal);
-    else 
-        return 0;    
+    else
+        return 0;
     return (GET_ETYPE(sym_ptr)==T_DYNA || GET_ETYPE(sym_ptr)==T_INTP);
 }
 
@@ -37,7 +37,7 @@ int b_SET_DYNAMIC_cc(name,arity)
 {
     BPLONG_PTR top;
     SYM_REC_PTR sym_ptr;
-  
+
     GET_GLOBAL_SYM(name,arity,sym_ptr);
     GET_ETYPE(sym_ptr)=T_DYNA;
     return 1;
@@ -59,7 +59,7 @@ int b_IS_DYNAMIC_cc(name,arity)
 {
     BPLONG_PTR top;
     SYM_REC_PTR sym_ptr;
-  
+
     GET_GLOBAL_SYM(name,arity,sym_ptr);
     return (GET_ETYPE(sym_ptr)==T_DYNA) ? BP_TRUE : BP_FALSE;
 }
@@ -87,7 +87,7 @@ int b_GLOBAL_SET_ccc(name,arity,value)
     SYM_REC_PTR sym_ptr;
     BPLONG oldValue;
     BPLONG res;
-  
+
     GET_GLOBAL_SYM(name,arity,sym_ptr);
     if (GET_ETYPE(sym_ptr)==T_DYNA)
         oldValue = (BPLONG)GET_EP(sym_ptr);
@@ -96,7 +96,7 @@ int b_GLOBAL_SET_ccc(name,arity,value)
         oldValue = nil_sym;
     }
     DEREF(value);
-    if (TAG(value) == ATM) 
+    if (TAG(value) == ATM)
         GET_EP(sym_ptr) = (int (*)(void))value;
     else {
         release_term_space(oldValue);
@@ -123,7 +123,7 @@ int c_OLD_GLOBAL_SET(){
     GET_EP(sym_ptr) = (int (*)(void))res;
     return BP_TRUE;
 }
-  
+
 int c_OLD_GLOBAL_GET(){
     BPLONG name,arity,value;
     SYM_REC_PTR sym_ptr;
@@ -139,7 +139,7 @@ int c_OLD_GLOBAL_GET(){
         return unify(value,(BPLONG)GET_EP(sym_ptr));
     }
 }
-  
+
 int b_GLOBAL_GET_ccf(name,arity,value)
     BPLONG name,arity,value;
 {
@@ -157,7 +157,7 @@ int b_GLOBAL_GET_ccf(name,arity,value)
         ASSIGN_f_atom(value,term);
     } else {
         varVector = arreg-1000; /* safe? */
-        ASSIGN_sv_heap_term(value,unnumberVarTerm(term,varVector,&maxVarNo)); 
+        ASSIGN_sv_heap_term(value,unnumberVarTerm(term,varVector,&maxVarNo));
         LOCAL_OVERFLOW_CHECK("global");
     }
     return 1;
@@ -168,7 +168,7 @@ int b_ISGLOBAL_cc(name,arity)
 {
     BPLONG_PTR top;
     SYM_REC_PTR sym_ptr;
-    
+
     GET_GLOBAL_SYM(name,arity,sym_ptr);
     return (GET_ETYPE(sym_ptr)!=T_DYNA) ? BP_FALSE : BP_TRUE;
 }
@@ -178,14 +178,14 @@ int b_GLOBAL_DEL_cc(name,arity)
 {
     BPLONG_PTR top;
     SYM_REC_PTR sym_ptr;
-  
+
     GET_GLOBAL_SYM(name,arity,sym_ptr);
     GET_ETYPE(sym_ptr)= T_ORDI;
     return 1;
 }
 
 int c_SET_ARG_PAREA(){
-    BPLONG no = ARG(1,3); 
+    BPLONG no = ARG(1,3);
     BPLONG s = ARG(2,3);
     BPLONG arg = ARG(3,3);
     BPLONG parea_arg;
@@ -195,14 +195,14 @@ int c_SET_ARG_PAREA(){
     parea_arg = res;
     return b_DESTRUCTIVE_SET_ARG_ccc(no,s,parea_arg);
 }
-  
+
 int b_GLOBAL_INSERT_HEAD_cccc(name,arity,value,part)
     BPLONG name,arity,value,part;
 {
     BPLONG_PTR top;
     SYM_REC_PTR sym_ptr;
     BPLONG temp1;
- 
+
     GET_GLOBAL_SYM(name,arity,sym_ptr);
     /*  DEREF(part); part = INTVAL(part); */
     temp1 = copy_term_heap_to_parea(value);
@@ -223,7 +223,7 @@ int b_GLOBAL_INSERT_TAIL_ccc(name,arity,value)
     temp1 = copy_term_heap_to_parea(value);
     if (temp1==BP_ERROR) return BP_ERROR;
     temp2 = make_cons_in_parea(temp1,nil_sym);
-    if (temp2==BP_ERROR) return BP_ERROR;   
+    if (temp2==BP_ERROR) return BP_ERROR;
     assert_tail(sym_ptr,temp2);
     return BP_TRUE;
 }
@@ -234,13 +234,13 @@ void assert_tail(sym_ptr,term)
 {
     BPLONG_PTR top,ptr;
     BPLONG op;
-  
+
     if (ISNIL((BPLONG)GET_EP(sym_ptr)))
         GET_EP(sym_ptr) = (int (*)(void))term;
     else {
         op = (BPLONG)GET_EP(sym_ptr);
         DEREF(op);
-        ptr = NULL;     
+        ptr = NULL;
         while (ISLIST(op)){
             ptr = (BPLONG_PTR)UNTAGGED_ADDR(op)+1;
             op = FOLLOW(ptr);
@@ -249,7 +249,7 @@ void assert_tail(sym_ptr,term)
         FOLLOW(ptr) = term;
     }
 }
-  
+
 BPLONG make_cons_in_parea(car,cdr)
     BPLONG car,cdr;
 {
@@ -261,13 +261,13 @@ BPLONG make_cons_in_parea(car,cdr)
         exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
-    temp = (BPLONG)ADDTAG(ptr,LST);    
+    temp = (BPLONG)ADDTAG(ptr,LST);
     *ptr++ = car;
     *ptr = cdr;
     return temp;
-}  
+}
 
-BPLONG copy_term_heap_to_parea(value) 
+BPLONG copy_term_heap_to_parea(value)
     BPLONG value;
 {
     BPLONG_PTR trail_top0;
@@ -284,7 +284,7 @@ BPLONG copy_term_heap_to_parea(value)
     return temp;
 }
 
-BPLONG copy_term_heap_to_parea_with_varno(value,varno) 
+BPLONG copy_term_heap_to_parea_with_varno(value,varno)
     BPLONG value;
     BPLONG *varno;
 {
@@ -301,7 +301,7 @@ BPLONG copy_term_heap_to_parea_with_varno(value,varno)
     if (temp==BP_ERROR) return BP_ERROR;
     return temp;
 }
-  
+
 
 int c_UNNUMBER_VARS(){
     BPLONG term,unnumberedTerm,temp;
@@ -311,7 +311,7 @@ int c_UNNUMBER_VARS(){
     varVector = arreg-NONDET_FRAME_SIZE;
 
     term = ARG(1,2);
-    unnumberedTerm = ARG(2,2); 
+    unnumberedTerm = ARG(2,2);
     temp = unnumberVarTerm(term,varVector,&maxVarNo);
     if (local_top - heap_top <= LARGE_MARGIN) {
         myquit(STACK_OVERFLOW,"uv");
@@ -322,10 +322,10 @@ int c_UNNUMBER_VARS(){
     }
     return unify(temp,unnumberedTerm);
 }
-  
 
-     
-  
-  
+
+
+
+
 
 

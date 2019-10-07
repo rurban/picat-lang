@@ -87,7 +87,7 @@ java2prolog(JNIEnv *env, jobject val, BPLONG arg) {
         if (obj) str = (*env)->GetStringUTFChars(env,obj,NULL);
         else str = "invalid argument";
         /* !!! */
-        if ((*env)->IsInstanceOf(env, val, class_Double) || (*env)->IsInstanceOf(env, val, class_Double)) { 
+        if ((*env)->IsInstanceOf(env, val, class_Double) || (*env)->IsInstanceOf(env, val, class_Double)) {
             double atof();
             unify(arg,encodefloat1(atof(str)));
         } else {
@@ -112,7 +112,7 @@ java2prolog(JNIEnv *env, jobject val, BPLONG arg) {
                                                                "toString", "()Ljava/lang/String;"),0);
         }
         str = (*env)->GetStringUTFChars(env,val,NULL);
-        PuStr(arg, str); 
+        PuStr(arg, str);
         /*  PuAtom(arg, str); */
         (*env)->ReleaseStringUTFChars(env, val, str);
     } else if ((*env)->IsInstanceOf(env, val,class_ArrayOfObject)) {
@@ -160,11 +160,11 @@ prolog2java(JNIEnv *env, BPLONG arg) {
             (*env)->DeleteLocalRef(env, res);
             return bignum;
         } else {
-            return (*env)->NewObject(env,class_Integer, init_Integer, 
+            return (*env)->NewObject(env,class_Integer, init_Integer,
                                      (jlong)PvalueOfInt(arg));
         }
     } else if (PisReal(arg)) {
-        return (*env)->NewObject(env,class_Double, init_Double, 
+        return (*env)->NewObject(env,class_Double, init_Double,
                                  (jdouble)PvalueOfReal(arg));
     } else if (PisAddr(arg)) {
         return addr2ref(env, arg);
@@ -236,7 +236,7 @@ initialize(JNIEnv *env, jref arrayobj) {
                                            (*env)->FindClass(env, "java/lang/Character"));
     class_Exception = (*env)->NewGlobalRef(env,
                                            (*env)->FindClass(env, "java/lang/Exception"));
-#if FindClassResolved 
+#if FindClassResolved
     class_ArrayOfObject = (*env)->FindClass(env, "[Ljava/lang/Object;");
 #else
     class_ArrayOfObject =(*env)->NewGlobalRef(env,
@@ -265,7 +265,7 @@ initialize(JNIEnv *env, jref arrayobj) {
                                             "(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/Object;");
     }
 
-#if defined(DEBUG) 
+#if defined(DEBUG)
     printf("%8x,%8x,%8x,%8x\n",class_ArrayOfObject,class_Plc,class_String,bytes_String);
     printf("%8x,%8x,%8x,%8x, env=%x\n",instance_Plc,static_Plc,new_Plc, env);
 #endif
@@ -284,12 +284,12 @@ callJavaException(JNIEnv *env) {
         mess = (*env)->CallObjectMethod(env,e,
                                         (*env)->GetMethodID(env,exclass,"toString","()Ljava/lang/String;"),
                                         0);
-    } 
+    }
     if (mess) str = (*env)->GetStringUTFChars(env,mess,NULL);
     else str = "unknown";
     /* !!! */
     /* PuStr(PargOfCompound(command, 0),str); */
-    PuAtom(PargOfCompound(command, 0),str); 
+    PuAtom(PargOfCompound(command, 0),str);
     if (mess) (*env)->ReleaseStringUTFChars(env, mess, str);
     PcallF(command);
     (*env)->ExceptionClear(env);
@@ -319,7 +319,7 @@ javaMethod(){
     BPLONG obj = ARG(1,3);
     BPLONG method = ARG(2,3);
     BPLONG result = ARG(3,3);
-    DEREF(obj); 
+    DEREF(obj);
     /*  printf("javaMethod ");write_term(method);printf("\n"); */
     return javaMethod1(obj,method,result);
 }
@@ -333,7 +333,7 @@ javaMethod1(BPLONG obj, BPLONG method, BPLONG result) {
     jstring funcname = (*env)->NewStringUTF(env,functor);
     jref args = prolog2javaArray(env,method);
     jobject res;
-        
+
     if ((*env)->ExceptionCheck(env)) {
         return callJavaException(env);
     }
@@ -344,7 +344,7 @@ javaMethod1(BPLONG obj, BPLONG method, BPLONG result) {
         const char *class = (const char*)PascOfAtom(obj);
         jclass clazz;
         /* printf("findClass %s",class);write_term(obj);printf("\n"); */
-                
+
         /* !!! */
         clazz = findClass(env,class);
         if (!clazz) return callJavaException(env);
@@ -394,8 +394,8 @@ javaRegisterEventListener(int source_no, int event_no){
         (*env)->DeleteLocalRef(env, clazz);
         (*env)->DeleteLocalRef(env, elm);
         (*env)->DeleteLocalRef(env, args);
-    } 
-  
+    }
+
     (*env)->DeleteLocalRef(env, funcname);
     if ((*env)->ExceptionCheck(env)) {
         return callJavaException(env);
@@ -507,7 +507,7 @@ javaConstructor(){
     BPLONG init = ARG(1,2);
     BPLONG objaddr=ARG(2,2);
     JNIEnv *env = Env;
-    jref args = prolog2javaArray(env,init); 
+    jref args = prolog2javaArray(env,init);
     const char *class = (const char*)PascOfFunc(init);
     jclass clazz;
     jobject obj;
@@ -531,7 +531,7 @@ javaConstructor(){
 
 void javaDeleteRef2(BPLONG objaddr) {
     JNIEnv *env = Env;
-    jref ref = (jref)PvalueOfAddr(objaddr); 
+    jref ref = (jref)PvalueOfAddr(objaddr);
     (*env)->DeleteGlobalRef(env,ref);   /* -1 */
 }
 
@@ -564,7 +564,7 @@ JNIEXPORT void JNICALL Java_bprolog_plc_Plc_startPlc(JNIEnv *env,jclass clazz,
     /*  PexecP("true"); */
     for (i=(BPLONG)((*env)->GetArrayLength(env,args)); --i>=0;) {
         jobject arg = (*env)->GetObjectArrayElement(env, args, i);
-        (*env)->ReleaseStringUTFChars(env, arg, argv[i+1]); 
+        (*env)->ReleaseStringUTFChars(env, arg, argv[i+1]);
     }
 
     /* initialize compiled Prolog modules */
@@ -610,7 +610,7 @@ JNIEXPORT jboolean JNICALL Java_bprolog_plc_Plc_call(JNIEnv *env,
             }
             (*env)->DeleteLocalRef(env,arg);
         }
-    } 
+    }
     return (jboolean)rc;
 }
 
@@ -645,7 +645,7 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1mouse_1event_1to_1bprolog
     mouseEventObject->y = y;
     mouseEventObject->count = count;
     mouseEventObject->modifiers = modifiers;
-  
+
     add_to_event_pool(MAKEINT(no),type,mouseEventObject);
 }
 
@@ -719,14 +719,14 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1action_1event_1to_1bprolog
 }
 
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1text_1event_1to_1bprolog
-(JNIEnv *env, jclass class, jlong no, jstring text){ 
+(JNIEnv *env, jclass class, jlong no, jstring text){
     const char *str;
 #ifdef DEBUG_EVENT
     printf("text event: %d %d\n",no);
 #endif
     add_to_event_pool(MAKEINT(no),TextValueChanged,(void *)MAKEINT(TextValueChanged));
 }
-  
+
 JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1item_1event_1to_1bprolog
 (JNIEnv *env, jclass class, jlong no, jlong index, jlong change){
 
@@ -752,12 +752,12 @@ JNIEXPORT void JNICALL Java_bprolog_cg_CgEvent_post_1adjustment_1event_1to_1bpro
     adjustmentEventObject->value = value;
     add_to_event_pool(MAKEINT(no),AdjustmentValueChanged,adjustmentEventObject);
 }
-  
 
 
 
 
-     
-    
 
-    
+
+
+
+

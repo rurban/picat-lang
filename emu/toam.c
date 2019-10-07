@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -19,7 +19,7 @@
 /* #include <setjmp.h> */
 
 /*
-  #define DEBUG_CALL 
+  #define DEBUG_CALL
   #define DEBUG_INST
   #define TRACE_BUILTIN
   #define TRACE_TOAM
@@ -30,7 +30,7 @@
 extern Builtins builtins[];                                                                                             //branch
 extern BPLONG_PTR *asp_rel_mins,*asp_rel_sizes;
 extern char *eventNoNameTable[];                                                                                        //branch
-  
+
 BPLONG interrupt_sym;        /* the atom 'interrupt' */
 SYM_REC_PTR ball_psc;      /* the global var '$ball' */
 BPLONG_PTR  sreg = NULL;   /* current build or unify field */
@@ -52,7 +52,7 @@ void exception_handler(signo)
 #ifdef BPSOLVER
     case SIGXCPU:
     case SIGSEGV:
-        fprintf(stderr,"%% unhandled signal %d\n",signo); 
+        fprintf(stderr,"%% unhandled signal %d\n",signo);
         //    fprintf(stdout,"%% UNKNOWN\n");
         exit(1);
 #endif
@@ -63,7 +63,7 @@ void exception_handler(signo)
         if (signal(SIGINT,exception_handler)==SIG_ERR)
             printf("can't catch SIGINT\n");
         break;
-    
+
     default:
         if (user_signal_action[signo])                                                                                  //branch
         {                                                                                                                       //branch
@@ -104,14 +104,14 @@ int initialize_bprolog(argc,argv)
     BPLONG_PTR inst_begin0;
     if (bprolog_initialized==1) return BP_TRUE;
     init_toam(argc, argv);      /* first scan of the command line arguments */
-    file_init();                
+    file_init();
 
 #ifdef GCC
-    toam(NULL,NULL,NULL);  
+    toam(NULL,NULL,NULL);
 #endif
 
     init_builtins();
-    init_signals(); 
+    init_signals();
     Cboot();
     bprolog_initialized = 1;
     load_byte_code_from_c_array();
@@ -131,7 +131,7 @@ int toam(P,AR,LOCAL_TOP)
     register BPLONG_PTR P,AR,LOCAL_TOP;
 {
     register BPLONG op1;
-    register BPLONG_PTR top,sreg = NULL; 
+    register BPLONG_PTR top,sreg = NULL;
     register BPLONG  op2,op3;
     register SYM_REC_PTR     sym_ptr = NULL;
     register BPLONG   arity,i;
@@ -145,7 +145,7 @@ int toam(P,AR,LOCAL_TOP)
     BPLONG first,last,available_sh_space;
 
     BPLONG_PTR subgoal_entry;
-    BPLONG_PTR  stack_water_mark,heap_water_mark; 
+    BPLONG_PTR  stack_water_mark,heap_water_mark;
     BPLONG_PTR constr_ar;
 
 #include "jmp_table.c"
@@ -172,22 +172,22 @@ int toam(P,AR,LOCAL_TOP)
 #ifndef GCC                                                                                                             //branch
 contcase:                       /* LOCAL_TOP OF EXECUTION LOOP : Read Mode */
 #endif                                                                                                                  //branch
-#ifdef DEBUG_INST 
+#ifdef DEBUG_INST
     // if (trace_toam) {
-    cpreg = P; 
+    cpreg = P;
     printf("%d p(%x) ar(%x) lt(%x) h(%x)\n",toam_signal_vec,P,AR,LOCAL_TOP,H);
     print_inst(stdout);
     // }
-#endif 
+#endif
 #ifdef TRACE_TOAM
     if (trace_toam) {
-        cpreg = P; 
+        cpreg = P;
         printf("ar(%x) lt(%x)",AR,LOCAL_TOP);
         print_inst(curr_out);
     }
 #endif
 #ifdef TRACE_BUILTIN
-    cpreg = P; 
+    cpreg = P;
     if (*cpreg>=builtin0 && *cpreg<=builtin4){
         printf("ar(%x) lt(%x)",AR,LOCAL_TOP);
         print_inst(curr_out);
@@ -195,7 +195,7 @@ contcase:                       /* LOCAL_TOP OF EXECUTION LOOP : Read Mode */
 #endif
 
 #ifdef GCC
-    goto **(void **)P++; 
+    goto **(void **)P++;
 #endif
 
 #ifdef ToamProfile
@@ -208,7 +208,7 @@ contcase:                       /* LOCAL_TOP OF EXECUTION LOOP : Read Mode */
       #ifdef TRACE_INSTS
       addExecTrace(*P);
       #endif
-      if (toam_signal_vec!=0) printf("toam_signal_vec=%x\n",toam_signal_vec);  
+      if (toam_signal_vec!=0) printf("toam_signal_vec=%x\n",toam_signal_vec);
     */
 
 #include "emu_inst.h"
@@ -219,21 +219,21 @@ interrupt_handler: {
         BPLONG_PTR f = B;
 
 #ifdef BPSOLVER
-        fprintf(stderr,"%% unhandled interrupt event \n"); 
+        fprintf(stderr,"%% unhandled interrupt event \n");
         //      fprintf(stdout,"%% UNKNOWN\n");
         exit(1);
 #endif
         if (exception==(BPLONG)NULL) exception = unknown_exception;
-        event_func.func = NULL;                                                                                         
-        if (toam_signal_vec & USER_INTERRUPT)                                                                           
-        {                                                                                                                       
-            (*user_signal_action[user_signal])(user_signal,user_signal_data[user_signal]);                                      
-        }                                                                                                                       
+        event_func.func = NULL;
+        if (toam_signal_vec & USER_INTERRUPT)
+        {
+            (*user_signal_action[user_signal])(user_signal,user_signal_data[user_signal]);
+        }
         while ((BPLONG)f != AR_B(f)){
             RESET_SUBGOAL_AR(f);
             if (IS_CATCHER_FRAME(f)){
                 btm_ptr = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(f));    /* a catcher frame is in the form of p(Flag,Cleanup,Calll,Exception,Recovery,...) */
-                this_exception = FOLLOW(btm_ptr-3); 
+                this_exception = FOLLOW(btm_ptr-3);
                 if (is_UNIFIABLE(exception,this_exception)){
                     goto interrupt_end_while;
                 }
@@ -244,20 +244,20 @@ interrupt_handler: {
     interrupt_end_while:
         B = f;
         HB = (BPLONG_PTR)AR_H(B);
-        if (toam_signal_vec & USER_INTERRUPT)                                                                           
-        {                                                                                                                       
-            BPLONG_PTR parent_ar = (BPLONG_PTR)AR_AR(AR);                                                                       
+        if (toam_signal_vec & USER_INTERRUPT)
+        {
+            BPLONG_PTR parent_ar = (BPLONG_PTR)AR_AR(AR);
             toam_signal_vec = 0;
-            *LOCAL_TOP-- = MAKEINT(event_func.signo);                                                                   
+            *LOCAL_TOP-- = MAKEINT(event_func.signo);
 
-            AR_AR(LOCAL_TOP) = (BPLONG)parent_ar;                                                                               
-            AR_CPS(LOCAL_TOP) = (BPLONG)AR_CPS(parent_ar);                                                                      
-            AR = LOCAL_TOP;                                                                                                     
-            P = (BPLONG_PTR)GET_EP(event_func.func);                                                                    
-            CONTCASE;                                                                                                   
-        }                                                                                                                       
-        else                                                                                                            
-        {                       
+            AR_AR(LOCAL_TOP) = (BPLONG)parent_ar;
+            AR_CPS(LOCAL_TOP) = (BPLONG)AR_CPS(parent_ar);
+            AR = LOCAL_TOP;
+            P = (BPLONG_PTR)GET_EP(event_func.func);
+            CONTCASE;
+        }
+        else
+        {
             toam_signal_vec = 0;
             GET_EP(ball_psc) = (int (*)(void))exception;
             exception = (BPLONG)NULL;
@@ -269,8 +269,8 @@ interrupt_handler: {
     /*------------------------------------------------------------------*/
 catch_exception:{
         BPLONG_PTR parent_ar = (BPLONG_PTR)AR_AR(AR);
-        if (exception==(BPLONG)NULL) exception = unknown_exception;     
-        *LOCAL_TOP-- = exception; 
+        if (exception==(BPLONG)NULL) exception = unknown_exception;
+        *LOCAL_TOP-- = exception;
         exception = (BPLONG)NULL;
         *LOCAL_TOP-- = c_error_src(error_goal_name,error_goal_arity);
 
@@ -280,12 +280,12 @@ catch_exception:{
         P = (BPLONG_PTR)GET_EP(handle_exception_psc);
         in_critical_region = 1; /* disable GC, since the number of variables needing initialization is unknown */
         CONTCASE;
-    }  
+    }
 
 forward_exception_as_is:{
         BPLONG_PTR parent_ar = (BPLONG_PTR)AR_AR(AR);
-        if (exception==(BPLONG)NULL) exception = unknown_exception;     
-        *LOCAL_TOP-- = exception; 
+        if (exception==(BPLONG)NULL) exception = unknown_exception;
+        *LOCAL_TOP-- = exception;
         exception = (BPLONG)NULL;
 
         AR_AR(LOCAL_TOP) = (BPLONG)parent_ar;
@@ -294,7 +294,7 @@ forward_exception_as_is:{
         P = (BPLONG_PTR)GET_EP(forward_exception_psc);
         in_critical_region = 1; /* disable GC, since the number of variables needing initialization is unknown */
         CONTCASE;
-    }  
+    }
 
     /*------------------------------------------------------------------*/
 trigger_on_handler:{
@@ -316,7 +316,7 @@ trigger_on_handler:{
                 while (ISLIST(op1)){
                     sreg = (BPLONG_PTR)UNTAGGED_ADDR(op1); /* borrow sreg */
                     constr_ar = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(FOLLOW(sreg)));
-                    CONNECT_WOKEN_FRAME_ins(constr_ar); 
+                    CONNECT_WOKEN_FRAME_ins(constr_ar);
                     op1 = LIST_NEXT(sreg);
                 }
                 break;
@@ -357,18 +357,18 @@ trigger_on_handler:{
                     }
                 }
                 break;
-        
+
             case EVENT_GENERAL:{
                 BPLONG prev_alive_node_cdr;
                 BPLONG_PTR prev_alive_node_ptr;
 
-                prev_alive_node_ptr = triggeredCs[i]; 
+                prev_alive_node_ptr = triggeredCs[i];
                 prev_alive_node_cdr = op1;
                 while (ISLIST(op1)){
                     sreg = (BPLONG_PTR)UNTAGGED_ADDR(op1);
                     constr_ar = (BPLONG_PTR)((BPULONG)stack_up_addr-(BPULONG)UNTAGGED_CONT(FOLLOW(sreg)));
                     if (!FRAME_IS_DEAD(constr_ar)){ /* compact the list */
-                        if (prev_alive_node_cdr!=op1){ 
+                        if (prev_alive_node_cdr!=op1){
                             PUSHTRAIL_H_NONATOMIC(prev_alive_node_ptr,prev_alive_node_cdr);
                             FOLLOW(prev_alive_node_ptr) = op1;
                         }
@@ -495,11 +495,11 @@ trigger_on_handler:{
                             PUSHTRAIL_S_NONATOMIC(op1,FOLLOW(op1));
                         }
                         CONNECT_WOKEN_FRAME_cg(constr_ar,event_object[i]);
-                    } 
+                    }
                     op1 = LIST_NEXT(sreg);
                 }
             }
-#endif      
+#endif
             default:
                 break;
             }
@@ -513,11 +513,11 @@ trigger_on_handler:{
                 op1 = LIST_NEXT(sreg);
             }
         }
-    
+
         trigger_no = 0;
         toam_signal_vec &= ~TRIGGER_ON;
-        toam_LOCAL_OVERFLOW_CHECK_SMALL_MARGIN(7); 
-        /*    
+        toam_LOCAL_OVERFLOW_CHECK_SMALL_MARGIN(7);
+        /*
               printf("<==handler %d\n",trigger_no);
               check_ar_chain(AR);
         */
@@ -536,10 +536,10 @@ trigger_on_handler:{
   while (!is_allocate(p) && p>=parea_low_addr && p<parea_up_addr) p--;
   if (p<=parea_low_addr || p>=parea_up_addr) return;
   sym_ptr = (SYM_REC_PTR)FOLLOW(p+3);
-  if (GET_ETYPE(sym_ptr)==T_PRED && GET_EP(sym_ptr)>parea_low_addr && GET_EP(sym_ptr)<parea_up_addr) 
+  if (GET_ETYPE(sym_ptr)==T_PRED && GET_EP(sym_ptr)>parea_low_addr && GET_EP(sym_ptr)<parea_up_addr)
   printf("\t > %s/%d\n",GET_NAME(sym_ptr),GET_ARITY(sym_ptr));
   }
-  
+
 
   is_allocate(p)
   BPLONG_PTR p;
@@ -547,7 +547,7 @@ trigger_on_handler:{
   if (*p==allocate_det ||
   *p ==allocate_det_b ||
   *p == allocate_nondet ||
-  *p == allocate_susp || 
+  *p == allocate_susp ||
   *p == table_allocate){
   if (*(p+1)<100 && *(p+1)>=0 && *(p+2)<100 && *(p+2)>=0 &&
   (BPLONG_PTR)*(p+3)>parea_low_addr && (BPLONG_PTR)*(p+3)<parea_up_addr)
