@@ -6,3 +6,5 @@ emu/*.o
 emu/espresso/*.o
 emu/glpk/*.o
 emu/picat_*
+emu/picat
+emu/TAGS
