@@ -60,7 +60,7 @@ int dvar_excludable_or_int(op)
     if (IS_SUSP_VAR(op)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(op);
         if (IS_UN_DOMAIN(dv_ptr) ||
-            IS_IT_DOMAIN(dv_ptr) && !IS_SMALL_DOMAIN(dv_ptr)) return 0;
+            (IS_IT_DOMAIN(dv_ptr) && !IS_SMALL_DOMAIN(dv_ptr))) return 0;
         return 1;
     } 
     return 0;
@@ -347,9 +347,6 @@ int b_select_ff(Vars,BestVar)
     BPLONG_PTR dv_ptr,dv_ptr0,ptr;
     BPLONG size,size0;
 
-    BPLONG Vars0;
-    Vars0 = Vars;
-  
     DEREF_NONVAR(Vars); 
     while (ISLIST(Vars)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Vars);
