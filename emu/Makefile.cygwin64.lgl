@@ -27,19 +27,22 @@ OBJ = dis.o init.o init_sym.o loader.o inst_inf.o main.o toam.o unify.o \
 
 ESP = espresso/
 
-ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols.o $(ESP)compl.o $(ESP)contain.o \
-			 $(ESP)cpu_time.o $(ESP)cubestr.o $(ESP)cvrin.o $(ESP)cvrm.o $(ESP)cvrmisc.o $(ESP)cvrout.o \
-			 $(ESP)dominate.o $(ESP)equiv.o $(ESP)essen.o $(ESP)essentiality.o $(ESP)exact.o $(ESP)espresso_expand.o \
-			 $(ESP)gasp.o $(ESP)gimpel.o $(ESP)globals.o $(ESP)hack.o $(ESP)indep.o $(ESP)irred.o $(ESP)map.o \
-			 $(ESP)matrix.o $(ESP)mincov.o $(ESP)opo.o $(ESP)pair.o $(ESP)part.o $(ESP)primes.o $(ESP)prtime.o \
-			 $(ESP)reduce.o $(ESP)rows.o $(ESP)set.o $(ESP)setc.o $(ESP)sharp.o $(ESP)sigma.o $(ESP)signature.o \
-			 $(ESP)signature_exact.o $(ESP)sminterf.o $(ESP)solution.o $(ESP)sparse.o $(ESP)unate.o $(ESP)util_signature.o \
-			 $(ESP)verify.o $(ESP)espresso.o
+ESPRESSO_SRC = $(ESP)black_white.c $(ESP)canonical.c $(ESP)cofactor.c $(ESP)cols.c $(ESP)compl.c $(ESP)contain.c \
+			 $(ESP)cpu_time.c $(ESP)cubestr.c $(ESP)cvrin.c $(ESP)cvrm.c $(ESP)cvrmisc.c $(ESP)cvrout.c \
+			 $(ESP)dominate.c $(ESP)equiv.c $(ESP)essen.c $(ESP)essentiality.c $(ESP)exact.c $(ESP)espresso_expand.c \
+			 $(ESP)gasp.c $(ESP)gimpel.c $(ESP)globals.c $(ESP)hack.c $(ESP)indep.c $(ESP)irred.c $(ESP)map.c \
+			 $(ESP)matrix.c $(ESP)mincov.c $(ESP)opo.c $(ESP)pair.c $(ESP)part.c $(ESP)primes.c $(ESP)prtime.c \
+			 $(ESP)reduce.c $(ESP)rows.c $(ESP)set.c $(ESP)setc.c $(ESP)sharp.c $(ESP)sigma.c $(ESP)signature.c \
+			 $(ESP)signature_exact.c $(ESP)sminterf.c $(ESP)solution.c $(ESP)sparse.c $(ESP)unate.c $(ESP)util_signature.c \
+			 $(ESP)verify.c $(ESP)espresso.c
 
-picat.exe : $(OBJ)
-	cd espresso && make && cd .. && $(CXX) -o picat.exe $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
+picat.exe : $(OBJ) espresso/libespresso.a
+	$(CXX) -o picat.exe $(OBJ) $(LFLAGS) espresso/libespresso.a
+espresso/libespresso.a: $(ESPRESSO_SRC)
+	$(MAKE) -C espresso
 clean :
 	rm -f *.o picat.exe
+        $(MAKE) -C espresso clean
 dis.o   : dis.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) dis.c
 init.o  : init.c term.h inst.h basic.h

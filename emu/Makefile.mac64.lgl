@@ -37,7 +37,7 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 picat : $(OBJ)
 	cd espresso && make -f Makefile.mac64 && cd .. && $(CXX) -o picat $(ESPRESSO_OBJ) $(OBJ)  $(LFLAGS)
 clean :
-	rm -f *.o picat
+	rm -f *.o picat $(ESPRESSO_OBJ)
 dis.o   : dis.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) dis.c
 init.o  : init.c term.h inst.h basic.h

@@ -51,10 +51,13 @@ KISSAT_OBJ =  kis_allocate.o kis_analyze.o kis_ands.o kis_application.o\
               kis_vector.o kis_vivify.o kis_walk.o kis_watch.o kis_weaken.o\
               kis_witness.o kis_xors.o
 
-picat : $(OBJ) $(ESPRESSO_OBJ) $(KISSAT_OBJ)
-	$(CXX) -o picat $(OBJ) $(ESPRESSO_OBJ) $(KISSAT_OBJ) $(LFLAGS)
+picat : $(OBJ) $(KISSAT_OBJ) espresso/libespresso.a
+	$(CXX) -o picat $(OBJ) $(LFLAGS) espresso/libespresso.a
+espresso/libespresso.a: $(ESPRESSO_OBJ)
+	$(MAKE) -C espresso
 clean :
-	rm -f $(OBJ) picat
+	rm -f $(OBJ) $(ESPRESSO_OBJ) $(KISSAT_OBJ) picat
+	$(MAKE) -C espresso clean
 dis.o   : dis.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) dis.c
 init.o  : init.c term.h inst.h basic.h
