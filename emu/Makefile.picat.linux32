@@ -33,7 +33,7 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 picat_linux32 : $(OBJ)
 	cd espresso && make && cd .. && $(CC) -o picat_linux32 $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
 clean :
-	rm -f *.o picat_linux32
+	rm -f *.o picat_linux32 $(ESPRESSO_OBJ)
 dis.o   : dis.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) dis.c
 init.o  : init.c term.h inst.h basic.h
