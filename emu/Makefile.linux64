@@ -1,4 +1,4 @@
-CPP    = g++ -DGC -DGCC -DPICAT -DSAT -DMAPLESAT -DM64BITS -DFANN_NO_DLL -DFANN
+CXX    = g++ -DGC -DGCC -DPICAT -DSAT -DMAPLESAT -DM64BITS -DFANN_NO_DLL -DFANN
 CC     = gcc -DGC -DGCC -DPICAT -DSAT -DMAPLESAT -DM64BITS -DFANN_NO_DLL -DFANN
 #CC     = cc
 
@@ -37,7 +37,7 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 			 $(ESP)verify.o $(ESP)espresso.o
 
 picat : $(OBJ) 
-	cd espresso && make && cd .. && $(CPP) -o picat $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
+	cd espresso && make && cd .. && $(CXX) -o picat $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
 clean :
 	rm -f *.o picat
 dis.o   : dis.c term.h inst.h basic.h 
@@ -121,15 +121,15 @@ sapi.o : sapi.c sapi.h term.h basic.h bapi.h frame.h
 sat_bp.o : sat_bp.c term.h basic.h bapi.h frame.h
 	$(CC) $(CFLAGS) sat_bp.c 
 mSolver.o : maple/core/Solver.cc 
-	$(CPP) $(CFLAGS) -Imaple -o mSolver.o maple/core/Solver.cc 
+	$(CXX) $(CFLAGS) -Imaple -o mSolver.o maple/core/Solver.cc 
 mOptions.o : maple/utils/Options.cc 
-	$(CPP) $(CFLAGS) -Imaple -o mOptions.o maple/utils/Options.cc 
+	$(CXX) $(CFLAGS) -Imaple -o mOptions.o maple/utils/Options.cc 
 mSystem.o : maple/utils/System.cc 
-	$(CPP) $(CFLAGS) -Imaple -o mSystem.o maple/utils/System.cc 
+	$(CXX) $(CFLAGS) -Imaple -o mSystem.o maple/utils/System.cc 
 mSimpSolver.o : maple/simp/SimpSolver.cc 
-	$(CPP) $(CFLAGS) -Imaple -o mSimpSolver.o maple/simp/SimpSolver.cc 
+	$(CXX) $(CFLAGS) -Imaple -o mSimpSolver.o maple/simp/SimpSolver.cc 
 maple_interface.o : maple_interface.cpp
-	$(CPP) $(CFLAGS) -Imaple maple_interface.cpp
+	$(CXX) $(CFLAGS) -Imaple maple_interface.cpp
 picat_utilities.o : picat_utilities.c
 	$(CC) $(CFLAGS) picat_utilities.c
 fann.o : fann/src/fann.c
@@ -145,4 +145,4 @@ fann_train.o : fann/src/fann_train.c
 fann_train_data.o : fann/src/fann_train_data.c
 	$(CC) $(CFLAGS) -Ifann/src/include fann/src/fann_train_data.c
 fann_interface.o : fann/fann_interface.cpp
-	$(CPP) $(CFLAGS) -Ifann/src/include fann/fann_interface.cpp
+	$(CXX) $(CFLAGS) -Ifann/src/include fann/fann_interface.cpp

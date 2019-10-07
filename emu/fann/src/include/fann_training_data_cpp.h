@@ -17,8 +17,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef FANN_FANN_TRAINING_DATA_CPP_H
-#define FANN_FANN_TRAINING_DATA_CPP_H
+#ifndef FANN_FANN_TRAINING_DATA_CXX_H
+#define FANN_FANN_TRAINING_DATA_CXX_H
 
 #include <stdarg.h>
 #include <string>
@@ -558,4 +558,4 @@ namespace FANN {
 
 }
 
-#endif //FANN_FANN_TRAINING_DATA_CPP_H
+#endif //FANN_FANN_TRAINING_DATA_CXX_H
