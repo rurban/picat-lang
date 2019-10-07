@@ -37,10 +37,12 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 			 $(ESP)signature_exact.o $(ESP)sminterf.o $(ESP)solution.o $(ESP)sparse.o $(ESP)unate.o $(ESP)util_signature.o \
 			 $(ESP)verify.o $(ESP)espresso.o
 
-picat.exe : $(OBJ)
-	cd espresso && make && cd .. && $(CXX) -o picat.exe $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
+picat.exe : $(OBJ) espresso/libespresso.a
+	$(CXX) -o picat.exe $(OBJ) $(ESPRESSO_OBJ) $(LFLAGS)
+espresso/libespresso.a: $(ESPRESSO_OBJ)
+	$(MAKE) -C espresso
 clean :
-	rm -f *.o picat.exe
+	rm -f *.o picat.exe $(ESPRESSO_OBJ)
 dis.o   : dis.c term.h inst.h basic.h
 	$(CC) $(CFLAGS) dis.c
 init.o  : init.c term.h inst.h basic.h
