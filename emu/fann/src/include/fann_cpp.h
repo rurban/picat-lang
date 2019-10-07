@@ -1,5 +1,5 @@
-#ifndef FANN_CPP_H_INCLUDED
-#define FANN_CPP_H_INCLUDED
+#ifndef FANN_CXX_H_INCLUDED
+#define FANN_CXX_H_INCLUDED
 
 #include <memory>
 #include <iterator>
@@ -2973,4 +2973,4 @@ namespace FANN {
     /*************************************************************************/
 }
 
-#endif /* FANN_CPP_H_INCLUDED */
+#endif /* FANN_CXX_H_INCLUDED */

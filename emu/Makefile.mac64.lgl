@@ -1,4 +1,4 @@
-CPP    = /usr/bin/g++ -std=c++11 -DGC -DGCC -DPICAT -DSAT -DMAPLESAT -DM64BITS  -DFANN_NO_DLL -DFANN
+CXX    = /usr/bin/g++ -std=c++11 -DGC -DGCC -DPICAT -DSAT -DMAPLESAT -DM64BITS  -DFANN_NO_DLL -DFANN
 CC     = /usr/bin/gcc -DGCC -DPICAT -DSAT -DM64BITS -DFANN_NO_DLL -DFANN
 #CC     = cc
 
@@ -35,7 +35,7 @@ ESPRESSO_OBJ = $(ESP)black_white.o $(ESP)canonical.o $(ESP)cofactor.o $(ESP)cols
 			 $(ESP)verify.o $(ESP)espresso.o
 
 picat : $(OBJ) 
-	cd espresso && make -f Makefile.mac64 && cd .. && $(CPP) -o picat $(ESPRESSO_OBJ) $(OBJ)  $(LFLAGS)
+	cd espresso && make -f Makefile.mac64 && cd .. && $(CXX) -o picat $(ESPRESSO_OBJ) $(OBJ)  $(LFLAGS)
 clean :
 	rm -f *.o picat
 dis.o   : dis.c term.h inst.h basic.h 
@@ -137,5 +137,5 @@ fann_train.o : fann/src/fann_train.c
 fann_train_data.o : fann/src/fann_train_data.c
 	$(CC) $(CFLAGS) -Ifann/src/include fann/src/fann_train_data.c
 fann_interface.o : fann/fann_interface.cpp
-	$(CPP) $(CFLAGS) -Ifann/src/include fann/fann_interface.cpp
+	$(CXX) $(CFLAGS) -Ifann/src/include fann/fann_interface.cpp
 
