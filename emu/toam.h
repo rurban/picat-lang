@@ -349,42 +349,41 @@ extern BPLONG no_gcs;
     };																	\
   } while (layout!=0);
 
-#define COPY_TAIL_YARGS_OUT(layout,tmp_ar)								\
-  do {																	\
-    i = (layout & 0xf); layout = (BPULONG)layout>>4;					\
-    op1 = (BPLONG)FOLLOW(P+i);											\
-    top = Y(op1); op2 = FOLLOW(top);									\
+#define COPY_TAIL_YARGS_OUT(layout,tmp_ar)                              \
+  do {                                                                  \
+    i = (layout & 0xf); layout = (BPULONG)layout>>4;                    \
+    op1 = (BPLONG)FOLLOW(P+i);                                          \
+    top = Y(op1); op2 = FOLLOW(top);                                    \
     if ((BPLONG_PTR)op2==top) {FOLLOW(top) = op2 = (BPLONG)H; NEW_HEAP_FREE;}; \
-    FOLLOW(tmp_ar+op1) = op2;											\
+    FOLLOW(tmp_ar+op1) = op2;                                           \
   } while (layout!=0)
 
-
-#define REARRANGE_TAIL_ZARGS(ar_btm_ptr,layout,tmp_ar)	\
-  do {													\
-    i = (layout & 0xf); layout = (BPULONG)layout>>4;	\
-    op1 = FOLLOW(P+i);									\
-    if (IS_YU_OPERAND(op1)) {							\
-      op1 >>= 2;										\
-      op1 = FOLLOW(tmp_ar+op1);							\
+#define REARRANGE_TAIL_ZARGS(ar_btm_ptr,layout,tmp_ar)                  \
+  do {                                                                  \
+    i = (layout & 0xf); layout = (BPULONG)layout>>4;                    \
+    op1 = FOLLOW(P+i);                                                  \
+    if (IS_YU_OPERAND(op1)) {                                           \
+      op1 >>= 2;                                                        \
+      op1 = FOLLOW(tmp_ar+op1);                                         \
     } else if (IS_YV_OPERAND(op1)) {					\
-      if (op1!=0){										\
-		op1 >>= 2;										\
-		FOLLOW(tmp_ar+op1) = (BPLONG)H;					\
-      };												\
-      op1 = (BPLONG)H;									\
-      NEW_HEAP_FREE;									\
-    }													\
-    FOLLOW(ar_btm_ptr-i) = op1;							\
+      if (op1!=0){                                                      \
+        op1 >>= 2;                                                      \
+        FOLLOW(tmp_ar+op1) = (BPLONG)H;					\
+      };                                                                \
+      op1 = (BPLONG)H;                                                  \
+      NEW_HEAP_FREE;                                                    \
+    }                                                                   \
+    FOLLOW(ar_btm_ptr-i) = op1;                                         \
   } while (layout!=0)
 
-#define REARRANGE_TAIL_YARGS(ar_btm_ptr,layout,tmp_ar)	\
-  do {													\
-    i = (layout & 0xf); layout = (BPULONG)layout>>4;	\
-    op1 = FOLLOW(P+i);									\
-    FOLLOW(ar_btm_ptr-i) = FOLLOW(tmp_ar+op1);			\
+#define REARRANGE_TAIL_YARGS(ar_btm_ptr,layout,tmp_ar)                  \
+  do {                                                                  \
+    i = (layout & 0xf); layout = (BPULONG)layout>>4;                    \
+    op1 = FOLLOW(P+i);                                                  \
+    FOLLOW(ar_btm_ptr-i) = FOLLOW(tmp_ar+op1);                          \
   } while (layout!=0)
 
-#define ASSIGN_in_toam(op,value,TrailCode)		\
+#define ASSIGN_in_toam(op,value,TrailCode)                              \
   FOLLOW(op) = value;							\
   TrailCode;
 

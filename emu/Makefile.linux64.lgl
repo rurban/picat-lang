@@ -3,7 +3,7 @@ CC     = gcc -DGCC -DGC -DM64BITS -DPICAT -DSAT -DFANN_NO_DLL -DFANN
 #CC     = cc
 
 #CFLAGS = -c  -O3 -Dunix -DGC -DBSD             #SunOS
-CFLAGS = -c  -O3 -fno-strict-aliasing -finline-functions -fomit-frame-pointer -Dunix -DLINUX -DPOSIX #Linux,#HP
+CFLAGS = -c -march=native -O3 -fno-strict-aliasing -finline-functions -fomit-frame-pointer -Dunix -DLINUX -DPOSIX #Linux,#HP
 #CFLAGS = -c  -O3 -Dunix -DGC -DPOSIX           #HP
 #CFLAGS = -c  -O3 -Dunix -DGC                    #Solaris,SonyNews
 #CFLAGS = -c  -O3 -DWIN32 -DGC                  #Windows-PC

@@ -90,7 +90,11 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
 /* those bytes to represent a number.  This code works for any machine, and */
 /* makes the byte-code machine independent.                                 */
 /****************************************************************************/
-#define BB4(bptr) (BPLONG)((((((*(BYTE_PTR)bptr << 8) | *((BYTE_PTR)bptr+1)) << 8) | *((BYTE_PTR)bptr+2)) << 8) | *((BYTE_PTR)bptr+3))
+#define BB4(bptr)                                                       \
+  (BPLONG)(((((((BPULONG)*(BYTE_PTR)bptr << 8) |                        \
+               (BPULONG)*((BYTE_PTR)bptr + 1)) << 8) |                  \
+             (BPULONG)*((BYTE_PTR)bptr + 2)) << 8) |                    \
+           (BPULONG)*((BYTE_PTR)bptr + 3))
 
 #define LoadLiteral {                           \
         READ_DATA_ONLY(buf_for_read, 1);        \
@@ -613,7 +617,7 @@ int get_index_tab(clause_no,lenptr)
             val = BB4(buf_for_read);
             count += 9;
             val = (BPLONG)reloc_table[val];
-            if (val==UNTAGGED_ADDR(nil_sym))
+            if (val==(BPLONG)UNTAGGED_ADDR(nil_sym))
                 ttype=3;
             else
                 ttype=4;
@@ -1016,7 +1020,7 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
     u.ptr = key;
     if (HASH_LITTLE_ENDIAN && ((u.i & 0x3) == 0)) {
         const UW32 *k = (const UW32 *)key;         /* read 32-bit chunks */
-#ifdef VALGRIND
+#if defined(VALGRIND) || defined(__SANITIZE_ADDRESS__)
         const BYTE  *k8;
 #endif
 
@@ -1041,7 +1045,7 @@ UW32 bp_str_hash( const char *key, int length, UW32 initval)
          * still catch it and complain.  The masking trick does make the hash
          * noticably faster for short strings (like English words).
          */
-#ifndef VALGRIND
+#if !defined(VALGRIND) && !defined(__SANITIZE_ADDRESS__)
 
         switch(length)
         {
@@ -1705,7 +1709,7 @@ void get_index_tab_fromlist(HashArgs, clause_no)
         case 'c':
             val = INTVAL(val);
             val = (BPLONG)reloc_table[val];
-            if (val==UNTAGGED_ADDR(nil_sym))
+            if (val==(BPLONG)UNTAGGED_ADDR(nil_sym))
                 ttype=3;
             else
                 ttype=4;
@@ -1919,7 +1923,7 @@ static void load_hashtab_from_c_array(){
                 break;
             case 'c':
                 val = (BPLONG)reloc_table[val];
-                if (val==UNTAGGED_ADDR(nil_sym))
+                if (val==(BPLONG)UNTAGGED_ADDR(nil_sym))
                     ttype=3;
                 else
                     ttype=4;

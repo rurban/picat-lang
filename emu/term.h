@@ -61,7 +61,7 @@
 #define ISVAR(op)         (!(TAG(op)))
 #define ISNUM(op)         (ISINT(op) || (ISSTRUCT(op) && (IS_FLOAT_PSC(op) || IS_BIGINT_PSC(op))))
 #define ISLIST(op)        (((op) & TAG_MASK) == LST)
-#define ISSTRUCT(op)      ((TAG_MASK & (op)) == STR)
+#define ISSTRUCT(op)      (((op) & TAG_MASK) == STR)
 #define IS_SUSP_VAR(op)   (((op) & TAG_MASK) == SUSP)
 #define ISINT(op)         (((op) & TAG_MASK) == INT_TAG)
 #define ISFLOAT(op)       (ISSTRUCT(op) && FOLLOW(UNTAGGED_ADDR(op))==(BPLONG)float_psc)
@@ -76,10 +76,10 @@
 #define ISCOMPOUND(op)    (((op) & 0x1L) == STR && (op)>0)
 #define IS_VAR_OR_STRUCT(op) (((op) & MASK2) == 0)
 
-#define MAKEINT32(op)       (((int)(op) << 2) | INT_TAG32)
-#define MAKEINT(op)       (((BPLONG)(op) << 2) | INT_TAG)
+#define MAKEINT32(op)     (BPLONG)(((unsigned)(op) << 2) | INT_TAG32)
+#define MAKEINT(op)       (BPLONG)(((BPULONG)(op) << 2) | INT_TAG)
 #define MAKE_INT_OR_BIGINT(op) (BP_IN_1W_INT_RANGE(op) ? MAKEINT(op) : bp_int_to_bigint(op))
-#define INTVAL(op)        (((BPLONG)(op) <<1) >> 3)
+#define INTVAL(op)        (BPLONG)(((BPULONG)(op) << 1) >> 3)
 #define VALOF_INT_OR_BIGINT(op)  (ISINT(op) ? INTVAL(op) : bp_bigint_to_int(op))
 #define NUMVAL(op)        (ISINT(op) ? INTVAL(op) : floatval(op))
 
@@ -90,8 +90,8 @@
 
 
 #define ADDTAG3(op,tag)    ((BPLONG)(op) | tag)
-#define UNTAGGED3(op)      (((BPLONG)(op)) & VAL_MASK1)     /* fffffffc */
-#define UNTAGGED_CONT(op)      (((BPLONG)(op)) & VAL_MASK0) /* 7ffffffc */
+#define UNTAGGED3(op)      (((BPLONG)(op)) & VAL_MASK1) /* fffffffc */
+#define UNTAGGED_CONT(op)  (((BPLONG)(op)) & VAL_MASK0) /* 7ffffffc */
 
 #ifdef LINUX
 #ifdef M64BITS

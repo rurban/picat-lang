@@ -516,9 +516,9 @@ extern BPLONG addr_top_bit;
 	ptr = (BPLONG_PTR)(malloc(size*sizeof(BPLONG)));	\
 	if (ptr!=NULL){										\
 	  if (addr_top_bit == BP_NEG_1){						\
-		addr_top_bit = ((BPLONG)ptr & TOP_BIT);			\
+		addr_top_bit = (BPLONG)((BPLONG)ptr & TOP_BIT);			\
 	  } else {											\
-		if (addr_top_bit!=((BPLONG)ptr & TOP_BIT)){		\
+		if (addr_top_bit!=(BPLONG)((BPLONG)ptr & TOP_BIT)){		\
 		  free(ptr);									\
 		  ptr = NULL;									\
 		}												\
