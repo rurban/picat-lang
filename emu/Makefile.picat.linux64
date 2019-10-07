@@ -118,3 +118,9 @@ lglib.o : lingeling/lglib.c
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/lglib.c
 plglib.o : lingeling/plglib.c 
 	$(CC) $(CFLAGS)  $(LGLFLAG) -Ilingeling lingeling/plglib.c
+
+# emacs flymake-mode
+check-syntax:
+	test -n "$(CHK_SOURCES)" && \
+	  nice $(CC) $(CFLAGS) -O0 -o /dev/null -S $(CHK_SOURCES)
+.PHONY: check-syntax
