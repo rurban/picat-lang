@@ -4,14 +4,13 @@ CC     = gcc -DGC -DGCC -DPICAT -DSAT  -DM64BITS -DFANN_NO_DLL -DFANN
 #CC     = gcc -DGCC -shared
 #CC     = cc
 
-CFLAGS = -c  -O3 -fno-strict-aliasing -finline-functions -fomit-frame-pointer -Dunix -DLINUX -DPOSIX #Linux,#HP
+CFLAGS = -c -Wall -Wextra -O3 -fno-strict-aliasing -finline-functions -fomit-frame-pointer -Dunix -DLINUX -DPOSIX #Linux,#HP
 #CFLAGS = -c  -O4 -Dunix -DBSD             #SunOS
 #CFLAGS = -c -O3 -fno-strict-aliasing -Dunix -DLINUX -DPOSIX -DCYGWIN #Linux,#HP
 #CFLAGS = -c  -O4 -Dunix -DPOSIX           #HP
 #CFLAGS = -c  -O4 -Dunix                   #Solaris,SonyNews
 #CFLAGS = -c  -O4 -DWIN32                  #Windows-PC
 #CFLAGS = -c  -O4 -DDARWIN                 #MacOS X, Darwin
-ESPRESSO_FLAGS = -c -O3 -I. -Iespresso
 
 LFLAGS = -lm -lpthread
 
@@ -23,7 +22,7 @@ OBJ = dis.o init.o init_sym.o loader.o inst_inf.o main.o toam.o unify.o \
     expand.o bigint.o sapi.o kissat_picat.o espresso_bp.o \
 	picat_utilities.o fann.o fann_cascade.o fann_error.o fann_io.o fann_train.o fann_train_data.o fann_interface.o
 
-ESPRESSO_FLAGS = -c -O3 -I. -Iespresso
+ESPRESSO_FLAGS = -c -O3 -I. -Iespresso -Wall -Wextra 
 ESPRESSO_OBJ = black_white.o canonical.o cofactor.o cols.o compl.o contain.o cpu_time.o cubestr.o \
                cvrin.o cvrm.o cvrmisc.o cvrout.o dominate.o equiv.o espresso.o espresso_expand.o \
                essen.o essentiality.o exact.o gasp.o gimpel.o globals.o hack.o indep.o irred.o \
@@ -31,7 +30,7 @@ ESPRESSO_OBJ = black_white.o canonical.o cofactor.o cols.o compl.o contain.o cpu
                set.o setc.o sharp.o sigma.o signature.o signature_exact.o sminterf.o solution.o \
                sparse.o unate.o util_signature.o verify.o
 
-KISSAT_FLAGS = -c -O3 -W -Wall -DNEMBEDDED -DNDEBUG -DNMETRICS -DQUIET -DNSTATISTICS  -DNPROOFS
+KISSAT_FLAGS = -c -O3 -W -Wall -Wextra -DNEMBEDDED -DNDEBUG -DNMETRICS -DQUIET -DNSTATISTICS -DNPROOFS
 KISSAT_OBJ =  kis_allocate.o kis_analyze.o kis_ands.o kis_application.o\
               kis_arena.o kis_assign.o kis_autarky.o kis_averages.o kis_backtrack.o\
               kis_backward.o kis_build.o kis_bump.o kis_check.o kis_clause.o\
@@ -52,7 +51,7 @@ KISSAT_OBJ =  kis_allocate.o kis_analyze.o kis_ands.o kis_application.o\
               kis_witness.o kis_xors.o
 
 picat : $(OBJ) $(KISSAT_OBJ) espresso/libespresso.a
-	$(CXX) -o picat $(OBJ) $(LFLAGS) espresso/libespresso.a
+	$(CXX) -o picat $(OBJ) $(KISSAT_OBJ) $(LFLAGS) espresso/libespresso.a
 espresso/libespresso.a: $(ESPRESSO_OBJ)
 	$(MAKE) -C espresso
 clean :

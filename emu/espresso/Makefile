@@ -1,10 +1,14 @@
+AR = ar
+ARFLAGS = cru
+RANLIB = ranlib
+
 libespresso.a : black_white.o canonical.o cofactor.o cols.o compl.o contain.o cpu_time.o cubestr.o cvrin.o \
 cvrm.o cvrmisc.o cvrout.o dominate.o equiv.o essen.o essentiality.o exact.o espresso_expand.o \
 gasp.o gimpel.o globals.o hack.o indep.o irred.o map.o matrix.o mincov.o opo.o \
 pair.o part.o primes.o prtime.o reduce.o rows.o set.o setc.o sharp.o sigma.o signature.o \
 signature_exact.o sminterf.o solution.o sparse.o unate.o util_signature.o verify.o espresso.o
-	ar cru $@ *.o
-	ranlib $@
+	$(AR) $(ARFLAGS) $@ *.o
+	$(RANLIB) $@
 clean:
 	rm libespresso.a *.o
 black_white.o: black_white.c espresso.h port.h utility.h sparse.h mincov.h signature.h
