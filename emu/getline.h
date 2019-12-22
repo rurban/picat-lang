@@ -2,7 +2,7 @@
 #define GETLINE_H
 
 /* unix systems can #define POSIX to use termios, otherwise
- * the bsd or sysv interface will be used 
+ * the bsd or sysv interface will be used
  */
 
 #if __STDC__ > 0

@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include "bprolog.h"
 #include "event.h"
@@ -422,7 +422,7 @@ int b_SELECT_FF_MAX_cf(Vars, BestVar)
     BPLONG Var, size, size0;
     BPLONG_PTR dv_ptr, dv_ptr0, ptr;
 
-    DEREF_NONVAR(Vars); 
+    DEREF_NONVAR(Vars);
     while (ISLIST(Vars)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Vars);
         Var = FOLLOW(ptr); DEREF_NONVAR(Var);
@@ -450,7 +450,7 @@ int b_SELECT_FF_MAX_cf(Vars, BestVar)
 }
 
 /*
-  Select a variable with the smallest lower bound, breaking ties by selecting 
+  Select a variable with the smallest lower bound, breaking ties by selecting
   the left-most one with the smallest domain.
 */
 int b_SELECT_MIN_cf(Vars, BestVar)
@@ -487,7 +487,7 @@ int b_SELECT_MIN_cf(Vars, BestVar)
 }
 
 /*
-  Select a variable with the smallest lower bound, breaking ties by selecting 
+  Select a variable with the smallest lower bound, breaking ties by selecting
   the left-most one with the smallest domain.
 */
 int b_SELECT_MAX_cf(Vars, BestVar)
@@ -496,7 +496,7 @@ int b_SELECT_MAX_cf(Vars, BestVar)
     BPLONG Var, max0, max;
     BPLONG_PTR dv_ptr, dv_ptr0, ptr;
 
-    DEREF_NONVAR(Vars); 
+    DEREF_NONVAR(Vars);
     while (ISLIST(Vars)){
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(Vars);
         Var = FOLLOW(ptr); DEREF_NONVAR(Var);
@@ -1005,8 +1005,8 @@ int c_U_EQ_UC_CON_aux(A, dv_ptr_x, B, dv_ptr_y, C)
   AddedSize is UnivSize-NotAddedSize+2,
   (Card=:=UpSize ->
   $clpset_indomain_pickup_all_possible(Ref,SP,SA,Notation,Tag)
-  ;   
-  Card=:=AddedSize -> 
+  ;
+  Card=:=AddedSize ->
   $clpsetterm_indomain_pickup_only_in(Ref,SP,SA,Card,Notation,Tag)
   ;
   true).
@@ -1096,13 +1096,13 @@ int b_CLPSET_LOW_UPDATED_c(SetTerm)
 }
 
 /*
-  $clpset_check_when_up_updated_dvar(SP,S,SetTerm) => 
+  $clpset_check_when_up_updated_dvar(SP,S,SetTerm) =>
   b_DM_COUNT_cf(SP,UpSize),
   UpBoundSize is UpSize-2, % not count dummies
   domain_region_max(Card,UpBoundSize),
-  ((integer(Card),Card==UpBoundSize) -> 
+  ((integer(Card),Card==UpBoundSize) ->
   $clpset_indomain_pickup_all_possible(Ref,SP,SA,Notation,Tag)
-  ;  
+  ;
   true).
 */
 int b_CLPSET_UP_UPDATED_c(SetTerm)
@@ -1388,9 +1388,9 @@ int b_REIFY_NEQ_CONSTR_ACTION(B, X, Y)
     BPLONG_PTR dv_ptr_x, dv_ptr_y, dv_ptr_b;
 
     /*
-      B = FOLLOW(arreg+3);DEREF_NONVAR(B); 
-      X = FOLLOW(arreg+2);DEREF_NONVAR(X); 
-      Y = FOLLOW(arreg+1);DEREF_NONVAR(Y); 
+      B = FOLLOW(arreg+3);DEREF_NONVAR(B);
+      X = FOLLOW(arreg+2);DEREF_NONVAR(X);
+      Y = FOLLOW(arreg+1);DEREF_NONVAR(Y);
     */
     DEREF_NONVAR(B);
     DEREF_NONVAR(X);
@@ -1432,7 +1432,7 @@ int b_ABS_CON_cc(X, Y)
 {
     BPLONG_PTR dv_ptr_x, dv_ptr_y;
     BPLONG elm, melm, minY, maxY;
-  
+
     DEREF_NONVAR(X);
     if (!IS_SUSP_VAR(X)) return BP_TRUE;
     DEREF_NONVAR(Y);

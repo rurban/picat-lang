@@ -3,7 +3,7 @@
 
 
 /*
- *  allocate a new col vector 
+ *  allocate a new col vector
  */
 sm_col * sm_col_alloc(void)
 {
@@ -77,7 +77,7 @@ sm_col * sm_col_dup(register sm_col *pcol)
 
 
 /*
- *  insert an element into a col vector 
+ *  insert an element into a col vector
  */
 sm_element * sm_col_insert(register sm_col *pcol, register int row)
 {
@@ -86,7 +86,7 @@ sm_element * sm_col_insert(register sm_col *pcol, register int row)
     /* get a new item, save its address */
     sm_element_alloc(element);
     test = element;
-    sorted_insert(sm_element, pcol->first_row, pcol->last_row, pcol->length, 
+    sorted_insert(sm_element, pcol->first_row, pcol->last_row, pcol->length,
 		    next_row, prev_row, row_num, row, test);
 
     /* if item was not used, free it */
@@ -100,7 +100,7 @@ sm_element * sm_col_insert(register sm_col *pcol, register int row)
 
 
 /*
- *  remove an element from a col vector 
+ *  remove an element from a col vector
  */
 void sm_col_remove(register sm_col *pcol, register int row)
 {
@@ -109,7 +109,7 @@ void sm_col_remove(register sm_col *pcol, register int row)
     for(p = pcol->first_row; p != 0 && p->row_num < row; p = p->next_row)
 	;
     if (p != 0 && p->row_num == row) {
-	dll_unlink(p, pcol->first_row, pcol->last_row, 
+	dll_unlink(p, pcol->first_row, pcol->last_row,
 			    next_row, prev_row, pcol->length);
 	sm_element_free(p);
     }
@@ -254,11 +254,11 @@ int sm_col_hash(sm_col *pcol, int modulus)
 }
 
 /*
- *  remove an element from a col vector (given a pointer to the element) 
+ *  remove an element from a col vector (given a pointer to the element)
  */
 void sm_col_remove_element(register sm_col *pcol, register sm_element *p)
 {
-    dll_unlink(p, pcol->first_row, pcol->last_row, 
+    dll_unlink(p, pcol->first_row, pcol->last_row,
 			next_row, prev_row, pcol->length);
     sm_element_free(p);
 }

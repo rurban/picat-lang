@@ -664,7 +664,7 @@ pset_family sf_copy_col(pset_family dst, int dstcol, pset_family src, int srccol
  */
 pset_family sf_compress(pset_family A, register pset c)
 /* will be freed */
-                
+
 {
   register pset p;
   register int i, bcol;

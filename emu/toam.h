@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <signal.h>
@@ -13,7 +13,7 @@
 #include "clpfd.h"
 #include "gc.h"
 /*
-  #define ToamProfile 
+  #define ToamProfile
 */
 extern BPLONG_PTR expand_trail();
 extern BPLONG next_alive_susp_call();
@@ -432,8 +432,8 @@ extern BPLONG no_gcs;
    if term == true, do nothing
    if term == dec_ref then frame must be (1,dec_ref,PredPtr,_,Cleanup,Head,Body), call b_DEC_PRED_REF_COUNTc(PredPtr)
    if term == dec_retr then frame must be (1,dec_ref,PredPtr,_,Cleanup,Head,Body), call b_DEC_PRED_RETR_COUNT_c(PredPtr)
-   
-   GC is disenabled before bp_call_term_catche since the number of variables that need to be initialized in the 
+
+   GC is disenabled before bp_call_term_catche since the number of variables that need to be initialized in the
    current frame is unkonwn after cut.
 
    printf("<=bp_call_term breg=%x local_top=%x ar=%x",B,LOCAL_TOP,AR); write_term(term); printf("\n");
@@ -730,7 +730,7 @@ extern BPLONG no_gcs;
         toam_LOCAL_OVERFLOW_CHECK(7);                           \
 
 /*
-  #define INVOKE_GC INVOKE_GC_UNCOND 
+  #define INVOKE_GC INVOKE_GC_UNCOND
 */
 
 #define INVOKE_GC {                                                     \
@@ -751,7 +751,7 @@ extern BPLONG no_gcs;
     }
 
 /*
-  #define INVOKE_GC_NONDET INVOKE_GC_UNCOND     
+  #define INVOKE_GC_NONDET INVOKE_GC_UNCOND
 */
 
 /*

@@ -14,7 +14,7 @@ extern "C"
 {
 	
 #ifndef __cplusplus
-} /* to fool automatic indention engines */ 
+} /* to fool automatic indention engines */
 #endif
 #endif	/* __cplusplus */
 
@@ -34,11 +34,11 @@ FANN_EXTERNAL float FANN_API fann_test_data_parallel(struct fann *ann, struct fa
 
 #ifdef __cplusplus
 #ifndef __cplusplus
-/* to fool automatic indention engines */ 
+/* to fool automatic indention engines */
 {
 	
 #endif
-} 
+}
 #endif	/* __cplusplus */
 
 #endif /* PARALLEL_FANN_H_ */

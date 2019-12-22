@@ -6,7 +6,7 @@
  * signature_minimize_exact:
  * What does it do: forms and solves the covering table whose rows are
  *	essential signature cubes (ESCubes) and whose columns are
- *	union of essential signature sets (ESSet) 
+ *	union of essential signature sets (ESSet)
  * Input:
  *	ESCubes: essential signature cubes
  *	ESSet: union of essential signature sets
@@ -38,7 +38,7 @@ signature_minimize_exact(pset_family ESCubes, pset_family ESSet)
 
 	/* solve the covering problem */
 	weights = NIL(int); heur = FALSE; level = 0;
-	S_EXECUTE(cover=sm_minimum_cover(table,weights,heur,level), 
+	S_EXECUTE(cover=sm_minimum_cover(table,weights,heur,level),
 		MINCOV_TIME);
 
 	/* form the cover */

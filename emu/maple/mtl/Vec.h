@@ -43,7 +43,7 @@ class vec {
     // Don't allow copying (error prone):
     vec<T>&  operator = (vec<T>& other) { assert(0); return *this; }
              vec        (vec<T>& other) { assert(0); }
-             
+
     // Helpers for calculating next capacity:
     static inline int  imax   (int x, int y) { int mask = (y-x) >> (sizeof(int)*8-1); return (x&mask) + (y&(~mask)); }
     //static inline void nextCap(int& cap){ cap += ((cap >> 1) + 2) & ~1; }

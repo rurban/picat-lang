@@ -1,7 +1,7 @@
 #include "mincov_int.h"
 
 
-int 
+int
 sm_row_dominance(sm_matrix *A)
 {
     register sm_row *prow, *prow1;
@@ -29,7 +29,7 @@ sm_row_dominance(sm_matrix *A)
 
 	    prow1 = sm_get_row(A, p->row_num);
 	    if ((prow1->length > prow->length) ||
-	              (prow1->length == prow->length && 
+	              (prow1->length == prow->length &&
 			      prow1->row_num > prow->row_num)) {
 		if (sm_row_contains(prow, prow1)) {
 		    sm_delrow(A, prow1->row_num);
@@ -41,7 +41,7 @@ sm_row_dominance(sm_matrix *A)
     return rowcnt - A->nrows;
 }
 
-int 
+int
 sm_col_dominance(sm_matrix *A, int *weight)
 {
     register sm_row *prow;
@@ -72,7 +72,7 @@ sm_col_dominance(sm_matrix *A, int *weight)
 	    if (weight != 0 && weight[pcol1->col_num] > weight[pcol->col_num])
 		continue;
 	    if ((pcol1->length > pcol->length) ||
-	       (pcol1->length == pcol->length && 
+	       (pcol1->length == pcol->length &&
 			       pcol1->col_num > pcol->col_num)) {
 		if (sm_col_contains(pcol, pcol1)) {
 		    sm_delcol(A, pcol->col_num);

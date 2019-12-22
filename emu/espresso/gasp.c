@@ -93,7 +93,7 @@ void expand1_gasp(pset_family F, pset_family D, pset_family R, pset_family Forig
          		/* OFF-set */
                  	/* ON-set before reduction (same order as F) */
             		/* which index of F (or Freduced) to be checked */
-          
+
 {
     register int c2index;
     register pcube p, last, c2under;

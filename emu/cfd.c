@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -18,9 +18,9 @@
 #define A3_GET(a, i, j, k, nj, nk) FOLLOW(a+(i*nj+j)*nk+k)
 
 /*
-  Create a new bit vector fd variable. The bit vector has the range from..to and 
-  the initial attribute values (first,last,and size) are given. The bit vector 
-  has all the bits set to 0 if bv_word=0x0. In this case, the elements are to 
+  Create a new bit vector fd variable. The bit vector has the range from..to and
+  the initial attribute values (first,last,and size) are given. The bit vector
+  has all the bits set to 0 if bv_word=0x0. In this case, the elements are to
   be added to the domain later. This is unusual but convenient.
 */
 
@@ -65,8 +65,8 @@ BPULONG bv_word;
 }
 
 /*
-  updates are not trailed because it is assumed that 
-  no choice point has been created since creation of 
+  updates are not trailed because it is assumed that
+  no choice point has been created since creation of
   the domain variable
 */
 void domain_set_true_bv(dv_ptr, elm)
@@ -239,12 +239,12 @@ int b_CFD_TRANSFORM_TUPLES(Arity, Tuples, Mins)
 
    A2Tries=t(t(_,T12,...,T1n),
    ...,
-   t(Tn1,Tn2,...,Tn(n-1),_)) 
-   
+   t(Tn1,Tn2,...,Tn(n-1),_))
+
    Tij takes the form trie(Sij0,...,Sijk,...) where Sijk denotes k's supports (fd var) in Vj
    (k is an element in Vi's domain).
 
-   For each tuple t(a1,...,an) and for each pair (i j) (1=<i<j<=n), 
+   For each tuple t(a1,...,an) and for each pair (i j) (1=<i<j<=n),
    add aj as a support of ai and add ai as a support of aj.
 
    Note that the tuples have been normalized such that the minimum is 0.
@@ -309,7 +309,7 @@ int b_CFD_BUILD_TRIES_IN(Maxs, Tuples, A2Tries)
 }
 
 /* b_CFD_BUILD_TRIES_NOTIN(CompVars,HTable,A2Tries) converts tuples into tries.
-   for each tuple (a1,...,an) that is not in HTable and for each pair (i j) (1=<i<j<=n), 
+   for each tuple (a1,...,an) that is not in HTable and for each pair (i j) (1=<i<j<=n),
    add aj as a support of ai in i and add ai as a support of aj in j.
 */
 int b_CFD_BUILD_TRIES_NOTIN(CompVars, HTable, A2Tries)
@@ -768,7 +768,7 @@ int b_CFD_INS(X, Constr)
 }
 
 /* Called when Ex is excluded from X. Constr = t(Y,TrieXY,TrieYX).
-   Let Dy be Y's domain and Sx be X's supports. For each element y in Sx/\Dy, 
+   Let Dy be Y's domain and Sx be X's supports. For each element y in Sx/\Dy,
    exclude y from Dy if y is not supported by any value in X's domain.
 */
 int b_CFD_DOM(X, Ex, Constr)
@@ -860,7 +860,7 @@ int b_CFD_DIFF_TUPLE(Tuple, CompVars)
 }
 
 /* Let CompVars=t(a1,...,a(i-1),V,a(i+1),...,an) where V is the only variable remaining.
-   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is not in the 
+   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is not in the
    hash table, then exclude k from the domain of V.
 */
 int b_CFD_IN_FORWARD_CHECKING(HTable, CompVars)
@@ -922,7 +922,7 @@ int b_CFD_IN_FORWARD_CHECKING(HTable, CompVars)
 }
 
 /* Let CompVars=t(a1,...,a(i-1),V,a(i+1),...,an) where V is the only variable remaining.
-   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is in the negative 
+   Eor each element k in the domain of V, if t(a1,...,a(i-1),k,a(i+1),...,an) is in the negative
    table, then exclude k from the domain of V.
 */
 int b_CFD_NOTIN_FORWARD_CHECKING(HTable, CompVars)

@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include  <string.h>
 #include  <stdlib.h>
@@ -42,9 +42,9 @@ extern char *string_in;
 #define rmdir _rmdir
 #define S_ISLNK(x) 0
 #define S_ISSOCK(x) 0
-#endif 
+#endif
 
-#if defined(WIN32) && !defined(__MINGW32__) 
+#if defined(WIN32) && !defined(__MINGW32__)
 #define S_ISREG(mode) (mode & S_IFREG)
 #define S_ISDIR(mode) (mode & S_IFDIR)
 #define S_ISFIFO(mode) (mode & _S_IFIFO)
@@ -518,7 +518,7 @@ int get_file_name(op)
     BPLONG op;
 {
     CHAR s1[MAX_STR_LEN];
-    DEREF(op); 
+    DEREF(op);
     namestring(GET_SYM_REC(op),s1);
     return get_file_name_aux(s1);
 }
@@ -1599,7 +1599,7 @@ int b_GET_f(op)
 
 int c_rm_file() {
     BPLONG op;
-  
+
     op = ARG(1,1);
     if (check_file_term(op) != BP_TRUE) return BP_ERROR;
     get_file_name(op);
@@ -3109,14 +3109,14 @@ int c_module_glb_pred_name() {
     SYM_REC_PTR sym_ptr;
     CHAR_PTR char_ptr;
     int len;
-  
+
     atm = ARG(1, 2);
     matm = ARG(2, 2);
-  
+
     bp_buf[0] = 'e';  bp_buf[1] = '$'; bp_buf[2] = '$';
     bp_buf[3] = 'g';  bp_buf[4] = 'l'; bp_buf[5] = 'b';
-    bp_buf[6] = '$';  bp_buf[7] = '$'; 
-  
+    bp_buf[6] = '$';  bp_buf[7] = '$';
+
     char_ptr = bp_buf+8;
 
     DEREF(atm);
@@ -3142,12 +3142,12 @@ int c_module_glb_func_name() {
 
     atm = ARG(1, 2);
     matm = ARG(2, 2);
-  
+
     bp_buf[0] = 'e';  bp_buf[1] = '$'; bp_buf[2] = '$';
     bp_buf[3] = 'g';  bp_buf[4] = 'l'; bp_buf[5] = 'b';
     bp_buf[6] = '$';  bp_buf[7] = '$';
-    bp_buf[8] = 'f';  bp_buf[9] = '$';  bp_buf[10] = '$';   
-  
+    bp_buf[8] = 'f';  bp_buf[9] = '$';  bp_buf[10] = '$';
+
     char_ptr = bp_buf+11;
 
     DEREF(atm);
@@ -3221,7 +3221,7 @@ int c_module_qualified_func_name() {
     char_ptr += len;
 
     char_ptr[0] = '$';  char_ptr[1] = '$';
-    char_ptr[2] = 'f';  char_ptr[3] = '$';  char_ptr[4] = '$';  
+    char_ptr[2] = 'f';  char_ptr[3] = '$';  char_ptr[4] = '$';
     char_ptr += 5;
 
     DEREF(atm);

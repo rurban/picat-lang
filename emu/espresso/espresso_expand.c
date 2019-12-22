@@ -39,8 +39,8 @@
 */
 
 pcover expand(pset_family F, pset_family R, int nonsparse)
-               
-            
+
+
                                 /* expand non-sparse variables only */
 {
     register pcube last, p;

@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "frame.h"
@@ -451,9 +451,9 @@
     }
 
 /*
-  t2 = t1+a*x (a>0) 
-  min(t2)-max(a*x)<= t1 <= max(t2)-min(a*x) 
-  min(t2)-max(t1)<= a*x <= max(t2)-min(t1) 
+  t2 = t1+a*x (a>0)
+  min(t2)-max(a*x)<= t1 <= max(t2)-min(a*x)
+  min(t2)-max(t1)<= a*x <= max(t2)-min(t1)
 */
 #define REDUCE_DOMAIN_p(a, x, l1, u1, l2, u2) {                 \
         first = SOUND_L_SUB_U(l2, u1);                          \
@@ -486,9 +486,9 @@
     }
 
 /*
-  t2 = t1+a*x (a>0) 
-  min(t2)-max(a*x)<= t1 <= max(t2)-min(a*x) 
-  min(t2)-max(t1)<= a*x <= max(t2)-min(t1) 
+  t2 = t1+a*x (a>0)
+  min(t2)-max(a*x)<= t1 <= max(t2)-min(a*x)
+  min(t2)-max(t1)<= a*x <= max(t2)-min(t1)
 */
 #define REDUCE_DOMAIN_nooverflow_p(a, x, l1, u1, l2, u2) {      \
         first = l2-u1;                                          \
@@ -519,9 +519,9 @@
     }
 
 /*
-  0 = t1+a*x (a>0) 
-  -max(t1)<= a*x <= -min(t1) 
-  -max(a*x)<= t1 <= -min(a*x) 
+  0 = t1+a*x (a>0)
+  -max(t1)<= a*x <= -min(t1)
+  -max(a*x)<= t1 <= -min(a*x)
 */
 #define REDUCE_LAST_TERM_DOMAIN_p(a, x, l1, u1) {               \
         first = -u1;                                            \
@@ -553,9 +553,9 @@
     }
 
 /*
-  0 = t1+a*x (a>0) 
-  -max(t1)<= a*x <= -min(t1) 
-  -max(a*x)<= t1 <= -min(a*x) 
+  0 = t1+a*x (a>0)
+  -max(t1)<= a*x <= -min(t1)
+  -max(a*x)<= t1 <= -min(a*x)
 */
 #define REDUCE_LAST_TERM_DOMAIN_nooverflow_p(a, x, l1, u1) {    \
         first = -u1;                                            \
@@ -586,9 +586,9 @@
 
 
 /*
-  t2 = t1+x 
-  min(t2)-max(x)<= t1 <= max(t2)-min(x) 
-  min(t2)-max(t1)<= x <= max(t2)-min(t1) 
+  t2 = t1+x
+  min(t2)-max(x)<= t1 <= max(t2)-min(x)
+  min(t2)-max(t1)<= x <= max(t2)-min(t1)
 */
 #define REDUCE_DOMAIN_p1(x, l1, u1, l2, u2) {                   \
         first = SOUND_L_SUB_U(l2, u1);                          \
@@ -617,9 +617,9 @@
     }
 
 /*
-  t2 = t1+x 
-  min(t2)-max(x)<= t1 <= max(t2)-min(x) 
-  min(t2)-max(t1)<= x <= max(t2)-min(t1) 
+  t2 = t1+x
+  min(t2)-max(x)<= t1 <= max(t2)-min(x)
+  min(t2)-max(t1)<= x <= max(t2)-min(t1)
 */
 #define REDUCE_DOMAIN_nooverflow_p1(x, l1, u1, l2, u2) {        \
         first = l2-u1;                                          \
@@ -648,9 +648,9 @@
     }
 
 /*
-  0 = t1+x 
-  -max(x)<= t1 <= -min(x) 
-  -max(t1)<= x <= -min(t1) 
+  0 = t1+x
+  -max(x)<= t1 <= -min(x)
+  -max(t1)<= x <= -min(t1)
 */
 #define REDUCE_LAST_TERM_DOMAIN_p1(x, l1, u1) {                 \
         first = -u1;                                            \
@@ -679,9 +679,9 @@
 
 
 /*
-  t2 = t1-a*x 
-  min(t2)+a*min(x)<= t1 <= max(t2)+a*max(x) 
-  min(t1)-max(t2)<= a*x <= max(t1)-min(t2) 
+  t2 = t1-a*x
+  min(t2)+a*min(x)<= t1 <= max(t2)+a*max(x)
+  min(t1)-max(t2)<= a*x <= max(t1)-min(t2)
 */
 #define REDUCE_DOMAIN_m(a, x, l1, u1, l2, u2) {                 \
         first = SOUND_L_SUB_U(l1, u2);                          \
@@ -715,9 +715,9 @@
 
 
 /*
-  t2 = t1-a*x 
-  min(t2)+a*min(x)<= t1 <= max(t2)+a*max(x) 
-  min(t1)-max(t2)<= a*x <= max(t1)-min(t2) 
+  t2 = t1-a*x
+  min(t2)+a*min(x)<= t1 <= max(t2)+a*max(x)
+  min(t1)-max(t2)<= a*x <= max(t1)-min(t2)
 */
 #define REDUCE_DOMAIN_nooverflow_m(a, x, l1, u1, l2, u2) {      \
         first = l1-u2;                                          \
@@ -748,9 +748,9 @@
     }
 
 /*
-  0 = t1-a*x 
+  0 = t1-a*x
   min(t1)<= a*x <= max(t1)
-  a*min(x)<= t1 <= a*max(x) 
+  a*min(x)<= t1 <= a*max(x)
 */
 #define REDUCE_LAST_TERM_DOMAIN_m(a, x, l1, u1) {               \
         first = l1;                                             \
@@ -780,9 +780,9 @@
     }
 
 /*
-  0 = t1-a*x 
+  0 = t1-a*x
   min(t1)<= a*x <= max(t1)
-  a*min(x)<= t1 <= a*max(x) 
+  a*min(x)<= t1 <= a*max(x)
 */
 #define REDUCE_LAST_TERM_DOMAIN_nooverflow_m(a, x, l1, u1) {    \
         first = l1;                                             \
@@ -812,9 +812,9 @@
     }
 
 /*
-  t2 = t1-x 
-  min(t2)+min(x)<= t1 <= max(t2)+max(x) 
-  min(t1)-max(t2)<= x <= max(t1)-min(t2) 
+  t2 = t1-x
+  min(t2)+min(x)<= t1 <= max(t2)+max(x)
+  min(t1)-max(t2)<= x <= max(t1)-min(t2)
 */
 #define REDUCE_DOMAIN_m1(x, l1, u1, l2, u2) {                   \
         first = SOUND_L_SUB_U(l1, u2);                          \
@@ -844,9 +844,9 @@
 
 
 /*
-  t2 = t1-x 
-  min(t2)+min(x)<= t1 <= max(t2)+max(x) 
-  min(t1)-max(t2)<= x <= max(t1)-min(t2) 
+  t2 = t1-x
+  min(t2)+min(x)<= t1 <= max(t2)+max(x)
+  min(t1)-max(t2)<= x <= max(t1)-min(t2)
 */
 #define REDUCE_DOMAIN_nooverflow_m1(x, l1, u1, l2, u2) {        \
         first = l1-u2;                                          \
@@ -875,9 +875,9 @@
     }
 
 /*
-  0 = t1-x 
-  min(x)<= t1 <= max(x) 
-  min(t1)<= x <= max(t1) 
+  0 = t1-x
+  min(x)<= t1 <= max(x)
+  min(t1)<= x <= max(t1)
 */
 #define REDUCE_LAST_TERM_DOMAIN_m1(x, l1, u1) {                 \
         first = l1;                                             \
@@ -905,10 +905,10 @@
     }
 
 /*
-  t2 = t1+ax >= l2  (a>0) 
-  u1 = max(t1) l2 = min(t2) 
-  ax >= l2-u1 
-  t1 >= l2-a*max(x)  
+  t2 = t1+ax >= l2  (a>0)
+  u1 = max(t1) l2 = min(t2)
+  ax >= l2-u1
+  t1 >= l2-a*max(x)
 */
 #define REDUCE_DOMAIN_GE_p(a, x, l1, u1, l2) {                          \
         first = SOUND_L_SUB_U(l2, u1);                                  \
@@ -930,10 +930,10 @@
     }
 
 /*
-  t2 = t1+ax >= l2  (a>0) 
-  u1 = max(t1) l2 = min(t2) 
-  ax >= l2-u1 
-  t1 >= l2-a*max(x)  
+  t2 = t1+ax >= l2  (a>0)
+  u1 = max(t1) l2 = min(t2)
+  ax >= l2-u1
+  t1 >= l2-a*max(x)
 */
 #define REDUCE_DOMAIN_GE_nooverflow_p(a, x, l1, u1, l2) {               \
         first = l2-u1;                                                  \
@@ -954,9 +954,9 @@
     }
 
 /*
-  t1+ax >= 0  (a>0) 
-  ax >= -u1 
-  t1 >= -a*max(x)  
+  t1+ax >= 0  (a>0)
+  ax >= -u1
+  t1 >= -a*max(x)
 */
 #define REDUCE_LAST_TERM_DOMAIN_GE_p(a, x, l1, u1) {                    \
         first = -u1;                                                    \
@@ -978,9 +978,9 @@
     }
 
 /*
-  t1+ax >= 0  (a>0) 
-  ax >= -u1 
-  t1 >= -a*max(x)  
+  t1+ax >= 0  (a>0)
+  ax >= -u1
+  t1 >= -a*max(x)
 */
 #define REDUCE_LAST_TERM_DOMAIN_GE_nooverflow_p(a, x, l1, u1) {         \
         first = -u1;                                                    \
@@ -1001,10 +1001,10 @@
     }
 
 /*
-  t2 = t1+x >= l2  (a>0) 
-  u1 = max(t1) l2 = min(t2) 
-  x >= l2-u1 
-  t1 >= l2-max(x)  
+  t2 = t1+x >= l2  (a>0)
+  u1 = max(t1) l2 = min(t2)
+  x >= l2-u1
+  t1 >= l2-max(x)
 */
 #define REDUCE_DOMAIN_GE_p1(x, l1, u1, l2) {                            \
         first = SOUND_L_SUB_U(l2, u1);                                  \
@@ -1024,10 +1024,10 @@
     }
 
 /*
-  t2 = t1+x >= l2  (a>0) 
-  u1 = max(t1) l2 = min(t2) 
-  x >= l2-u1 
-  t1 >= l2-max(x)  
+  t2 = t1+x >= l2  (a>0)
+  u1 = max(t1) l2 = min(t2)
+  x >= l2-u1
+  t1 >= l2-max(x)
 */
 #define REDUCE_DOMAIN_GE_nooverflow_p1(x, l1, u1, l2) {                 \
         first = l2-u1;                                                  \
@@ -1047,10 +1047,10 @@
     }
 
 /*
-  t2 = t1-ax >= l2  (a>0) 
-  u1 = max(t1) l2 = min(t2) 
-  ax =< u1-l2 
-  t1 >= l2+a*min(x)  
+  t2 = t1-ax >= l2  (a>0)
+  u1 = max(t1) l2 = min(t2)
+  ax =< u1-l2
+  t1 >= l2+a*min(x)
 */
 #define REDUCE_DOMAIN_GE_m(a, x, l1, u1, l2) {                          \
         last = SOUND_U_SUB_L(u1, l2);                                   \
@@ -1072,10 +1072,10 @@
     }
 
 /*
-  t2 = t1-ax >= l2  (a>0) 
-  u1 = max(t1) l2 = min(t2) 
-  ax =< u1-l2 
-  t1 >= l2+a*min(x)  
+  t2 = t1-ax >= l2  (a>0)
+  u1 = max(t1) l2 = min(t2)
+  ax =< u1-l2
+  t1 >= l2+a*min(x)
 */
 #define REDUCE_DOMAIN_GE_nooverflow_m(a, x, l1, u1, l2) {               \
         last = u1-l2;                                                   \
@@ -1096,9 +1096,9 @@
     }
 
 /*
-  t2 = t1-x >= l2  
-  x =< u1-l2 
-  t1 >= l2+min(x)  
+  t2 = t1-x >= l2
+  x =< u1-l2
+  t1 >= l2+min(x)
 */
 #define REDUCE_DOMAIN_GE_m1(x, l1, u1, l2) {                            \
         last = SOUND_U_SUB_L(u1, l2);                                   \
@@ -1119,9 +1119,9 @@
 
 
 /*
-  t2 = t1-x >= l2  
-  x =< u1-l2 
-  t1 >= l2+min(x)  
+  t2 = t1-x >= l2
+  x =< u1-l2
+  t1 >= l2+min(x)
 */
 #define REDUCE_DOMAIN_GE_nooverflow_m1(x, l1, u1, l2) {                 \
         last = u1-l2;                                                   \

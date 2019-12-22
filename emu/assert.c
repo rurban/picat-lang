@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <string.h>
 #include <stdlib.h>
@@ -578,7 +578,7 @@ BPLONG type, size;
 
 
 /*
-  extend the hashtable when the number of clauses exceeds 2*(the hashtable size), 
+  extend the hashtable when the number of clauses exceeds 2*(the hashtable size),
   reusing the old hashtable as possible:
 
   1. Move all the clauses list to the new hashtable as it is.
@@ -586,7 +586,7 @@ BPLONG type, size;
   3. Move the last chain (hashtable+oldsize) to the new hashtable. For each clause whose hash value is 0,
   add a list cell to each of the newly added chains (oldsize+1,oldsize+2,...,newsize)
   4. Move the other chains to the new hashtable.
-  5. The list structures are kept the same. Let (C1,C2) be a list. If C1 is deleted, 
+  5. The list structures are kept the same. Let (C1,C2) be a list. If C1 is deleted,
   C2 is the next clause after C1 after copy.
 */
 int rehash_interpreted_pred(pred_ptr)
@@ -1058,8 +1058,8 @@ BPLONG numberVarCopyCommaToParea(term, varno)
 /*  defined basic.h, also see table_maps in table.c
 
     There is a big difference between a global map and a table map:
-    a global map hashes a key-value pair by using a hash code generated 
-    from the main functor of the key, while a table map hashes a key-value 
+    a global map hashes a key-value pair by using a hash code generated
+    from the main functor of the key, while a table map hashes a key-value
     pair by using a hash code generated from the entire key.
 
     typedef struct {
@@ -1088,11 +1088,11 @@ void init_picat_global_maps() {
 }
 
 /* Return the number of the map with map_id. If no map with the id was found,
-   then create a new map and register it into global_maps. Linear prob is used 
+   then create a new map and register it into global_maps. Linear prob is used
    to look for the map with map_id.
 
-   Each entry in global_maps is a pointer to a MAP_RECORD, which stores the 
-   information about the map, including the size of the bucket table, the number 
+   Each entry in global_maps is a pointer to a MAP_RECORD, which stores the
+   information about the map, including the size of the bucket table, the number
    of key-value pairs (count), and a pointer to the bucket table (htable).
 */
 int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num) {

@@ -8,7 +8,7 @@
 PWD        = $(shell pwd)
 EXEC      ?= $(notdir $(PWD))
 
-CSRCS      = $(wildcard $(PWD)/*.cc) 
+CSRCS      = $(wildcard $(PWD)/*.cc)
 DSRCS      = $(foreach dir, $(DEPDIR), $(filter-out $(MROOT)/$(dir)/Main.cc, $(wildcard $(MROOT)/$(dir)/*.cc)))
 CHDRS      = $(wildcard $(PWD)/*.h)
 COBJS      = $(CSRCS:.cc=.o) $(DSRCS:.cc=.o)
@@ -27,7 +27,7 @@ COPTIMIZE ?= -O3
 CFLAGS    += -I$(MROOT) -D __STDC_LIMIT_MACROS -D __STDC_FORMAT_MACROS
 LFLAGS    += -lz
 
-.PHONY : s p d r rs clean 
+.PHONY : s p d r rs clean
 
 s:	$(EXEC)
 p:	$(EXEC)_profile
@@ -89,7 +89,7 @@ libs libp libd libr:
 ## Clean rule
 clean:
 	@rm -f $(EXEC) $(EXEC)_profile $(EXEC)_debug $(EXEC)_release $(EXEC)_static \
-	  $(COBJS) $(PCOBJS) $(DCOBJS) $(RCOBJS) *.core depend.mk 
+	  $(COBJS) $(PCOBJS) $(DCOBJS) $(RCOBJS) *.core depend.mk
 
 ## Make dependencies
 depend.mk: $(CSRCS) $(CHDRS)

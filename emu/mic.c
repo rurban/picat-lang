@@ -6,7 +6,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 /* mic.c */
 #ifdef WIN32
@@ -150,7 +150,7 @@ BPLONG cputime()
   BPLONG cputime()
   { struct tms t;
   (void)times(&t);
-  return (1000*t.tms_utime/CLK_TCK); 
+  return (1000*t.tms_utime/CLK_TCK);
   }
 */
 
@@ -939,7 +939,7 @@ int c_STATISTICS()
       (int)number_of_symbols,
       BUCKET_CHAIN,
       num_of_empty_buckets);
-      fprintf(stderr,"  Hash chain lengths: Longest(%d) Average(%.2f)\n\n",  
+      fprintf(stderr,"  Hash chain lengths: Longest(%d) Average(%.2f)\n\n",
       len_of_longest_chain,
       (float)number_of_symbols/(BUCKET_CHAIN-num_of_empty_buckets));
       }
@@ -1032,7 +1032,7 @@ lab_test_cdr:
     hcode_sum = bp_hashval(cdr);
 
     /* cdr is no longer tagged LST. Once here, the original list has been reversed, except for the last cons.
-       Now reverse it back while computing the hash code 
+       Now reverse it back while computing the hash code
     */
 lab_reverse_back:
     car = FOLLOW(term_ptr);
@@ -1654,7 +1654,7 @@ int c_SAVE_AR() {
   c_WRITE_AR(){
   BPLONG AR;
   BPLONG_PTR top;
-  
+
   AR = ARG(1,1);
   DEREF(AR);
   printf("%x",UNTAGGED_ADDR(AR));
@@ -1791,7 +1791,7 @@ BPLONG_PTR htable_ptr, tuple_ptr;
     BPLONG hcode, tuple, i, lst;
     BPLONG_PTR ptr, another_tuple_ptr;
     /*
-      printf("htable_contains\n"); 
+      printf("htable_contains\n");
       write_term(ADDTAG(htable_ptr,STR)); printf("\n");
       write_term(ADDTAG(tuple_ptr,STR)); printf("\n");
     */
@@ -2492,9 +2492,9 @@ int c_sort_int_list() {
 }
 
 /*
-  If the given list is sorted (upward or downward), then return the list; 
+  If the given list is sorted (upward or downward), then return the list;
   otherwise, if the given list is not too long, then use qsort;
-  otherwise fail doing nothing 
+  otherwise fail doing nothing
 */
 int c_sort_term_list() {
     BPLONG len, lst, sorted_lst;
@@ -2757,11 +2757,11 @@ int c_is_picat_public_name(){
     SYM_REC_PTR sym_ptr;
     CHAR_PTR char_ptr;
     int len;
-  
+
     term = ARG(1,1);
 
     //  printf("is_public "); write_term(term);  printf("\n");
-  
+
     SWITCH_OP(term, lab1,
               {return BP_FALSE;},
               {if (ISINT(term)) return BP_FALSE;
@@ -2776,8 +2776,8 @@ int c_is_picat_public_name(){
     } else {
         return BP_FALSE;
     }
-}  
-  
+}
+
 
 int b_IS_LIST_c(BPLONG term) {
     SWITCH_OP_LST(term, lab1,

@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <string.h>
@@ -281,14 +281,14 @@ int loader(file, file_type, load_damon)
         printf("file %s not exist\n", file);
         return 1;
     }
-    // printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); 
+    // printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence);
 
     while ((eof_flag = READ_DATA(&magic, 1)) == 0) {
         if (load_bytecode_header() == BP_ERROR)
             return 1;
 
         //              printf("text_bytes = %lx, index_bytes = %lx psc_bytes = %lx\n", text_bytes, index_bytes, psc_bytes);
-                
+
         total_size = sizeof(BPLONG)*(text_bytes + index_bytes + psc_bytes) + 10000;
         //              printf("total_size = %lx water_mark = %lx\n", (CHAR_PTR)curr_fence+total_size, parea_water_mark);
         if ((CHAR_PTR)curr_fence+total_size > (CHAR_PTR)parea_water_mark) {
@@ -350,7 +350,7 @@ int load_syms(file_type)
     BYTE temp_len;
     BYTE temp_arity;
 
-    //  printf("=> load_syms \n"); 
+    //  printf("=> load_syms \n");
     while (count < psc_bytes && eof_flag == 0) {
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 2;
@@ -364,7 +364,7 @@ int load_syms(file_type)
         /*
           if (dynload == 1 ) {
           strncpy(temp_name,name,temp_len);
-          printf("load (%s,%i)\n",temp_name,temp_len); 
+          printf("load (%s,%i)\n",temp_name,temp_len);
           }
         */
         if (i >= MAXSYMS) {
@@ -390,8 +390,8 @@ int load_syms(file_type)
 }  /* end of load_syms */
 
 /************************************************************************
-   Given the name of a bytecode module, this function binds Lst to a list of 
-   public predicate and function symbols defined in the module 
+   Given the name of a bytecode module, this function binds Lst to a list of
+   public predicate and function symbols defined in the module
 *************************************************************************/
 int c_GET_MODULE_SIGNATURE_cf() {
     BPLONG File;
@@ -540,7 +540,7 @@ int load_hashtab()
     BPLONG count = 0;
 
     CHECK_PCODE((CHAR_PTR)inst_addr, index_bytes);
-    //  printf("==> load_hashtab \n"); 
+    //  printf("==> load_hashtab \n");
     while (count < index_bytes && eof_flag == 0) {
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 10;
@@ -908,7 +908,7 @@ UW32 bp_str_hash( const char *name, int length, UW32 arity) {
   the output delta to a Gray code (a^(a>>1)) so a string of 1's (as
   is commonly produced by subtraction) look like a single 1-bit
   difference.
-  * the base values were pseudorandom, all zero but one bit set, or 
+  * the base values were pseudorandom, all zero but one bit set, or
   all zero plus a counter that starts at zero.
 
   Some k values for my "a-=c; a^=rot(c,k); c+=b;" arrangement that
@@ -918,7 +918,7 @@ UW32 bp_str_hash( const char *name, int length, UW32 arity) {
   14  9  3  7 17  3
   Well, "9 15 3 18 27 15" didn't quite get 32 bits diffing
   for "differ" defined as + with a one-bit base and a two-bit delta.  I
-  used http://burtleburtle.net/bob/hash/avalanche.html to choose 
+  used http://burtleburtle.net/bob/hash/avalanche.html to choose
   the operations, constants, and arrangements of the variables.
 
   This does not achieve avalanche.  There are input bits of (a,b,c)
@@ -957,7 +957,7 @@ UW32 bp_str_hash( const char *name, int length, UW32 arity) {
   the output delta to a Gray code (a^(a>>1)) so a string of 1's (as
   is commonly produced by subtraction) look like a single 1-bit
   difference.
-  * the base values were pseudorandom, all zero but one bit set, or 
+  * the base values were pseudorandom, all zero but one bit set, or
   all zero plus a counter that starts at zero.
 
   These constants passed:

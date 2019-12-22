@@ -15,7 +15,7 @@ extern char *string_in;
 /*
  * Copyright (C) 1991-1994 by Chris Thewalt (thewalt@ce.berkeley.edu)
  *
- * Permission to use, copy, modify, and distribute this software 
+ * Permission to use, copy, modify, and distribute this software
  * for any purpose and without fee is hereby granted, provided
  * that the above copyright notices appear in all copies and that both the
  * copyright notice and this permission notice appear in supporting
@@ -360,7 +360,7 @@ gl_putc(c)
     if (ch == '\r' || ch == '\n'); else sys_write(1, &ch, 1);
 
     /*    if (ch == '\n') {
-          ch = '\r'; 
+          ch = '\r';
           write(1, &ch, 1);
           }
     */

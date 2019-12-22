@@ -35,7 +35,7 @@ void Minisat::parseOptions(int& argc, char** argv, bool strict)
                 printUsageAndExit(argc, argv, true);
         } else {
             bool parsed_ok = false;
-        
+
             for (int k = 0; !parsed_ok && k < Option::getOptionList().size(); k++){
                 parsed_ok = Option::getOptionList()[k]->parse(argv[i]);
 

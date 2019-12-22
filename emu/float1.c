@@ -1,11 +1,11 @@
 /********************************************************************
  *   File   : float.c
  *   Author : Neng-Fa ZHOU Copyright (C) 1994-2023
- *   Purpose: arithmetic functions 
+ *   Purpose: arithmetic functions
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -14,7 +14,7 @@
 #include <math.h>
 
 /* converts floats from WAM representation to
- *  the machine representation 
+ *  the machine representation
  */
 double floatval(op)
     BPLONG op;
@@ -64,7 +64,7 @@ BPLONG encodefloat1(op)
     NEW_HEAP_NODE(MAKEINT(((w1 & 0x3fffff) << 5) | (w2 >> 27)));  /* int2 */
     NEW_HEAP_NODE(MAKEINT(w2 & 0x7ffffff));  /* int3 */
     /*
-      if (arreg-1000 < heap_top) { 
+      if (arreg-1000 < heap_top) {
       quit("control stack overflow\n");
       }
     */

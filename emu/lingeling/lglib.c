@@ -461,7 +461,7 @@ typedef struct Stats {
   int defrags, iterations, rephrased;
   struct { int vars, clauses; } rescored;
   struct { int count, skipped; } rebias;
-  struct { int count, skipped; 
+  struct { int count, skipped;
            struct { int count; double sum; } kept; } restarts;
   struct { int count, geom, arith; } reduced;
   int acts, reported, gcs;
@@ -4990,7 +4990,7 @@ static int lglpermutetrail (LGL * lgl) {
 static int lglreusetrail (LGL * lgl) {
   int next = 0, res = 0, prev, level;
   const Ctr * p;
-  while (!lglmtstk (&lgl->dsched)) { 
+  while (!lglmtstk (&lgl->dsched)) {
     next = lgltopdsched (lgl);
     if (!lglval (lgl, next)) break;
     lglpopdsched (lgl);
@@ -6564,7 +6564,7 @@ static int lglsyncunits (LGL * lgl) {
     }
   }
   lgl->units.produce.fun = produce;
-  if (lgl->units.consumed.fun) 
+  if (lgl->units.consumed.fun)
     lgl->units.consumed.fun (lgl->units.consumed.state, count);
   if (lgl->mt) return 0;
   if (count)
@@ -7934,7 +7934,7 @@ static int lgltrylargeve (LGL * lgl, DFPR * dfpr) {
       } else if (lit) {
 	while (*++q) ;
         LOG (3, "trying resolution ends with trivial resolvent");
-      } else if (dfpr && 
+      } else if (dfpr &&
                  (reslen > 2 || clen > 1 || dlen > 1) &&
                  lgluhte (lgl, dfpr, &lgl->resolvent)) {
         LOG (3, "trying resolution ends with hidden tautology");
@@ -8035,7 +8035,7 @@ static int lgltrylargeve (LGL * lgl, DFPR * dfpr) {
 	goto RESOLVE;
       } if (lit) {
 	while (*++q) ;
-      } else if (dfpr && 
+      } else if (dfpr &&
                  (reslen > 2 || clen > 1 || dlen > 1) &&
                  lgluhte (lgl, dfpr, &lgl->resolvent)) {
 	lgl->stats.elm.htes++;
@@ -9113,8 +9113,8 @@ static int lglelim (LGL * lgl) {
   oldelmd = lgl->stats.elm.elmd;
   oldprgss = lgl->stats.prgss;
   lgl->stats.elm.rounds++;
-  if (res && 
-      (res = lglflush (lgl)) && 
+  if (res &&
+      (res = lglflush (lgl)) &&
       lgl->opts.elmhte.val &&
       !lglstr (lgl)) {
     dfpr = lglstampall (lgl, 1);
@@ -9238,7 +9238,7 @@ INCONSISTENT:
   }
   LOG (1, "produced %d equivalences", produced);
 DONE:
-  if (lgl->eqs.unlock.fun) 
+  if (lgl->eqs.unlock.fun)
     lgl->eqs.unlock.fun (lgl->eqs.unlock.state, consumed, produced);
   return !lgl->mt;
 }
@@ -9457,7 +9457,7 @@ FIRST_OUTER_BRANCH_WIHOUT_INNER_PROBE:
       }
       assert (lgl->level == 1);
       goto END_OF_FIRST_OUTER_BRANCH;
-    } 
+    }
     oldinner = lglcntstk (&lgl->trail);
     LOG (0, "1st inner branch %d in outer 1st branch %d", inner, outer);
     lgl->stats.lift.probed[1]++;
@@ -9478,7 +9478,7 @@ FIRST_OUTER_BRANCH_WIHOUT_INNER_PROBE:
     lglclnstk (&saved);
     for (i = oldouter; i < lglcntstk (&lgl->trail); i++)
       lglpushstk (lgl, &saved, lglpeek (&lgl->trail, i));
-    LOG (0, "saved %d assignments of 1st inner branch %d in 1st outer branch", 
+    LOG (0, "saved %d assignments of 1st inner branch %d in 1st outer branch",
 	 lglcntstk (&saved), inner, outer);
     lglbacktrack (lgl, 1);
     assert (lglcntstk (&lgl->trail) == oldinner);
@@ -9497,7 +9497,7 @@ FIRST_OUTER_BRANCH_WIHOUT_INNER_PROBE:
       if (ok) goto FIRST_OUTER_BRANCH_WIHOUT_INNER_PROBE;
       LOG (0, "conflict after propagating negation of 2nd inner branch");
       goto FIRST_OUTER_BRANCH_FAILED;
-    } 
+    }
     while (!lglmtstk (&saved)) {
       lit = lglpopstk (&saved);
       idx = abs (lit);
@@ -9552,7 +9552,7 @@ SECOND_OUTER_BRANCH_FAILED:
     }
     assert (lglmtstk (&represented[1]));
     oldinner = lglcntstk (&lgl->trail);
-    if (!inner || lglval (lgl, inner)) 
+    if (!inner || lglval (lgl, inner))
       inner = lglinnerprobe (lgl, oldouter, &probes, &tmp);
     if (!inner) {
 SECOND_OUTER_BRANCH_WIHOUT_INNER_PROBE:
@@ -9586,7 +9586,7 @@ SECOND_OUTER_BRANCH_WIHOUT_INNER_PROBE:
     lglclnstk (&saved);
     for (i = oldouter; i < lglcntstk (&lgl->trail); i++)
       lglpushstk (lgl, &saved, lglpeek (&lgl->trail, i));
-    LOG (0, 
+    LOG (0,
          "saved %d assignments of 1st inner branch %d in 2nd outer branch %d",
 	 lglcntstk (&saved), inner, -outer);
     lglbacktrack (lgl, 1);
@@ -9670,7 +9670,7 @@ END_OF_SECOND_BRANCH:
 	  assert (abs (repr1) > 1 && abs (repr2) > 1);
 	  if (lglcmprepr (lgl, repr2, repr1) < 0) SWAP (repr1, repr2);
 	  if (repr2 < 0) repr2 = -repr2, repr1 = -repr1;
-	  LOG (0, "  common equivalence candidate : %d = %d   (branch %d)", 
+	  LOG (0, "  common equivalence candidate : %d = %d   (branch %d)",
 	       repr2, repr1, branch);
 #if 0
 	  lgl->stats.lift.eqs++;
@@ -10653,7 +10653,7 @@ static int lglstamp (LGL * lgl, int root,
 	  lglpushwtk (lgl, work, BEFORE, lit, other, red);
 	}
 	end = lglcntwtk (work);
-	for (r = work->start + start; r < work->top; r++) 
+	for (r = work->start + start; r < work->top; r++)
 	  lglunmark (lgl, r->other);
 	mod = (end - start);
 	if (mod <= 1) continue;
@@ -10954,7 +10954,7 @@ UNIT:
 	    lgldeclscnt (lgl, 3, red, 0);
 	    assert (!lgl->dense);
 	    q -= 2;
-	  } else if (lglstr (lgl) && 
+	  } else if (lglstr (lgl) &&
 	             lglunhimplies2incl (dfpr, other2, lit)) {
 TRNSTR:
 	    LOG (2,
@@ -11532,16 +11532,16 @@ static void lglrmbindup (LGL * lgl) {
 	    if (round && !red) goto ONLYCOPY;
 	    if (red) redrem++; else irrem++;
 	    if (abs (lit) > abs (other)) {
-	      LOG (2, 
+	      LOG (2,
 		"removing duplicated %s binary clause %d %d and 2nd watch %d",
 		lglred2str (red), lit, other, other);
 	      lgldeclscnt (lgl, 2, red, 0);
-	      if (!red && lgl->dense) 
+	      if (!red && lgl->dense)
 		lgldecocc (lgl, lit), lgldecocc (lgl, other);
 	      lgl->stats.bindup.removed++;
 	      if (red) lgl->stats.bindup.red++;
-	    } else 
-	      LOG (2, 
+	    } else
+	      LOG (2,
 	        "removing 1st watch %d of duplicated %s binary clause %d %d",
 	        other, lglred2str (red), other, lit);
 	  } else {
@@ -12644,7 +12644,7 @@ void lglstats (LGL * lgl, const char * prefix, FILE * file) {
           s->rebias.count, lglpcnt (s->rebias.count, sum),
           s->rebias.skipped, lglpcnt (s->rebias.skipped, sum));
   lglprs (lgl, "reds: %d reductions, %d acts %.0f%%, %d exp %.0f%%",
-          s->reduced.count, 
+          s->reduced.count,
 	  s->acts, lglpcnt (s->acts, s->reduced.count),
           s->reduced.geom, lglpcnt (s->reduced.geom, s->reduced.count));
   lglprs (lgl, "rmbd: %d removed, %d red %.0f%%",

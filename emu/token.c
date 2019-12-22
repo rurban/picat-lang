@@ -1119,7 +1119,7 @@ START:
          * (3) unsigned floats: d* [. d*] [e +/-] d+
          * (4) characters: 0Rc[R]
          * (5) binary (0b|0B)..., octal (0o|0O)..., and hexadecimal (0x|0X)...
-         * We allow underscores in numbers too, ignoring them. 
+         * We allow underscores in numbers too, ignoring them.
          */
 #ifndef XCSP_PICAT
         if (c == '0') {
@@ -1335,7 +1335,7 @@ START:
             if (com2plain(card, d, intab.endcom) == BP_ERROR) return BP_ERROR;
             BP_GETC(card, c);
             goto START;
-            /*                  
+            /*
                                 } else if (c == '&' && d == '&') {
                                 *s++ = '&';
                                 *s++ = '&';
@@ -1360,7 +1360,7 @@ START:
             *++s = (BYTE)d;
             BP_GETC(card, d);
         }
-        while (InType(d) == SIGN) {   
+        while (InType(d) == SIGN) {
             if (--n == 0) printAtomStr(tok2long);
             *++s = (BYTE)d;
             BP_GETC(card, d);
@@ -1509,7 +1509,7 @@ START:
     return BP_ERROR;
     /*
       fprintf(stderr, "Internal error: InType(%d)==%d\n", c, InType(c));
-      abort();               
+      abort();
     */
 
 end_of_clause:
@@ -1557,7 +1557,7 @@ START:
 				  base = 8;
                 else
 				  base = 16;
-                BP_GETC_STRING(c);  // first char right after must be a valid digit of the base 
+                BP_GETC_STRING(c);  // first char right after must be a valid digit of the base
                 if (DigVal(c) < 0 || DigVal(c) >= base || c == '_') {
                     bp_exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
@@ -1753,7 +1753,7 @@ START:
             if (com2plain_string(d, intab.endcom) == BP_ERROR) return BP_ERROR;
             BP_GETC_STRING(c);
             goto START;
-            /*                  
+            /*
                                 } else if (c == '&' && d == '&') {
                                 *s++ = '&';
                                 *s++ = '&';
@@ -1924,7 +1924,7 @@ START:
     return BP_ERROR;
     /*
       fprintf(stderr, "Internal error: InType(%d)==%d\n", c, InType(c));
-      abort();   
+      abort();
     */
     /*NOTREACHED*/
 end_of_clause:

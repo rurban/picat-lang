@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <string.h>
 #include "bprolog.h"
@@ -141,7 +141,7 @@ int c_frozen_f() {
 }
 
 /*
-  susp_attach_term(Var,Term) 
+  susp_attach_term(Var,Term)
   attach T to the suspension variable Var.
   Exception if Var is non-variable
 */
@@ -174,7 +174,7 @@ int b_SUSP_ATTACH_TERM_cc(Var, Term)
 }
 
 /*
-  susp_attached_term(Var,Term) 
+  susp_attached_term(Var,Term)
   the attached term to Var is Term
   Exception if Var is not a suspension variable
 */

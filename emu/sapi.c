@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -53,7 +53,7 @@ void SP_put_term(SP_term_ref to, SP_term_ref from) {
 }
 
 /*
-  Assigns to t a new Prolog variable.                                       
+  Assigns to t a new Prolog variable.
 */
 int SP_put_variable(SP_term_ref t) {
     SP_term_ref op;
@@ -63,7 +63,7 @@ int SP_put_variable(SP_term_ref t) {
 }
 
 /*
-  Assigns to t a Prolog integer from a C long integer. 
+  Assigns to t a Prolog integer from a C long integer.
 */
 int SP_put_integer(SP_term_ref t, long l) {
     FOLLOW(t) = MAKEINT(l);
@@ -71,7 +71,7 @@ int SP_put_integer(SP_term_ref t, long l) {
 }
 
 /*
-  Assigns to t a Prolog oat from a C double. 
+  Assigns to t a Prolog oat from a C double.
 */
 int SP_put_float(SP_term_ref t, double d) {
     FOLLOW(t) = encodefloat1(d);
@@ -80,7 +80,7 @@ int SP_put_float(SP_term_ref t, double d) {
 
 /*
   Assigns to t a Prolog atom from a, which must be the canonical representation
-  of a Prolog atom. 
+  of a Prolog atom.
 */
 int SP_put_atom(SP_term_ref t, unsigned long a) {
     FOLLOW(t) = ADDTAG(a, ATM);
@@ -88,7 +88,7 @@ int SP_put_atom(SP_term_ref t, unsigned long a) {
 }
 
 /*
-  Assigns to t a Prolog atom from a encoded C string 
+  Assigns to t a Prolog atom from a encoded C string
 */
 int SP_put_string(SP_term_ref t, char *name) {
     FOLLOW(t) = ADDTAG(insert_sym(name, strlen(name), 0), ATM);
@@ -96,7 +96,7 @@ int SP_put_string(SP_term_ref t, char *name) {
 }
 
 /*
-  Assigns to t a Prolog integer from a C pointer. 
+  Assigns to t a Prolog integer from a C pointer.
 */
 int SP_put_address(SP_term_ref t, void *pointer) {
     FOLLOW(t) = ADDTAG((BPLONG)pointer, INT_TAG);
@@ -261,7 +261,7 @@ int SP_get_atom(SP_term_ref t, BPULONG *a) {
 }
 
 /* Assigns to *name a pointer to the encoded string representing the name of a
-   Prolog atom. 
+   Prolog atom.
 */
 int SP_get_string(SP_term_ref t, char **name) {
     BPLONG_PTR top;

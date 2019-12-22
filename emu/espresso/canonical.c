@@ -1,5 +1,5 @@
 /* Module:canonical.c
- *	contains routines for finding the canonical cover of the 
+ *	contains routines for finding the canonical cover of the
  *	incompletely specified logic function.	
  * Routine:
  * pcover find_canonical_cover():

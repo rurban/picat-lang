@@ -27,24 +27,24 @@ struct fann_error;
 
 /* Section: FANN Error Handling
 
-   Errors from the fann library are usually reported on stderr. 
-   It is however possible to redirect these error messages to a file, 
+   Errors from the fann library are usually reported on stderr.
+   It is however possible to redirect these error messages to a file,
    or completely ignore them by the <fann_set_error_log> function.
-   
+
    It is also possible to inspect the last error message by using the
    <fann_get_errno> and <fann_get_errstr> functions.
  */
 
 /* Enum: fann_errno_enum
-	Used to define error events on <struct fann> and <struct fann_train_data>. 
+	Used to define error events on <struct fann> and <struct fann_train_data>.
 
 	See also:
 		<fann_get_errno>, <fann_reset_errno>, <fann_get_errstr>
 
-	FANN_E_NO_ERROR - No error 
-	FANN_E_CANT_OPEN_CONFIG_R - Unable to open configuration file for reading 
+	FANN_E_NO_ERROR - No error
+	FANN_E_CANT_OPEN_CONFIG_R - Unable to open configuration file for reading
 	FANN_E_CANT_OPEN_CONFIG_W - Unable to open configuration file for writing
-	FANN_E_WRONG_CONFIG_VERSION - Wrong version of configuration file 
+	FANN_E_WRONG_CONFIG_VERSION - Wrong version of configuration file
 	FANN_E_CANT_READ_CONFIG - Error reading info from configuration file
 	FANN_E_CANT_READ_NEURON - Error reading neuron info from configuration file
 	FANN_E_CANT_READ_CONNECTIONS - Error reading connections from configuration file
@@ -94,43 +94,43 @@ enum fann_errno_enum
 	
 /* Function: fann_set_error_log
 
-   Change where errors are logged to. Both <struct fann> and <struct fann_data> can be 
+   Change where errors are logged to. Both <struct fann> and <struct fann_data> can be
    casted to <struct fann_error>, so this function can be used to set either of these.
-   
+
    If log_file is NULL, no errors will be printed.
-   
-   If errdat is NULL, the default log will be set. The default log is the log used when creating 
+
+   If errdat is NULL, the default log will be set. The default log is the log used when creating
    <struct fann> and <struct fann_data>. This default log will also be the default for all new structs
    that are created.
-   
+
    The default behavior is to log them to stderr.
-   
+
    See also:
     <struct fann_error>
-   
-   This function appears in FANN >= 1.1.0.   
- */ 
+
+   This function appears in FANN >= 1.1.0.
+ */
 FANN_EXTERNAL void FANN_API fann_set_error_log(struct fann_error *errdat, FILE * log_file);
 
 
 /* Function: fann_get_errno
 
    Returns the last error number.
-   
+
    See also:
     <fann_errno_enum>, <fann_reset_errno>
-    
-   This function appears in FANN >= 1.1.0.   
- */ 
+
+   This function appears in FANN >= 1.1.0.
+ */
 FANN_EXTERNAL enum fann_errno_enum FANN_API fann_get_errno(struct fann_error *errdat);
 
 
 /* Function: fann_reset_errno
 
    Resets the last error number.
-   
-   This function appears in FANN >= 1.1.0.   
- */ 
+
+   This function appears in FANN >= 1.1.0.
+ */
 FANN_EXTERNAL void FANN_API fann_reset_errno(struct fann_error *errdat);
 
 
@@ -138,19 +138,19 @@ FANN_EXTERNAL void FANN_API fann_reset_errno(struct fann_error *errdat);
 
    Resets the last error string.
 
-   This function appears in FANN >= 1.1.0.   
- */ 
+   This function appears in FANN >= 1.1.0.
+ */
 FANN_EXTERNAL void FANN_API fann_reset_errstr(struct fann_error *errdat);
 
 
 /* Function: fann_get_errstr
 
    Returns the last errstr.
-  
+
    This function calls <fann_reset_errno> and <fann_reset_errstr>
 
-   This function appears in FANN >= 1.1.0.   
- */ 
+   This function appears in FANN >= 1.1.0.
+ */
 FANN_EXTERNAL char *FANN_API fann_get_errstr(struct fann_error *errdat);
 
 
@@ -158,8 +158,8 @@ FANN_EXTERNAL char *FANN_API fann_get_errstr(struct fann_error *errdat);
 
    Prints the last error to stderr.
 
-   This function appears in FANN >= 1.1.0.   
- */ 
+   This function appears in FANN >= 1.1.0.
+ */
 FANN_EXTERNAL void FANN_API fann_print_error(struct fann_error *errdat);
 
 FANN_EXTERNAL extern FILE * fann_default_error_log;

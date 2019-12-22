@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -19,7 +19,7 @@
 /* #include <setjmp.h> */
 
 /*
-  #define DEBUG_CALL 
+  #define DEBUG_CALL
   #define DEBUG_INST
   #define TRACE_BUILTIN
   #define TRACE_TOAM
@@ -208,7 +208,7 @@ contcase:  /* LOCAL_TOP OF EXECUTION LOOP : Read Mode */
       #ifdef TRACE_INSTS
       addExecTrace(*P);
       #endif
-      if (toam_signal_vec!=0) printf("toam_signal_vec=%x\n",toam_signal_vec);  
+      if (toam_signal_vec!=0) printf("toam_signal_vec=%x\n",toam_signal_vec);
     */
 
 #include "emu_inst.h"
@@ -536,10 +536,10 @@ trigger_on_handler:{
   while (!is_allocate(p) && p>=parea_low_addr && p<parea_up_addr) p--;
   if (p<=parea_low_addr || p>=parea_up_addr) return;
   sym_ptr = (SYM_REC_PTR)FOLLOW(p+3);
-  if (GET_ETYPE(sym_ptr)==T_PRED && GET_EP(sym_ptr)>parea_low_addr && GET_EP(sym_ptr)<parea_up_addr) 
+  if (GET_ETYPE(sym_ptr)==T_PRED && GET_EP(sym_ptr)>parea_low_addr && GET_EP(sym_ptr)<parea_up_addr)
   printf("\t > %s/%d\n",GET_NAME(sym_ptr),GET_ARITY(sym_ptr));
   }
-  
+
 
   is_allocate(p)
   BPLONG_PTR p;
@@ -547,7 +547,7 @@ trigger_on_handler:{
   if (*p==allocate_det ||
   *p ==allocate_det_b ||
   *p == allocate_nondet ||
-  *p == allocate_susp || 
+  *p == allocate_susp ||
   *p == table_allocate){
   if (*(p+1)<100 && *(p+1)>=0 && *(p+2)<100 && *(p+2)>=0 &&
   (BPLONG_PTR)*(p+3)>parea_low_addr && (BPLONG_PTR)*(p+3)<parea_up_addr)

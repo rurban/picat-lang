@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <stdlib.h>
 #include "basic.h"
@@ -45,9 +45,9 @@ BPLONG picat_table_map_ids[NUM_PICAT_TABLE_MAPS];
 /* used in hash-consing for the table area */
 /*
   typedef struct {
-  BPLONG_PTR htable; 
-  BPLONG size;     
-  BPLONG count;    
+  BPLONG_PTR htable;
+  BPLONG size;
+  BPLONG count;
   } GTERMS_HTABLE;
 */
 GTERMS_HTABLE ta_gterms_htable;
@@ -732,7 +732,7 @@ void allocate_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr, int size) {
 
 /* term is either a ground list or a ground structure,
    let ptr points to the term. The location (ptr-1) is used for hash-chaining
-   and (ptr-2) is used to hold hash code. If the top-bit of a stored hash code 
+   and (ptr-2) is used to hold hash code. If the top-bit of a stored hash code
    is 1, then the term is ground.
 */
 BPLONG register_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr, BPLONG term, BPLONG hcode) {
@@ -802,8 +802,8 @@ void expand_gterms_htable(GTERMS_HTABLE_PTR gterms_htable_ptr) {
 
 /*
   Copy term (numbered) to the table area and computes its hash code. The copy (let its address be ptr)
-  has two extra cells preceeding it if it is compound, one (ptr-2) storing the hash code and the 
-  other (ptr-1) being used to connect to the next term on the hash chain in gterms_htable. This function 
+  has two extra cells preceeding it if it is compound, one (ptr-2) storing the hash code and the
+  other (ptr-1) being used to connect to the next term on the hash chain in gterms_htable. This function
   must be changed accordingly whenever bp_hashval (in "mic.c") is changed.
 */
 BPLONG numberVarCopyToTableArea(NUMBERED_TERM_AREA_RECORD_PTR area_record_ptr, BPLONG term, BPLONG_PTR hcode_ptr, BPLONG_PTR ground_flag_ptr)
@@ -910,7 +910,7 @@ l_number_var_copy_faa:
 }
 
 /*
-  Iteratively copy a list (to avoid native stack overflow). In the first pass, pointers are reversed, and 
+  Iteratively copy a list (to avoid native stack overflow). In the first pass, pointers are reversed, and
   in the second pass, pointers are reversed back while hash code is computed and the term is copied.
 */
 BPLONG numberVarCopyListToTableArea(NUMBERED_TERM_AREA_RECORD_PTR area_record_ptr, BPLONG term, BPLONG_PTR hcode_ptr, BPLONG_PTR ground_flag_ptr) {
@@ -1255,7 +1255,7 @@ void expandAnswerTable(BPLONG_PTR answer_table, int arity) {
 
 
 /* This function adds an answer into the answer table.
-   Preconditions: 
+   Preconditions:
    (1) one of the argument modes is min or max.
    (2) a hash table (answer table) has been allocated.
    Postconditions:
@@ -1806,7 +1806,7 @@ BPLONG answer_table_entry_2_struct(SYM_REC_PTR sym_ptr, BPLONG_PTR ptr0) {
 
    name/arity:
    table_allocate Arity,Size,Sym,MaxS
-   table_mode ModeBits, OptArg,Card 
+   table_mode ModeBits, OptArg,Card
 */
 int c_table_cardinality_limit() {
     BPLONG name, arity, card;
@@ -1915,7 +1915,7 @@ int table_statistics(){
 }
 
 /* Returns the current plan that transforms the initial state
-   to the current state, and the current resource amount. 
+   to the current state, and the current resource amount.
    These two values are available at the latest call
    '_$plan'(S,iplan(Limit,Plan,PlanLen)).
 */
@@ -1996,7 +1996,7 @@ void reset_temp_complete_subgoal_entries() {
 /*
   void printTable(){
   void printSubgoalTableEntry(BPLONG_PTR);
-  
+
   BPLONG i,count,subgoal_count,total_ans_count,max_ans_count,zero_ans_count,total_ans_access_count,max_ans_access_count,total_its_count,max_its_count,scc_nodes_count;
   BPLONG_PTR subgoal_entry,ptr;
   subgoal_count = 0;
@@ -2008,7 +2008,7 @@ void reset_temp_complete_subgoal_entries() {
   max_ans_count=0;
   zero_ans_count=0;
   scc_nodes_count = 0;
-  
+
   for (i=0;i<subgoalTableBucketSize;i++){
   subgoal_entry = (BPLONG_PTR)FOLLOW(subgoalTable+i);
   while (subgoal_entry != NULL) {
@@ -2029,7 +2029,7 @@ void reset_temp_complete_subgoal_entries() {
   sym_ptr = (SYM_REC_PTR)GT_SYM(ptr);
   arity = GET_ARITY(sym_ptr);
 
-  
+
   fprintf(curr_out,"%x %s(",ptr, GET_NAME(sym_ptr));
   //  printAnswer(GT_ARG_ADDR(ptr),arity);
   fprintf(curr_out,"(%x)\n",GT_TOP_AR(ptr));
@@ -2040,7 +2040,7 @@ void reset_temp_complete_subgoal_entries() {
   answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer);
   while (answer!=NULL){
   fprintf(curr_out,"%x     (",answer);printAnswer(ANSWER_ARG_ADDR(answer),arity);
-  answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer); 
+  answer = (BPLONG_PTR)ANSWER_NEXT_IN_TABLE(answer);
   }
   }
 
@@ -2066,7 +2066,7 @@ void reset_temp_complete_subgoal_entries() {
   BPLONG_PTR top;
   DEREF(term);
 
-  if (ISREF(term)) fprintf(curr_out,"_%x",term); 
+  if (ISREF(term)) fprintf(curr_out,"_%x",term);
   else if (TAG(term)==ATM) write_term(term);
   else if (TAG(term)==LST) {
   if (IsNumberedVar(term)) fprintf(curr_out,"n%x ",term);
@@ -2142,11 +2142,11 @@ void init_picat_table_maps() {
 }
 
 /* Return the number of the map with map_id. If no map with the id was found,
-   then create a new map and register it into table_maps. Linear prob is used 
+   then create a new map and register it into table_maps. Linear prob is used
    to look for the map with map_id.
 
-   Each entry in table_maps is a pointer to a MAP_RECORD, which stores the 
-   information about the map, including the size of the bucket table, the number 
+   Each entry in table_maps is a pointer to a MAP_RECORD, which stores the
+   information about the map, including the size of the bucket table, the number
    of key-value pairs (count), and a pointer to the bucket table (htable).
 */
 int b_GET_PICAT_TABLE_MAP_cf(BPLONG map_id, BPLONG map_num) {

@@ -33,5 +33,5 @@ int b_PICAT_WRITE_PRIMITIVE_cc(BPLONG FDIndex, BPLONG term) {
 }
 
 
-  
-  
+
+

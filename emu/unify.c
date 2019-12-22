@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -152,7 +152,7 @@ bind_susp_value:
 
 /*
   op1: non-stack var
-  op2: a var 
+  op2: a var
 */
 void unify_nsv_v(op1, op2)
     register BPLONG op1, op2;

@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #ifndef BP_BASIC_H
@@ -132,8 +132,8 @@ typedef struct event_func_data {
 } EVENT_FUNC;
 
 /* An interpreted predicate (consulted or dynamic) is stored as a record of the following form:
-   ref_count :   Number of unfinished calls of clause(Head,Body) 
-   retr_count :  Number of unfinished calls of retract(Clause). 
+   ref_count :   Number of unfinished calls of clause(Head,Body)
+   retr_count :  Number of unfinished calls of retract(Clause).
    The space of a retracted clause can be freed if (retra_count<=1 && ref_count==0).
    cl_count :    Number of clauses in the predicate
    bucket_size : Hashtable size. Initial value = number of clauses if static; 3 if dynamic

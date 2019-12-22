@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <string.h>
@@ -111,7 +111,7 @@ int c_add_spy_point() {
         GET_SPY(sym_ptr) = 1;
         number_of_spy_points++;
         return BP_TRUE;
-	  } else 
+	  } else
         return BP_FALSE;
 	}
 }

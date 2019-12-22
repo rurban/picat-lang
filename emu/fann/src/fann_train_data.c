@@ -26,7 +26,7 @@
 #include "fann.h"
 
 /*
- * Reads training data from a file. 
+ * Reads training data from a file.
  */
 FANN_EXTERNAL struct fann_train_data *FANN_API fann_read_train_from_file(const char *configuration_file)
 {
@@ -45,7 +45,7 @@ FANN_EXTERNAL struct fann_train_data *FANN_API fann_read_train_from_file(const c
 }
 
 /*
- * Save training data to a file 
+ * Save training data to a file
  */
 FANN_EXTERNAL int FANN_API fann_save_train(struct fann_train_data *data, const char *filename)
 {
@@ -54,7 +54,7 @@ FANN_EXTERNAL int FANN_API fann_save_train(struct fann_train_data *data, const c
 
 /*
  * Save training data to a file in fixed point algebra. (Good for testing
- * a network in fixed point) 
+ * a network in fixed point)
  */
 FANN_EXTERNAL int FANN_API fann_save_train_to_fixed(struct fann_train_data *data, const char *filename,
 													 unsigned int decimal_point)
@@ -63,7 +63,7 @@ FANN_EXTERNAL int FANN_API fann_save_train_to_fixed(struct fann_train_data *data
 }
 
 /*
- * deallocate the train data structure. 
+ * deallocate the train data structure.
  */
 FANN_EXTERNAL void FANN_API fann_destroy_train(struct fann_train_data *data)
 {
@@ -79,7 +79,7 @@ FANN_EXTERNAL void FANN_API fann_destroy_train(struct fann_train_data *data)
 }
 
 /*
- * Test a set of training data and calculate the MSE 
+ * Test a set of training data and calculate the MSE
  */
 FANN_EXTERNAL float FANN_API fann_test_data(struct fann *ann, struct fann_train_data *data)
 {
@@ -100,7 +100,7 @@ FANN_EXTERNAL float FANN_API fann_test_data(struct fann *ann, struct fann_train_
 #ifndef FIXEDFANN
 
 /*
- * Internal train function 
+ * Internal train function
  */
 float fann_train_epoch_quickprop(struct fann *ann, struct fann_train_data *data)
 {
@@ -126,7 +126,7 @@ float fann_train_epoch_quickprop(struct fann *ann, struct fann_train_data *data)
 }
 
 /*
- * Internal train function 
+ * Internal train function
  */
 float fann_train_epoch_irpropm(struct fann *ann, struct fann_train_data *data)
 {
@@ -153,7 +153,7 @@ float fann_train_epoch_irpropm(struct fann *ann, struct fann_train_data *data)
 }
 
 /*
- * Internal train function 
+ * Internal train function
  */
 float fann_train_epoch_sarprop(struct fann *ann, struct fann_train_data *data)
 {
@@ -182,7 +182,7 @@ float fann_train_epoch_sarprop(struct fann *ann, struct fann_train_data *data)
 }
 
 /*
- * Internal train function 
+ * Internal train function
  */
 float fann_train_epoch_batch(struct fann *ann, struct fann_train_data *data)
 {
@@ -204,7 +204,7 @@ float fann_train_epoch_batch(struct fann *ann, struct fann_train_data *data)
 }
 
 /*
- * Internal train function 
+ * Internal train function
  */
 float fann_train_epoch_incremental(struct fann *ann, struct fann_train_data *data)
 {
@@ -221,7 +221,7 @@ float fann_train_epoch_incremental(struct fann *ann, struct fann_train_data *dat
 }
 
 /*
- * Train for one epoch with the selected training algorithm 
+ * Train for one epoch with the selected training algorithm
  */
 FANN_EXTERNAL float FANN_API fann_train_epoch(struct fann *ann, struct fann_train_data *data)
 {
@@ -265,13 +265,13 @@ FANN_EXTERNAL void FANN_API fann_train_on_data(struct fann *ann, struct fann_tra
 	for(i = 1; i <= max_epochs; i++)
 	{
 		/*
-		 * train 
+		 * train
 		 */
 		error = fann_train_epoch(ann, data);
 		desired_error_reached = fann_desired_error_reached(ann, desired_error);
 
 		/*
-		 * print current output 
+		 * print current output
 		 */
 		if(epochs_between_reports &&
 		   (i % epochs_between_reports == 0 || i == max_epochs || i == 1 ||
@@ -282,11 +282,11 @@ FANN_EXTERNAL void FANN_API fann_train_on_data(struct fann *ann, struct fann_tra
 				printf("Epochs     %8d. Current error: %.10f. Bit fail %d.\n", i, error,
 					   ann->num_bit_fail);
 			}
-			else if(((*ann->callback)(ann, data, max_epochs, epochs_between_reports, 
+			else if(((*ann->callback)(ann, data, max_epochs, epochs_between_reports,
 									  desired_error, i)) == -1)
 			{
 				/*
-				 * you can break the training by returning -1 
+				 * you can break the training by returning -1
 				 */
 				break;
 			}
@@ -315,7 +315,7 @@ FANN_EXTERNAL void FANN_API fann_train_on_file(struct fann *ann, const char *fil
 #endif
 
 /*
- * shuffles training data, randomizing the order 
+ * shuffles training data, randomizing the order
  */
 FANN_EXTERNAL void FANN_API fann_shuffle_train_data(struct fann_train_data *train_data)
 {
@@ -395,7 +395,7 @@ FANN_EXTERNAL fann_type FANN_API fann_get_max_train_output(struct fann_train_dat
 }
 
 /*
- * INTERNAL FUNCTION Scales data to a specific range 
+ * INTERNAL FUNCTION Scales data to a specific range
  */
 void fann_scale_data(fann_type ** data, unsigned int num_data, unsigned int num_elem,
 					 fann_type new_min, fann_type new_max)
@@ -406,7 +406,7 @@ void fann_scale_data(fann_type ** data, unsigned int num_data, unsigned int num_
 }
 
 /*
- * INTERNAL FUNCTION Scales data to a specific range 
+ * INTERNAL FUNCTION Scales data to a specific range
  */
 FANN_EXTERNAL void FANN_API fann_scale_data_to_range(fann_type ** data, unsigned int num_data, unsigned int num_elem,
 					 fann_type old_min, fann_type old_max, fann_type new_min, fann_type new_max)
@@ -428,14 +428,14 @@ FANN_EXTERNAL void FANN_API fann_scale_data_to_range(fann_type ** data, unsigned
 			{
 				data[dat][elem] = new_min;
 				/*
-				 * printf("error %f < %f\n", temp, new_min); 
+				 * printf("error %f < %f\n", temp, new_min);
 				 */
 			}
 			else if(temp > new_max)
 			{
 				data[dat][elem] = new_max;
 				/*
-				 * printf("error %f > %f\n", temp, new_max); 
+				 * printf("error %f > %f\n", temp, new_max);
 				 */
 			}
 			else
@@ -448,7 +448,7 @@ FANN_EXTERNAL void FANN_API fann_scale_data_to_range(fann_type ** data, unsigned
 
 
 /*
- * Scales the inputs in the training data to the specified range 
+ * Scales the inputs in the training data to the specified range
  */
 FANN_EXTERNAL void FANN_API fann_scale_input_train_data(struct fann_train_data *train_data,
 														fann_type new_min, fann_type new_max)
@@ -458,7 +458,7 @@ FANN_EXTERNAL void FANN_API fann_scale_input_train_data(struct fann_train_data *
 }
 
 /*
- * Scales the inputs in the training data to the specified range 
+ * Scales the inputs in the training data to the specified range
  */
 FANN_EXTERNAL void FANN_API fann_scale_output_train_data(struct fann_train_data *train_data,
 														 fann_type new_min, fann_type new_max)
@@ -468,7 +468,7 @@ FANN_EXTERNAL void FANN_API fann_scale_output_train_data(struct fann_train_data 
 }
 
 /*
- * Scales the inputs in the training data to the specified range 
+ * Scales the inputs in the training data to the specified range
  */
 FANN_EXTERNAL void FANN_API fann_scale_train_data(struct fann_train_data *train_data,
 												  fann_type new_min, fann_type new_max)
@@ -480,7 +480,7 @@ FANN_EXTERNAL void FANN_API fann_scale_train_data(struct fann_train_data *train_
 }
 
 /*
- * merges training data into a single struct. 
+ * merges training data into a single struct.
  */
 FANN_EXTERNAL struct fann_train_data *FANN_API fann_merge_train_data(struct fann_train_data *data1,
 																	 struct fann_train_data *data2)
@@ -532,7 +532,7 @@ FANN_EXTERNAL struct fann_train_data *FANN_API fann_merge_train_data(struct fann
 		return NULL;
 	}
 	memcpy(data_input, data1->input[0], dest->num_input * data1->num_data * sizeof(fann_type));
-	memcpy(data_input + (dest->num_input*data1->num_data), 
+	memcpy(data_input + (dest->num_input*data1->num_data),
 		data2->input[0], dest->num_input * data2->num_data * sizeof(fann_type));
 
 	data_output = (fann_type *) calloc(dest->num_output * dest->num_data, sizeof(fann_type));
@@ -543,7 +543,7 @@ FANN_EXTERNAL struct fann_train_data *FANN_API fann_merge_train_data(struct fann
 		return NULL;
 	}
 	memcpy(data_output, data1->output[0], dest->num_output * data1->num_data * sizeof(fann_type));
-	memcpy(data_output + (dest->num_output*data1->num_data), 
+	memcpy(data_output + (dest->num_output*data1->num_data),
 		data2->output[0], dest->num_output * data2->num_data * sizeof(fann_type));
 
 	for(i = 0; i != dest->num_data; i++)
@@ -557,7 +557,7 @@ FANN_EXTERNAL struct fann_train_data *FANN_API fann_merge_train_data(struct fann
 }
 
 /*
- * return a copy of a fann_train_data struct 
+ * return a copy of a fann_train_data struct
  */
 FANN_EXTERNAL struct fann_train_data *FANN_API fann_duplicate_train_data(struct fann_train_data
 																		 *data)
@@ -880,7 +880,7 @@ FANN_EXTERNAL struct fann_train_data * FANN_API fann_create_train_pointer_array(
 		memcpy(data->input[i], input[i], num_input*sizeof(fann_type));
 		memcpy(data->output[i], output[i], num_output*sizeof(fann_type));
     }
-    
+
 	return data;
 }
 
@@ -898,7 +898,7 @@ FANN_EXTERNAL struct fann_train_data * FANN_API fann_create_train_array(unsigned
 		memcpy(data->input[i], &input[i*num_input], num_input*sizeof(fann_type));
 		memcpy(data->output[i], &output[i*num_output], num_output*sizeof(fann_type));
     }
-    
+
 	return data;
 }
 
@@ -928,7 +928,7 @@ FANN_EXTERNAL struct fann_train_data * FANN_API fann_create_train_from_callback(
     }
 
     return data;
-} 
+}
 
 FANN_EXTERNAL fann_type * FANN_API fann_get_train_input(struct fann_train_data * data, unsigned int position)
 {
@@ -946,7 +946,7 @@ FANN_EXTERNAL fann_type * FANN_API fann_get_train_output(struct fann_train_data 
 
 
 /*
- * INTERNAL FUNCTION Reads training data from a file descriptor. 
+ * INTERNAL FUNCTION Reads training data from a file descriptor.
  */
 struct fann_train_data *fann_read_train_from_fd(FILE * file, const char *filename)
 {
@@ -1333,7 +1333,7 @@ int fann_check_input_output_sizes(struct fann *ann, struct fann_train_data *data
         	ann->num_input, data->num_input);
         return -1;
     }
-        
+
 	if(ann->num_output != data->num_output)
 	{
 		fann_error((struct fann_error *) ann, FANN_E_OUTPUT_NO_MATCH,

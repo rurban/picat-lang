@@ -1,11 +1,11 @@
 /********************************************************************
  *   File   : emu_inst.h
  *   Author : Neng-Fa ZHOU Copyright (C) 1994-2022
- *   THIS FILE IS AUTOMATICALLY ASSEMBLED. 
+ *   THIS FILE IS AUTOMATICALLY ASSEMBLED.
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #ifndef GCC
@@ -275,9 +275,9 @@ lab_fail:
     RESET_WATER_MARKS;
     /*
       if (IS_TABLE_FRAME(AR)){
-      INITIALIZE_STACK_VARS(TABLE_FRAME_SIZE); 
+      INITIALIZE_STACK_VARS(TABLE_FRAME_SIZE);
       } else {
-      INITIALIZE_STACK_VARS(NONDET_FRAME_SIZE); 
+      INITIALIZE_STACK_VARS(NONDET_FRAME_SIZE);
       }
     */
     P = (BPLONG_PTR)AR_CPF(AR);
@@ -318,9 +318,9 @@ lab_fail0:
     P = (BPLONG_PTR)AR_CPF(AR);
     /*
       if (IS_TABLE_FRAME(AR)){
-      INITIALIZE_STACK_VARS(TABLE_FRAME_SIZE); 
+      INITIALIZE_STACK_VARS(TABLE_FRAME_SIZE);
       } else {
-      INITIALIZE_STACK_VARS(NONDET_FRAME_SIZE); 
+      INITIALIZE_STACK_VARS(NONDET_FRAME_SIZE);
       }
     */
     CONTCASE;
@@ -5053,7 +5053,7 @@ lab_conc:
       Do special case of append fast. This instruction is followed by:
       label(lab0)
       switch_cons(Y3,lab1,lab2,lab3,Yt,Y3),
-      unify_cons(Y1,u(Yt),v(Y1)) 
+      unify_cons(Y1,u(Yt),v(Y1))
       tr_det_call0(lab0).
       ** iterate through elements in Y3 if Y1 is a plain variable.
       */
@@ -7725,7 +7725,7 @@ lab_end_delay:
     if (FRAME_IS_START(AR)) {
     } else if (!FRAME_IS_CLONE(AR)) {
         /*
-          if (AR>B) { 
+          if (AR>B) {
           op1 = (BPLONG)AR_STATUS_ADDR(AR);
           PUSHTRAILC_ATOMIC(op1,FOLLOW(op1));
           }
@@ -8381,10 +8381,10 @@ lab_bcp:
         if (ISINT(op2)) {
             if (op2 == op3) {  /* both 1 or both 0*/
                 /*
-                  if (AR>B) { 
+                  if (AR>B) {
                   op1 = (BPLONG)AR_STATUS_ADDR(AR);
                   PUSHTRAILC_ATOMIC(op1,FOLLOW(op1));
-                  } 
+                  }
                 */
                 AR_STATUS(AR) = SUSP_EXIT;
                 CONTCASE;
@@ -8628,13 +8628,13 @@ case table_produce:  /* E */
 #endif
 lab_table_produce:
     /* The table modes and cardinality are stored as operands of a table_mode instruction
-        
+
        table_allocate Arity,Size,Sym,MaxS
        table_mode CallMode,OptArg,CardNTArg
-         
+
        let p be the pointer to the beginning of the table_allocate instruction.
-       the opcode of the next instruction after table_allocate is FOLLOW(p+5). 
-       If the instruction is table_mode, then OptArg can be retrieved 
+       the opcode of the next instruction after table_allocate is FOLLOW(p+5).
+       If the instruction is table_mode, then OptArg can be retrieved
        as FOLLOW(p+7) and CardNTArg as FOLLOW(p+8). In CardNTArg, the 27th bit
        from bottom indicates if the last argument is nt (not-tabled) and the bits
        from 1-26 are for the cardinality limit.
@@ -8680,8 +8680,8 @@ lab_table_produce:
                   sreg = AR;
                   ROLL_CHOICE_POINTS(sreg);
                   B = AR;
-                  HB = (BPLONG_PTR)AR_H(B);                               
-                  if (SF>AR) LOCAL_TOP = (BPLONG_PTR)AR_TOP(AR);  
+                  HB = (BPLONG_PTR)AR_H(B);
+                  if (SF>AR) LOCAL_TOP = (BPLONG_PTR)AR_TOP(AR);
                 */
                 BACKTRACK;
             }
@@ -8752,7 +8752,7 @@ case table_consume:  /* E */
 #endif
 lab_table_consume:
     /* The table modes and cardinality are stored as operands of a table_mode instruction
-        
+
        table_allocate Arity,Size,Sym,MaxS
        table_mode CallMode,OptArg,CardNTArg
     */
@@ -8814,7 +8814,7 @@ lab_table_check_completion:
     if (AR_IS_SCC_ROOT(AR, subgoal_entry)) { /* the root of the current SCC */
         if (!SUBGOAL_IS_LOOPING(subgoal_entry) || !SUBGOAL_ANS_IS_REVISED(subgoal_entry)) {
             /*
-              printf("COMPLETE "); print_subgoal_entry_only(subgoal_entry); 
+              printf("COMPLETE "); print_subgoal_entry_only(subgoal_entry);
               if (SUBGOAL_IS_LOOPING(subgoal_entry)) printf("LOOPING"); else printf("NOLOOPING");printf("\n");
             */
             complete_scc_elms(subgoal_entry);
@@ -8903,7 +8903,7 @@ lab_table_set_new_bit:
       #else
       op2 = AR_TABLE_NEW_BITS(AR);
       op2 = op2 & ((((unsigned int)FFFF)<<(NBITS_IN_LONG-op1)) >> (NBITS_IN_LONG-op1));
-      if (table_flag==1){ 
+      if (table_flag==1){
       AR_TABLE_NEW_BITS(AR) = (op2 | (0x1L<<op1));
       } else {
       AR_TABLE_NEW_BITS(AR) = op2;
@@ -8990,10 +8990,10 @@ lab_bcp1:
         op2 = FOLLOW(AR+i); DEREF_NONVAR(op2);
         if (op2 == BP_ONE) {  /* satisfied */
             /*
-              if (AR>B) { 
+              if (AR>B) {
               op1 = (BPLONG)AR_STATUS_ADDR(AR);
               PUSHTRAILC_ATOMIC(op1,FOLLOW(op1));
-              } 
+              }
             */
             AR_STATUS(AR) = SUSP_EXIT;
             CONTCASE;

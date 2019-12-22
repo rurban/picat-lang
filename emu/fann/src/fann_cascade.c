@@ -1,17 +1,17 @@
 /*
   Fast Artificial Neural Network Library (fann)
   Copyright (C) 2003-2016 Steffen Nissen (steffen.fann@gmail.com)
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -79,18 +79,18 @@ FANN_EXTERNAL void FANN_API fann_cascadetrain_on_data(struct fann *ann, struct f
 					 i-1, error, ann->MSE_value, total_epochs, ann->num_bit_fail);
 				if((ann->last_layer-2) != ann->first_layer)
 				{
-					printf(". candidate steepness %.2f. function %s", 
+					printf(". candidate steepness %.2f. function %s",
 					   (ann->last_layer-2)->first_neuron->activation_steepness,
 					   FANN_ACTIVATIONFUNC_NAMES[(ann->last_layer-2)->first_neuron->activation_function]);
 				}
 				printf("\n");
 			}
-			else if((*ann->callback) (ann, data, max_neurons, 
-				neurons_between_reports, desired_error, total_epochs) == -1) 
+			else if((*ann->callback) (ann, data, max_neurons,
+				neurons_between_reports, desired_error, total_epochs) == -1)
 			{
 				/* you can break the training by returning -1 */
 				break;
-			}					 
+			}					
 		}
 
 		if(desired_error_reached == 0)
@@ -351,7 +351,7 @@ void initialize_candidate_weights(struct fann *ann, unsigned int first_con, unsi
 
 	for(i = first_con; i < last_con; i++)
 	{
-		if(i == bias_weight) 
+		if(i == bias_weight)
 			ann->weights[i] = fann_rand(-scale_factor, scale_factor);
 		else
 			ann->weights[i] = fann_rand(0,scale_factor);
@@ -758,8 +758,8 @@ fann_type fann_train_candidates_epoch(struct fann *ann, struct fann_train_data *
 	for(i = 1; i < num_cand; i++)
 	{
 		/*struct fann_neuron *cand = ann->first_layer->first_neuron + ann->total_neurons + 1 + i;
-		 * printf("candidate[%d] = activation: %s, steepness: %f, score: %f\n", 
-		 * i, FANN_ACTIVATIONFUNC_NAMES[cand->activation_function], 
+		 * printf("candidate[%d] = activation: %s, steepness: %f, score: %f\n",
+		 * i, FANN_ACTIVATIONFUNC_NAMES[cand->activation_function],
 		 * cand->activation_steepness, ann->cascade_candidate_scores[i]); */
 
 		if(ann->cascade_candidate_scores[i] > best_score)
@@ -996,7 +996,7 @@ FANN_GET(enum fann_activationfunc_enum *, cascade_activation_functions)
 FANN_EXTERNAL void FANN_API fann_set_cascade_activation_functions(struct fann *ann,
 														 enum fann_activationfunc_enum *
 														 cascade_activation_functions,
-														 unsigned int 
+														 unsigned int
 														 cascade_activation_functions_count)
 {
 	if(ann->cascade_activation_functions_count != cascade_activation_functions_count)
@@ -1004,8 +1004,8 @@ FANN_EXTERNAL void FANN_API fann_set_cascade_activation_functions(struct fann *a
 		ann->cascade_activation_functions_count = cascade_activation_functions_count;
 		
 		/* reallocate mem */
-		ann->cascade_activation_functions = 
-			(enum fann_activationfunc_enum *)realloc(ann->cascade_activation_functions, 
+		ann->cascade_activation_functions =
+			(enum fann_activationfunc_enum *)realloc(ann->cascade_activation_functions,
 			ann->cascade_activation_functions_count * sizeof(enum fann_activationfunc_enum));
 		if(ann->cascade_activation_functions == NULL)
 		{
@@ -1014,7 +1014,7 @@ FANN_EXTERNAL void FANN_API fann_set_cascade_activation_functions(struct fann *a
 		}
 	}
 	
-	memmove(ann->cascade_activation_functions, cascade_activation_functions, 
+	memmove(ann->cascade_activation_functions, cascade_activation_functions,
 		ann->cascade_activation_functions_count * sizeof(enum fann_activationfunc_enum));
 }
 
@@ -1024,7 +1024,7 @@ FANN_GET(fann_type *, cascade_activation_steepnesses)
 FANN_EXTERNAL void FANN_API fann_set_cascade_activation_steepnesses(struct fann *ann,
 														   fann_type *
 														   cascade_activation_steepnesses,
-														   unsigned int 
+														   unsigned int
 														   cascade_activation_steepnesses_count)
 {
 	if(ann->cascade_activation_steepnesses_count != cascade_activation_steepnesses_count)
@@ -1032,8 +1032,8 @@ FANN_EXTERNAL void FANN_API fann_set_cascade_activation_steepnesses(struct fann 
 		ann->cascade_activation_steepnesses_count = cascade_activation_steepnesses_count;
 		
 		/* reallocate mem */
-		ann->cascade_activation_steepnesses = 
-			(fann_type *)realloc(ann->cascade_activation_steepnesses, 
+		ann->cascade_activation_steepnesses =
+			(fann_type *)realloc(ann->cascade_activation_steepnesses,
 			ann->cascade_activation_steepnesses_count * sizeof(fann_type));
 		if(ann->cascade_activation_steepnesses == NULL)
 		{
@@ -1042,6 +1042,6 @@ FANN_EXTERNAL void FANN_API fann_set_cascade_activation_steepnesses(struct fann 
 		}
 	}
 	
-	memmove(ann->cascade_activation_steepnesses, cascade_activation_steepnesses, 
+	memmove(ann->cascade_activation_steepnesses, cascade_activation_steepnesses,
 		ann->cascade_activation_steepnesses_count * sizeof(fann_type));
 }

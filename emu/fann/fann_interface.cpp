@@ -284,7 +284,7 @@ extern "C" {
 		picat_array_to_fann_array(in, input);
 
 		int out_num = fann_get_num_output(ann);
-		fann_type *temp = (fann_type *)calloc(out_num, sizeof(fann_type)); 
+		fann_type *temp = (fann_type *)calloc(out_num, sizeof(fann_type));
 		temp = fann_run(ann, input);
 
 
@@ -454,7 +454,7 @@ extern "C" {
 		TERM nid = picat_get_arg(1, nn);
 		fann* ann = anns[picat_get_integer(nid)];
 
-		fann_type *input = (fann_type *)calloc(fann_get_num_input(ann), sizeof(unsigned int)); 
+		fann_type *input = (fann_type *)calloc(fann_get_num_input(ann), sizeof(unsigned int));
 		fann_type *desired_output = (fann_type *)calloc(fann_get_num_output(ann), sizeof(unsigned int));
 
 		picat_array_to_fann_array(in, input);
@@ -533,7 +533,7 @@ extern "C" {
 		fann* ann = anns[picat_get_integer(nid)];
 
 		TERM did = picat_get_arg(1, d);
-		fann_train_data *data = training_data[picat_get_integer(did)]; 
+		fann_train_data *data = training_data[picat_get_integer(did)];
 
 		int max_epochs = picat_get_integer(max_e);
 		int epochs_between_reports = picat_get_integer(ep_bet_rep);
@@ -573,7 +573,7 @@ extern "C" {
 		fann* ann = anns[picat_get_integer(nid)];
 
 		TERM did = picat_get_arg(1, d);
-		fann_train_data *data = training_data[picat_get_integer(did)]; 
+		fann_train_data *data = training_data[picat_get_integer(did)];
 
 		float temp = fann_train_epoch(ann, data);
 

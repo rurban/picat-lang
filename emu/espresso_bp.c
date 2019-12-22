@@ -7,7 +7,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "espresso.h"
@@ -29,7 +29,7 @@ extern int after_setup_pla(int needs_dcset, int needs_offset, pPLA PLA);
    InFlag   : 1 or 0, indicating if it's a 'X :: D' or 'X notin D' domain constraint.
    Cls-ClsR : A list of clauses to be returned.
 
-   Let V be the variable encoded by BNs (log-encoding), Vals be {a1,a2,...,an}. If InFlag=1, then Cls encodes 
+   Let V be the variable encoded by BNs (log-encoding), Vals be {a1,a2,...,an}. If InFlag=1, then Cls encodes
 
                         V = a1 \/ V = a2 \/ ... \/ V = an.
 
@@ -154,7 +154,7 @@ pPLA init_PLA(int n) {
 }
 
 /*
-  Add each domain value as a cube into PLA. Since CNF is needed, 
+  Add each domain value as a cube into PLA. Since CNF is needed,
   the output of an in-value is 0, and the output of an out-value is 1.
   Vals must be a sorted list with no duplicates.
 */
@@ -358,7 +358,7 @@ int c_call_espresso_pb() {
 
 /*
   Let Coes = [A1,A2,...,An]. For each value in 0..2**n-1, get the valuation for V1,V2,...,Vn.
-  If the constraint sum(Ai*Vi) Rel Const is true, then the cube is 0; 
+  If the constraint sum(Ai*Vi) Rel Const is true, then the cube is 0;
   otherwise, the cube is 1 (Note it's turned upside down because CNF is computed, not DNF).
 */
 void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA) {

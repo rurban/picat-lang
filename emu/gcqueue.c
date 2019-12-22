@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -158,7 +158,7 @@ start:
 }
 
 /*****************************************************
-set the corresponding mask bits of the cells at 
+set the corresponding mask bits of the cells at
 addr, addr+1,...,addr+size-1 to be 1
    -------------------
    |     |       |   |

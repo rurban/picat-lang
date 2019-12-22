@@ -70,13 +70,13 @@ FANN_EXTERNAL struct fann *FANN_API fann_create_standard(unsigned int num_layers
 	return ann;
 }
 
-FANN_EXTERNAL struct fann *FANN_API fann_create_standard_array(unsigned int num_layers, 
+FANN_EXTERNAL struct fann *FANN_API fann_create_standard_array(unsigned int num_layers,
 															   const unsigned int *layers)
 {
 	return fann_create_sparse_array(1, num_layers, layers);	
 }
 
-FANN_EXTERNAL struct fann *FANN_API fann_create_sparse(float connection_rate, 
+FANN_EXTERNAL struct fann *FANN_API fann_create_sparse(float connection_rate,
 													   unsigned int num_layers, ...)
 {
 	struct fann *ann;
@@ -1420,7 +1420,7 @@ FANN_EXTERNAL void FANN_API fann_get_connection_array(struct fann *ann, struct f
 
     source_index = 0;
     destination_index = 0;
-    
+
     /* The following assumes that the last unused bias has no connections */
 
     /* for each layer */
@@ -1632,8 +1632,8 @@ struct fann *fann_allocate_structure(unsigned int num_layers)
 	ann->cascade_min_cand_epochs = 50;
 	ann->cascade_candidate_scores = NULL;
 	ann->cascade_activation_functions_count = 10;
-	ann->cascade_activation_functions = 
-		(enum fann_activationfunc_enum *)calloc(ann->cascade_activation_functions_count, 
+	ann->cascade_activation_functions =
+		(enum fann_activationfunc_enum *)calloc(ann->cascade_activation_functions_count,
 							   sizeof(enum fann_activationfunc_enum));
 	if(ann->cascade_activation_functions == NULL)
 	{
@@ -1641,7 +1641,7 @@ struct fann *fann_allocate_structure(unsigned int num_layers)
 		free(ann);
 		return NULL;
 	}
-							   
+							
 	ann->cascade_activation_functions[0] = FANN_SIGMOID;
 	ann->cascade_activation_functions[1] = FANN_SIGMOID_SYMMETRIC;
 	ann->cascade_activation_functions[2] = FANN_GAUSSIAN;
@@ -1654,8 +1654,8 @@ struct fann *fann_allocate_structure(unsigned int num_layers)
 	ann->cascade_activation_functions[9] = FANN_COS;
 
 	ann->cascade_activation_steepnesses_count = 4;
-	ann->cascade_activation_steepnesses = 
-		(fann_type *)calloc(ann->cascade_activation_steepnesses_count, 
+	ann->cascade_activation_steepnesses =
+		(fann_type *)calloc(ann->cascade_activation_steepnesses_count,
 							   sizeof(fann_type));
 	if(ann->cascade_activation_steepnesses == NULL)
 	{
@@ -1687,7 +1687,7 @@ struct fann *fann_allocate_structure(unsigned int num_layers)
  	ann->sarprop_step_error_shift = 1.385f;
  	ann->sarprop_temperature = 0.015f;
  	ann->sarprop_epoch = 0;
- 
+
 	fann_init_error_data((struct fann_error *) ann);
 
 #ifdef FIXEDFANN
@@ -1845,13 +1845,13 @@ void fann_seed_rand()
 	}
 	else
 	{
-	        if(fread(&foo, sizeof(foo), 1, fp) != 1) 
+	        if(fread(&foo, sizeof(foo), 1, fp) != 1)
 	        {
   		       gettimeofday(&t, NULL);
 		       foo = t.tv_usec;
 #ifdef DEBUG
 		       printf("unable to read from /dev/urandom\n");
-#endif		      
+#endif		
 		}
 		fclose(fp);
 	}

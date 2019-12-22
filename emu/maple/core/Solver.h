@@ -3,7 +3,7 @@ MiniSat -- Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
            Copyright (c) 2007-2010, Niklas Sorensson
 
 Chanseok Oh's MiniSat Patch Series -- Copyright (c) 2015, Chanseok Oh
- 
+
 Maple_LCM, Based on MapleCOMSPS_DRUP -- Copyright (c) 2017, Mao Luo, Chu-Min LI, Fan Xiao: implementing a learnt clause minimisation approach
 Reference: M. Luo, C.-M. Li, F. Xiao, F. Manya, and Z. L. , “An effective learnt clause minimization approach for cdcl sat solvers,” in IJCAI-2017, 2017, pp. to–appear.
 
@@ -12,7 +12,7 @@ Maple_LCM_Dist, Based on Maple_LCM -- Copyright (c) 2017, Fan Xiao, Chu-Min LI, 
 MapleLCMDistChronoBT, based on Maple_LCM_Dist -- Copyright (c), Alexander Nadel, Vadim Ryvchin: "Chronological Backtracking" in SAT-2018, pp. 111-121.
 
 MapleLCMDistChronoBT-DL, based on MapleLCMDistChronoBT -- Copyright (c), Stepan Kochemazov, Oleg Zaikin, Victor Kondratiev, Alexander Semenov: The solver was augmented with heuristic that moves duplicate learnt clauses into the core/tier2 tiers depending on a number of parameters.
- 
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -137,7 +137,7 @@ public:
     void    toDimacs     (const char* file, Lit p);
     void    toDimacs     (const char* file, Lit p, Lit q);
     void    toDimacs     (const char* file, Lit p, Lit q, Lit r);
-    
+
     // Variable mode:
     //
     void    setPolarity    (Var v, bool b); // Declare which polarity the decision heuristic should use for a variable. Requires mode 'polarity_user'.
@@ -205,7 +205,7 @@ public:
 
     // duplicate learnts version
     uint64_t       VSIDS_props_limit;
-    uint32_t       min_number_of_learnts_copies;    
+    uint32_t       min_number_of_learnts_copies;
     uint32_t       dupl_db_init_size;
     uint32_t       max_lbd_dup;
     std::chrono::microseconds duptime;
@@ -221,9 +221,9 @@ public:
     // duplicate learnts version
     uint64_t duplicates_added_conflicts;
     uint64_t duplicates_added_tier2;
-    uint64_t duplicates_added_minimization;    
+    uint64_t duplicates_added_minimization;
     uint64_t dupl_db_size;
-    
+
     // duplicate learnts version
 
     vec<uint32_t> picked;
@@ -260,7 +260,7 @@ protected:
         bool operator () (Var x, Var y) const { return activity[x] > activity[y]; }
         VarOrderLt(const vec<double>&  act) : activity(act) { }
     };
-    
+
     struct ConflictData
 	{
 		ConflictData() :
@@ -309,8 +309,8 @@ protected:
     next_L_reduce;
 
     ClauseAllocator     ca;
-    
-    // duplicate learnts version    
+
+    // duplicate learnts version
     std::map<int32_t,std::map<uint32_t,std::unordered_map<uint64_t,uint32_t>>>  ht;
     uint32_t     reduceduplicates         ();         // Reduce the duplicates DB
     // duplicate learnts version
@@ -387,9 +387,9 @@ protected:
     int      decisionLevel    ()      const; // Gives the current decisionlevel.
     uint32_t abstractLevel    (Var x) const; // Used to represent an abstraction of sets of decision levels.
     CRef     reason           (Var x) const;
-    
+
     ConflictData FindConflictLevel(CRef cind);
-    
+
 public:
     int      level            (Var x) const;
 protected:
@@ -566,8 +566,8 @@ inline int      Solver::nLearnts      ()      const   { return learnts_core.size
 inline int      Solver::nVars         ()      const   { return vardata.size(); }
 inline int      Solver::nFreeVars     ()      const   { return (int)dec_vars - (trail_lim.size() == 0 ? trail.size() : trail_lim[0]); }
 inline void     Solver::setPolarity   (Var v, bool b) { polarity[v] = b; }
-inline void     Solver::setDecisionVar(Var v, bool b) 
-{ 
+inline void     Solver::setDecisionVar(Var v, bool b)
+{
     if      ( b && !decision[v]) dec_vars++;
     else if (!b &&  decision[v]) dec_vars--;
 

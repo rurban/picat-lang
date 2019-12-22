@@ -2,14 +2,14 @@
  *   File   : bigint.c
  *   Author : Neng-Fa ZHOU
  *   Updated: Last updated Aug. 2013
- *   Purpose: Simple (but slow) implementation of arithmetic on big integers 
+ *   Purpose: Simple (but slow) implementation of arithmetic on big integers
  *            Based on the  C++ Big Integer Library
  *            http://mattmccutchen.net/bigint/
  *            Matt McCutchen <matt@mattmccutchen.net>
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <string.h>
@@ -21,17 +21,17 @@
 
 /* A big integer is represented as a structure $bigint(SignSize,Ds)
    where Ds is a list of base-(2^28) "digits" (from the most significant
-   to the least significant digits), and SignSize is a primitive integer 
-   whose sign indicates the sign of the big integer, and magnitude 
-   indicates the length of Ds. A big integer x must be 
+   to the least significant digits), and SignSize is a primitive integer
+   whose sign indicates the sign of the big integer, and magnitude
+   indicates the length of Ds. A big integer x must be
 
    x > 268435455  or x < -268435455
 
-   Example: 
+   Example:
 
-   1111222233334444555566667777888899990000 
+   1111222233334444555566667777888899990000
 
-   is represented as 
+   is represented as
 
    $bigint(5,[214013,165733330,21745286,83495097,146178544]).
 
@@ -169,7 +169,7 @@ int c_test_bigint() {
       BPLONG op = bp_int_to_bigint(536870910);
       BPLONG mop = bp_sub_bigint_bigint(zero,op);
       bp_print_bigint(mop);
-      printf("-op= "); write_term(mop);  printf("\n");  
+      printf("-op= "); write_term(mop);  printf("\n");
       BPLONG ten = bp_int_to_bigint(10);
       BPLONG di = bp_div_bigint_bigint(op,ten);
       BPLONG re = bp_mod_bigint_bigint(op,ten);
@@ -451,7 +451,7 @@ void bp_mul_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
  *        Turn on bit i2 of block i of the quotient q.
  *        Copy subtractBuf back into r.
  *    Otherwise bit i2 of block i of q remains off, and r is unchanged.
- * 
+ *
  * Eventually q will contain the entire quotient, and r will
  * be left with the remainder.
  */
@@ -478,7 +478,7 @@ void bp_div_ubig_ubig(BPLONG xsize, UBIGINT x, BPLONG ysize, UBIGINT y, BPLONG_P
             i2--;
             /*
              * Subtract y, shifted left i blocks and i2 bits, from r,
-             * and store the answer in subtractBuf.  
+             * and store the answer in subtractBuf.
              */
             borrow = 0;
             for (j = 0, k = i; j <= ysize; j++, k++) {
@@ -895,7 +895,7 @@ BPLONG bp_div_bigint_bigint(BPLONG op1, BPLONG op2) {
 
     /*
      * It appears that we need a total of 3 corrections:
-     * Decrease the magnitude of x; 
+     * Decrease the magnitude of x;
      * Increase the magnitude of q;
      * Find r = (y - 1) - r and give it the desired sign.
      */
@@ -951,7 +951,7 @@ BPLONG bp_mod_bigint_bigint(BPLONG op1, BPLONG op2) {
 
     /*
      * It appears that we need a total of 3 corrections:
-     * Decrease the magnitude of x; 
+     * Decrease the magnitude of x;
      * Increase the magnitude of q;
      * Find r = (y - 1) - r and give it the desired sign.
      */

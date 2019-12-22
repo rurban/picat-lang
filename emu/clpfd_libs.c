@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "bprolog.h"
@@ -399,7 +399,7 @@ int nary_interval_consistent_nocoe(n)
 
    x(i) >= (l(i)-max(t(i-1)))/a(i)  if a(i) > 0
    x(i) =< (l(i)-min(t(i-1)))/a(i)  if a(i) < 0
-   
+
    t(i-1) >= l(i)-a(i)*max(x(i)) if a(i) > 0
    t(i-1) >= l(i)-a(i)*min(x(i)) if a(i) < 0
 */
@@ -974,12 +974,12 @@ int c_REDUCE_DOMAINS_IC_EQ() {
         arreg = old_arreg;
         return BP_FALSE;
     }
-        
+
     install_coes_vars_to_stack_rev(n, Terms, Const);
     res = nary_interval_consistent_eq(n);
     arreg = old_arreg;
     /*
-      printf("<=reduce %d\n",res);  
+      printf("<=reduce %d\n",res);
       write_term(Terms); printf("\n");
       write_term(Const); printf("\n");
     */
@@ -1007,10 +1007,10 @@ int c_REDUCE_DOMAINS_IC_GE() {
         arreg = old_arreg;
         return BP_FALSE;
     }
-        
+
     install_coes_vars_to_stack_rev(n, Terms, Const);
     res = nary_interval_consistent_ge(n);
-        
+
     arreg = old_arreg;
     return res;
 }
@@ -1312,10 +1312,10 @@ int b_PROP_MIN_c(BPLONG n) {
    (a domain with holes), and Z's domain is small (which means both X's and Y's domains
    are small as well). Note that the constraint is already interval consistent.
 
-   For each ex in X's domain and ey in Y's domain, the value ex+ey is supported. 
+   For each ex in X's domain and ey in Y's domain, the value ex+ey is supported.
    For each ez in Z's domain, if ez is not supported, then remove ez from Z's domain.
 
-   For each ey in Y's domain and ez in Z's domain, the value ez-ey is supported. 
+   For each ey in Y's domain and ez in Z's domain, the value ez-ey is supported.
    For each ex in X's domain, if ex is not supported, then remove ex from X's domain.
 */
 /*
@@ -1326,18 +1326,18 @@ int b_PROP_MIN_c(BPLONG n) {
   BPLONG_PTR dv_ptr_x, dv_ptr_y, dv_ptr_z, tmp_dv_ptr;
   int i, flag = 0;
   int mark_words[NUM_MARK_WORDS];
-  
+
   X = ARG(1,3);
   Y = ARG(2,3);
   Z = ARG(3,3);
 
   printf("=> AC_ADD "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
-  
+
   DEREF_NONVAR(Z);
   if (IS_SUSP_VAR(Z)){
   dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
   if (!IS_SMALL_DOMAIN(dv_ptr_z)) return BP_TRUE;
-  if (!IS_IT_DOMAIN(dv_ptr_z)) flag = 1;        
+  if (!IS_IT_DOMAIN(dv_ptr_z)) flag = 1;
   min_z = DV_first(dv_ptr_z);  max_z = DV_last(dv_ptr_z);
   } else {
   dv_ptr_z = NULL;
@@ -1355,34 +1355,34 @@ int b_PROP_MIN_c(BPLONG n) {
   DEREF_NONVAR(Y);
   if (IS_SUSP_VAR(Y)){
   dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
-  if (!IS_IT_DOMAIN(dv_ptr_y)) flag = 1;        
+  if (!IS_IT_DOMAIN(dv_ptr_y)) flag = 1;
   min_y = DV_first(dv_ptr_y); max_y = DV_last(dv_ptr_y);
   } else {
   dv_ptr_y = NULL;
   min_y = max_y = INTVAL(Y);
   }
-  if (flag == 0) return BP_TRUE;                     // none of the domains is a bit-vector domain 
+  if (flag == 0) return BP_TRUE;                     // none of the domains is a bit-vector domain
 
   if (dv_ptr_z != NULL && IS_IT_DOMAIN(dv_ptr_z))
   goto lab_ac_on_z;
   if (dv_ptr_x != NULL && IS_IT_DOMAIN(dv_ptr_x))
   goto lab_ac_on_x;
-  if (dv_ptr_y != NULL && IS_IT_DOMAIN(dv_ptr_y)) {  // swap X with Y 
+  if (dv_ptr_y != NULL && IS_IT_DOMAIN(dv_ptr_y)) {  // swap X with Y
   tmp_dv_ptr = dv_ptr_x; dv_ptr_x = dv_ptr_y; dv_ptr_y = tmp_dv_ptr;
   min_y = min_x; max_y = max_x;
   min_x = DV_first(dv_ptr_x); max_x = DV_last(dv_ptr_x);
   goto lab_ac_on_x;
   }
-  return BP_TRUE;                                    // none of the domains is interval 
+  return BP_TRUE;                                    // none of the domains is interval
 
-  lab_ac_on_x:  
+  lab_ac_on_x:
   size = max_x - min_x + 1;
-  if (size > NUM_MARK_WORDS) return BP_TRUE;         // no enough space for marking 
+  if (size > NUM_MARK_WORDS) return BP_TRUE;         // no enough space for marking
 
   for (i = 0; i < size; i++){
-  mark_words[i] = 0;                               // initialize the marks, no value is supported 
+  mark_words[i] = 0;                               // initialize the marks, no value is supported
   }
-  
+
   for (ez = min_z; ez <= max_z; ez++){
   if (dv_ptr_z != NULL && !dm_true(dv_ptr_z, ez)) continue;
   for (ey = min_y; ey <= max_y; ey++){
@@ -1398,15 +1398,15 @@ int b_PROP_MIN_c(BPLONG n) {
   }
   printf("<= AC_ADD "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
   return BP_TRUE;
-  
+
   lab_ac_on_z:
   size = max_z - min_z + 1;
-  if (size > NUM_MARK_WORDS) return BP_TRUE;         // no enough space for marking 
+  if (size > NUM_MARK_WORDS) return BP_TRUE;         // no enough space for marking
 
   for (i = 0; i < size; i++){
-  mark_words[i] = 0;                               // initialize the marks, no value is supported 
+  mark_words[i] = 0;                               // initialize the marks, no value is supported
   }
-  
+
   for (ex = min_x; ex <= max_x; ex++){
   if (dv_ptr_x != NULL && !dm_true(dv_ptr_x, ex)) continue;
   for (ey = min_y; ey <= max_y; ey++){

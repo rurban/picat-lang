@@ -512,7 +512,7 @@ extern struct cdata_struct cdata, temp_cdata_save;
 /* compl.c */ extern void simp_comp (pset *T, pset_family *Tnew, pset_family *Tbar);
 /* contain.c */ extern int d1_rm_equal (register pset *A1, qsort_compare_func compare);
 /* contain.c */ extern int rm2_contain (pset *A1, pset *B1);
-/* contain.c */ extern int rm2_equal (register pset *A1, register pset *B1, pset *E1, qsort_compare_func compare); 
+/* contain.c */ extern int rm2_equal (register pset *A1, register pset *B1, pset *E1, qsort_compare_func compare);
 /* contain.c */ extern int rm_contain (pset *A1);
 /* contain.c */ extern int rm_equal (pset *A1, qsort_compare_func compare);
 /* contain.c */ extern int rm_rev_contain (pset *A1);

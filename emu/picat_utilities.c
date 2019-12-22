@@ -5,7 +5,7 @@
 TERM cstring_to_picat(char* ch_ptr, int n) {
   BPLONG ret_lst;
   BPLONG_PTR ret_lst_ptr;
-  
+
   ret_lst_ptr = &ret_lst;
 
   while (n > 0) {

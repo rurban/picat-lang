@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -294,7 +294,7 @@ et_OUT_OF_MEMORY,
     et_NON_EMPTY_LIST,
     et_NOT_LESS_THAN_ZERO,
     et_NUMBER,
-    et_NEGATION,  
+    et_NEGATION,
     et_OPEN,
     et_OPERATOR,
     et_OPERATOR_PRIORITY,

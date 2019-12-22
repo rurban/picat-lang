@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #ifdef _WIN32
@@ -153,7 +153,7 @@ int b_POST_EVENT_ccc(x, no, e)
    and Prolog cannot access Java's representation of components.
    Java and Prolog communicate through component id. Whenver an
    event occurs in a component, Prolog is notified about the id.
-   Since Prolog maintains a database of all the components (pointered 
+   Since Prolog maintains a database of all the components (pointered
    to by breg0), it can get the id of the component.
 */
 void cg_initialize() {
@@ -184,7 +184,7 @@ void cg_initialize() {
     /* write_term(default_window); */
     /* done in init.c
        for (i=2;i<=NUM_CG_GLOBALS;i++){
-       FOLLOW(breg0+i) = (BPLONG)(breg0+i); 
+       FOLLOW(breg0+i) = (BPLONG)(breg0+i);
        }
     */
 #ifdef _WIN32
@@ -422,7 +422,7 @@ BPLONG cg_lookup_component(type, comp_no)
     // if (gc_is_working) {quit("Strange");}
     list = FOLLOW(breg0+(type-ActionPerformed+2));
     /*
-      printf("lookup event handler comp_no= "); write_term(comp_no); 
+      printf("lookup event handler comp_no= "); write_term(comp_no);
       printf("list=%x,breg=%x breg->t=%x heap_top=%x trail_top=%x\n",list,breg,AR_T(breg),heap_top,trail_top);
     */
     DEREF(list);
@@ -446,7 +446,7 @@ BPLONG register_event_source(event_no, source)
     BPLONG comp_no;
     BPLONG res;
     /*
-      printf("register_event_source %d",event_no); write_term(source); printf("\n"); 
+      printf("register_event_source %d",event_no); write_term(source); printf("\n");
     */
     DEREF(source);
     if (!is_correct_event_source(event_no, source)) {

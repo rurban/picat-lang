@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "basic.h"
@@ -14,7 +14,7 @@
 #define access _access
 #endif
 /*
-  #define DEBUG_DIS 
+  #define DEBUG_DIS
 */
 static FILE *filedes;
 
@@ -65,10 +65,10 @@ void dis_data()
   void symbol_table_statistics(int *num_of_empty_buckets, int *len_of_longest_chain){
   SYM_REC_PTR psc_ptr;
   int i,count;
-  
+
   *num_of_empty_buckets = 0;
   *len_of_longest_chain = 0;
-  
+
   for (i = 0; i < BUCKET_CHAIN; ++i) {
   psc_ptr = hash_table[i];
   count = 0;
@@ -78,7 +78,7 @@ void dis_data()
   }
   if (count==0)
   *num_of_empty_buckets = *num_of_empty_buckets+1;
-  if (count > *len_of_longest_chain)    
+  if (count > *len_of_longest_chain)
   *len_of_longest_chain = count;
   }
   }

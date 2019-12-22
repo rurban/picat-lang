@@ -20,8 +20,8 @@ static int verify_cover(sm_matrix *A, sm_row *cover);
 
 sm_row *
 sm_minimum_cover(sm_matrix *A, int *weight, int heuristic, int debug_level)
-             
-            
+
+
               		/* set to 1 for a heuristic covering */
                 	/* how deep in the recursion to provide info */
 {
@@ -78,7 +78,7 @@ sm_minimum_cover(sm_matrix *A, int *weight, int heuristic, int debug_level)
 		A->nrows, A->ncols, nelem, sparsity * 100.0);
 	(void) printf("cover size = %d elements\n", best->row->length);
 	(void) printf("cover cost = %d\n", best->cost);
-	(void) printf("time       = %s\n", 
+	(void) printf("time       = %s\n",
 			util_print_time(util_cpu_time() - stats.start_time));
 	(void) printf("components = %d\n", stats.comp_count);
 	(void) printf("gimpel     = %d\n", stats.gimpel_count);
@@ -103,7 +103,7 @@ sm_minimum_cover(sm_matrix *A, int *weight, int heuristic, int debug_level)
  *      and can be returned without further work.
  */
 
-solution_t * 
+solution_t *
 sm_mincov(sm_matrix *A, solution_t *select, int *weight, int lb, int bound, int depth, stats_t *stats)
 {
     sm_matrix *A1, *A2, *L, *R;
@@ -151,8 +151,8 @@ sm_mincov(sm_matrix *A, solution_t *select, int *weight, int lb, int bound, int 
     if (debug) {
         (void) printf("ABSMIN[%2d]%s", depth, stats->component ? "*" : " ");
         (void) printf(" %3dx%3d sel=%3d bnd=%3d lb=%3d %12s ",
-            A->nrows, A->ncols, select->cost + stats->gimpel, 
-	    bound + stats->gimpel, lb_new + stats->gimpel, 
+            A->nrows, A->ncols, select->cost + stats->gimpel,
+	    bound + stats->gimpel, lb_new + stats->gimpel,
 	    util_print_time(util_cpu_time()-stats->start_time));
     }
 
@@ -167,8 +167,8 @@ sm_mincov(sm_matrix *A, solution_t *select, int *weight, int lb, int bound, int 
 	best = solution_dup(select);
 	if (debug) (void) printf("BEST\n");
 	if (stats->debug && stats->component == 0) {
-            (void) printf("new 'best' solution %d at level %d (time is %s)\n", 
-		best->cost + stats->gimpel, depth, 
+            (void) printf("new 'best' solution %d at level %d (time is %s)\n",
+		best->cost + stats->gimpel, depth,
 		util_print_time(util_cpu_time() - stats->start_time));
         }
 
@@ -187,7 +187,7 @@ sm_mincov(sm_matrix *A, solution_t *select, int *weight, int lb, int bound, int 
 	/* Solve problem for L */
 	select1 = solution_alloc();
 	stats->component++;
-	best1 = sm_mincov(L, select1, weight, 0, 
+	best1 = sm_mincov(L, select1, weight, 0,
 				    bound-select->cost, depth+1, stats);
 	stats->component--;
 	solution_free(select1);
@@ -248,7 +248,7 @@ sm_mincov(sm_matrix *A, solution_t *select, int *weight, int lb, int bound, int 
     return best;
 }
 
-static int 
+static int
 select_column(sm_matrix *A, int *weight, solution_t *indep)
 {
     register sm_col *pcol;
@@ -302,11 +302,11 @@ select_column(sm_matrix *A, int *weight, solution_t *indep)
     return best_col;
 }
 
-static void 
+static void
 select_essential(sm_matrix *A, solution_t *select, int *weight, int bound)
-             
-                   
-            
+
+
+
           			/* must beat this solution */
 {
     register sm_element *p;
@@ -343,7 +343,7 @@ select_essential(sm_matrix *A, solution_t *select, int *weight, int bound)
     } while (delcols > 0 || delrows > 0 || essen_count > 0);
 }
 
-static int 
+static int
 verify_cover(sm_matrix *A, sm_row *cover)
 {
     sm_row *prow;

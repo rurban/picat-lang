@@ -5,11 +5,11 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 /*
-  #define DEBUG_GC  
+  #define DEBUG_GC
   #define CONSOLE
 */
 #include "bprolog.h"
@@ -26,8 +26,8 @@ extern BPLONG_PTR copy_area_high;
 BPLONG_PTR copy_h;
 
 /**************************************************************
-  Move alive heap cells (between hbreg and heap_top) accessible from 
-  stack frames and the trail to the temp area. Postpone moving 
+  Move alive heap cells (between hbreg and heap_top) accessible from
+  stack frames and the trail to the temp area. Postpone moving
   free variables until all structures and lists are  copied.
 *************************************************************/
 int gcHeap() {
@@ -68,7 +68,7 @@ int eliminateDuplicatedTrailInTopSegment() {
 }
 
 /*
-  Eliminate duplicated trail items in the top segment before GC 
+  Eliminate duplicated trail items in the top segment before GC
   O(n^2) may be too slow
 */
 void eliminateDuplicatedTrailInTopSegmentSquare() {
@@ -140,7 +140,7 @@ int eliminateDuplicatedTrailInTopSegmentLinear() {
 }
 
 /*
-  For each trail segment of a choice point, if the trailed address is not older 
+  For each trail segment of a choice point, if the trailed address is not older
   than the choice point, then remove it
 */
 void packEntireTrail() {
@@ -432,7 +432,7 @@ loop:
                     goto loop;
                 } else {
                     /*
-                      printf("move struct %x sym_ptr=%x\n",term,FOLLOW(ptr)); 
+                      printf("move struct %x sym_ptr=%x\n",term,FOLLOW(ptr));
                       if (FOLLOW(ptr)>parea_up_addr || FOLLOW(ptr)<parea_low_addr){
                       quit("STRANGE\n");
                       }

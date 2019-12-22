@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #define EPSILON 1.0e-8
@@ -465,7 +465,7 @@
 #define A_DV_bit_vector_ptr(dv_ptr) (dv_ptr+1)
 #define DV_bit_vector_ptr(dv_ptr) FOLLOW(dv_ptr+1)
 /*
-  bit_vector_ptr points to a variable-sized structure of the following fields 
+  bit_vector_ptr points to a variable-sized structure of the following fields
   low_ptr
   up_ptr
   low_ptr : word

@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -104,7 +104,7 @@ void gc_initialize_ar_chain() {
 }
 
 /*
-  Before dead suspension frames are garbage collected,  gc_globalize_sf_chain() 
+  Before dead suspension frames are garbage collected,  gc_globalize_sf_chain()
   globalizes local variables in them so that no other stack slots reference them.
 */
 int gc_globalize_sf_chain() {
@@ -297,7 +297,7 @@ start:
                 FOLLOW(des) = (BPLONG)SP_AFTER_GC(des);
                 FOLLOW(term) = (BPLONG)des;
                 /*
-                  FOLLOW(des) = FOLLOW(term) = (BPLONG)heap_top; FOLLOW(heap_top) = (BPLONG)heap_top; heap_top++;  globalize it 
+                  FOLLOW(des) = FOLLOW(term) = (BPLONG)heap_top; FOLLOW(heap_top) = (BPLONG)heap_top; heap_top++;  globalize it
                   if (heap_top>=local_top) quit("Stack overflow during GC\n");
                 */
                 return;
@@ -410,8 +410,8 @@ BPLONG_PTR gcReverseArChain(f, prev)
 /*
   Move out frames on the AR chain that are younger than breg.
   prev -> f -> ....
-  f1 refers to the frame originally pointed to by f after the fame is moved out to 
-  the copy area, new_prev refers to the frame of f after it is moved back from the 
+  f1 refers to the frame originally pointed to by f after the fame is moved out to
+  the copy area, new_prev refers to the frame of f after it is moved back from the
   copy area.
 */
 
@@ -464,19 +464,19 @@ BPLONG_PTR gcMoveAliveFramesOutAr()
 
 /**************************************************************
   Reset cs lists (offsets of frame pointers) on suspension variables. Before garbage-collecting
-  the stack, gcStackMarkSuspVars collects all those suspension variables into a dynamic array that 
-  contain cs list elements younger than B. Before moving stack frames back to the control stack, 
-  gcResetSuspVars adjust the frame pointers on the suspension variables. No frame pointers can be 
+  the stack, gcStackMarkSuspVars collects all those suspension variables into a dynamic array that
+  contain cs list elements younger than B. Before moving stack frames back to the control stack,
+  gcResetSuspVars adjust the frame pointers on the suspension variables. No frame pointers can be
   reset more than once. To ensure that, we mark all the frame pointers before resetting them.
 
-  gcStackMarkSuspVars scan the suspension frames younger than B for suspension variables that  
-  may have suspension frames younger than B attached to them. 
+  gcStackMarkSuspVars scan the suspension frames younger than B for suspension variables that
+  may have suspension frames younger than B attached to them.
 
-  gcTrailMarkSuspVars scans the trailed items in the top segment of the trail stack for old suspension 
-  variables that may have suspension frames younger than B attached to them. 
+  gcTrailMarkSuspVars scans the trailed items in the top segment of the trail stack for old suspension
+  variables that may have suspension frames younger than B attached to them.
 
-  Since no gc is invoked when there are events raised, it is unnecessary to collect 
-  suspension variables in triggered constraints. 
+  Since no gc is invoked when there are events raised, it is unnecessary to collect
+  suspension variables in triggered constraints.
 ******************************************************************/
 void gcStackMarkSuspVars() {
     BPLONG_PTR f, sp;
