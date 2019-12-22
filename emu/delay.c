@@ -120,7 +120,7 @@ int c_frozen_f(){
     P_goal = ARG(1,1);
     DEREF(P_goal);
     if (!ISREF(P_goal)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
 
@@ -154,7 +154,7 @@ int b_SUSP_ATTACH_TERM_cc(Var,Term)
     DEREF(Var);
     DEREF(Term);
     if (ISREF(Term)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     if (ISREF(Var)){
@@ -168,7 +168,7 @@ int b_SUSP_ATTACH_TERM_cc(Var,Term)
         DV_attached(dv_ptr) = Term;
         return 1;
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
 }
@@ -185,7 +185,7 @@ int b_SUSP_ATTACHED_TERM_cf(Var,Term)
   
     DEREF(Var); 
     if (!IS_SUSP_VAR(Var)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     } else {
         dv_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Var);

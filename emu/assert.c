@@ -178,7 +178,7 @@ int b_ABOLISH_cc(f,n)
         BPLONG goal;
         if (GET_ETYPE(sym_ptr)==T_ORDI) return BP_TRUE;
         goal = c_error_src(GET_NAME(sym_ptr),INTVAL(n));
-        exception = c_permission_error(et_MODIFY,et_STATIC_PROCEDURE,goal);
+        bp_exception = c_permission_error(et_MODIFY,et_STATIC_PROCEDURE,goal);
         return BP_ERROR;
     }
     pred = (BPLONG)GET_EP(sym_ptr);
@@ -496,7 +496,7 @@ InterpretedPredBucketPtr new_interpreted_bucket(){
 
     ALLOCATE_RECORD_IN_ASSERT(ptr,2);  
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return NULL;
     }
     bucket_ptr = (InterpretedPredBucketPtr)ptr;
@@ -513,7 +513,7 @@ BPLONG_PTR new_interpreted_pred_hashtable(size)
   
     hashtable = (BPLONG_PTR)malloc(sizeof(BPLONG)*(size+1));
     if (hashtable==NULL){
-        exception = et_OUT_OF_MEMORY;    
+        bp_exception = et_OUT_OF_MEMORY;    
         return NULL;
     }
     for (i=0;i<=size;i++){
@@ -534,7 +534,7 @@ InterpretedPredPtr new_interpreted_pred_record(size)
 
     ALLOCATE_FROM_PAREA(ptr,sizeof(InterpretedPred)/sizeof(BPLONG));
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return NULL;
     }
     pred_ptr = (InterpretedPredPtr)ptr;
@@ -566,7 +566,7 @@ BPLONG type,size;
         if (pred_ptr==NULL) return NULL;
         ALLOCATE_RECORD_IN_ASSERT(ptr,2);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;
+            bp_exception = et_OUT_OF_MEMORY;
             return NULL;
         }
         GET_EP(sym_ptr) = (int (*)(void))ADDTAG(ptr,STR);
@@ -668,7 +668,7 @@ BPLONG head,body;
   
     ALLOCATE_CLAUSE_RECORD(clause_record_ptr);
     if (clause_record_ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     clause_record = ADDTAG((BPLONG)clause_record_ptr,STR);
@@ -692,7 +692,7 @@ BPLONG_PTR asserta_clause_record(bucket_ptr,clause_record)
     /*  assert_print_cls(bucket_ptr->list); */
     ALLOCATE_RECORD_IN_ASSERT(ptr,3);
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return NULL;
     }
     if (bucket_ptr->list==nil_sym){
@@ -756,7 +756,7 @@ BPLONG_PTR assertz_clause_record(bucket_ptr,clause_record)
     /*  assert_print_cls(bucket_ptr->list); */
     ALLOCATE_RECORD_IN_ASSERT(ptr,3);
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return NULL;
     }
     if (bucket_ptr->list==nil_sym){
@@ -877,9 +877,9 @@ int b_GET_PRED_PTR_cff(Head,PredPtr,IsDynamic)
         sym_ptr = GET_ATM_SYM_REC(Head);
     }  else {
         if (ISREF(Head)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_CALLABLE,Head);
+            bp_exception = c_type_error(et_CALLABLE,Head);
         }
         return BP_ERROR;
     }
@@ -895,7 +895,7 @@ int b_GET_PRED_PTR_cff(Head,PredPtr,IsDynamic)
     } else if (GET_ETYPE(sym_ptr)==T_ORDI){
         return BP_FALSE;
     } else {
-        exception = c_permission_error(et_ACCESS,et_PRIVATE_PROCEDURE,Head);
+        bp_exception = c_permission_error(et_ACCESS,et_PRIVATE_PROCEDURE,Head);
         return BP_ERROR;
     }
 
@@ -974,7 +974,7 @@ BPLONG numberVarCopyToParea(term,varno)
         size = arity+1;
         ALLOCATE_RECORD_IN_ASSERT(ptr,size);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;    
+            bp_exception = et_OUT_OF_MEMORY;    
             return BP_ERROR;
         }
         FOLLOW(ptr) = FOLLOW(term_ptr);
@@ -1006,7 +1006,7 @@ BPLONG numberVarCopyListToParea(term,varno)
         UNTAG_ADDR(term);
         ALLOCATE_RECORD_IN_ASSERT(ptr,2);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;    
+            bp_exception = et_OUT_OF_MEMORY;    
             return BP_ERROR;
         }
         FOLLOW(ret_term_ptr) = ADDTAG(ptr,LST);
@@ -1037,7 +1037,7 @@ BPLONG numberVarCopyCommaToParea(term,varno)
         if (FOLLOW(term_ptr)!=(BPLONG)comma_psc) break;
         ALLOCATE_RECORD_IN_ASSERT(ptr,3);
         if (ptr==NULL){
-            exception = et_OUT_OF_MEMORY;    
+            bp_exception = et_OUT_OF_MEMORY;    
             return BP_ERROR;
         }
         FOLLOW(ret_term_ptr) = ADDTAG(ptr,STR);
@@ -1117,7 +1117,7 @@ int b_GET_PICAT_GLOBAL_MAP_cf(BPLONG map_id, BPLONG map_num){
     map_id_cp = numberVarCopyToParea(map_id,&varno);
     if (map_id_cp == BP_ERROR) return BP_ERROR;
     if (varno != 0){
-        exception = ground_expected;
+        bp_exception = ground_expected;
         return BP_ERROR;
     }
 
@@ -1182,7 +1182,7 @@ int b_PICAT_GLOBAL_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
 
     DEREF(key);
     if (ISREF(key)){
-        exception = nonvariable_expected;
+        bp_exception = nonvariable_expected;
         return BP_ERROR;
     }
     DEREF_NONVAR(map_num);
@@ -1241,7 +1241,7 @@ int b_PICAT_GLOBAL_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val){
 
     DEREF(key);
     if (ISREF(key)){
-        exception = nonvariable_expected;
+        bp_exception = nonvariable_expected;
         return BP_ERROR;
     }
         

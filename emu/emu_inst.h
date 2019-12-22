@@ -365,7 +365,7 @@ switch (*P++){
 #endif
  lab_halt: 
     SAVE_AR;SAVE_TOP;
-    if (exception == (BPLONG)NULL) return BP_TRUE; else return BP_ERROR;
+    if (bp_exception == (BPLONG)NULL) return BP_TRUE; else return BP_ERROR;
 
 #ifndef GCC
  case halt0:  /* E */
@@ -373,7 +373,7 @@ switch (*P++){
  lab_halt0: 
     SAVE_AR;SAVE_TOP;
     curr_toam_status = TOAM_DONE;
-    if (exception == (BPLONG)NULL) return BP_FALSE; else return BP_ERROR;
+    if (bp_exception == (BPLONG)NULL) return BP_FALSE; else return BP_ERROR;
 
 #ifndef GCC
  case call0:  /* s,i */
@@ -452,17 +452,17 @@ switch (*P++){
         } else if (op1==BP_FALSE) {
             BACKTRACK;
         } else {
-            if (!is_iso_exception(exception)){
+            if (!is_iso_exception(bp_exception)){
                 switch (arity){
                 case 0: break;
-                case 1: exception = c_builtin_error1(exception,FOLLOW(AR+1)); break;
-                case 2: exception = c_builtin_error2(exception,FOLLOW(AR+2),FOLLOW(AR+1)); break;
-                case 3: exception = c_builtin_error3(exception,FOLLOW(AR+3),FOLLOW(AR+2),FOLLOW(AR+1)); break;
-                case 4: exception = c_builtin_error4(exception,FOLLOW(AR+4),FOLLOW(AR+3),FOLLOW(AR+2),FOLLOW(AR+1)); break;
-                default: exception = c_builtin_error4(exception,FOLLOW(AR+arity),FOLLOW(AR+arity-1),FOLLOW(AR+arity-2),dots_atom); 
+                case 1: bp_exception = c_builtin_error1(bp_exception,FOLLOW(AR+1)); break;
+                case 2: bp_exception = c_builtin_error2(bp_exception,FOLLOW(AR+2),FOLLOW(AR+1)); break;
+                case 3: bp_exception = c_builtin_error3(bp_exception,FOLLOW(AR+3),FOLLOW(AR+2),FOLLOW(AR+1)); break;
+                case 4: bp_exception = c_builtin_error4(bp_exception,FOLLOW(AR+4),FOLLOW(AR+3),FOLLOW(AR+2),FOLLOW(AR+1)); break;
+                default: bp_exception = c_builtin_error4(bp_exception,FOLLOW(AR+arity),FOLLOW(AR+arity-1),FOLLOW(AR+arity-2),dots_atom); 
                 }
             }
-            RAISE_ISO_EXCEPTION(exception,GET_NAME(sym_ptr),arity);
+            RAISE_ISO_EXCEPTION(bp_exception,GET_NAME(sym_ptr),arity);
         }
     }
     }
@@ -2736,7 +2736,7 @@ switch (*P++){
         P = (BPLONG_PTR)*P;
         CONTCASE;
     } else {
-        RAISE_ISO_EXCEPTION(exception,"=:=",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"=:=",2);
     }
         
 
@@ -2828,7 +2828,7 @@ switch (*P++){
         P++;
         CONTCASE;
     } else {
-        RAISE_ISO_EXCEPTION(exception,"=\\=",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"=\\=",2);
     }
 
 #ifndef GCC
@@ -2878,7 +2878,7 @@ switch (*P++){
         P = (BPLONG_PTR)*P;
         CONTCASE;
     } else {
-        RAISE_ISO_EXCEPTION(exception,">",2);
+        RAISE_ISO_EXCEPTION(bp_exception,">",2);
     }
 
 #ifndef GCC
@@ -2948,7 +2948,7 @@ switch (*P++){
         P = (BPLONG_PTR)*P;
         CONTCASE;
     } else {
-        RAISE_ISO_EXCEPTION(exception,">=",2);
+        RAISE_ISO_EXCEPTION(bp_exception,">=",2);
     }
 
 #ifndef GCC
@@ -5681,7 +5681,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_bitwise_and(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"/\\",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"/\\",2);
     } 
     if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
     FOLLOW(sreg) = op1;
@@ -5708,7 +5708,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_bitwise_or(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"\\/",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"\\/",2);
     }
     if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
     FOLLOW(sreg) = op1;
@@ -5734,7 +5734,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_bitwise_shiftl(op1,op2);
     if (op1 == BP_ERROR) {
-        RAISE_ISO_EXCEPTION(exception,"<<",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"<<",2);
     }
     PUSHTRAIL_s(sreg);
     FOLLOW(sreg) = op1;
@@ -5759,7 +5759,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_bitwise_shiftr(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,">>",2);
+        RAISE_ISO_EXCEPTION(bp_exception,">>",2);
     }
     PUSHTRAIL_s(sreg);
     FOLLOW(sreg) = op1;
@@ -5783,7 +5783,7 @@ switch (*P++){
         SAVE_TOP;
         op1 = bp_bitwise_complement(op1);
         if (op1 == BP_ERROR){
-            RAISE_ISO_EXCEPTION(exception,"\\",1);
+            RAISE_ISO_EXCEPTION(bp_exception,"\\",1);
         }
         if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
         FOLLOW(sreg) = op1;
@@ -5818,7 +5818,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_math_add(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"+",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"+",2);
     }
     if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
     FOLLOW(sreg) = op1;
@@ -5913,7 +5913,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_math_sub(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"-",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"-",2);
     }
     if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
     FOLLOW(sreg) = op1;
@@ -6039,7 +6039,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_math_mul(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"*",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"*",2);
     }
     if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
     FOLLOW(sreg) = op1;
@@ -6108,7 +6108,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_math_div(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"/",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"/",2);
     }
     PUSHTRAIL_s(sreg);
     FOLLOW(sreg) = op1;
@@ -6133,7 +6133,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_math_idiv(op1,op2);
     if (op1 == BP_ERROR) {
-        RAISE_ISO_EXCEPTION(exception,"//",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"//",2);
     }
     if (!ISINT(op1)){PUSHTRAIL_s(sreg);}
     FOLLOW(sreg) = op1;
@@ -6184,7 +6184,7 @@ switch (*P++){
             SAVE_TOP;
             op1 = bp_math_divge(op1,op2);
             if (op1 == BP_ERROR){
-                RAISE_ISO_EXCEPTION(exception,"/>",2);
+                RAISE_ISO_EXCEPTION(bp_exception,"/>",2);
             }
             PUSHTRAIL_s(sreg);
             FOLLOW(sreg) = op1;
@@ -6212,7 +6212,7 @@ switch (*P++){
             SAVE_TOP;
             op1 = bp_math_divle(op1,op2);
             if (op1 == BP_ERROR){
-                RAISE_ISO_EXCEPTION(exception,"/>",2);
+                RAISE_ISO_EXCEPTION(bp_exception,"/>",2);
             }
             PUSHTRAIL_s(sreg);
             FOLLOW(sreg) = op1;
@@ -6265,7 +6265,7 @@ switch (*P++){
     SAVE_TOP;
     op1 = bp_math_mod(op1,op2);
     if (op1 == BP_ERROR){
-        RAISE_ISO_EXCEPTION(exception,"mod",2);
+        RAISE_ISO_EXCEPTION(bp_exception,"mod",2);
     }
     FOLLOW(sreg) = op1;
     CONTCASE;
@@ -6320,24 +6320,24 @@ switch (*P++){
     error_arg:
     if (!ISINT(op1)){
         if (ISREF(op1) || IS_SUSP_VAR(op1)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_INTEGER,op1);
+            bp_exception = c_type_error(et_INTEGER,op1);
         }
     }  else if (INTVAL(op1)<=0){
         if (INTVAL(op1)<0){
-            exception = c_domain_error(et_NOT_LESS_THAN_ZERO,op1);
+            bp_exception = c_domain_error(et_NOT_LESS_THAN_ZERO,op1);
         } else {
             DEREF(op2);
             if (ISSTRUCT(op2) || ISLIST(op2)) BACKTRACK;
-            exception = c_type_error(et_COMPOUND,op2);
+            bp_exception = c_type_error(et_COMPOUND,op2);
         }
     } else if (ISREF(op2) || IS_SUSP_VAR(op2)){
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
     } else {
-        exception = c_type_error(et_COMPOUND,op2);
+        bp_exception = c_type_error(et_COMPOUND,op2);
     }
-    RAISE_ISO_EXCEPTION(exception,"arg",3);
+    RAISE_ISO_EXCEPTION(bp_exception,"arg",3);
 
 #ifndef GCC
  case arg0:  /* i,y,y */
@@ -6352,15 +6352,15 @@ switch (*P++){
     op1 = YC(*P++);DEREF(op1);
     if (!ISINT(op1)){
         if (ISREF(op1)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_INTEGER,op1);
+            bp_exception = c_type_error(et_INTEGER,op1);
         }
         goto error_setarg;
     } else op1 = INTVAL(op1);
     
     if (op1<=0){
-        exception = c_domain_error(et_NOT_LESS_THAN_ZERO,MAKEINT(op1));
+        bp_exception = c_domain_error(et_NOT_LESS_THAN_ZERO,MAKEINT(op1));
         goto error_setarg;
     }
     setarg_idd:
@@ -6374,12 +6374,12 @@ switch (*P++){
                         {});
     if (ISSTRUCT(op2)){
         if (op1 > GET_STR_SYM_ARITY(op2)) {
-            exception = out_of_range;
+            bp_exception = out_of_range;
             goto error_setarg;
         } else {
             sreg = ((BPLONG_PTR)UNTAGGED_ADDR(op2)+op1);
             if (!IS_HEAP_REFERENCE(sreg)){
-                exception = c_update_error(et_UPDATE);
+                bp_exception = c_update_error(et_UPDATE);
                 goto error_setarg;
             }
             if ((BPLONG)sreg!=op3){
@@ -6390,12 +6390,12 @@ switch (*P++){
         }
     } else if (ISLIST(op2)){
         if (op1 > 2) {
-            exception = out_of_range;
+            bp_exception = out_of_range;
             goto error_setarg;
         } else {
             sreg = ((BPLONG_PTR)UNTAGGED_ADDR(op2)+op1-1);
             if (!IS_HEAP_REFERENCE(sreg)){
-                exception = c_update_error(et_UPDATE);
+                bp_exception = c_update_error(et_UPDATE);
                 goto error_setarg;
             }
             if ((BPLONG)sreg!=op3){
@@ -6405,10 +6405,10 @@ switch (*P++){
             CONTCASE;
         }
     } else {
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
     }
     error_setarg:
-    RAISE_ISO_EXCEPTION(exception,"setarg",3);
+    RAISE_ISO_EXCEPTION(bp_exception,"setarg",3);
     
     
 
@@ -6447,7 +6447,7 @@ switch (*P++){
               {OP_ZC(op2); OP_ZC(op3);
                   op1 = cfunctor1(op1,op2,op3);
                   if (op1==BP_ERROR){
-                      RAISE_ISO_EXCEPTION(exception,"functor",3);} else CONTCASE;
+                      RAISE_ISO_EXCEPTION(bp_exception,"functor",3);} else CONTCASE;
               });
     UNIFY_Z_CONST(op2,op1,rr_functor_1);
     UNIFY_Z_CONST(op3,i,rr_functor_2);
@@ -6586,7 +6586,7 @@ switch (*P++){
     } if (op1==BP_FALSE){
         BACKTRACK;
     } else {
-        RAISE_ISO_EXCEPTION(exception,"clause",3);
+        RAISE_ISO_EXCEPTION(bp_exception,"clause",3);
     }
     
 
@@ -6600,7 +6600,7 @@ switch (*P++){
     if (op1==0 || LOCAL_TOP-H<=op1+LARGE_MARGIN){
         SAVE_AR; SAVE_TOP;  
         if (garbage_collector()==BP_ERROR){
-            exception = et_OUT_OF_MEMORY_STACK;
+            bp_exception = et_OUT_OF_MEMORY_STACK;
             goto interrupt_handler;
         }
         RESTORE_AR;RESTORE_TOP;
@@ -6608,7 +6608,7 @@ switch (*P++){
             if (op1!=0){op1 = stack_size+op1+LARGE_MARGIN-(LOCAL_TOP - H);}
             gc_is_working = 1;
             if (expand_local_global_stacks(op1)==BP_ERROR){
-                exception = et_OUT_OF_MEMORY_STACK;
+                bp_exception = et_OUT_OF_MEMORY_STACK;
                 goto interrupt_handler;
             }
             RESTORE_AR;RESTORE_TOP;
@@ -6677,7 +6677,7 @@ switch (*P++){
         P = (BPLONG_PTR)*P;
         CONTCASE;
     }  else {
-        RAISE_ISO_EXCEPTION(exception,"builtin",*(P-1));
+        RAISE_ISO_EXCEPTION(bp_exception,"builtin",*(P-1));
     }
     
 
@@ -6696,10 +6696,10 @@ switch (*P++){
             P = (BPLONG_PTR)*(P-2);
             CONTCASE;
         } else {
-            if (!is_iso_exception(exception)){
-                exception = c_builtin_error1(exception,op1);
+            if (!is_iso_exception(bp_exception)){
+                bp_exception = c_builtin_error1(bp_exception,op1);
             }
-            RAISE_ISO_EXCEPTION(exception,"builtin",*(P-3));
+            RAISE_ISO_EXCEPTION(bp_exception,"builtin",*(P-3));
         }
     }
 
@@ -6719,10 +6719,10 @@ switch (*P++){
             P = (BPLONG_PTR)*(P-3);
             CONTCASE;
         } else {
-            if (!is_iso_exception(exception)){
-                exception = c_builtin_error2(exception,op1,op2);
+            if (!is_iso_exception(bp_exception)){
+                bp_exception = c_builtin_error2(bp_exception,op1,op2);
             }
-            RAISE_ISO_EXCEPTION(exception,"builtin",*(P-4));
+            RAISE_ISO_EXCEPTION(bp_exception,"builtin",*(P-4));
         }
     }
 
@@ -6743,10 +6743,10 @@ switch (*P++){
             P = (BPLONG_PTR)*(P-4);
             CONTCASE;
         } else {
-            if (!is_iso_exception(exception)){
-                exception = c_builtin_error3(exception,op1,op2,op3);
+            if (!is_iso_exception(bp_exception)){
+                bp_exception = c_builtin_error3(bp_exception,op1,op2,op3);
             }
-            RAISE_ISO_EXCEPTION(exception,"builtin",*(P-5));
+            RAISE_ISO_EXCEPTION(bp_exception,"builtin",*(P-5));
         }
     }
 
@@ -6768,10 +6768,10 @@ switch (*P++){
             P = (BPLONG_PTR)*(P-5);
             CONTCASE;
         } else {
-            if (!is_iso_exception(exception)){
-                exception = c_builtin_error4(exception,op1,op2,op3,op4);
+            if (!is_iso_exception(bp_exception)){
+                bp_exception = c_builtin_error4(bp_exception,op1,op2,op3,op4);
             }
-            RAISE_ISO_EXCEPTION(exception,"builtin",*(P-6));
+            RAISE_ISO_EXCEPTION(bp_exception,"builtin",*(P-6));
         }
     }
 
@@ -8604,7 +8604,7 @@ switch (*P++){
         }
             
     table_error:
-        RAISE_ISO_EXCEPTION(exception,GET_NAME(sym_ptr),GET_ARITY(sym_ptr));
+        RAISE_ISO_EXCEPTION(bp_exception,GET_NAME(sym_ptr),GET_ARITY(sym_ptr));
     }
     
 

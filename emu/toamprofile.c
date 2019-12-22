@@ -27,7 +27,7 @@ BPLONG_PTR c_local_top,c_heap_top,c_trail_top,c_choice_top;
 BPLONG_PTR m_local_top,m_heap_top,m_trail_top,m_choice_top;
 
 bookkeep_inst(inst)
-BPLONG inst;
+    BPLONG inst;
 {
     trace_inst[trace_rear] = inst;
     trace_rear++;
@@ -49,7 +49,7 @@ bookkeep_inst_print(){
 }
 
 update_space_counters(l,h,t)
-BPLONG_PTR l,h,t;
+    BPLONG_PTR l,h,t;
 {
     c_local_top = l;
     c_heap_top = h;
@@ -132,7 +132,7 @@ print_counters(){
 }
 
 execute_inst(opcode)
-BPLONG opcode;
+    BPLONG opcode;
 {
     total_insts++;
     update_space_counters(local_top,heap_top,trail_top);
@@ -142,8 +142,8 @@ BPLONG opcode;
 }
 
 show_point(s,n)
-char *s;
-long n;
+    char *s;
+    long n;
 {
     printf("%12s %i\n",s,n);
     return;

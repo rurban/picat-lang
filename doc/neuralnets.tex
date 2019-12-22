@@ -12,7 +12,7 @@
 
 \chapter{\label{chapter:nn}The \texttt{nn} (Neural Networks) Module}
 
-The \texttt{nn} module provides a high-level interface between Picat and the FANN\footnote{\url{http://leenissen.dk/fann/wp/}} neural networks library, which implements feedforward neural networks.\footnote{The Picat-FANN interface was implemented by Sanders Hernandez.}  A \emph{feedforward neural network} consists of \emph{neurons} organized in layers from an input layer to an output layer, possibly with a number of hidden layers. A feedforward network represents a function from input to output. Neurons in a layer (except for the input layer) are connected to neurons in the previous layer. The connections have weights.  The neurons in the input layer receive the input. The information is propagated forward through the layers until it reaches the output layer, where the output is returned. The information that a neuron receives is determined by the connected predecessor neurons, the weights of the connections, and an \emph{activation function}. The connection weights of a neural network are normally adjusted through training on a given set of input-output pairs, called \emph{training data}. Once a neural network is trained, it can be used to predict the output for a given input.
+The \texttt{nn} module provides a high-level interface between Picat and the FANN\footnote{\url{http://leenissen.dk/fann/wp/}} neural networks library, which implements feedforward neural networks.\footnote{The Picat-FANN interface was implemented by Sanders Hernandez.}\index{neural network}\index{feedforward neural network}  A \emph{feedforward neural network} consists of \emph{neurons} organized in layers from an input layer to an output layer, possibly with a number of hidden layers. A feedforward network represents a function from input to output. Neurons in a layer (except for the input layer) are connected to neurons in the previous layer. The connections have weights.  The neurons in the input layer receive the input. The information is propagated forward through the layers until it reaches the output layer, where the output is returned. The information that a neuron receives is determined by the connected predecessor neurons, the weights of the connections, and an \emph{activation function}.\index{activation function} The connection weights of a neural network are normally adjusted through training on a given set of input-output pairs, called \emph{training data}. Once a neural network is trained, it can be used to predict the output for a given input.
 
 The following gives an example program which creates a neural network for the \texttt{xor} function,  and trains it on a set of data stored in a file:
 \begin{verbatim}
@@ -87,7 +87,7 @@ The function \texttt{nn\_load} loads a neural network. The function \texttt{nn\_
 An activation function for a neuron determines how information is propagated to it from its predecessor neurons. When a new neural network is created, it uses the default activation function \texttt{sym\_sigmoid} for all of its non-input neurons. The following predicates can be utilized to set activation functions.
 
 \begin{itemize}
-\item \texttt{nn\_set\_activation\_function\_layer($NN$, $Func$, $Layer$)}\index{\texttt{nn\_set\_activation\_function\_layer/3}}: This predicate sets the activation function to $Func$ for all the neurons in layer $Layer$ in the neural network $NN$. Let the number of layers in $NN$ be $n$. Since the first layer is numbered 1, $Layer$ must satisfy $2\ \le\ Layer\ \le n$. The following activation functions are available:
+\item \texttt{nn\_set\_activation\_function\_layer($NN$, $Func$, $Layer$)}\index{\texttt{nn\_set\_activation\_.../3}}: This predicate sets the activation function to $Func$ for all the neurons in layer $Layer$ in the neural network $NN$. Let the number of layers in $NN$ be $n$. Since the first layer is numbered 1, $Layer$ must satisfy $2\ \le\ Layer\ \le n$. The following activation functions are available:
 \begin{itemize}
 \item \texttt{linear}
 \item \texttt{threshold}
@@ -108,15 +108,15 @@ An activation function for a neuron determines how information is propagated to 
 \end{itemize}
 The detault activation function is \texttt{sym\_sigmoid}. Each of these functions has a corresponding name in FANN. Please refer to the FANN documentation for a more detailed description of these functions.
 
-\item \texttt{nn\_set\_activation\_function\_hidden($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_function\_hidden/2}}: This predicate sets the activation function to $Func$ for all of the hidden layers in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_function\_hidden($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation function to $Func$ for all of the hidden layers in the neural network $NN$.
 
-\item \texttt{nn\_set\_activation\_function\_output($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_function\_output/2}}: This predicate sets the activation function to $Func$ for the output layer in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_function\_output($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation function to $Func$ for the output layer in the neural network $NN$.
 
-\item \texttt{nn\_set\_activation\_steepness\_layer($NN$, $Steepness$, $Layer$)}\index{\texttt{nn\_set\_activation\_steepness\_layer/3}}: This predicate sets the activation steepness for all of the neurons in $Layer$, where $-1\ \le\ Steepness\ \le 1$ and $2 \le Layer\ \le n$ (n is the number of layers in $NN$).  A high steepness value means a more aggressive training. The default steepness is 0.5.
+\item \texttt{nn\_set\_activation\_steepness\_layer($NN$, $Steepness$, $Layer$)}\index{\texttt{nn\_set\_activation\_.../3}}: This predicate sets the activation steepness for all of the neurons in $Layer$, where $-1\ \le\ Steepness\ \le 1$ and $2 \le Layer\ \le n$ ($n$ is the number of layers in $NN$).  A high steepness value means a more aggressive training. The default steepness is 0.5.
 
-\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_steepness\_hidden/2}}: This predicate sets the activation steepness to $Steepness$ for all of the hidden layers in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation steepness to $Steepness$ for all of the hidden layers in the neural network $NN$.
 
-\item \texttt{nn\_set\_activation\_steepness\_output($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_steepness\_output/2}}: This predicate sets the activation steepness to $Steepness$ for the output layer in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_steepness\_output($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation steepness to $Steepness$ for the output layer in the neural network $NN$.
 \end{itemize}
 
 \section{Training Data}

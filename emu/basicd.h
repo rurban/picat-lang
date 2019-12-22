@@ -102,7 +102,7 @@ BPLONG       global_unnumbervar_max;
 BPLONG_PTR  global_unnumbervar_ptr;
 BPLONG_PTR global_unnumbervar_watermark;
 
-BPLONG      exception;
+BPLONG      bp_exception;
 BPLONG      foreign_exception = (BPLONG) NULL;
 SYM_REC_PTR  list_psc;
 SYM_REC_PTR  equal_psc;

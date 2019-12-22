@@ -61,6 +61,8 @@ import common_constr.
 % solve_all(Options,Vars) = solve_all(Options,Vars).
 % solve_all(Vars) = solve_all(Vars).
 % subcircuit(FDVars) => subcircuit(FDVars).
+% subcircuit_grid(A) => subcircuit_grid(A).
+% subcircuit_grid(A,K) => subcircuit_grid(A,K).
 % table_in(Vars, Tuples) => table_in(Vars, Tuples).
 % table_notin(Vars, Tuples) => table_notin(Vars, Tuples).
 
@@ -446,7 +448,6 @@ circuit_preprocess(N,P,Start,NeibVect,TNeibVect) =>
     
 circuit_shortest_distance0(Start,N,NeibVect,DistVect) =>
     DistVect = new_array(N),                               % DistVect[I], the shortest distance from Start to node I
-    MaxDist = maxint_small(),
     foreach (I in 1..N)
         DistVect[I] = N
     end,      
@@ -608,6 +609,304 @@ subcircuit_choose_start(A,CurIndex,CurDeg,BestIndex,I,N) =>
     subcircuit_choose_start(A,CurIndex1,CurDeg1,BestIndex,I+1,N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A is a two-dimensional array. All the non-zero cells of A form a Hamiltonian cycle
+% A[R,C] is filled with 0 if it's known to be not in the cycle.
+% The total number of non-zero cells is K
+%
+subcircuit_grid(A) =>
+    subcircuit_grid(A,_).
+
+subcircuit_grid({},K) => K = 0.
+subcircuit_grid(A,K) =>
+    (array(A) -> true; handle_exception($array_expected(A),subcircuit_grid)),
+    NRows = len(A),
+    foreach (R in 1..NRows)
+        (array(A[R]) -> true; handle_exception($array_expected(A[R]),subcircuit_grid))
+    end,
+    A :: 0..1,
+    NCols = len(A[1]),
+    NZeros = sum([1 : R in 1..NRows, C in 1..NCols, A[R,C] == 0]),
+    NCells = max(NRows*NCols-NZeros,1),
+    %
+    K :: 0..NCells,
+    sum([A[R,C] : R in 1..NRows, C in 1..NCols, A[R,C] !== 0]) #= K,
+    KGtOne #<=> (K #> 1),
+    KGtTwo #<=> (K #> 2),
+    KGtTwo #=> KGtOne,
+    %
+    H = new_array(NRows,NCols),    % H[R,C] = [{R1,C1,B1},{R2,C2,B2},...], Bi <=> (R,C) and (Ri,Ci) are connected in the circuit
+    foreach (R in 1..NRows, C in 1..NCols)
+        (A[R,C] !== 0 ->
+            Neibs = [{R1,C1,B} : (Dr,Dc) in [(-1,0),(1,0),(0,-1),(0,1)],
+                                   R1 = R+Dr, C1 = C+Dc, R1 >= 1, R1 =< NRows, C1 >= 1, C1 =< NCols, A[R1,C1] !== 0, B :: 0..1],
+            H[R,C] = Neibs
+        ;
+            H[R,C] = []
+        )
+    end,
+    foreach (R in 1..NRows, C in 1..NCols, A[R,C] !== 0)
+        Neibs = H[R,C],
+        OutBs = [B : {_,_,B} in Neibs],
+        foreach ({_,_,B} in Neibs)
+            A[R,C] #\/ #~B
+        end,
+        LenOutBs = len(OutBs),
+        bp.attach_complex_imp([#~A[R,C], #~KGtOne], $ic_bool_sum(eq,OutBs,LenOutBs,1)),   % one outgoing
+        InBs = [],
+        foreach ({R1,C1,_} in Neibs, member({R,C,B}, H[R1,C1]))
+            A[R,C] #\/ #~B,
+            InBs := [B|InBs]
+        end,
+        LenInBs = len(InBs),
+        bp.attach_complex_imp([#~A[R,C], #~KGtOne], $ic_bool_sum(eq,InBs,LenInBs,1))      % one incoming
+    end,
+    % ban sub-cycles
+    Start = new_array(NRows,NCols),    
+    Start :: 0..1,                          % Start[R,C]=1 iff the cycle starts at (R,C)
+    foreach (R in 1..NRows, C in 1..NCols)
+        (A[R,C] == 0 ->
+            Start[R,C] = 0
+        ;
+            #~A[R,C]  #=> #~Start[R,C]
+        )
+    end,
+    StartList = [{R,C,Start[R,C]} : R in 1..NRows, C in 1..NCols, A[R,C] !== 0],        
+    HasStartedList = new_list(NCells),    % HasStarted[R,C] iff there exists (R1,C1) in {(1,1) ... (R,C)} such that Start[R1,C1]
+    HasStartedList :: 0..1,
+    constr_start(A,StartList,HasStartedList,KGtOne),
+    %
+    P = new_array(NRows,NCols),
+    NB is round(log(2,NCells)+0.5),                % number of bits needed by the log encoding
+    Max is 2**NB-1,
+    P :: 0..Max,
+    foreach (R in 1..NRows, C in 1..NCols)
+        (A[R,C] == 0 ->
+            P[R,C] = 0
+        ;
+            bp.sat_encode_dvar(P[R,C],_)           % get the log encoding
+        )
+    end,
+    foreach (R in 1..NRows, C in 1..NCols, A[R,C] !== 0)
+        #~A[R,C] #<=> P[R,C] #= 0,
+        Start[R,C] #<=> P[R,C] #= 1,
+        Neibs = H[R,C],
+        foreach ({R1,C1,B} in Neibs)
+            once member({R,C,B1}, H[R1,C1]),
+            #~KGtTwo #\/ #~B #\/ #~B1,              % no cycle of size 2
+            entail_lfsr_succ(NB, #~Start[R1,C1], B, P[R,C], P[R1,C1])
+        end
+    end.
+
+% Start and HasStarted must follow the following pattern:
+%      Start = 0 ... 0 1 0 ... 0
+% HasStarted = 0 ... 0 1 1 ... 1
+%
+constr_start(_A,[],_HasStartedList,_KGtOne) => true.
+constr_start(A,[{R,C,StartB}|StartList],[HasStartedB|HasStartedList],KGtOne) =>
+     A[R,C] #<=> StartB,
+     A[R,C] #<=> HasStartedB,
+     constr_start(A,HasStartedB,StartList,HasStartedList,KGtOne).
+
+constr_start(_A,_HasStartedB,[],_HasStartedList,_KGtOne) => true.
+constr_start(A,PrevHasStartedB,[{R,C,StartB}|StartList],[HasStartedB|HasStartedList],KGtOne) =>
+     PrevHasStartedB #=> HasStartedB,
+     A[R,C] #/\ #~PrevHasStartedB #=> StartB,
+     StartB #=> #~PrevHasStartedB,
+     HasStartedB #/\ #~StartB #=> PrevHasStartedB,
+     StartB #=> HasStartedB,
+     (StartList == [] -> KGtOne #=> HasStartedB; true),
+     constr_start(A,HasStartedB,StartList,HasStartedList,KGtOne).
+
+% if B, then Y is the successor of X
+entail_lfsr_succ(NB,B1,B2,X,Y) =>
+    (var(X) ->
+        get_attr(X,'$bool_vars') = $log(_,VectX)
+    ;
+        VectX = new_array(NB),
+        dec_to_bin(X,1,NB,VectX)
+    ),
+    (var(Y) ->
+        get_attr(Y,'$bool_vars') = $log(_,VectY)
+    ;
+        VectY = new_array(NB),
+        dec_to_bin(Y,1,NB,VectY)
+    ),
+    entail_lfsr_succ_aux(B1,B2,VectX,VectY).
+
+dec_to_bin(_Val,I,NB,_Vect), I > NB => true.
+dec_to_bin(Val,I,NB,Vect) =>
+   Vect[I] = Val mod 2,
+   dec_to_bin(Val div 2, I+1, NB, Vect).
+
+bin_to_dec(_Vect,I,Res0,Res), I == 0 => Res = Res0.
+bin_to_dec(Vect,I,Res0,Res) =>
+    bin_to_dec(Vect, I-1, 2*Res0+Vect[I], Res).
+
+% B -> Y = succ(X)
+entail_lfsr_succ_aux(B1,B2,{X1,X2},Y) =>   % taps = {1,2}
+    Y = {Y1,Y2},
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X1,X2).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3},Y) =>   % taps = {2,3}
+    Y = {Y1,Y2,Y3},
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X2,X3).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4},Y) =>   % taps = {3,4}
+    Y = {Y1,Y2,Y3,Y4},
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X3,X4).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5},Y) =>   % taps = {3,5}
+    Y = {Y1,Y2,Y3,Y4,Y5},
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X3,X5).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6},Y) =>   % taps = {5,6}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6},
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X5,X6).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7},Y) =>   % taps = {6,7}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7},
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X6,X7).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8},Y) =>   % taps = {4,5,6,8}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8},
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X4,X5,X6,X8).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8,X9},Y) =>   % taps = {5,9}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9},
+    entail_equiv(B1,B2,Y9,X8),
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X5,X9).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8,X9,X10},Y) =>   % taps = {7,10}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10},
+    entail_equiv(B1,B2,Y10,X9),
+    entail_equiv(B1,B2,Y9,X8),
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X7,X10).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,X11},Y) =>   % taps = {9,11}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11},
+    entail_equiv(B1,B2,Y11,X10),
+    entail_equiv(B1,B2,Y10,X9),
+    entail_equiv(B1,B2,Y9,X8),
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X9,X11).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,X12},Y) =>   % taps = {4,10,11,12}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Y12},
+    entail_equiv(B1,B2,Y12,X11),
+    entail_equiv(B1,B2,Y11,X10),
+    entail_equiv(B1,B2,Y10,X9),
+    entail_equiv(B1,B2,Y9,X8),
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X4,X10,X11,X12).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,X12,X13},Y) =>   % taps = {8,11,12,13}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Y12,Y13},
+    entail_equiv(B1,B2,Y13,X12),
+    entail_equiv(B1,B2,Y12,X11),
+    entail_equiv(B1,B2,Y11,X10),
+    entail_equiv(B1,B2,Y10,X9),
+    entail_equiv(B1,B2,Y9,X8),
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X8,X11,X12,X13).
+entail_lfsr_succ_aux(B1,B2,{X1,X2,X3,X4,X5,X6,X7,X8,X9,X10,X11,X12,X13,X14},Y) =>   % taps = {2,12,13,14}
+    Y = {Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Y12,Y13,Y14},
+    entail_equiv(B1,B2,Y14,X13),
+    entail_equiv(B1,B2,Y13,X12),
+    entail_equiv(B1,B2,Y12,X11),
+    entail_equiv(B1,B2,Y11,X10),
+    entail_equiv(B1,B2,Y10,X9),
+    entail_equiv(B1,B2,Y9,X8),
+    entail_equiv(B1,B2,Y8,X7),
+    entail_equiv(B1,B2,Y7,X6),
+    entail_equiv(B1,B2,Y6,X5),
+    entail_equiv(B1,B2,Y5,X4),
+    entail_equiv(B1,B2,Y4,X3),
+    entail_equiv(B1,B2,Y3,X2),
+    entail_equiv(B1,B2,Y2,X1),
+    entail_xor(B1,B2,Y1,X2,X12,X13,X14).
+
+% B => X = Y
+% i.e., (~B \/ ~X \/ Y) /\ (~B \/ X \/ ~Y)
+entail_equiv(B1,B2,X,Y) =>
+    #~B1 #\/ #~B2 #\/ #~X #\/ Y,
+    #~B1 #\/ #~B2 #\/ X #\/ #~Y.
+
+% B => Y = X1 ^ X2
+entail_xor(B1,B2,Y,X1,X2) =>
+    #~B1 #\/ #~B2 #\/ #~Y #\/ X1 #\/ X2,      % 1100 1
+    #~B1 #\/ #~B2 #\/ Y #\/ #~X1 #\/ X2,      % 1010 1
+    #~B1 #\/ #~B2 #\/ Y #\/ X1 #\/ #~X2,      % 1001 1
+    #~B1 #\/ #~B2 #\/ #~Y #\/ #~X1 #\/ #~X2.  % 1111 1
+
+% B => Y = X1 ^ X2 ^ X3 ^ X4
+entail_xor(B1,B2,Y,X1,X2,X3,X4) =>
+    #~B1 #\/ #~B2 #\/ #~Y #\/ X1 #\/ X2 #\/ X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ #~X1 #\/ X2 #\/ X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ X1 #\/ #~X2 #\/ X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ #~X1 #\/ #~X2 #\/ X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ X1 #\/ X2 #\/ #~X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ #~X1 #\/ X2 #\/ #~X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ X1 #\/ #~X2 #\/ #~X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ #~X1 #\/ #~X2 #\/ #~X3 #\/ X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ X1 #\/ X2 #\/ X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ #~X1 #\/ X2 #\/ X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ X1 #\/ #~X2 #\/ X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ #~X1 #\/ #~X2 #\/ X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ X1 #\/ X2 #\/ #~X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ #~X1 #\/ X2 #\/ #~X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ Y #\/ X1 #\/ #~X2 #\/ #~X3 #\/ #~X4,
+    #~B1 #\/ #~B2 #\/ #~Y #\/ #~X1 #\/ #~X2 #\/ #~X3 #\/ #~X4.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global_cardinality(List,Pairs) =>
     (bp.check_pairs(Pairs) -> true; handle_exception($pairs_expected(Pairs),global_cardinality)),
     N = len(List),
@@ -730,7 +1029,6 @@ preprocess_regular_constr_sat(WArr,Q,S,Matrix,TMatrix,Q0,FsLst,A,B,N) =>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 regular_sdist_heuristic_sat(Q,S,Matrix,TMatrix,Q0,FsLst,A,N) =>
     SDFromQ0 = new_array(Q),                                  % SDFromQ0[I], the shortest distance to state I from Q0
-    MaxDist = maxint_small(),
     foreach (I in 1..Q)
         SDFromQ0[I] = N
     end,      

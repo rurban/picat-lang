@@ -46,7 +46,7 @@ int c_findall_pre(){
     if (faa_record_ptr->low_addr==NULL){
         ADD_NEW_NUMBERED_TERM_AREA_BLOCK(faa_record_ptr,success);
         if (!success){
-            exception = et_OUT_OF_MEMORY;
+            bp_exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
     }
@@ -196,7 +196,7 @@ int check_ground_using_faa(BPLONG term){
     if (faa_record_ptr->low_addr==NULL){
         ADD_NEW_NUMBERED_TERM_AREA_BLOCK(faa_record_ptr,success);
         if (!success){
-            exception = et_OUT_OF_MEMORY;
+            bp_exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
     }
@@ -220,7 +220,7 @@ BPLONG make_cons_in_faa(BPLONG car, BPLONG cdr)
 
     ALLOCATE_FROM_NUMBERED_TERM_AREA(faa_record_ptr,ptr,2);
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     temp = (BPLONG)ADDTAG(ptr,LST);    
@@ -266,7 +266,7 @@ l_number_var_copy_faa:
             size = arity+1;
             ALLOCATE_FROM_NUMBERED_TERM_AREA(faa_record_ptr,dest_ptr,size);
             if (dest_ptr==NULL){
-                exception = et_OUT_OF_MEMORY;
+                bp_exception = et_OUT_OF_MEMORY;
                 return BP_ERROR;
             }
             FOLLOW(dest_ptr) = FOLLOW(term_ptr);
@@ -311,7 +311,7 @@ BPLONG numberVarCopyListToFindallArea(NUMBERED_TERM_AREA_RECORD_PTR faa_record_p
         term_ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
         ALLOCATE_FROM_NUMBERED_TERM_AREA(faa_record_ptr,dest_ptr,2); 
         if (dest_ptr==NULL){
-            exception = et_OUT_OF_MEMORY;
+            bp_exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
         FOLLOW(ret_term_ptr) = ADDTAG(dest_ptr,LST);

@@ -24,11 +24,11 @@ BPLONG univ_lst2str(L)
     DEREF(L);
     if (!ISLIST(L)){
         if (ISNIL(L)){
-            exception = c_domain_error(et_NON_EMPTY_LIST,L);
+            bp_exception = c_domain_error(et_NON_EMPTY_LIST,L);
         } else if (ISREF(L)) {
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_LIST,L);
+            bp_exception = c_type_error(et_LIST,L);
         }
         return BP_ERROR;
     }
@@ -40,10 +40,10 @@ BPLONG univ_lst2str(L)
 
     if (ISLIST(L)){
         if (ISREF(Head)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
             return BP_ERROR;    
         } else if (!ISATOM(Head)){
-            exception = c_type_error(et_ATOM,Head);
+            bp_exception = c_type_error(et_ATOM,Head);
             return BP_ERROR;
         }
     } else if (ISNIL(L)){          /* ATM */
@@ -51,23 +51,23 @@ BPLONG univ_lst2str(L)
             return Head;
         }
         if (ISREF(Head)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_ATOMIC,Head);
+            bp_exception = c_type_error(et_ATOMIC,Head);
         }
         return BP_ERROR;
     } else if (ISREF(L) || IS_SUSP_VAR(L)){
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
         return BP_ERROR;
     } else {
-        exception = c_type_error(et_LIST,orig_L);
+        bp_exception = c_type_error(et_LIST,orig_L);
         return BP_ERROR;
     }
     
     n = list_length(L,orig_L);
     if (n<0) return BP_ERROR; /* exception set */
     if (n>MAX_ARITY){
-        exception = c_representation_error(et_MAX_ARITY);
+        bp_exception = c_representation_error(et_MAX_ARITY);
         return BP_ERROR;
     }
     if (local_top-heap_top <= n + LARGE_MARGIN) {
@@ -105,7 +105,7 @@ BPLONG univ_str2lst(op1)
     DEREF(op1);
     switch (TAG(op1)) {
     case REF:
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
         return BP_ERROR;
     case ATM:
         n = 0;
@@ -162,9 +162,9 @@ restart:
     DEREF(L); if (ISLIST(L)) goto restart;
     if (!ISNIL(L)){
         if (ISREF(L)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_LIST,orig_L);
+            bp_exception = c_type_error(et_LIST,orig_L);
         }
         return BP_ERROR;
     }

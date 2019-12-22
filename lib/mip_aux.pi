@@ -151,7 +151,7 @@ mip_call_mip(Solver,TmpFileStr,SolFileStr,ObjExp,Sense,Vars) =>
 %%
 mip_create_command(gurobi,TmpFileStr,SolFileStr,Command) =>    
     Command = "gurobi_cl ResultFile=" ++ SolFileStr ++ [' '|TmpFileStr].
-mip_create_command(cbc,TmpFileStr,SolFileStr,Command) =>    
+mip_create_command(cbc,TmpFileStr,SolFileStr,Command) =>
     Command = "cbc " ++ TmpFileStr ++ " solve solu " ++ SolFileStr.
 mip_create_command(glpk,TmpFileStr,SolFileStr,Command) =>
     Command = "glpsol --lp -o " ++ SolFileStr ++ [' '|TmpFileStr].
@@ -163,7 +163,7 @@ mip_retrive_res(Solver,SolFileStr,Vars),
         retrieve_gurobi_res(SolFileStr,Vars)
     ; Solver == cbc ->
         retrieve_cbc_res(SolFileStr,Vars)
-	;
+    ;
         retrieve_glpk_res(SolFileStr,Vars)
     ).
 
@@ -437,7 +437,7 @@ cbc_read_result(IStream,['X'|L],HTab) =>
     Line = read_line(IStream),
     cbc_read_result(IStream,Line,HTab).
 cbc_read_result(IStream,[_|L],HTab) =>
-    cbc_read_result(IStream,L,HTab).   % skip until X
+    cbc_read_result(IStream,L,HTab).
 
 skip_until_number([]) = [].
 skip_until_number(L@[D|_]) = L, number_char(D) => true.
@@ -493,16 +493,22 @@ glpk_read_result(IStream,_,HTab) =>
     Line = read_line(IStream),
     glpk_read_result(IStream,Line,HTab).
 
-mip_bind_vars([],_HTab) => true.
-mip_bind_vars([Var|Vars],HTab),var(Var), 
+mip_bind_vars(Vars,HTab) =>
+    Vs = [V : V in Vars, var(V)],
+    (Vs == [] -> true; size(HTab) > 0),
+    mip_bind_vars_aux(Vs,HTab).
+
+mip_bind_vars_aux([],_HTab) => true.
+mip_bind_vars_aux([Var|Vars],HTab),var(Var), 
     bp.get_attr(Var,'$lp',T),
     T = $'$lp_x'(ColNo,_IsInt,_Low,_Up,_),
     Val = HTab.get(ColNo,[]),
     Val !== []
 =>
-    (Var = Val -> true; printf(stderr,"WARNING:: constraints are assumed to be IP unless coefficients or variables are real\n"),handle_exception($invalid_mip_solution(Val),solve)),
-    mip_bind_vars(Vars,HTab).
-mip_bind_vars([Var|Vars],HTab),number(Var) =>
-    mip_bind_vars(Vars,HTab).    
+    (Var = Val -> true; printf(stderr,"ERROR:: invalid value for an integer variable:%w\n",Val), fail),
+    mip_bind_vars_aux(Vars,HTab).
+mip_bind_vars_aux([Var|Vars],HTab) =>
+    (number(Var) -> true; dvar(Var) -> Var = 0; Var = 0.0),
+    mip_bind_vars_aux(Vars,HTab).    
 
     

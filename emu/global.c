@@ -258,7 +258,7 @@ BPLONG make_cons_in_parea(car,cdr)
 
     ALLOCATE_FROM_PAREA(ptr,2);
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     temp = (BPLONG)ADDTAG(ptr,LST);    
@@ -317,7 +317,7 @@ int c_UNNUMBER_VARS(){
         myquit(STACK_OVERFLOW,"uv");
     }
     if (temp == -1){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     return unify(temp,unnumberedTerm);

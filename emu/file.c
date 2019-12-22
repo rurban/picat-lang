@@ -88,13 +88,13 @@ extern int chars_pool_index;
 
 #define CHECK_CHARS_POOL_OVERFLOW(len)                  \
     if (chars_pool_index+len >= MAX_CHARS_IN_POOL){     \
-        exception = out_of_range;                       \
+        bp_exception = out_of_range;                    \
         return BP_ERROR;                                \
     }
 
 #define CHECK_FILE_INDEX(index)                                         \
     if (index<0 || index > file_tab_end || file_table[index].fdes==NULL){ \
-        exception = could_not_open_stream;                              \
+        bp_exception = could_not_open_stream;                           \
         return BP_ERROR;                                                \
     } 
 
@@ -194,7 +194,7 @@ int b_STREAM_ADD_ALIAS_cc(Index,Atom)
     CHECK_FILE_INDEX(Index);
     ALLOCATE_FROM_PAREA(ptr,2);
     if (ptr==NULL){
-        exception = et_OUT_OF_MEMORY;    
+        bp_exception = et_OUT_OF_MEMORY;    
         return BP_ERROR;
     }
     FOLLOW(ptr) = Atom;
@@ -206,7 +206,7 @@ int b_STREAM_ADD_ALIAS_cc(Index,Atom)
 int b_STREAM_UPDATE_EOS(){
     if (file_table[in_file_i].eos!=STREAM_NOT_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
-        exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
     file_table[in_file_i].eos = STREAM_PAST_EOS;
@@ -255,7 +255,7 @@ int b_STREAM_GET_EOS_cf(Index,Eos)
         return BP_TRUE;
     }
     if (file_table[Index].fdes==NULL){
-        exception = c_existence_error(et_STREAM, c_stream_struct(Index));
+        bp_exception = c_existence_error(et_STREAM, c_stream_struct(Index));
         return BP_ERROR;
     }
     if (file_table[Index].mode!=READ_MODE && file_table[Index].mode!=SOCKET) return BP_FALSE;   
@@ -301,7 +301,7 @@ int b_STREAM_CHECK_CURRENT_TEXT_INPUT(){
     if (file_table[in_file_i].type==STREAM_TYPE_TEXT) {
         return BP_TRUE;
     } else {
-        exception = c_permission_error(et_INPUT,et_BINARY_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_BINARY_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
 }
@@ -310,7 +310,7 @@ int b_STREAM_CHECK_CURRENT_TEXT_OUTPUT(){
     if (file_table[out_file_i].type==STREAM_TYPE_TEXT) {
         return BP_TRUE;
     } else {
-        exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
+        bp_exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
         return BP_ERROR;
     }
 }
@@ -442,7 +442,7 @@ int check_file_term(term)
     if (ISATOM(term) || b_IS_STRING_c(term)){ 
         return BP_TRUE;
     } else { 
-        exception = illegal_arguments; 
+        bp_exception = illegal_arguments; 
         return BP_ERROR; 
     } 
 }
@@ -454,7 +454,7 @@ int check_file_term(term)
   
     DEREF(term); 
     if (!ISATOM(term)){ 
-        exception = illegal_arguments; 
+        bp_exception = illegal_arguments; 
         return BP_ERROR; 
     } 
     return BP_TRUE;
@@ -990,7 +990,7 @@ int b_WRITENAME_c(op)
     BPLONG_PTR top,dv_ptr;
     /*  
         if (file_table[out_file_i].type==STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
+        bp_exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
         return BP_ERROR;
         }
     */
@@ -1108,7 +1108,7 @@ int b_WRITE_QUICK_c(op)
     BPLONG_PTR top;
 
     if (file_table[out_file_i].type==STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
+        bp_exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
         return BP_ERROR;
     }
     SWITCH_OP(op,write_quick_1,
@@ -1318,20 +1318,20 @@ int b_PUT_BYTE_c(op)
   
     DEREF(op);
     if (ISREF(op)){
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
         return BP_ERROR;
     }
     if (!ISINT(op)){
-        exception = c_type_error(et_BYTE,op);
+        bp_exception = c_type_error(et_BYTE,op);
         return BP_ERROR;
     }
     op = INTVAL(op);
     if (op<0 || op>255){
-        exception = c_type_error(et_BYTE,MAKEINT(op));
+        bp_exception = c_type_error(et_BYTE,MAKEINT(op));
         return BP_ERROR;
     }
     if (file_table[out_file_i].type==STREAM_TYPE_TEXT){
-        exception = c_permission_error(et_OUTPUT,et_TEXT_STREAM,c_stream_struct(out_file_i));
+        bp_exception = c_permission_error(et_OUTPUT,et_TEXT_STREAM,c_stream_struct(out_file_i));
         return BP_ERROR;
     }
     putc(op,curr_out);
@@ -1347,22 +1347,22 @@ int b_PUT_CODE_c(op)
   
     DEREF(op);
     if (ISREF(op)){
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
         return BP_ERROR;
     }
     if (!ISINT(op)){
-        exception = c_type_error(et_INTEGER,op);
+        bp_exception = c_type_error(et_INTEGER,op);
         return BP_ERROR;
     }
     op = INTVAL(op);
     /*
       if (op<0 || op>255){
-      exception = c_representation_error(et_CHARACTER_CODE);
+      bp_exception = c_representation_error(et_CHARACTER_CODE);
       return BP_ERROR;
       }
     */
     if (file_table[out_file_i].type==STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
+        bp_exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,c_stream_struct(out_file_i));
         return BP_ERROR;
     }
     if (op <= 127){
@@ -1388,7 +1388,7 @@ int b_PUT_c(op)
     if (ISINT(op)) goto b_put;
     res = eval_arith(op);
     if (res == BP_ERROR || (!ISINT(res))){
-        exception = c_type_error(et_INTEGER,res); return BP_ERROR;
+        bp_exception = c_type_error(et_INTEGER,res); return BP_ERROR;
     }
     op = res;
 b_put:
@@ -1408,7 +1408,7 @@ int c_put_update_pos(){
     if (ISINT(op)) goto b_put;
     res = eval_arith(op);
     if (res == BP_ERROR || (!ISINT(res))){
-        exception = c_type_error(et_INTEGER,res); return BP_ERROR;
+        bp_exception = c_type_error(et_INTEGER,res); return BP_ERROR;
     }
     op = res;
 b_put:
@@ -1437,7 +1437,7 @@ int b_TAB_c(op)
     if (ISINT(op)) goto b_tab;
     res = eval_arith(op);
     if (res == BP_ERROR || (!ISINT(res))){
-        exception = c_type_error(et_INTEGER,res); return BP_ERROR;
+        bp_exception = c_type_error(et_INTEGER,res); return BP_ERROR;
     }
     op = res;
 b_tab:
@@ -1460,7 +1460,7 @@ int b_GET_BYTE_f(op)
 
     DEREF(op);
     if (file_table[in_file_i].type==STREAM_TYPE_TEXT){
-        exception = c_permission_error(et_INPUT,et_TEXT_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_TEXT_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
     n = getc(curr_in);
@@ -1469,7 +1469,7 @@ int b_GET_BYTE_f(op)
         clearerr(curr_in);
         if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
             file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
-            exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
+            bp_exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
             return BP_ERROR;
         };
         file_table[in_file_i].eos = STREAM_PAST_EOS;
@@ -1488,20 +1488,20 @@ int b_GET_CODE_f(op)
 
     DEREF(op);
     if (file_table[in_file_i].type==STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_INPUT,et_BINARY_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_BINARY_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
     n = getc(curr_in);
 
     if (n == 0){
-        exception = c_representation_error(et_CHARACTER);
+        bp_exception = c_representation_error(et_CHARACTER);
         return BP_ERROR;
     }
     if (n == EOF){
         clearerr(curr_in);
         if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
             file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
-            exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
+            bp_exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
             return BP_ERROR;
         };
         file_table[in_file_i].eos = STREAM_PAST_EOS;
@@ -1536,11 +1536,11 @@ int b_PEEK_BYTE_f(op)
   
     if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
-        exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
     if (file_table[in_file_i].type!=STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_INPUT,et_TEXT_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_TEXT_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
   
@@ -1563,11 +1563,11 @@ int b_PEEK_CODE_f(op)
   
     if (file_table[in_file_i].eos==STREAM_PAST_EOS &&
         file_table[in_file_i].eof_action==STREAM_EOF_ACTION_ERROR){
-        exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_PAST_END_OF_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
     if (file_table[in_file_i].type!=STREAM_TYPE_TEXT){
-        exception = c_permission_error(et_INPUT,et_BINARY_STREAM,c_stream_struct(in_file_i));
+        bp_exception = c_permission_error(et_INPUT,et_BINARY_STREAM,c_stream_struct(in_file_i));
         return BP_ERROR;
     }
   
@@ -1576,7 +1576,7 @@ int b_PEEK_CODE_f(op)
     if (n == EOF){
         clearerr(curr_in);
     } else if (n==0){
-        exception = c_representation_error(et_CHARACTER);
+        bp_exception = c_representation_error(et_CHARACTER);
         return BP_ERROR;
     }
 
@@ -1641,7 +1641,7 @@ int c_cp_file() {
     f_name1 = (char *)bp_get_atom_name(ARG(1,2));
     f_name2 = (char *)bp_get_atom_name(ARG(2,2));
     if (f_name1==NULL || f_name2==NULL){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
   
@@ -1673,7 +1673,7 @@ int c_CP_FILE_cc(){
     DEREF(FDIn); FDIndex = INTVAL(FDIn);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     in_fptr = file_table[FDIndex].fdes;
@@ -1681,7 +1681,7 @@ int c_CP_FILE_cc(){
     CHECK_FILE_INDEX(FDIndex);
     out_fptr = file_table[FDIndex].fdes;
     if (file_table[FDIndex].mode == 0){
-        exception = output_stream_expected;
+        bp_exception = output_stream_expected;
         return BP_ERROR;
     }
     b = getc(in_fptr);
@@ -1714,12 +1714,12 @@ int b_SEE_c(fop)
         tempfile = fopen(full_file_name, "r");
 #endif
         if (tempfile==NULL) {
-            exception = c_permission_error(et_OPEN,et_SOURCE_SINK,fop);
+            bp_exception = c_permission_error(et_OPEN,et_SOURCE_SINK,fop);
             return BP_ERROR;
         }
         temp_in_file_i = next_file_index();
         if (temp_in_file_i<0){
-            exception = out_of_range; return BP_ERROR;
+            bp_exception = out_of_range; return BP_ERROR;
         }
         in_file_i = temp_in_file_i;
         file_table[in_file_i].mode = READ_MODE;
@@ -1800,12 +1800,12 @@ int b_TELL_cc(fop,mode)
         tempfile = fopen(full_file_name, "w");
 #endif
         if (tempfile==NULL) {
-            exception = c_permission_error(et_OPEN,et_SOURCE_SINK,fop);
+            bp_exception = c_permission_error(et_OPEN,et_SOURCE_SINK,fop);
             return BP_ERROR;
         }
         temp_out_file_i = next_file_index();
         if (temp_out_file_i<0){
-            exception = out_of_range; return BP_ERROR;
+            bp_exception = out_of_range; return BP_ERROR;
         }
         file_table[temp_out_file_i].mode = WRITE_MODE;
         file_table[temp_out_file_i].name_atom = fop;
@@ -1865,7 +1865,7 @@ int b_OPEN_ccf(fop,sop,Index)
     if (index < 0 || (index>=3 && file_table[index].mode!=mode)) {                 /* not in table */
         get_file_name(fop);
         if (mode==READ_MODE && sys_access(full_file_name, mode)!=0){
-            exception = c_existence_error(et_SOURCE_SINK,fop);
+            bp_exception = c_existence_error(et_SOURCE_SINK,fop);
             return BP_ERROR;
         }
         switch (mode) {
@@ -1891,15 +1891,15 @@ int b_OPEN_ccf(fop,sop,Index)
 #endif
             break;
         default:
-            exception = illegal_arguments; return BP_ERROR;
+            bp_exception = illegal_arguments; return BP_ERROR;
         }
         if (!tempfile) {
-            exception = c_permission_error(et_OPEN,et_SOURCE_SINK,fop);
+            bp_exception = c_permission_error(et_OPEN,et_SOURCE_SINK,fop);
             return BP_ERROR;
         }
         index = next_file_index();
         if (index<0){
-            exception = out_of_range; return BP_ERROR;
+            bp_exception = out_of_range; return BP_ERROR;
         }
         file_table[index].mode = mode;
         file_table[index].name_atom = fop;
@@ -2081,7 +2081,7 @@ int b_ACCESS_ccf(op1,op2,op3)
     if (ISINT(op2)){
         mode = INTVAL(op2);
     } else {
-        exception = c_type_error(et_INTEGER,op2); return BP_ERROR;
+        bp_exception = c_type_error(et_INTEGER,op2); return BP_ERROR;
     };
     if (socket_file_name(full_file_name))                                                                                       
     {                                                                                                                   
@@ -2154,7 +2154,7 @@ int file_stat()
     get_file_name(op);
 
     if (stat(full_file_name, &buf) == -1L) {
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return -1L;
     }
     ptr = heap_top;
@@ -2190,7 +2190,7 @@ int c_file_permission()
 
 #ifdef WIN32
     if (stat(full_file_name, &buf) == -1L) {
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return -1L;
     }
 
@@ -2205,7 +2205,7 @@ int c_file_permission()
     }
 #else
     if (access(full_file_name,F_OK)<0){
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return -1L;
     }
     if (access(full_file_name,R_OK)==0){
@@ -2231,7 +2231,7 @@ int c_file_type(){
     get_file_name(op);
   
     if (stat(full_file_name, &buf) == -1L) {
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return -1L;
     }
     if (S_ISREG(buf.st_mode)){
@@ -2271,7 +2271,7 @@ int c_directory_list_picat(BPLONG List) {
     BPLONG_PTR lst_ptr;
 
     if (stat(full_file_name, &buf) == -1L) {
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return BP_ERROR;
     }
     if (!S_ISDIR(buf.st_mode)){
@@ -2338,7 +2338,7 @@ int c_directory_list_bp(BPLONG List) {
     BPLONG_PTR lst_ptr;
 
     if (stat(full_file_name, &buf) == -1L) {
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return BP_ERROR;
     }
     if (!S_ISDIR(buf.st_mode)){
@@ -2416,7 +2416,7 @@ int c_mkdir()
     if (res == 0){
         return BP_TRUE;
     } else {
-        exception = permission_error;
+        bp_exception = permission_error;
         return BP_ERROR;
     }
 }
@@ -2439,7 +2439,7 @@ int c_rmdir()
     if (res == 0){
         return BP_TRUE;
     } else {
-        exception = permission_error;
+        bp_exception = permission_error;
         return BP_ERROR;
     }
 }
@@ -2463,7 +2463,7 @@ int c_rename(){
     if (res == 0){
         return BP_TRUE;
     }
-    exception = permission_error;
+    bp_exception = permission_error;
     return res;
 }
 
@@ -2673,15 +2673,15 @@ int b_SET_BINARY_INPUT_cc(Index,Source)
     CHECK_FILE_INDEX(temp_in_file_i);
 
     if (file_table[temp_in_file_i].fdes==NULL){
-        exception = c_existence_error(et_STREAM,Source);
+        bp_exception = c_existence_error(et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_in_file_i].mode!=READ_MODE){
-        exception = c_permission_error(et_INPUT,et_STREAM,Source);
+        bp_exception = c_permission_error(et_INPUT,et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_in_file_i].type!=STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_INPUT,et_TEXT_STREAM,Source);
+        bp_exception = c_permission_error(et_INPUT,et_TEXT_STREAM,Source);
         return BP_ERROR;
     }
     return cc_set_input(temp_in_file_i);
@@ -2697,15 +2697,15 @@ int b_SET_TEXT_INPUT_cc(Index,Source)
     temp_in_file_i = INTVAL(Index);
     CHECK_FILE_INDEX(temp_in_file_i);
     if (file_table[temp_in_file_i].fdes==NULL){
-        exception = c_existence_error(et_STREAM,Source);
+        bp_exception = c_existence_error(et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_in_file_i].mode!=READ_MODE && file_table[temp_in_file_i].mode!=SOCKET){                         
-        exception = c_permission_error(et_INPUT,et_STREAM,Source);
+        bp_exception = c_permission_error(et_INPUT,et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_in_file_i].type!=STREAM_TYPE_TEXT){
-        exception = c_permission_error(et_INPUT,et_BINARY_STREAM,Source);
+        bp_exception = c_permission_error(et_INPUT,et_BINARY_STREAM,Source);
         return BP_ERROR;
     }
     return cc_set_input(temp_in_file_i);
@@ -2720,11 +2720,11 @@ int b_SET_INPUT_cc(Index,Source)
     temp_in_file_i = INTVAL(Index);
     CHECK_FILE_INDEX(temp_in_file_i);
     if (file_table[temp_in_file_i].fdes==NULL){
-        exception = c_existence_error(et_STREAM,Source);
+        bp_exception = c_existence_error(et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_in_file_i].mode!=READ_MODE && file_table[temp_in_file_i].mode!=SOCKET){                         
-        exception = c_permission_error(et_INPUT,et_STREAM,Source);
+        bp_exception = c_permission_error(et_INPUT,et_STREAM,Source);
         return BP_ERROR;
     }
     return cc_set_input(temp_in_file_i);
@@ -2754,15 +2754,15 @@ int b_SET_BINARY_OUTPUT_cc(Index,Source)
     temp_out_file_i = INTVAL(Index);
     CHECK_FILE_INDEX(temp_out_file_i);
     if (file_table[temp_out_file_i].fdes==NULL){
-        exception = c_existence_error(et_STREAM,Source);
+        bp_exception = c_existence_error(et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_out_file_i].mode==READ_MODE){
-        exception = c_permission_error(et_OUTPUT,et_STREAM,Source);
+        bp_exception = c_permission_error(et_OUTPUT,et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_out_file_i].type!=STREAM_TYPE_BINARY){
-        exception = c_permission_error(et_OUTPUT,et_TEXT_STREAM,Source);
+        bp_exception = c_permission_error(et_OUTPUT,et_TEXT_STREAM,Source);
         return BP_ERROR;
     }
     return cc_set_output(temp_out_file_i);
@@ -2779,15 +2779,15 @@ int b_SET_TEXT_OUTPUT_cc(Index,Source)
     temp_out_file_i = INTVAL(Index);
     CHECK_FILE_INDEX(temp_out_file_i);
     if (file_table[temp_out_file_i].fdes==NULL){
-        exception = c_existence_error(et_STREAM,Source);
+        bp_exception = c_existence_error(et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_out_file_i].mode==READ_MODE){
-        exception = c_permission_error(et_OUTPUT,et_STREAM,Source);
+        bp_exception = c_permission_error(et_OUTPUT,et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_out_file_i].type!=STREAM_TYPE_TEXT){
-        exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,Source);
+        bp_exception = c_permission_error(et_OUTPUT,et_BINARY_STREAM,Source);
         return BP_ERROR;
     }
     return cc_set_output(temp_out_file_i);
@@ -2804,11 +2804,11 @@ int b_SET_OUTPUT_cc(Index,Source)
     temp_out_file_i = INTVAL(Index);
     CHECK_FILE_INDEX(temp_out_file_i);
     if (file_table[temp_out_file_i].fdes==NULL){
-        exception = c_existence_error(et_STREAM,Source);
+        bp_exception = c_existence_error(et_STREAM,Source);
         return BP_ERROR;
     }
     if (file_table[temp_out_file_i].mode==READ_MODE){
-        exception = c_permission_error(et_OUTPUT,et_STREAM,Source);
+        bp_exception = c_permission_error(et_OUTPUT,et_STREAM,Source);
         return BP_ERROR;
     }
     return cc_set_output(temp_out_file_i);
@@ -3098,7 +3098,7 @@ int b_NAME0_cf(op1,op2)  /* op2 is made to be the string of the name of op1*/
     } else if (IS_BIGINT(op1)){
         int i = bp_write_bigint_to_str(op1,bp_buf,MAX_STR_LEN);
         if (i==BP_ERROR){
-            exception = et_OUT_OF_MEMORY;
+            bp_exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
         return string2codes((bp_buf+i),op2);
@@ -3107,7 +3107,7 @@ int b_NAME0_cf(op1,op2)  /* op2 is made to be the string of the name of op1*/
         bp_trim_trailing_zeros(bp_buf);
         return string2codes(bp_buf,op2);
     } else {
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
 } /* b_NAME0 */
 
@@ -3127,7 +3127,7 @@ int b_ATOM_CONCAT_ccf(BPLONG a1, BPLONG a2, BPLONG a3){
     len += GET_LENGTH(sym_ptr);
     sprintf(char_ptr,"%s",GET_NAME(sym_ptr));  
     if (len>=MAX_STR_LEN){
-        exception = ADDTAG(str_RESOURCE_ERROR,ATM);
+        bp_exception = ADDTAG(str_RESOURCE_ERROR,ATM);
         return BP_ERROR;
     }
     ASSIGN_f_atom(a3, ADDTAG(insert_sym(bp_buf, len, 0),ATM));
@@ -3161,10 +3161,10 @@ int print_term_to_buf(BPLONG term){
                 i++; j++;
             }
         } else {
-            exception = illegal_arguments; return BP_ERROR;
+            bp_exception = illegal_arguments; return BP_ERROR;
         }
     } else {
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
     
     return BP_TRUE;
@@ -3184,12 +3184,12 @@ void  c_str_to_picat_str(CHAR_PTR str, BPLONG lst, BPLONG lstr){
     ret_lst_ptr = &ret_lst;
     ch_ptr = str;
 
-	if ((*ch_ptr) == '\0'){
-	  FOLLOW(heap_top) = (BPLONG)heap_top;
-	  ASSIGN_v_heap_term(lst,(BPLONG)heap_top);
-	  ASSIGN_v_heap_term(lstr,(BPLONG)heap_top);
-	  return;
-	}
+    if ((*ch_ptr) == '\0'){
+        FOLLOW(heap_top) = (BPLONG)heap_top;
+        ASSIGN_v_heap_term(lst,(BPLONG)heap_top);
+        ASSIGN_v_heap_term(lstr,(BPLONG)heap_top);
+        return;
+    }
     while ((*ch_ptr) != '\0'){
         CHAR_PTR ch_ptr0 = ch_ptr;
         utf8_char_to_codepoint(&ch_ptr);
@@ -3200,9 +3200,9 @@ void  c_str_to_picat_str(CHAR_PTR str, BPLONG lst, BPLONG lstr){
         heap_top++;
         LOCAL_OVERFLOW_CHECK("to_string");
     }
-	FOLLOW(ret_lst_ptr) = (BPLONG)ret_lst_ptr;
-	ASSIGN_v_heap_term(lst,ret_lst);
-	ASSIGN_v_heap_term(lstr,(BPLONG)ret_lst_ptr);
+    FOLLOW(ret_lst_ptr) = (BPLONG)ret_lst_ptr;
+    ASSIGN_v_heap_term(lst,ret_lst);
+    ASSIGN_v_heap_term(lstr,(BPLONG)ret_lst_ptr);
 }
 
 /* change Picat string (lst) to a C string (buf) */
@@ -3250,7 +3250,7 @@ int b_TO_QUOTED_STRING_cff(BPLONG term, BPLONG lst, BPLONG lstr){
   
     DEREF(term);
     if (!ISATOM(term)){
-        exception = atom_expected;
+        bp_exception = atom_expected;
         return BP_ERROR;
     }
     sym_ptr = GET_ATM_SYM_REC(term);
@@ -3321,7 +3321,7 @@ int c_PICAT_GETENV_cf(){
     EnvVarName = ARG(1,2);DEREF(EnvVarName);
     EnvValStr = ARG(2,2);
     if (!ISATOM(EnvVarName) && !b_IS_STRING_c(EnvVarName)){
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
     get_file_name(EnvVarName);
     env_val = getenv(full_file_name);
@@ -3362,7 +3362,7 @@ int b_GET_NEXT_PICAT_TOKEN_cff(BPLONG FDIndex, BPLONG TokenType, BPLONG TokenVal
 #else
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     if (FDIndex != in_file_i){
@@ -3400,7 +3400,7 @@ int b_READ_BYTE_cf(BPLONG FDIndex, BPLONG Byt){
     file_table[FDIndex].lastc = ' ';
 
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     in_fptr = file_table[FDIndex].fdes;
@@ -3419,7 +3419,7 @@ int b_PEEK_BYTE_cf(BPLONG FDIndex, BPLONG Byt){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     in_fptr = file_table[FDIndex].fdes;
@@ -3443,7 +3443,7 @@ int b_READ_BYTE_ccf(BPLONG FDIndex, BPLONG N, BPLONG Lst){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     file_table[FDIndex].lastc = ' ';
@@ -3481,7 +3481,7 @@ int b_READ_CHAR_cf(BPLONG FDIndex, BPLONG Ch){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     in_fptr = file_table[FDIndex].fdes;
@@ -3499,9 +3499,7 @@ int b_READ_CHAR_cf(BPLONG FDIndex, BPLONG Ch){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
-            //      b = ADDTAG(insert_sym(&c,1,0),ATM);
-            b = char_sym_table[c];
+            b = char_sym_table[(char)b];
         }
     }
     ASSIGN_f_atom(Ch,b);
@@ -3515,7 +3513,7 @@ int b_PEEK_CHAR_cf(BPLONG FDIndex, BPLONG Ch){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     in_fptr = file_table[FDIndex].fdes;
@@ -3536,10 +3534,8 @@ int b_PEEK_CHAR_cf(BPLONG FDIndex, BPLONG Ch){
                 ungetc(*ch_ptr,in_fptr);
             }
         } else {
-            char c = (char)b;
             ungetc((char)b,in_fptr);
-            //      b = ADDTAG(insert_sym(&c,1,0),ATM);
-            b = char_sym_table[c];
+            b = char_sym_table[(char)b];
         }
     }
     ASSIGN_f_atom(Ch,b);
@@ -3556,7 +3552,7 @@ int b_READ_CHAR_ccf(BPLONG FDIndex, BPLONG N, BPLONG Lst){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     file_table[FDIndex].lastc = ' ';
@@ -3572,9 +3568,7 @@ int b_READ_CHAR_ccf(BPLONG FDIndex, BPLONG N, BPLONG Lst){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
-            //      b = ADDTAG(insert_sym(&c,1,0),ATM);
-            b = char_sym_table[c];
+            b = char_sym_table[(char)b];
         }
         FOLLOW(heap_top) = b;
         FOLLOW(ret_lst_ptr) = ADDTAG(heap_top,LST);
@@ -3604,7 +3598,7 @@ int b_READ_CHAR_CODE_cf(BPLONG FDIndex, BPLONG Ch){
 
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     file_table[FDIndex].lastc = ' ';
@@ -3630,7 +3624,7 @@ int b_PEEK_CHAR_CODE_cf(BPLONG FDIndex, BPLONG Ch){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     in_fptr = file_table[FDIndex].fdes;
@@ -3666,7 +3660,7 @@ int b_READ_CHAR_CODE_ccf(BPLONG FDIndex, BPLONG N, BPLONG Lst){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     file_table[FDIndex].lastc = ' ';
@@ -3747,9 +3741,7 @@ int b_READ_FILE_CHARS_cf(BPLONG FDIndex, BPLONG Lst){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
-            //      b = ADDTAG(insert_sym(&c,1,0),ATM);
-            b = char_sym_table[c];
+            b = char_sym_table[(char)b];
         }
         FOLLOW(heap_top) = b;
         FOLLOW(ret_lst_ptr) = ADDTAG(heap_top,LST);
@@ -3805,7 +3797,7 @@ int b_READ_LINE_cf(BPLONG FDIndex, BPLONG Lst){
     DEREF(FDIndex); FDIndex = INTVAL(FDIndex);
     CHECK_FILE_INDEX(FDIndex);
     if (file_table[FDIndex].mode != 0){
-        exception = input_stream_expected;
+        bp_exception = input_stream_expected;
         return BP_ERROR;
     }
     file_table[FDIndex].lastc = ' ';
@@ -3826,9 +3818,7 @@ int b_READ_LINE_cf(BPLONG FDIndex, BPLONG Lst){
             *ch_ptr = '\0';
             b = ADDTAG(insert_sym(s,(ch_ptr-s),0),ATM);
         } else {
-            char c = (char)b;
-            //      b = ADDTAG(insert_sym(&c,1,0),ATM);
-            b = char_sym_table[c];
+            b = char_sym_table[(char)b];
         }
         FOLLOW(heap_top) = b;
         FOLLOW(ret_lst_ptr) = ADDTAG(heap_top,LST);
@@ -3859,7 +3849,7 @@ int b_WRITE_BYTE_cc(BPLONG FDIndex, BPLONG op){
     CHECK_FILE_INDEX(FDIndex);
     out_fptr = file_table[FDIndex].fdes;
     if (file_table[FDIndex].mode == 0){
-        exception = output_stream_expected;
+        bp_exception = output_stream_expected;
         return BP_ERROR;
     }
     DEREF(op); 
@@ -3867,7 +3857,7 @@ int b_WRITE_BYTE_cc(BPLONG FDIndex, BPLONG op){
     if (ISINT(op)){
         op = INTVAL(op);
         if (op<0 || op>255){
-            exception = c_type_error(et_BYTE,op0);
+            bp_exception = c_type_error(et_BYTE,op0);
             return BP_ERROR;
         }
         putc(op,out_fptr);
@@ -3882,12 +3872,12 @@ int b_WRITE_BYTE_cc(BPLONG FDIndex, BPLONG op){
             if (ISINT(byt)){
                 byt = INTVAL(byt);
                 if (byt<0 || byt>255){
-                    exception = c_type_error(et_BYTE,op0);
+                    bp_exception = c_type_error(et_BYTE,op0);
                     return BP_ERROR;
                 }
                 putc(byt,out_fptr);
             } else {
-                exception = c_type_error(et_INTEGER,op0);
+                bp_exception = c_type_error(et_INTEGER,op0);
                 return BP_ERROR;
             }
             op = FOLLOW(lst_ptr+1); DEREF(op);
@@ -3895,15 +3885,15 @@ int b_WRITE_BYTE_cc(BPLONG FDIndex, BPLONG op){
         if (op==nil_sym){
             return BP_TRUE;
         } else {
-            exception = c_type_error(et_LIST,op0);
+            bp_exception = c_type_error(et_LIST,op0);
             return BP_ERROR;
         }
     } else {
         if (ISREF(op)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
             return BP_ERROR;
         }
-        exception = c_type_error(et_BYTE,op);
+        bp_exception = c_type_error(et_BYTE,op);
         return BP_ERROR;
     }
 }
@@ -3927,7 +3917,7 @@ int b_put_char(FILE *out_fptr,BPLONG op){
             c = *ch_ptr++;
         }
     } else {
-        exception = char_expected;
+        bp_exception = char_expected;
         return BP_ERROR;
     }
     return BP_TRUE;
@@ -3942,7 +3932,7 @@ int b_WRITE_CHAR_cc(BPLONG FDIndex, BPLONG op){
     CHECK_FILE_INDEX(FDIndex);
     out_fptr = file_table[FDIndex].fdes;
     if (file_table[FDIndex].mode == 0){
-        exception = output_stream_expected;
+        bp_exception = output_stream_expected;
         return BP_ERROR;
     }
     DEREF(op); 
@@ -3964,7 +3954,7 @@ int b_WRITE_CHAR_cc(BPLONG FDIndex, BPLONG op){
                     return BP_ERROR;
                 }
             } else {
-                exception = c_type_error(atom_expected,atm);
+                bp_exception = c_type_error(atom_expected,atm);
                 return BP_ERROR;
             }
             op = FOLLOW(lst_ptr+1); DEREF(op);
@@ -3972,15 +3962,15 @@ int b_WRITE_CHAR_cc(BPLONG FDIndex, BPLONG op){
         if (op==nil_sym){
             return BP_TRUE;
         } else {
-            exception = c_type_error(et_LIST,op0);
+            bp_exception = c_type_error(et_LIST,op0);
             return BP_ERROR;
         }
     } else {
         if (ISREF(op)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
             return BP_ERROR;
         }
-        exception = c_type_error(et_CHARACTER,op);
+        bp_exception = c_type_error(et_CHARACTER,op);
         return BP_ERROR;
     }
 }
@@ -4008,7 +3998,7 @@ int b_WRITE_CHAR_CODE_cc(BPLONG FDIndex, BPLONG op){
     CHECK_FILE_INDEX(FDIndex);
     out_fptr = file_table[FDIndex].fdes;
     if (file_table[FDIndex].mode == 0){
-        exception = output_stream_expected;
+        bp_exception = output_stream_expected;
         return BP_ERROR;
     }
     DEREF(op); 
@@ -4026,7 +4016,7 @@ int b_WRITE_CHAR_CODE_cc(BPLONG FDIndex, BPLONG op){
             if (ISINT(elm)){
                 b_put_char_code(out_fptr,INTVAL(elm));
             } else {
-                exception = c_type_error(et_INTEGER,elm);
+                bp_exception = c_type_error(et_INTEGER,elm);
                 return BP_ERROR;
             }
             op = FOLLOW(lst_ptr+1); DEREF(op);
@@ -4034,15 +4024,15 @@ int b_WRITE_CHAR_CODE_cc(BPLONG FDIndex, BPLONG op){
         if (op==nil_sym){
             return BP_TRUE;
         } else {
-            exception = c_type_error(et_LIST,op0);
+            bp_exception = c_type_error(et_LIST,op0);
             return BP_ERROR;
         }
     } else {
         if (ISREF(op)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
             return BP_ERROR;
         }
-        exception = c_type_error(et_INTEGER,op);
+        bp_exception = c_type_error(et_INTEGER,op);
         return BP_ERROR;
     }
 }
@@ -4093,7 +4083,7 @@ int b_SET_STRING_TO_PARSE_c(BPLONG Str){
         if (GET_LENGTH(sym_ptr)!=1) return BP_FALSE;
         *ch_ptr++ = *GET_NAME(sym_ptr);
         if (ch_ptr >= bp_buf+ MAX_STR_LEN){
-            exception = et_STRING_TOO_LONG;
+            bp_exception = et_STRING_TOO_LONG;
             return BP_ERROR;
         }
     }

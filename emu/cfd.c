@@ -156,7 +156,7 @@ int b_CFD_COMPUTE_MINS_MAXS(Arity,Tuples,Mins,Maxs)
             } else if (e == star_atom) {
                 HasStarArray[i] = 1;
             } else {
-                exception = illegal_arguments;
+                bp_exception = illegal_arguments;
                 return BP_ERROR;
             }
         }

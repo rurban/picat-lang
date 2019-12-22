@@ -20,13 +20,13 @@
  *  in luck: it is almost identical to the VMS character set.
  */
 #define TOKEN_CHECK_EXCEPTION() {               \
-        if (exception != (BPLONG)NULL){         \
+        if (bp_exception != (BPLONG)NULL){      \
             return BP_ERROR;                    \
         }                                       \
     }
 
 #define TOKEN_CHECK_EXCEPTION_STRING() {        \
-        if (exception != (BPLONG)NULL){         \
+        if (bp_exception != (BPLONG)NULL){      \
             return BP_ERROR;                    \
         }                                       \
     }
@@ -563,7 +563,7 @@ void SyntaxError(message)
     CHAR_PTR message;
 {
     //  Fprintf(stderr, "Syntax error: %s\n", message);
-    exception = c_syntax_error(ADDTAG(insert_sym(message,strlen(message),0),ATM));
+    bp_exception = c_syntax_error(ADDTAG(insert_sym(message,strlen(message),0),ATM));
 }
  
 /*  GetToken() reads a single token from the input stream and returns
@@ -605,7 +605,7 @@ void SyntaxError(message)
  
 int handleEndInQuoted()
 {
-    exception = c_syntax_error(et_IN_CHARACTER);
+    bp_exception = c_syntax_error(et_IN_CHARACTER);
     return BP_ERROR;
 }
 
@@ -731,12 +731,12 @@ int read_utf8_character(FILE * card, int q){
                     n = (n<<4) + DigVal(c);
                     BP_GETC(card,c);
                 } else {
-                    exception = c_syntax_error(et_IN_CHARACTER);
+                    bp_exception = c_syntax_error(et_IN_CHARACTER);
                     return n;
                 }
             }
             if (c != '\\'){
-                exception = c_syntax_error(et_IN_CHARACTER);
+                bp_exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
             return n;
@@ -750,7 +750,7 @@ int read_utf8_character(FILE * card, int q){
             if (DigVal(c) <= 15 && c != '_'){
                 n = (n<<4) + DigVal(c);
             } else {
-                exception = c_syntax_error(et_IN_CHARACTER);
+                bp_exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
         }
@@ -762,7 +762,7 @@ int read_utf8_character(FILE * card, int q){
                 if (DigVal(c) <= 15 && c != '_'){
                     n = (n<<4) + DigVal(c);
                 } else {
-                    exception = c_syntax_error(et_IN_CHARACTER);
+                    bp_exception = c_syntax_error(et_IN_CHARACTER);
                     return n;
                 }
             }
@@ -782,18 +782,18 @@ int read_utf8_character(FILE * card, int q){
                 n = (n<<3) + DigVal(c);
                 BP_GETC(card,c);
             } else {
-                exception = c_syntax_error(et_IN_CHARACTER);
+                bp_exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
         }
         if (c != '\\'){
-            exception = c_syntax_error(et_IN_CHARACTER);
+            bp_exception = c_syntax_error(et_IN_CHARACTER);
             return n;
         }
         return n;
     }
     default:
-        exception = c_syntax_error(et_IN_ESCCHARACTER);
+        bp_exception = c_syntax_error(et_IN_ESCCHARACTER);
         return c;
     }
 } 
@@ -801,7 +801,7 @@ int read_utf8_character(FILE * card, int q){
 int handleEolInQuoted2()
 {
     lastc = '\0';
-    exception = c_syntax_error(et_IN_CHARACTER);
+    bp_exception = c_syntax_error(et_IN_CHARACTER);
     return BP_ERROR;
 }
 
@@ -900,13 +900,13 @@ int read_utf8_character_string(int q){
                     n = (n<<4) + DigVal(c);
                     BP_GETC_STRING(c);
                 } else {
-                    exception = c_syntax_error(et_IN_CHARACTER);
+                    bp_exception = c_syntax_error(et_IN_CHARACTER);
                     return n;
                 }
             }
             if (c == '\n') BP_UNGETC_STRING;
             if (c != '\\'){
-                exception = c_syntax_error(et_IN_CHARACTER);
+                bp_exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
             return n;
@@ -920,7 +920,7 @@ int read_utf8_character_string(int q){
             if (DigVal(c) <= 15 && c != '_'){
                 n = (n<<4) + DigVal(c);
             } else {
-                exception = c_syntax_error(et_IN_CHARACTER);
+                bp_exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
         }
@@ -932,7 +932,7 @@ int read_utf8_character_string(int q){
                 if (DigVal(c) <= 15 && c != '_'){
                     n = (n<<4) + DigVal(c);
                 } else {
-                    exception = c_syntax_error(et_IN_CHARACTER);
+                    bp_exception = c_syntax_error(et_IN_CHARACTER);
                     return n;
                 }
             }
@@ -952,20 +952,20 @@ int read_utf8_character_string(int q){
                 n = (n<<3) + DigVal(c);
                 BP_GETC_STRING(c);
             } else {
-                exception = c_syntax_error(et_IN_CHARACTER);
+                bp_exception = c_syntax_error(et_IN_CHARACTER);
                 return n;
             }
         }
         if (c == '\n') BP_UNGETC_STRING;
         if (c != '\\'){
-            exception = c_syntax_error(et_IN_CHARACTER);
+            bp_exception = c_syntax_error(et_IN_CHARACTER);
             return n;
         }
         // printf("char = %d\n",n);
         return n;
     }
     default:
-        exception = c_syntax_error(et_IN_ESCCHARACTER);
+        bp_exception = c_syntax_error(et_IN_ESCCHARACTER);
         return c;
     }
 } 
@@ -1120,7 +1120,7 @@ START:
                 else base = 16;
                 BP_GETC(card,c); /* first char right after must be a valid digit of the base */
                 if (DigVal(c)<0 || DigVal(c)>=base || c == '_'){
-                    exception = c_syntax_error(et_INTEGER);
+                    bp_exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
                 }
                 newv = 0;
@@ -1140,7 +1140,7 @@ START:
                             while (c == '_'){BP_GETC(card,c);}
                         } while (DigVal(c)>=0 && DigVal(c)<base);
                         if (DigVal(c)<99){
-                            exception = c_syntax_error(et_INTEGER);
+                            bp_exception = c_syntax_error(et_INTEGER);
                             return BP_ERROR;
                         }
                         lastc = c;
@@ -1151,7 +1151,7 @@ START:
                     while (c == '_'){BP_GETC(card,c);}
                 } while (DigVal(c)>=0 && DigVal(c)<base);
                 if (DigVal(c)<99){
-                    exception = c_syntax_error(et_INTEGER);
+                    bp_exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
                 }
                 rad_int = newv;
@@ -1170,7 +1170,7 @@ START:
             for (d = 0, s = AtomStr; (c = *s++); ) {
                 d = d*10-'0'+c;
                 if (d > 36){
-                    exception = et_INT_OVERFLOW;
+                    bp_exception = et_INT_OVERFLOW;
                     return BP_ERROR;
                 }
             }
@@ -1192,7 +1192,7 @@ START:
                 if (c != '_') {
                     oldv = newv;
                     if (DigVal(c)>=d){
-                        exception = et_INT_OVERFLOW;
+                        bp_exception = et_INT_OVERFLOW;
                         return BP_ERROR;
                     }
                     newv = newv*d + DigVal(c);
@@ -1203,7 +1203,7 @@ START:
                         while (DigVal(c)<99){
                             if (c != '_') {
                                 if (DigVal(c)>=d){
-                                    exception = et_INT_OVERFLOW;
+                                    bp_exception = et_INT_OVERFLOW;
                                     return BP_ERROR;
                                 }
                                 rad_int = bp_mul_bigint_bigint(rad_int,big_base);
@@ -1399,7 +1399,7 @@ START:
         return PUNCT;
  
     case ATMQT:
-        while ((d = read_utf8_character(card, c)) >= 0 && exception == (BPLONG)NULL) {
+        while ((d = read_utf8_character(card, c)) >= 0 && bp_exception == (BPLONG)NULL) {
             UTF8_CODEPOINT_TO_STR(d,s,n);
         }
         TOKEN_CHECK_EXCEPTION();
@@ -1411,7 +1411,7 @@ START:
     case LISQT: 
         /* check for potential heap overflow */
         list_head = newpair = heap_top;
-        while ((d = read_utf8_character(card, c)) >= 0 && exception == (BPLONG)NULL) {
+        while ((d = read_utf8_character(card, c)) >= 0 && bp_exception == (BPLONG)NULL) {
             if (local_top-heap_top <= LARGE_MARGIN) {
                 myquit(STACK_OVERFLOW,"tk"); 
             }
@@ -1474,7 +1474,7 @@ START:
         }
 #endif
     }
-    exception = c_syntax_error(et_IN_CHARACTER);
+    bp_exception = c_syntax_error(et_IN_CHARACTER);
     return BP_ERROR;
     /*
       fprintf(stderr, "Internal error: InType(%d)==%d\n", c, InType(c));
@@ -1525,7 +1525,7 @@ START:
                 else base = 16;
                 BP_GETC_STRING(c);  /* first char right after must be a valid digit of the base */
                 if (DigVal(c)<0 || DigVal(c)>=base || c == '_'){
-                    exception = c_syntax_error(et_INTEGER);
+                    bp_exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
                 }
                 newv = 0;
@@ -1545,7 +1545,7 @@ START:
                             while (c == '_'){BP_GETC_STRING(c);}
                         } while (DigVal(c)>=0 && DigVal(c)<base);
                         if (DigVal(c)<99){
-                            exception = c_syntax_error(et_INTEGER);
+                            bp_exception = c_syntax_error(et_INTEGER);
                             return BP_ERROR;
                         }
                         lastc = c;
@@ -1556,7 +1556,7 @@ START:
                     while (c == '_'){BP_GETC_STRING(c);}
                 } while (DigVal(c)>=0 && DigVal(c)<base);
                 if (DigVal(c)<99){
-                    exception = c_syntax_error(et_INTEGER);
+                    bp_exception = c_syntax_error(et_INTEGER);
                     return BP_ERROR;
                 }
                 rad_int = newv;
@@ -1575,7 +1575,7 @@ START:
             for (d = 0, s = AtomStr; (c = *s++); ) {
                 d = d*10-'0'+c;
                 if (d > 36){
-                    exception = et_INT_OVERFLOW;
+                    bp_exception = et_INT_OVERFLOW;
                     return BP_ERROR;
                 }
             }
@@ -1597,7 +1597,7 @@ START:
                 if (c != '_') {
                     oldv = newv;
                     if (DigVal(c)>=d){
-                        exception = c_syntax_error(et_INTEGER);
+                        bp_exception = c_syntax_error(et_INTEGER);
                         return BP_ERROR;
                     }
                     newv = newv*d + DigVal(c);
@@ -1608,7 +1608,7 @@ START:
                         while (DigVal(c)<99){
                             if (c != '_') {
                                 if (DigVal(c)>=d){
-                                    exception = et_INT_OVERFLOW;
+                                    bp_exception = et_INT_OVERFLOW;
                                     return BP_ERROR;
                                 }
                                 rad_int = bp_mul_bigint_bigint(rad_int,big_base);
@@ -1801,7 +1801,7 @@ START:
         return PUNCT;
  
     case ATMQT:
-        while ((d = read_utf8_character_string(c)) >= 0 && exception == (BPLONG)NULL) {
+        while ((d = read_utf8_character_string(c)) >= 0 && bp_exception == (BPLONG)NULL) {
             UTF8_CODEPOINT_TO_STR(d,s,n);
         }
         TOKEN_CHECK_EXCEPTION_STRING();
@@ -1812,7 +1812,7 @@ START:
     case LISQT: 
         /* check for potential heap overflow */
         list_head = newpair = heap_top;
-        while ((d = read_utf8_character_string(c)) >= 0 && exception == (BPLONG)NULL) {
+        while ((d = read_utf8_character_string(c)) >= 0 && bp_exception == (BPLONG)NULL) {
             if (local_top - heap_top <= LARGE_MARGIN) {
                 myquit(STACK_OVERFLOW,"tk"); 
             }
@@ -1875,7 +1875,7 @@ START:
         }
 #endif
     }
-    exception = c_syntax_error(et_IN_CHARACTER);
+    bp_exception = c_syntax_error(et_IN_CHARACTER);
     return BP_ERROR;
     /*
       fprintf(stderr, "Internal error: InType(%d)==%d\n", c, InType(c));
@@ -1897,7 +1897,7 @@ int b_NEXT_TOKEN_ff(op1,op2)
     BPLONG     ptr;
 
     //  printf("=>next_token %s\n",string_in);
-    exception = (BPLONG)NULL;
+    bp_exception = (BPLONG)NULL;
 #ifdef BPSOLVER
 #else
     if (next_token_index<MAX_TOKENS_IN_TERM){
@@ -1908,7 +1908,7 @@ int b_NEXT_TOKEN_ff(op1,op2)
     }
 #endif
     if (string_in == NULL) i = GetToken(); else i = GetTokenString();
-    if (exception != (BPLONG)NULL){
+    if (bp_exception != (BPLONG)NULL){
         if (string_in == NULL){
             char c;
             fprintf(stderr,  "*** error on line %d\n", (int)curr_line_no);

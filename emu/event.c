@@ -123,7 +123,7 @@ int b_POST_EVENT_ccc(x,no,e)
     DEREF(x); 
     if (!IS_SUSP_VAR(x)){
         if (ISREF(x)) return BP_TRUE;
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(x);
@@ -450,7 +450,7 @@ BPLONG register_event_source(event_no,source)
     */
     DEREF(source);
     if (!is_correct_event_source(event_no,source)){
-        exception = illegal_event;
+        bp_exception = illegal_event;
         return BP_ERROR;
     }
     ENTER_CRITICAL_SECTION;
@@ -524,7 +524,7 @@ BPLONG cg_get_component_no(comp)
     DEREF(comp);
 
     if (!ISSTRUCT(comp)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(comp);
@@ -773,7 +773,7 @@ DWORD WINAPI timerThread(LPVOID timer_no){
 
         DEREF(var);
         if (!IS_SUSP_VAR(var)){
-            exception = illegal_arguments;
+            bp_exception = illegal_arguments;
             return -1;
         }
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(var);

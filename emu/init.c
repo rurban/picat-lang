@@ -94,14 +94,14 @@ void init_toam(argc, argv)
                     print_picat_usage();
                     exit(0);
                 } else if (*(str+2) == 'v' || strcmp(str+2,"version")==0){
-                    printf("Picat version 2.7b12\n");
+                    printf("Picat version 2.8\n");
                     exit(0);
                 }
                                 
             case 'l':
-			    if (strcmp(str+1,"log")==0){  /* enable log printing */
-				  break;
-				}
+                if (strcmp(str+1,"log")==0){  /* enable log printing */
+                    break;
+                }
             case 'g':
                 use_gl_getline = 0; 
                 break;
@@ -243,7 +243,7 @@ void init_toam(argc, argv)
     initialize_free_records();
     init_picat_global_maps();
     inst_begin = 0;
-    exception = illegal_arguments;
+    bp_exception = illegal_arguments;
 }  /* end of init_toam */
 
 /*****************************************************************************/

@@ -35,7 +35,7 @@ rw =>
 There are two functions for opening a file.  Both of them are used in the previous example.
 \begin{itemize}
 \item \texttt{open($Name$) = $FD$}\index{\texttt{open/1}}: The $Name$ parameter is a filename that is represented as a string.  This function opens the file with a default \texttt{read} mode.
-\item \texttt{open($Name$, $Mode$) = $FD$}\index{\texttt{open/2}}: The $Mode$ parameter is one of the four atoms: \texttt{read}, \texttt{write}, or \texttt{append}.  The \texttt{read} atom is used for reading from a file; if the file does not exist, or the program tries to write to the file, then the program will throw an error.  The \texttt{write} atom is used for reading from a file and writing to a file; if the file already exists, then the file will be overwritten.  The \texttt{append} atom is similar to the write atom; however, if the file already exists, then data will be appended at the end of the pre-existing file.  
+\item \texttt{open($Name$, $Mode$) = $FD$}\index{\texttt{open/2}}:\index{read mode}\index{write mode}\index{append mode} The $Mode$ parameter is one of the four atoms: \texttt{read}, \texttt{write}, or \texttt{append}.  The \texttt{read} atom is used for reading from a file; if the file does not exist, or the program tries to write to the file, then the program will throw an error.  The \texttt{write} atom is used for reading from a file and writing to a file; if the file already exists, then the file will be overwritten.  The \texttt{append} atom is similar to the write atom; however, if the file already exists, then data will be appended at the end of the pre-existing file.  
 \end{itemize}
 
 \section{Reading from a File}
@@ -131,7 +131,7 @@ The \texttt{write} and \texttt{print} predicates take a file descriptor\index{fi
 
 \item \texttt{writeln($FD$, $Term$)}\index{\texttt{writeln/2}}: This predicate writes $Term$ and a newline, meaning that the next write will begin on the next line.
 \item \texttt{writeln($Term$)}\index{\texttt{writeln/1}}: This predicate is the same as \texttt{writeln(stdout,$Term$)}.
-\item \texttt{writef($FD$, $Format$, $Args\ldots$)}\index{\texttt{writef}}: This predicate is used for formatted writing, where the $Format$ parameter contains format characters that indicate how to print each of the arguments in the $Args$ parameter. The number of arguments in $Args\ldots$ cannot exceed 10.
+\item \texttt{writef($FD$, $Format$, $Args\ldots$)}\index{\texttt{writef}}: This predicate is used for formatted writing, where the $Format$ parameter contains format characters that indicate how to print each of the arguments in the $Args$ parameter. The number of arguments in $Args\ldots$ cannot exceed 16.
 \end{itemize}
 Note that these predicates write both primitive values and compound values.
 
@@ -158,7 +158,7 @@ The \texttt{io} module also has the three \texttt{print} predicates.
 \item \texttt{print($Term$)}\index{\texttt{print/1}}: This predicate is the same as \texttt{print(stdout,$Term$)}.
 \item \texttt{println($FD$, $Term$)}\index{\texttt{println/2}} This predicate prints $Term$ and a newline.
 \item \texttt{println($Term$)}\index{\texttt{println/1}} This predicate is the same as \texttt{println(stdout,$Term$)}.
-\item \texttt{printf($FD$, $Format$, $Args\ldots$)}\index{\texttt{printf}}: This predicate is the same as \texttt{writef}\index{\texttt{writef}}, except that \texttt{printf}\index{\texttt{printf}} uses \texttt{print}\index{\texttt{print/2}} to display the arguments in the $Args$ parameter, while \texttt{writef}\index{\texttt{writef}} uses \texttt{write}\index{\texttt{write}} to display the arguments in the $Args$ parameter.
+\item \texttt{printf($FD$, $Format$, $Args\ldots$)}\index{\texttt{printf}}: This predicate is the same as \texttt{writef}\index{\texttt{writef}}, except that \texttt{printf}\index{\texttt{printf}} uses \texttt{print}\index{\texttt{print/2}} to display the arguments in the $Args$ parameter, while \texttt{writef}\index{\texttt{writef}} uses \texttt{write} to display the arguments in the $Args$ parameter. The number of arguments in $Args\ldots$ cannot exceed 16.
 \end{itemize}
 
 The following example demonstrates the differences between the \texttt{write}\index{\texttt{write/1}} and \texttt{print}\index{\texttt{print/1}} predicates.  

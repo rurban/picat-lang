@@ -80,7 +80,7 @@ int b_EXCLUDABLE_LIST_c(list)
         DEREF(list);
     }
     if (ISNIL(list)) return BP_TRUE;
-    exception = illegal_arguments;
+    bp_exception = illegal_arguments;
     return BP_ERROR;
 }
   
@@ -604,7 +604,7 @@ int c_fd_degree(){
 
     DEREF(Var);
     if (!IS_SUSP_VAR(Var)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);

@@ -213,7 +213,7 @@ int SP_get_integer(SP_term_ref t, long *l){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISINT(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     *l = INTVAL(t);
@@ -232,7 +232,7 @@ int SP_get_float(SP_term_ref t, double *d){
     } else if (ISFLOAT(t)){
         temp_d = floatval(t);
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     *d = temp_d;
@@ -246,7 +246,7 @@ int SP_get_atom(SP_term_ref t, unsigned long *a){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISATOM(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     *a = UNTAGGED_ADDR(t);
@@ -260,7 +260,7 @@ int SP_get_string(SP_term_ref t, char **name){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISATOM(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     *name = GET_NAME((SYM_REC_PTR)UNTAGGED_ADDR(t));
@@ -276,7 +276,7 @@ int SP_get_address(SP_term_ref t, void **pointer){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISINT(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     *pointer = (void *)INTVAL(t);
@@ -297,7 +297,7 @@ int SP_get_list_chars(SP_term_ref t, char **s){
     SP_term_ref tail = SP_new_term_ref();
     DEREF(t);
     if (!ISLIST(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     n = SP_list_len(t);
@@ -319,7 +319,7 @@ int SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *
     BPLONG code;
     DEREF(t);
     if (!ISLIST(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     len = SP_list_len(t);
@@ -328,7 +328,7 @@ int SP_get_list_n_chars(SP_term_ref t, SP_term_ref tail, long n, long *w, char *
         UNTAG_ADDR(t);
         code = FOLLOW(t); DEREF(code); 
         if (!ISINT(code)){
-            exception = illegal_arguments;
+            bp_exception = illegal_arguments;
             return SP_ERROR;
         }
         s[i] = INTVAL(code);
@@ -370,7 +370,7 @@ int SP_get_number_chars(SP_term_ref t, char **s){
     } else if (ISFLOAT(t)){
         sprintf(buf,"%lf",floatval(t));
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     ptr = (char *)malloc(strlen(buf)+1);
@@ -394,7 +394,7 @@ int SP_get_functor(SP_term_ref t, unsigned long *name, BPLONG *arity){
     DEREF(t);
 
     if (ISREF(t) || ISNUM(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     NEW_VAR(func); NEW_VAR(n);
@@ -412,7 +412,7 @@ int SP_get_list(SP_term_ref t, SP_term_ref head, SP_term_ref tail){
     BPLONG_PTR top;
     DEREF(t);
     if (!ISLIST(t)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return SP_ERROR;
     }
     UNTAG_ADDR(t);

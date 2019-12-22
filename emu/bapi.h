@@ -27,21 +27,21 @@
 
 #define BP_check_integer(A) {					\
     if (!ISINT(A)){								\
-      exception = illegal_arguments;			\
+      bp_exception = illegal_arguments;			\
       return BP_ERROR;							\
     }											\
   }
 
 #define BP_check_float(A) {						\
     if (!ISFLOAT(A)){							\
-      exception = illegal_arguments;			\
+      bp_exception = illegal_arguments;			\
       return BP_ERROR;							\
     }											\
   }
 
 #define BP_check_atom(A) {						\
     if (!ISATOM(A)){							\
-      exception = illegal_arguments;			\
+      bp_exception = illegal_arguments;			\
       return BP_ERROR;							\
     }											\
   }
@@ -144,7 +144,7 @@
 
 #define LOCAL_OVERFLOW_CHECK_WITH_MARGIN(src,margin)	\
 	if (local_top - heap_top <= margin) {				\
-	  exception = et_OUT_OF_MEMORY;						\
+	  bp_exception = et_OUT_OF_MEMORY;						\
 	  return BP_ERROR;									\
 	}
 
@@ -201,7 +201,7 @@ extern BPLONG no_gcs;
 #define GET_GLOBAL_SYM(name,arity,sym_ptr){								\
     DEREF(name);DEREF(arity);											\
     if (!ISATOM(name) || !ISINT(arity)){								\
-      exception = illegal_arguments; return BP_ERROR;					\
+      bp_exception = illegal_arguments; return BP_ERROR;					\
     }																	\
     sym_ptr = GET_ATM_SYM_REC(name);									\
     if (arity!=BP_ZERO)  sym_ptr = insert_sym(GET_NAME(sym_ptr),GET_LENGTH(sym_ptr),INTVAL(arity)); \

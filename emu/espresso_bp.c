@@ -448,7 +448,7 @@ int c_call_espresso(){
     BPLONG er  = ADDTAG(BP_NEW_SYM("sat_not_supported",0),ATM);
 
     printf("SAT not supported for MVC. Use the cygwin version.\n");
-    exception = er;
+    bp_exception = er;
     return BP_ERROR;
 }
 
@@ -456,7 +456,7 @@ int c_call_espresso_pb(){
     BPLONG er  = ADDTAG(BP_NEW_SYM("sat_not_supported",0),ATM);
 
     printf("SAT not supported for MVC. Use the cygwin version.\n");
-    exception = er;
+    bp_exception = er;
     return BP_ERROR;
 }
 
@@ -464,7 +464,7 @@ int c_call_espresso_table(){
     BPLONG er  = ADDTAG(BP_NEW_SYM("sat_not_supported",0),ATM);
 
     printf("SAT not supported for MVC. Use the cygwin version.\n");
-    exception = er;
+    bp_exception = er;
     return BP_ERROR;
 }
   
@@ -472,7 +472,7 @@ int c_call_espresso_element(){
     BPLONG er  = ADDTAG(BP_NEW_SYM("sat_not_supported",0),ATM);
 
     printf("SAT not supported for MVC. Use the cygwin version.\n");
-    exception = er;
+    bp_exception = er;
     return BP_ERROR;
 }
 #endif

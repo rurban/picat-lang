@@ -12,7 +12,7 @@
 \chapter{\label{chapter:datatypes}Data Types, Operators, and Built-ins}
 Picat is a dynamically-typed language, in which type checking occurs at runtime. A variable gets a type once it is bound to a value. In Picat, variables and values are terms. A value can be \emph{primitive}\index{primitive value} or \emph{compound}\index{compound value}. A primitive value\index{primitive value} can be an \emph{integer}\index{integer}, a \emph{real number}\index{number}, or an \emph{atom}\index{atom}. A compound value\index{compound value} can be a \emph{list}\index{list} or a \emph{structure}\index{structure}. \emph{Strings}\index{string}, \emph{arrays}\index{array}, \emph{maps}\index{map}, \emph{sets}\index{set}, and \emph{heaps}\index{heap} are special compound values\index{compound value}. This chapter describes the data types and the built-ins for each data type that are provided by the \texttt{basic} module. 
 
-Many of the built-ins are given as operators. Table \ref{tab:ops} shows all of the operators that are provided by Picat. Unless the table specifies otherwise, the operators are left-associative.  The as-pattern operator (\verb+@+) and the operators for composing goals, including \texttt{not}\index{\texttt{not}}, \texttt{once}\index{\texttt{once}}, conjunction (\verb+,+ and \verb+&&+), and disjunction (\verb+;+ and \verb+||+), will be described in Chapter \ref{chapter:predicates} on Predicates and Functions.  The constraint operators (the ones that begin with \verb+#+) will be described in Chapter \ref{ch:constraints} on Constraints. In Picat, no new operators can be defined, and none of the existing operators can be redefined.
+Many of the built-ins are given as operators. Table \ref{tab:ops} shows all of the operators that are provided by Picat. Unless the table specifies otherwise, the operators are left-associative.  The as-pattern operator (\verb+@+) and the operators for composing goals, including \texttt{not}\index{\texttt{not/1}}, \texttt{once}\index{\texttt{once/1}}, conjunction (\verb+,+ and \verb+&&+), and disjunction (\verb+;+ and \verb+||+), will be described in Chapter \ref{chapter:predicates} on Predicates and Functions.  The constraint operators (the ones that begin with \verb+#+) will be described in Chapter \ref{ch:constraints} on Constraints. In Picat, no new operators can be defined, and none of the existing operators can be redefined.
 
 The dot operator (\verb+.+) is used in OOP notations for calling predicates and functions. It is also used to qualify calls with a module name. The notation \texttt{$A_1.f(A_2,\ldots,A_k)$} is the same as \texttt{$f(A_1,A_2,\ldots,A_k)$}, unless $A_1$ is an atom, in which case $A_1$ must be a module qualifier for $f$.  If an atom\index{atom} needs to be passed as the first argument to a function or a predicate, then this notation cannot be used. The notation $A.Attr$, where $Attr$ does not have the form \texttt{f($\ldots$)}, is the same as the function call \texttt{get$(A,Attr)$}\index{\texttt{get/2}}. For example, the expression \texttt{$S$.name}\index{\texttt{name/1}} returns the name, and the expression \texttt{$S$.arity}\index{\texttt{arity/1}} returns the arity\index{arity} of $S$ if $S$ is a structure\index{structure}.   Note that the dot operator is left-associative.  For example, the expression \texttt{X.f().g()} is the same as \texttt{g(f(X))}.
 
@@ -69,11 +69,11 @@ No atom\index{atom} name can last more than one line.   An atom\index{atom} name
 
 The following built-ins are provided for atoms\index{atom}:
 \begin{itemize}
-\item \texttt{ascii\_alpha($Term$)}\index{\texttt{ascii\_alpha/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English letter.
-\item \texttt{ascii\_alpha\_digit($Term$)}\index{\texttt{ascii\_alpha\_digit/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English letter or one digit.
+\item \texttt{ascii\_alpha($Term$)}\index{\texttt{ascii\_alpha/1}}: This predicate is true if $Term$ is an atom and the atom is made of one letter.
+\item \texttt{ascii\_alpha\_digit($Term$)}\index{\texttt{ascii\_alpha\_digit/1}}: This predicate is true if $Term$ is an atom and the atom is made of one letter or one digit.
 \item \texttt{ascii\_digit($Term$)}\index{\texttt{ascii\_digit/1}}: This predicate is true if $Term$ is an atom and the atom is made of one digit.
-\item \texttt{ascii\_lowercase($Term$)}\index{\texttt{ascii\_lowercase/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English lowercase letter.
-\item \texttt{ascii\_uppercase($Term$)}\index{\texttt{ascii\_uppercase/1}}: This predicate is true if $Term$ is an atom and the atom is made of one English uppercase letter.
+\item \texttt{ascii\_lowercase($Term$)}\index{\texttt{ascii\_lowercase/1}}: This predicate is true if $Term$ is an atom and the atom is made of one lowercase letter.
+\item \texttt{ascii\_uppercase($Term$)}\index{\texttt{ascii\_uppercase/1}}: This predicate is true if $Term$ is an atom and the atom is made of one uppercase letter.
 \item \texttt{atom($Term$)}\index{\texttt{atom/1}}: This predicate is true if $Term$ is an atom\index{atom}.
 \item \texttt{atom\_chars($Atm$) = $String$}\index{\texttt{atom\_chars/1}}: This function returns string\index{string} that contains the characters of the atom\index{atom} $Atm$. It throws an error if $Atm$ is not an atom\index{atom}.
 \item \texttt{atom\_codes($Atm$) = $List$}\index{\texttt{atom\_codes/1}}: This function returns the list\index{list} of codes of the characters of the atom\index{atom} $Atm$. It throws an error if $Atm$ is not an atom\index{atom}. 
@@ -147,7 +147,7 @@ In addition to the numeric operators, the \texttt{basic} module also provides th
 \item \texttt{min($X$, $Y$) = $Val$}\index{\texttt{min/2}}: This function returns the minimum of $X$ and $Y$, where $X$ and $Y$ are terms.
 \item \texttt{minint\_small() = $Int$}\index{\texttt{minint\_small/0}}: This function returns the minimum integer that is represented in one word. All integers that are smaller than this integer are represented as \textit{big integers}.
 \item \texttt{number($Term$)}\index{\texttt{number/1}}: This predicate is true if $Term$ is a number\index{number}.
-\item \texttt{number\_chars($Num$) = $String$}\index{\texttt{number\_chars/1}}: This function returns a list\index{list} of characters of $Num$. This function is the same as \texttt{to\_fstring("\%d",$Num$)}\index{\texttt{to\_fstring/2}} if $Num$ is an integer\index{integer}, and the same as \texttt{to\_fstring("\%f",$Num$)}\index{\texttt{to\_fstring/2}} if $Num$ is a real number\index{number}.
+\item \texttt{number\_chars($Num$) = $String$}\index{\texttt{number\_chars/1}}: This function returns a list\index{list} of characters of $Num$. This function is the same as \texttt{to\_fstring("\%d",$Num$)}\index{\texttt{to\_fstring}} if $Num$ is an integer\index{integer}, and the same as \texttt{to\_fstring("\%f",$Num$)}\index{\texttt{to\_fstring}} if $Num$ is a real number\index{number}.
 \item \texttt{number\_codes($Num$) = $List$}\index{\texttt{number\_codes/1}}: This function returns a list\index{list} of codes of the characters of $Num$. It is the same as \texttt{number\_chars($Num$).to\_codes()}\index{\texttt{number\_chars/1}}\index{\texttt{to\_codes/1}}.
 \item \texttt{real($Term$)}\index{\texttt{real/1}}: This predicate is the same as \texttt{float($Term$)}\index{\texttt{float/1}}.
 \item \texttt{to\_binary\_string($Int$) = $String$}\index{\texttt{to\_binary\_string/1}}: This function returns the binary representation of the integer\index{integer} $Int$ as a string\index{string}.
@@ -450,7 +450,7 @@ Variables are ordered by their addresses. Note that the ordering of variables ma
 \section{Expressions}
 Expressions are made from variables, values, operators, and function calls. Expressions differ from terms in the following ways: 
 \begin{itemize}
-\item An expression can contain dot notations, such as \texttt{math.pi}\index{\texttt{pi}}.
+\item An expression can contain dot notations, such as \texttt{math.pi}.
 \item An expression can contain index notations, such as \texttt{X[I]}.
 \item An expression can contain ranges, such as \texttt{1..2..100}.
 \item An expression can contain list comprehensions, such as \texttt{[X : X in 1..100]}.
@@ -496,9 +496,12 @@ A predicate\index{predicate} or function\index{function} is said to be \emph{hig
 \item \texttt{and\_to\_list($Conj$) = $List$}\index{\texttt{and\_to\_list/1}}: This function converts $Conj$ in the form \texttt{($a_1$,$\ldots$,$a_n$)} into a list in the form \texttt{[$a_1$,$\ldots$,$a_n$]}.
 \item \texttt{compare\_terms($Term_1$, $Term_2$) = $Res$}\index{\texttt{compare\_terms/2}}:  This function compares $Term_1$ and $Term_2$.  If $Term_1 < Term_2$, then this function returns $-1$.  If $Term_1 == Term_2$, then this function returns $0$.  Otherwise, $Term_1 > Term_2$, and this function returns $1$.
 \item \texttt{different\_terms($Term_1$, $Term_2$)}\index{\texttt{different\_terms/2}}: This constraint ensures that $Term_1$ and $Term_2$ are different. This constraint is suspended when the arguments are not sufficiently instantiated\index{instantiated variable}.
-\item \texttt{get\_global\_map() = $Map$}\index{\texttt{get\_global\_map/0}}: This function returns the global map\index{map}, which is shared by all threads.
-\item \texttt{get\_heap\_map() = $Map$}\index{\texttt{get\_heap\_map/0}}: This function returns the current thread's heap map\index{map}.  Each thread has its own heap map\index{map}. 
-\item \texttt{get\_table\_map() = $Map$}\index{\texttt{get\_table\_map/0}}: This function returns the current thread's table map\index{map}.  Each thread has its own table map\index{map}. The table map is stored in the table area and both keys and values are hash-consed (i.e., common sub-terms are shared).
+\item \texttt{get\_global\_map() = $Map$}\index{\texttt{get\_global\_map/0}}: This function returns the global map\index{map}.
+\item \texttt{get\_global\_map($ID$) = $Map$}\index{\texttt{get\_global\_map/1}}: This function returns the global map with the identifier $ID$, which must be a ground term.
+\item \texttt{get\_heap\_map() = $Map$}\index{\texttt{get\_heap\_map/0}}: This function returns the default heap map\index{map}.
+\item \texttt{get\_heap\_map($ID$) = $Map$}\index{\texttt{get\_heap\_map/1}}: This function returns the heap map with the identifier $ID$, which must be ground term.  
+\item \texttt{get\_table\_map() = $Map$}\index{\texttt{get\_table\_map/0}}: This function returns the default table map. The table map is stored in the table area and both keys and values are hash-consed (i.e., common sub-terms are shared).
+\item \texttt{get\_table\_map($ID$) = $Map$}\index{\texttt{get\_table\_map/1}}: This function returns the table map with the identifier $ID$, which must be a ground term. 
 \item \texttt{ground($Term$)}\index{\texttt{ground/1}}: This predicate is true if $Term$ is ground\index{ground}.  A \emph{ground}\index{ground} term does not contain any variables.
 \item \texttt{list\_to\_and($List$) = $Conj$}\index{\texttt{list\_to\_and/1}}: This function converts $List$ in the form \texttt{[$a_1$,$\ldots$,$a_n$]} into a term in the form \texttt{($a_1$,$\ldots$,$a_n$)}.
 \item \texttt{number\_vars($Term$, $N_0$) = $N_1$}\index{\texttt{number\_vars/2}}: This function numbers the variables in $Term$ by using the integers starting from $N_0$.  $N_1$ is the next integer that is available after $Term$ is numbered.  Different variables receive different numberings, and the occurrences of the same variable all receive the same numbering.

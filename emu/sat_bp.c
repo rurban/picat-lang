@@ -244,7 +244,7 @@ int c_sat_init(){
     BPLONG er  = ADDTAG(BP_NEW_SYM("sat_not_supported",0),ATM);
 
     printf("SAT not supported for MVC. Please use the cygwin version.\n");
-    exception = er;
+    bp_exception = er;
     return BP_ERROR;
 }
 

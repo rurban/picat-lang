@@ -293,7 +293,7 @@ callJavaException(JNIEnv *env) {
     if (mess) (*env)->ReleaseStringUTFChars(env, mess, str);
     PcallF(command);
     (*env)->ExceptionClear(env);
-    exception = java_exception;
+    bp_exception = java_exception;
     return BP_ERROR;
 }
 static jclass
@@ -352,7 +352,7 @@ javaMethod1(BPLONG obj, BPLONG method, BPLONG result) {
                                               clazz, funcname, args);
         (*env)->DeleteLocalRef(env, clazz);
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     (*env)->DeleteLocalRef(env, funcname);
@@ -414,7 +414,7 @@ javaGetField(){
     DEREF(field);
     DEREF(value);
     if (!ISATOM(field)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     return javaGetField1(obj, bp_get_name(field), value);
@@ -439,7 +439,7 @@ javaGetField1(BPLONG obj, const char*field, BPLONG value) {
                                              clazz,NULL, fieldname);
         (*env)->DeleteLocalRef(env, clazz);
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
 
@@ -463,7 +463,7 @@ javaSetField(){
     DEREF(field);
     DEREF(value);
     if (!ISATOM(field)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     return javaSetField1(obj, bp_get_name(field), value);
@@ -491,7 +491,7 @@ javaSetField1(BPLONG obj, const char*field, BPLONG value) {
         (*env)->DeleteLocalRef(env, res);
         (*env)->DeleteLocalRef(env, clazz);
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
 

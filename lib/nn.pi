@@ -127,6 +127,7 @@ nn_run(NN,_Input,_Opts) = _Res =>
 % create neural network from file
 %
 nn_load(File) = NN, string(File) =>
+    (bp.file_exists(File) -> true; handle_exception($file_not_exist(File),nn_load)),
     bp.pi_fann_create_from_file(File, NN).
 nn_load(File) = _NN =>
     handle_exception($file_name_expected(File),nn_load).    
@@ -502,7 +503,7 @@ parse_training_options(NN,Data,Max_epochs,Epochs_between_reports,Desired_error,[
     bp.pi_fann_scale_train(NN, Data),
     parse_training_options(NN,Data,Max_epochs,Epochs_between_reports,Desired_error,Y).
 parse_training_options(NN,Data,Max_epochs,Epochs_between_reports,Desired_error,[X|Y]) =>
-    printf(stderr,"%w is not a valid option\n",X),
+    handle_exception(invalid_option(X), nn_train),
     parse_training_options(NN,Data,Max_epochs,Epochs_between_reports,Desired_error,Y).
 
 %
@@ -611,5 +612,5 @@ parse_run_options(NN,ScaleIn,ScaleOut,[resetMSE|Y]) =>
     bp.pi_fann_reset_MSE(NN),
     parse_run_options(NN,ScaleIn,ScaleOut,Y).
 parse_run_options(NN,ScaleIn,ScaleOut,[X|Y]) =>
-    printf("%w is not a valid option\n",X),
+    handle_exception(invalid_option(X), nn_run),
     parse_run_options(NN,ScaleIn,ScaleOut,Y).

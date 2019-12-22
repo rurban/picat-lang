@@ -412,7 +412,7 @@ extern BPLONG no_gcs;
     myquit(STACK_OVERFLOW,"toam");}
 
 #define RAISE_ISO_EXCEPTION(exc,name,arity){						\
-    exception = (exc == (BPLONG)NULL) ? unknown_exception : exc;	\
+    bp_exception = (exc == (BPLONG)NULL) ? unknown_exception : exc;	\
     error_goal_name = name;											\
     error_goal_arity = arity;										\
     goto catch_exception;											\
@@ -449,7 +449,7 @@ extern BPLONG no_gcs;
 		SAVE_AR; SAVE_TOP;												\
 		bp_gc = 0;														\
 		if (bp_call_term_catch(term)==BP_ERROR){						\
-		  if (exception==(BPLONG)NULL) exception = unknown_exception;	\
+		  if (bp_exception==(BPLONG)NULL) bp_exception = unknown_exception;	\
 		  goto forward_exception_as_is;									\
 		}																\
 		bp_gc = old_bp_gc;												\
@@ -582,7 +582,7 @@ extern BPLONG no_gcs;
 
 #define CATCH_INTERRUPT							\
   if (toam_signal_vec & INTERRUPT){				\
-    exception = interrupt_sym;					\
+    bp_exception = interrupt_sym;					\
     goto interrupt_handler;						\
   }
 
@@ -591,7 +591,7 @@ extern BPLONG no_gcs;
   }
 
 #define CATCH_WAKE_EVENT if (toam_signal_vec!=0){						\
-    if (toam_signal_vec & INTERRUPT){exception = interrupt_sym; goto interrupt_handler;} \
+    if (toam_signal_vec & INTERRUPT){bp_exception = interrupt_sym; goto interrupt_handler;} \
     if (toam_signal_vec & EVENT_POOL_NONEMPTY) post_event_pool();		\
     if (trigger_no != 0)  goto trigger_on_handler;						\
   } 
@@ -708,7 +708,7 @@ extern BPLONG no_gcs;
       gc_is_working = 1;									\
       if (expand_local_global_stacks(0)==BP_ERROR){			\
 		fprintf(stderr,"%% error: OUT OF MEMORY\n");			\
-		exception = et_OUT_OF_MEMORY_STACK;					\
+		bp_exception = et_OUT_OF_MEMORY_STACK;					\
 		goto interrupt_handler;								\
       }														\
       RESTORE_AR;RESTORE_TOP;								\
@@ -720,7 +720,7 @@ extern BPLONG no_gcs;
   if (bp_gc) {									\
 	SAVE_AR; SAVE_TOP;							\
 	if (garbage_collector()==BP_ERROR){			\
-	  exception = et_OUT_OF_MEMORY_STACK;		\
+	  bp_exception = et_OUT_OF_MEMORY_STACK;		\
 	  fprintf(stderr,"%% error: OUT OF MEMORY\n");	\
 	  goto interrupt_handler;					\
 	}											\
@@ -738,7 +738,7 @@ extern BPLONG no_gcs;
       if (bp_gc){										\
 		SAVE_AR;SAVE_TOP;								\
 		if (garbage_collector()==BP_ERROR){				\
-		  exception = et_OUT_OF_MEMORY_STACK;			\
+		  bp_exception = et_OUT_OF_MEMORY_STACK;			\
 		  fprintf(stderr,"%% error: OUT OF MEMORY\n");	\
 		  goto interrupt_handler;						\
 		}												\
@@ -762,7 +762,7 @@ extern BPLONG no_gcs;
 		SAVE_AR;SAVE_TOP;												\
 		gc_b = B;														\
 		if (garbage_collector()==BP_ERROR){								\
-		  exception = et_OUT_OF_MEMORY_STACK;							\
+		  bp_exception = et_OUT_OF_MEMORY_STACK;							\
 		  fprintf(stderr,"%% error: OUT OF MEMORY\n");					\
 		  goto interrupt_handler;										\
 		}																\
@@ -778,7 +778,7 @@ extern BPLONG no_gcs;
     if (bp_gc && ((LOCAL_TOP - H <= MIN_AVAIL_WORDS) || (H >= heap_water_mark) || (LOCAL_TOP < stack_water_mark))){ \
 	  SAVE_AR;SAVE_TOP;													\
 	  if (garbage_collector()==BP_ERROR){								\
-		exception = et_OUT_OF_MEMORY_STACK;								\
+		bp_exception = et_OUT_OF_MEMORY_STACK;								\
 		fprintf(stderr,"%% error: OUT OF MEMORY\n");					\
 		goto interrupt_handler;											\
 	  }																	\

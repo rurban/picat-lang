@@ -11,7 +11,7 @@
 
 }
 \chapter{\label{ch:constraints}Constraints}
-Picat provides four solver modules, including \texttt{cp}, \texttt{sat}, \texttt{smt}, and \texttt{mip}, for modeling and solving constraint\index{constraint} satisfaction and optimization problems (CSPs).  All four of these modules implement the same set of constraints on integer-domain variables. The \texttt{mip} module also supports real-domain variables. In order to use a solver, users must first import the module. In order to make the symbols defined in a module available to the top level of the interpreter, users can use the built-in {\tt load} to load the module or any module that imports the module. The \texttt{sat} module is only supported on Linux, MacOS, and Cygwin. The \texttt{mip} module requires Cbc (\url{https://projects.coin-or.org/Cbc}), Gurobi (\url{http://www.gurobi.com/}) or GLPK (\url{https://www.gnu.org/software/glpk/}), and the \texttt{smt} module requires Z3 (\url{https://github.com/Z3Prover/z3/}) or CVC4 (\url{https://cvc4.cs.stanford.edu/}).
+Picat provides four solver modules, including \texttt{cp}, \texttt{sat}, \texttt{smt}, and \texttt{mip}, for modeling and solving constraint\index{constraint} satisfaction and optimization problems (CSPs).  All four of these modules implement the same set of constraints on integer-domain variables. The \texttt{mip} module also supports real-domain variables. In order to use a solver, users must first import the module. In order to make the symbols defined in a module available to the top level of the interpreter, users can use the built-in {\tt load} to load the module or any module that imports the module. The \texttt{sat} module is only supported on Linux, MacOS, and Cygwin. The \texttt{mip} module requires Cbc (\url{ https://github.com/coin-or/Cbc}), Gurobi (\url{http://www.gurobi.com/}), or GLPK (\url{https://www.gnu.org/software/glpk/}). The \texttt{smt} module requires Z3 (\url{https://github.com/Z3Prover/z3/}) or CVC4 (\url{https://cvc4.github.io/}).
 
 As the four modules have the same interface, this chapter describes the four modules together. Figure \ref{tab:cons_ops} shows the constraint\index{constraint} operators that are provided by Picat. Unless it is explicitly specified otherwise, the built-ins that are described in this chapter appear in all four modules. In the built-ins that are presented in this chapter, an integer-domain variable can also be an integer, unless it is explicitly specified to only be a variable.
 
@@ -288,17 +288,21 @@ Picat provides the following global constraints.
 
 \item \texttt{subcircuit($FDVars$)}\index{\texttt{subcircuit/1}}: This constraint is the same as \texttt{circuit($FDVars$)}\index{\texttt{circuit/1}}, except that not all of the vertices are required to be in the circuit. If the $i$th element of $FDVars$ is $i$, then the vertex $i$ is not part of the circuit. 
 
+\item \texttt{subcircuit\_grid($A$)}\index{\texttt{subcircuit\_grid/1}}: This constraint ensures that the grid graph represented by $A$, which is a two-dimensional array of Boolean (0/1) variables, forms a Hamiltonian cycle. In a grid graph, each cell is directly connected horizontally and vertically, but not diagonally, to its neighbors. Only non-zero cells are considered as vertices of the graph. This constraint is only available in the \texttt{sat} module.
+
+\item \texttt{subcircuit\_grid($A$,$K$)}\index{\texttt{subcircuit\_grid/2}}: This constraint is the same as \texttt{subcircuit\_grid($A$)}, except that it also constrains the number of vertices in the graph to be $K$. This constraint is only available in the \texttt{sat} module.
+
 \end{itemize}
 
 \section{Solver Invocation}
 \begin{itemize}
-\item \texttt{solve($Options$, $Vars$)}\index{\texttt{solve/2}}: This predicate calls the imported solver to label the variables $Vars$ with values, where $Options$ is a list of options for the solver. The options will be detailed below. This predicate can backtrack in order to find multiple solutions. The \texttt{cp} module allows \textit{incremental labeling} of variables, and some variables that occur in constraints but are not passed to \texttt{solve} may remain uninstantiated after a call to \texttt{solve}. The user is responsible for having all the variables that need to be instantiated passed to \texttt{solve}. In constrast, the \texttt{sat} and \texttt{mip} modules do not support incremental labeling of variables.
+\item \texttt{solve($Opts$, $Vars$)}\index{\texttt{solve/2}}: This predicate calls the imported solver to label the variables $Vars$ with values, where $Opts$ is a list of options for the solver. The options will be detailed below. This predicate can backtrack in order to find multiple solutions. The \texttt{cp} module allows \textit{incremental labeling} of variables, and some variables that occur in constraints but are not passed to \texttt{solve} may remain uninstantiated after a call to \texttt{solve}. The user is responsible for having all the variables that need to be instantiated passed to \texttt{solve}. In constrast, the \texttt{sat} and \texttt{mip} modules do not support incremental labeling of variables.
 
 \item\texttt{solve($Vars$)}\index{\texttt{solve/1}}: This predicate is the same as \texttt{solve([], $Vars$)}\index{\texttt{solve/2}}. 
 \item \texttt{indomain($Var$)}\index{\texttt{indomain/1}}: This predicate is only accepted by \texttt{cp}. It is the same as \texttt{solve([], [$Var$])}\index{\texttt{solve/2}}.
-\item \texttt{solve\_all($Options$, $Vars$) = $Solutions$}\index{\texttt{solve\_all/2}}: This function returns all the solutions that satisfy the constraints.
+\item \texttt{solve\_all($Opts$, $Vars$) = $Solutions$}\index{\texttt{solve\_all/2}}: This function returns all the solutions that satisfy the constraints.
 \item \texttt{solve\_all($Vars$) = $Solutions$}\index{\texttt{solve\_all/1}}: This function is the same as \texttt{solve\_all([],$Vars$)}.
-\item \texttt{solve\_suspended($Options$)}\index{\texttt{solve\_suspended/1}}: After \texttt{solve($Vars$)} has successfully labeled $Vars$, some constraints may remain suspended and not completely checked because not all of the decision variables are included in $Vars$. The \texttt{solve\_suspended($Options$)} predicate labels all remaining variables in the suspended constraints. This predicate is only provided by the \texttt{cp} module. 
+\item \texttt{solve\_suspended($Opts$)}\index{\texttt{solve\_suspended/1}}: After \texttt{solve($Vars$)} has successfully labeled $Vars$, some constraints may remain suspended and not completely checked because not all of the decision variables are included in $Vars$. The \texttt{solve\_suspended($Opts$)} predicate labels all remaining variables in the suspended constraints. This predicate is only provided by the \texttt{cp} module. 
 \item \texttt{solve\_suspended}\index{\texttt{solve\_suspended/0}}: This predicate is the same as \texttt{solve\_suspended([])}.
 \item \texttt{indomain\_down($Var$)}\index{\texttt{indomain\_down/1}}: This predicate is the same as \texttt{solve([down], [$Var$])}\index{\texttt{solve/2}}. It is only accepted by \texttt{cp}. 
 \end{itemize}
@@ -344,8 +348,8 @@ The \texttt{cp} module also accepts the following options:
 \item \texttt{split}: Use binary search to find an optimal answer (default).
 \item \texttt{\$nvars$(NVars)$}: The number of variables in the CNF code is $NVars$.
 \item \texttt{\$ncls$(NCls)$}: The number of clauses in the CNF code is $NCls$.
-\item \texttt{\$threads($N$)}: Use $N$ threads to solve the generated CNF code. In the current implementation, the parallel version of lingeling, \texttt{plingeling}, will be used if this option is given.\index{parallel}\index{threads}
-\item \texttt{threads}: The same as \texttt{\$threads(8)}.
+%\item \texttt{\$threads($N$)}: Use $N$ threads to solve the generated CNF code. In the current implementation, the parallel version of lingeling, \texttt{plingeling}, will be used if this option is given.\index{parallel}\index{threads}
+%\item \texttt{threads}: The same as \texttt{\$threads(8)}.
 \end{itemize}
 
 \subsection{Solving Options for \texttt{mip}}

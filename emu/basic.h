@@ -377,7 +377,7 @@ extern BPLONG   global_unnumbervar_max;
 extern BPLONG_PTR global_unnumbervar_ptr;
 extern BPLONG_PTR global_unnumbervar_watermark;
 
-extern BPLONG      exception;
+extern BPLONG      bp_exception;
 extern SYM_REC_PTR  list_psc;
 extern SYM_REC_PTR  equal_psc;
 extern SYM_REC_PTR  planner_explored_depth_psc;

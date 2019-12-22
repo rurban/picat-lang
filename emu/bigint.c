@@ -119,7 +119,7 @@ int c_test_bigint(){
       write_term(bp_double_to_bigint(999999999.0));printf("\n");
 
       res = bp_call_string("fail");
-      printf("res=%d exception=%x\n",res,exception);
+      printf("res=%d bp_exception=%x\n",res,bp_exception);
     */
   
 
@@ -1179,7 +1179,7 @@ BPLONG bp_shiftl_bigint_int(BPLONG op1, BPLONG op2){
     if (op2<0) return bp_shiftr_bigint_int(op1,-op2);
     if (op2==0) return op1;
     if (op2>BP_MAXINT_1W/10){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     BP_DECOMPOSE_BIGINT(op1,xsign,xsize,xDLst);
@@ -1216,7 +1216,7 @@ BPLONG bp_shiftr_bigint_int(BPLONG op1, BPLONG op2){
     x = local_top-xsize-1;
     z = x - zsize-1;
     if (z<=heap_top){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     BP_MAKE_UBIG_FROM_DLST(xDLst,xsize,x);
@@ -1379,7 +1379,7 @@ int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size) {
         bp_div_ubig_ubig(size, x, 1, y, &qsize, q, &rsize, r, tempBuff);  /* q*(10^8)+r = x */
         remainder = r[0];           /* must have only one block */
         if (i<=8){
-            exception = et_OUT_OF_MEMORY;
+            bp_exception = et_OUT_OF_MEMORY;
             return BP_ERROR;
         }
         for (j=0;j<8;j++){
@@ -1395,7 +1395,7 @@ int bp_write_bigint_to_str(BPLONG op, char *buf, BPLONG buf_size) {
     sprintf(loc_buf,"%d",(int)x[0]); /* write the first block */
     j=strlen(loc_buf);
     if (i<=j){                    /* leave a slot for the sign */
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     j--;

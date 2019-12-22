@@ -214,15 +214,15 @@ int c_NUMBER_VARS(){
   
     DEREF(op2);
     if (!ISINT(op2)) {
-        exception = c_type_error(et_INTEGER,op2); return BP_ERROR;
+        bp_exception = c_type_error(et_INTEGER,op2); return BP_ERROR;
     }
     op2 = INTVAL(op2);
     if (op2<0){
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
     op1 = aux_number_vars__3(op1,op2);
     if (op1 == BP_ERROR) {
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
     return unify(op3,MAKEINT(op1));
 }
@@ -258,7 +258,7 @@ number_vars:
     case STR:
         if (op1<0) {
             fprintf(stderr,"Suspension variables cannot occur in number_vars/3!\n");      
-            exception = illegal_arguments;
+            bp_exception = illegal_arguments;
             return BP_ERROR;
         }
         UNTAG_ADDR(op1);
@@ -591,7 +591,7 @@ start:
         term = FOLLOW(struct_ptr+arity);
         goto start;
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         fprintf(stderr,"Suspension variables cannot occur in copy_term/2, number_vars/3, assert/1, vars_set/2, or tabled calls!\n");
         exit(1);
     }

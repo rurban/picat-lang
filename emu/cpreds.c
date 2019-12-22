@@ -50,7 +50,7 @@ void *bp_get_address(BPLONG t)
         ulint = ulint | INTVAL(*((BPLONG_PTR)t+2));                                                             
         return((void *)ulint);                                                                                  
     } else {                                                                                                            
-        exception = number_expected;                                                                            
+        bp_exception = number_expected;                                                                            
         return NULL;                                                                                            
     }                                                                                                           
 }                                                                                                                       
@@ -312,7 +312,7 @@ BPLONG picat_get_integer(t)
     } else if(ISADDR(t)){ 
         printf("integer expected, found address\n");
     } else {
-        exception = integer_expected;
+        bp_exception = integer_expected;
         return 0;
     }
 }
@@ -334,7 +334,7 @@ double picat_get_float(t)
     } else if (ISFLOAT(t)){
         return floatval(t);
     } else {
-        exception = number_expected;
+        bp_exception = number_expected;
         return 0.0;
     }
 }
@@ -364,7 +364,7 @@ char *picat_get_struct_name(t)
     if (ISSTRUCT(t)){
         return GET_NAME(GET_SYM_REC(t));
     } else {
-        exception = structure_expected;
+        bp_exception = structure_expected;
         return NULL;
     }
 }
@@ -384,12 +384,12 @@ int picat_get_struct_arity(t)
         BPLONG_PTR struct_ptr = (BPLONG_PTR)UNTAGGED_ADDR(t);
         SYM_REC_PTR sym_ptr = (SYM_REC_PTR)FOLLOW(struct_ptr);
         if (sym_ptr == float_psc || sym_ptr == bigint_psc){
-            exception = illegal_arguments;
+            bp_exception = illegal_arguments;
             return 0;
         }
         return GET_ARITY(sym_ptr);
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return 0;
     }
 }
@@ -408,7 +408,7 @@ char *picat_get_atom_name(t)
     if (ISATOM(t)){
         return GET_NAME(GET_ATM_SYM_REC(t));
     } else {
-        exception = atom_expected;
+        bp_exception = atom_expected;
         return NULL;
     }
 }
@@ -442,7 +442,7 @@ BPLONG picat_get_arg(i,t)
     } else if (ISSTRUCT(t)){
         return *((BPLONG_PTR)UNTAGGED_ADDR(t)+i);
     } else {
-        exception = compound_expected;
+        bp_exception = compound_expected;
         return BP_ZERO;
     }
 }
@@ -463,7 +463,7 @@ BPLONG picat_get_car(t)
     if (ISLIST(t)){
         return *((BPLONG_PTR)UNTAGGED_ADDR(t));
     } else {
-        exception = list_expected;
+        bp_exception = list_expected;
         return BP_ZERO;
     }
 }
@@ -482,7 +482,7 @@ BPLONG picat_get_cdr(t)
     if (ISLIST(t)){
         return *((BPLONG_PTR)UNTAGGED_ADDR(t)+1);
     } else {
-        exception = list_expected;
+        bp_exception = list_expected;
         return BP_ZERO;
     }
 }
@@ -618,7 +618,7 @@ int string_2_term(){
     DEREF(op1);
     DEREF(op2);
     n = list_length(op1,op1);
-    if (!ISLIST(op1) || n<=0){exception=illegal_arguments; return BP_ERROR;};
+    if (!ISLIST(op1) || n<=0){bp_exception=illegal_arguments; return BP_ERROR;};
     str = (char *)malloc(n+1);  
     if (str==NULL) myquit(OUT_OF_MEMORY,"st");
     curr_char_ptr = str;
@@ -694,7 +694,7 @@ int bp_call_term(term)
     FOLLOW(arreg+1) = term;
 
     if (GET_ETYPE(enter_dyn_call)!= T_PRED){
-        exception = illegal_predicate;
+        bp_exception = illegal_predicate;
         return(BP_ERROR);
     }
     inst_begin = (BPLONG_PTR) GET_EP(enter_dyn_call);
@@ -718,7 +718,7 @@ int bp_call_term_once(term)
   
     FOLLOW(arreg+1) = term;
     if (GET_ETYPE(enter_dyn_call)!= T_PRED){
-        exception = illegal_predicate;  
+        bp_exception = illegal_predicate;  
         return(BP_ERROR);                       
     }
     inst_begin = (BPLONG_PTR) GET_EP(enter_dyn_call);
@@ -744,7 +744,7 @@ int bp_call_term_catch(term)
   
     FOLLOW(arreg+1) = term;
     if (GET_ETYPE(enter_catch_call)!= T_PRED){
-        exception = illegal_predicate;  
+        bp_exception = illegal_predicate;  
         return(BP_ERROR);                       
     }
     inst_begin = (BPLONG_PTR) GET_EP(enter_catch_call);
@@ -769,7 +769,7 @@ int c_set_bp_exception(){
     BPLONG ex = ARG(1,1);
 
     DEREF(ex);
-    exception = ex;
+    bp_exception = ex;
     return BP_TRUE;
 }
 
@@ -785,7 +785,7 @@ int bp_call_string(cmd)
     old_bp_gc = bp_gc;
     bp_gc = 0;  /* suppress garbage collection and stack expansion */
     if (bp_string_2_term(cmd,Pcmd,vars) != BP_TRUE){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         bp_gc = old_bp_gc;
         return BP_ERROR;
     }
@@ -827,7 +827,7 @@ int bp_next_solution()
 {
     if (curr_toam_status == TOAM_NOTSET) {
         fprintf(stderr,"***Error: no goal is mounted\n");
-        exception = illegal_predicate;
+        bp_exception = illegal_predicate;
         return BP_ERROR;
     } else  if (curr_toam_status == TOAM_DONE) {
         return 0;
@@ -1236,7 +1236,7 @@ void Cboot() {
 #endif
 
 #ifdef FANN
-	fann_cpreds();
+    fann_cpreds();
 #endif
     //  Cboot_TP();                                                                                                             
 }

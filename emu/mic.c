@@ -212,7 +212,7 @@ int c_GETENV_cf(){
     DEREF(var);
     value = ARG(2,2);
     if (!ISATOM(var)){
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
     name = GET_NAME((SYM_REC_PTR)UNTAGGED_ADDR(var));
     val = getenv(name);
@@ -454,7 +454,7 @@ int c_INCREMENTARG(){
     DEREF(op1);
     DEREF(op2);
     if (!ISINT(op1)) {
-        exception = c_type_error(et_INTEGER,op1); 
+        bp_exception = c_type_error(et_INTEGER,op1); 
         return BP_ERROR;
     }
     op1 = INTVAL(op1);
@@ -463,7 +463,7 @@ int c_INCREMENTARG(){
         op2 = *top;
         PUSHTRAIL_H_ATOMIC(top,op2);
         if (!ISINT(op2)) {
-            exception = c_type_error(et_INTEGER,op2); 
+            bp_exception = c_type_error(et_INTEGER,op2); 
             return BP_ERROR;
         }
         *top = MAKEINT(INTVAL(op2)+1);
@@ -474,13 +474,13 @@ int c_INCREMENTARG(){
         op2 = *top;
         PUSHTRAIL_H_ATOMIC(top,op2);
         if (!ISINT(op2)) {
-            exception = c_type_error(et_INTEGER,op2); 
+            bp_exception = c_type_error(et_INTEGER,op2); 
             return BP_ERROR;
         }
         *top = MAKEINT(INTVAL(op2)+1);
         return BP_TRUE;
     }
-    exception = structure_expected; return BP_ERROR;
+    bp_exception = structure_expected; return BP_ERROR;
 }
 
 int c_DECREMENTARG(){
@@ -492,7 +492,7 @@ int c_DECREMENTARG(){
   
     DEREF(op1);DEREF(op2);
     if (!ISINT(op1)) {
-        exception = c_type_error(et_INTEGER,op1); 
+        bp_exception = c_type_error(et_INTEGER,op1); 
         return BP_ERROR;
     }
     op1 = INTVAL(op1);
@@ -501,7 +501,7 @@ int c_DECREMENTARG(){
         op2 = *top;
         PUSHTRAIL_H_ATOMIC(top,op2);
         if (!ISINT(op2)) {
-            exception = c_type_error(et_INTEGER,op2); 
+            bp_exception = c_type_error(et_INTEGER,op2); 
             return BP_ERROR;
         }
         *top = MAKEINT(INTVAL(op2)-1); 
@@ -512,13 +512,13 @@ int c_DECREMENTARG(){
         op2 = *top;
         PUSHTRAIL_H_ATOMIC(top,op2);
         if (!ISINT(op2)) {
-            exception = c_type_error(et_INTEGER,op2);
+            bp_exception = c_type_error(et_INTEGER,op2);
             return BP_ERROR;
         }
         *top = MAKEINT(INTVAL(op2)-1);
         return BP_TRUE;
     }
-    exception = structure_expected; return BP_ERROR;
+    bp_exception = structure_expected; return BP_ERROR;
 }
 
 int b_DESTRUCTIVE_SET_ARG_ccc(op1,op2,op3)
@@ -532,7 +532,7 @@ int b_DESTRUCTIVE_SET_ARG_ccc(op1,op2,op3)
   
     if (IS_SUSP_VAR(op3)) op3 = UNTAGGED_ADDR(op3);
     if (!ISINT(op1)) {
-        exception = c_type_error(et_INTEGER,op1); 
+        bp_exception = c_type_error(et_INTEGER,op1); 
         return BP_ERROR;
     }
     op1 = INTVAL(op1);
@@ -542,7 +542,7 @@ int b_DESTRUCTIVE_SET_ARG_ccc(op1,op2,op3)
     else if (ISLIST(op2) && op1>0 && op1 <= 2) {
         top = (BPLONG_PTR)UNTAGGED_ADDR(op2)+op1-1;
     } else {
-        exception = structure_expected; return BP_ERROR;
+        bp_exception = structure_expected; return BP_ERROR;
     }
     if (top<hbreg){
         old_op3 = FOLLOW(top);
@@ -550,7 +550,7 @@ int b_DESTRUCTIVE_SET_ARG_ccc(op1,op2,op3)
         op3_copy = copy_term_heap_to_parea_with_varno(op3,&var_no);
         if (op3_copy == BP_ERROR) return BP_ERROR;
         if (var_no != 0){
-            exception = illegal_arguments;
+            bp_exception = illegal_arguments;
             return BP_ERROR;
         }
         FOLLOW(top) = op3_copy;
@@ -580,13 +580,13 @@ int b_CHAR_CODE_cf(ch,code)  /* the code of op1 is op2 */
             ASSIGN_f_atom(code,MAKEINT(utf8_char_to_codepoint(&name)));
             return BP_TRUE;      
         }
-        exception = c_type_error(et_CHARACTER,ch);
+        bp_exception = c_type_error(et_CHARACTER,ch);
         return BP_ERROR;
     }
     if (ISREF(ch)){
-        exception = et_INSTANTIATION_ERROR;
+        bp_exception = et_INSTANTIATION_ERROR;
     } else {
-        exception = c_type_error(et_CHARACTER,ch);
+        bp_exception = c_type_error(et_CHARACTER,ch);
     }
     return BP_ERROR;
 }
@@ -665,16 +665,16 @@ int b_BLDATOM_fc(op1,op2)
         DEREF(op3);
         if (!ISINT(op3)) {
             if (ISREF(op3)){
-                exception = et_INSTANTIATION_ERROR;
+                bp_exception = et_INSTANTIATION_ERROR;
             } else {
-                exception = c_representation_error(et_CHARACTER_CODE);
+                bp_exception = c_representation_error(et_CHARACTER_CODE);
             }
             return BP_ERROR;
         }
         a = INTVAL(op3);
         /*
           if (a < 0 || a > 255) {
-          exception = c_representation_error(et_CHARACTER_CODE);
+          bp_exception = c_representation_error(et_CHARACTER_CODE);
           return BP_ERROR;
           }
         */
@@ -692,9 +692,9 @@ int b_BLDATOM_fc(op1,op2)
     }
     if (!ISNIL(op2)) {
         if (ISREF(op2)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_LIST,orig_op2);
+            bp_exception = c_type_error(et_LIST,orig_op2);
         }
         return BP_ERROR;
     }
@@ -719,7 +719,7 @@ int b_BLDNUM_fc(op1,op2)
     sign = 1;
     /*
       if (!ISLIST(op2)){
-      exception = c_type_error(et_LIST,op2);
+      bp_exception = c_type_error(et_LIST,op2);
       return BP_ERROR;
       }
     */
@@ -729,15 +729,15 @@ int b_BLDNUM_fc(op1,op2)
         DEREF(op3);
         if (!ISINT(op3)) {
             if (ISREF(op3)){
-                exception = et_INSTANTIATION_ERROR;
+                bp_exception = et_INSTANTIATION_ERROR;
             } else {
-                exception = c_representation_error(et_CHARACTER_CODE);
+                bp_exception = c_representation_error(et_CHARACTER_CODE);
             }
             return BP_ERROR;
         }
         a = INTVAL(op3);
         if (a < 0 ) {
-            exception = c_representation_error(et_CHARACTER_CODE);
+            bp_exception = c_representation_error(et_CHARACTER_CODE);
             return BP_ERROR;
         }
         *s++ = (CHAR)a;
@@ -747,9 +747,9 @@ int b_BLDNUM_fc(op1,op2)
     }
     if (!ISNIL(op2)){
         if (ISREF(op2)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else 
-            exception = c_type_error(et_LIST,orig_op2);
+            bp_exception = c_type_error(et_LIST,orig_op2);
         return BP_ERROR;
     }
     *s = '\0';
@@ -770,12 +770,12 @@ int b_BLDNUM_fc(op1,op2)
         free(name); 
         string_in = NULL;
         if (res == BP_ERROR){
-            exception = c_syntax_error(invalid_number_format);
+            bp_exception = c_syntax_error(invalid_number_format);
             lastc = ' ';
             return BP_ERROR;
         }
         if (lastc != '\0'){
-            exception = c_syntax_error(invalid_number_format);
+            bp_exception = c_syntax_error(invalid_number_format);
             lastc = ' ';
             return BP_ERROR;
         }
@@ -796,7 +796,7 @@ int b_BLDNUM_fc(op1,op2)
             }
             return BP_TRUE;
         } else {
-            exception = c_syntax_error(invalid_number_format);
+            bp_exception = c_syntax_error(invalid_number_format);
             return BP_ERROR;
         }
     }
@@ -825,16 +825,16 @@ int b_SYSTEM0_cf(op1,op2)  /* op1: a list of int (string) for CShell commands */
             op1 = FOLLOW(lst_ptr+1); DEREF(op1);
             sym_ptr = GET_ATM_SYM_REC(elm);
             if (ch_ptr+GET_LENGTH(sym_ptr) >= s+MAX_STR_LEN){
-                exception = et_STRING_TOO_LONG;
+                bp_exception = et_STRING_TOO_LONG;
                 return BP_ERROR;
             }
             ch_ptr = namestring(sym_ptr, ch_ptr);
         }
     } else {
 #ifdef PICAT
-        exception = string_expected; return BP_ERROR;
+        bp_exception = string_expected; return BP_ERROR;
 #else
-        exception = atom_expected; return BP_ERROR;
+        bp_exception = atom_expected; return BP_ERROR;
 #endif
     }
     ASSIGN_f_atom(op2,MAKEINT(system(s)));
@@ -853,7 +853,7 @@ int c_LOAD_cfc(){
     DEREF(op1);DEREF(op3);
     sym_ptr = GET_ATM_SYM_REC(op1);
     if (dyn_loader(sym_ptr,INTVAL(op3),1) != 0){
-        exception = c_representation_error(invalid_byte_file);
+        bp_exception = c_representation_error(invalid_byte_file);
         return BP_ERROR;
     }
     return BP_TRUE;
@@ -872,10 +872,10 @@ int b_LOAD_cfc(op1,op2,op3)
     sym_ptr = GET_ATM_SYM_REC(op1);
     op1 = dyn_loader(sym_ptr,INTVAL(op3),0);
     if (op1 == 1){
-        exception = c_representation_error(invalid_byte_file);
+        bp_exception = c_representation_error(invalid_byte_file);
         return BP_ERROR;
     } else if (op1 == -1){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     ASSIGN_f_atom(op2, MAKEINT(op1));
@@ -1114,18 +1114,18 @@ int b_HASHTABLE_GET_ccf(table,key,value)
     /*  write_term(key);printf("   "); write_term(table);printf("\n"); */
     DEREF(key);
     if (ISREF(key)){
-        exception = nonvariable_expected;
+        bp_exception = nonvariable_expected;
         return BP_ERROR;
     }
 
     DEREF(table);
     if (!ISSTRUCT(table)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     ptr = (BPLONG_PTR)UNTAGGED_ADDR(table);
     if ((SYM_REC_PTR)FOLLOW(ptr) != hashtable_psc){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     buckets = FOLLOW(ptr+2); /* $hshtb(Count,Buckets) */
@@ -1532,36 +1532,36 @@ functor_vdd:
     DEREF(op3);
     if (ISNUM(op2)) {
         if (ISREF(op3)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
             return BP_ERROR;
         } else if (ISINT(op3)){
             if (INTVAL(op3) != 0){
-                exception = c_type_error(et_ATOM,op2);
+                bp_exception = c_type_error(et_ATOM,op2);
                 return BP_ERROR;
             } else {
                 return unify(op1,op2);
             }
         } else {
-            exception = c_type_error(et_INTEGER,op3);
+            bp_exception = c_type_error(et_INTEGER,op3);
             return BP_ERROR;
         }
     }
     if (!ISATOM(op2)) {
-        exception = c_type_error(et_ATOMIC,op2);
+        bp_exception = c_type_error(et_ATOMIC,op2);
         return BP_ERROR;    
     }
     DEREF(op3);
     if (!ISINT(op3)) {
         if (ISREF(op3)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_INTEGER,op3);
+            bp_exception = c_type_error(et_INTEGER,op3);
         }
         return BP_ERROR;
     }
     op3 = INTVAL(op3);
     if (op3<0) {
-        exception = c_domain_error(et_NOT_LESS_THAN_ZERO,MAKEINT(op3));
+        bp_exception = c_domain_error(et_NOT_LESS_THAN_ZERO,MAKEINT(op3));
         return BP_ERROR;
     }
     sym_ptr = GET_SYM_REC(op2);
@@ -1613,7 +1613,7 @@ int carg1(op1,op2,op3)
     op1 = INTVAL(op1);
     if (op1 <= 0) {
 /*    printf("type error: index for arg must be > 0");*/
-        exception = out_of_range; return BP_ERROR;
+        bp_exception = out_of_range; return BP_ERROR;
     }
     DEREF(op2);
     if (ISSTRUCT(op2) && op1 <= GET_SYM_ARITY(op2)){
@@ -1629,7 +1629,7 @@ int carg1(op1,op2,op3)
             return BP_FALSE;
     }  else {
 /*    printf("instantiation error: second argument of arg must be instantiated\n");*/
-        exception = structure_expected; return BP_ERROR;
+        bp_exception = structure_expected; return BP_ERROR;
     }
 }
 
@@ -2160,11 +2160,11 @@ start:
     switch (TAG(term)) { 
     case REF: 
         NDEREF(term, start);
-        exception = nonvariable_expected;
+        bp_exception = nonvariable_expected;
         return BP_ERROR;
     case ATM:
         if (ISINT(term)){
-            exception = c_type_error(no_number_expected,term);      
+            bp_exception = c_type_error(no_number_expected,term);      
             return BP_ERROR;
         }
         if (term == nil_sym || term == empty_set) {
@@ -2175,7 +2175,7 @@ start:
     case LST:
         i = list_length(term,term);
         if (i == BP_ERROR){
-            exception = c_type_error(et_LIST,term);
+            bp_exception = c_type_error(et_LIST,term);
             return BP_ERROR;
         }
         ASSIGN_f_atom(len,MAKEINT(i));
@@ -2185,12 +2185,12 @@ start:
         SYM_REC_PTR sym_ptr;
 
         if (IS_SUSP_VAR(term)){
-            exception = nonvariable_expected;
+            bp_exception = nonvariable_expected;
             return BP_ERROR;
         }
         sym_ptr = GET_STR_SYM_REC(term);
         if (sym_ptr == bigint_psc || sym_ptr == float_psc){
-            exception = c_type_error(no_number_expected,term);      
+            bp_exception = c_type_error(no_number_expected,term);      
             return BP_ERROR;
         }
         ASSIGN_f_atom(len,MAKEINT(GET_ARITY(sym_ptr)));
@@ -2284,9 +2284,9 @@ int bp_already_sorted_int_list(BPLONG lst, BPLONG_PTR len_ptr, BPLONG_PTR arr)
     }
     if (!ISNIL(lst)){
         if (ISREF(lst)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_LIST,lst0);
+            bp_exception = c_type_error(et_LIST,lst0);
         }
         return BP_ERROR;
     }
@@ -2339,9 +2339,9 @@ int bp_already_sorted_term_list(BPLONG lst, BPLONG_PTR len_ptr, BPLONG_PTR arr)
     }
     if (!ISNIL(lst)){
         if (ISREF(lst)){
-            exception = et_INSTANTIATION_ERROR;
+            bp_exception = et_INSTANTIATION_ERROR;
         } else {
-            exception = c_type_error(et_LIST,lst0);
+            bp_exception = c_type_error(et_LIST,lst0);
         }
         return BP_ERROR;
     }
@@ -2566,7 +2566,7 @@ int b_DEREF_c(T)
 int c_set_exception(){
     BPLONG op;
     op = ARG(1,1);
-    exception = op;
+    bp_exception = op;
     return BP_TRUE;
 }
 
@@ -2892,7 +2892,7 @@ int c_bp_exit(){
     BPLONG code = ARG(1,1);
     DEREF(code);
     if (!ISINT(code)){
-        exception = illegal_arguments; 
+        bp_exception = illegal_arguments; 
         return BP_ERROR; 
     } 
     code = INTVAL(code);
@@ -2907,20 +2907,20 @@ int b_PICAT_ARG_ccf(BPLONG Index,BPLONG Comp,BPLONG Arg)
   
     SWITCH_OP_INT(Index,
                   lab_picat_arg_1,
-                  {exception = et_INSTANTIATION_ERROR;
+                  {bp_exception = et_INSTANTIATION_ERROR;
                       return BP_ERROR;
                   },
                   {Index = INTVAL(Index);
                       if (Index<=0){
-                          exception = out_of_bound;
+                          bp_exception = out_of_bound;
                           return BP_ERROR;
                       };
                       SWITCH_OP(Comp,
                                 lab_picat_arg_2,
-                                {exception = et_INSTANTIATION_ERROR;
+                                {bp_exception = et_INSTANTIATION_ERROR;
                                     return BP_ERROR;
                                 },
-                                {exception = c_type_error(et_COMPOUND,Comp);
+                                {bp_exception = c_type_error(et_COMPOUND,Comp);
                                     return BP_ERROR;
                                 },
                                 {while (Index>1 && ISLIST(Comp)){
@@ -2934,7 +2934,7 @@ int b_PICAT_ARG_ccf(BPLONG Index,BPLONG Comp,BPLONG Arg)
                                         ASSIGN_v_heap_term(Arg, res);
                                         return BP_TRUE;
                                     } else {
-                                        exception = out_of_bound;
+                                        bp_exception = out_of_bound;
                                         return BP_ERROR;
                                     }
                                 },
@@ -2944,18 +2944,18 @@ int b_PICAT_ARG_ccf(BPLONG Index,BPLONG Comp,BPLONG Arg)
                                     sym_ptr = (SYM_REC_PTR)FOLLOW(arr_ptr);
                                     arity = GET_ARITY(sym_ptr);
                                     if (Index>arity){
-                                        exception = out_of_bound;
+                                        bp_exception = out_of_bound;
                                         return BP_ERROR;
                                     }
                                     res = FOLLOW(arr_ptr+Index);
                                     ASSIGN_v_heap_term(Arg, res);
                                     return BP_TRUE;
                                 },
-                                {exception = et_INSTANTIATION_ERROR;
+                                {bp_exception = et_INSTANTIATION_ERROR;
                                     return BP_ERROR;
                                 })
                           },
-                  {exception = c_type_error(et_INTEGER,Index);
+                  {bp_exception = c_type_error(et_INTEGER,Index);
                       return BP_ERROR;
                   });
     return BP_FALSE;
@@ -2975,20 +2975,20 @@ int b_PICAT_SETARG_ccc(BPLONG Index,BPLONG Comp,BPLONG Arg){
     }
     SWITCH_OP_INT(Index,
                   lab_picat_arg_1,
-                  {exception = et_INSTANTIATION_ERROR;
+                  {bp_exception = et_INSTANTIATION_ERROR;
                       return BP_ERROR;
                   },
                   {Index = INTVAL(Index);
                       if (Index<=0){
-                          exception = out_of_bound;
+                          bp_exception = out_of_bound;
                           return BP_ERROR;
                       };
                       SWITCH_OP(Comp,
                                 lab_picat_arg_2,
-                                {exception = et_INSTANTIATION_ERROR;
+                                {bp_exception = et_INSTANTIATION_ERROR;
                                     return BP_ERROR;
                                 },
-                                {exception = c_type_error(et_COMPOUND,Comp);
+                                {bp_exception = c_type_error(et_COMPOUND,Comp);
                                     return BP_ERROR;
                                 },
                                 {while (Index>1 && ISLIST(Comp)){
@@ -2999,13 +2999,13 @@ int b_PICAT_SETARG_ccc(BPLONG Index,BPLONG Comp,BPLONG Arg){
                                     if (Index == 1 && ISLIST(Comp)){
                                         arr_ptr = (BPLONG_PTR)UNTAGGED_ADDR(Comp); 
                                         if (!IS_HEAP_REFERENCE(arr_ptr)){
-                                            exception = c_update_error(et_UPDATE);
+                                            bp_exception = c_update_error(et_UPDATE);
                                             return BP_ERROR;
                                         }
                                         PUSHTRAIL_H_NONATOMIC(arr_ptr,FOLLOW(arr_ptr));
                                         FOLLOW(arr_ptr) = Arg;
                                     } else {
-                                        exception = out_of_bound;
+                                        bp_exception = out_of_bound;
                                         return BP_ERROR;
                                     }
                                 },
@@ -3015,22 +3015,22 @@ int b_PICAT_SETARG_ccc(BPLONG Index,BPLONG Comp,BPLONG Arg){
                                     sym_ptr = (SYM_REC_PTR)FOLLOW(arr_ptr);
                                     arity = GET_ARITY(sym_ptr);
                                     if (Index>arity){
-                                        exception = out_of_bound;
+                                        bp_exception = out_of_bound;
                                         return BP_ERROR;
                                     }
                                     arr_ptr = arr_ptr+Index;
                                     if (!IS_HEAP_REFERENCE(arr_ptr)){
-                                        exception = c_update_error(et_UPDATE);
+                                        bp_exception = c_update_error(et_UPDATE);
                                         return BP_ERROR;
                                     }
                                     PUSHTRAIL_H_NONATOMIC(arr_ptr,FOLLOW(arr_ptr));
                                     FOLLOW(arr_ptr) = Arg;
                                 },
-                                {exception = et_INSTANTIATION_ERROR;
+                                {bp_exception = et_INSTANTIATION_ERROR;
                                     return BP_ERROR;
                                 })
                           },
-                  {exception = c_type_error(et_INTEGER,Index);
+                  {bp_exception = c_type_error(et_INTEGER,Index);
                       return BP_ERROR;
                   });
     return BP_TRUE;
@@ -3057,7 +3057,7 @@ int b_INSERT_ORDERED_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
         }
     }
     if (!ISNIL(lst) && !ISLIST(lst)){
-        exception = c_type_error(et_LIST,lst);
+        bp_exception = c_type_error(et_LIST,lst);
         return BP_ERROR;
     }
     FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
@@ -3097,7 +3097,7 @@ int b_INSERT_ORDERED_NO_DUP_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
         }
     }
     if (!ISNIL(lst) && !ISLIST(lst)){
-        exception = c_type_error(et_LIST,lst);
+        bp_exception = c_type_error(et_LIST,lst);
         return BP_ERROR;
     }
     FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
@@ -3129,7 +3129,7 @@ int b_INSERT_ORDERED_DOWN_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
         }
     }
     if (!ISNIL(lst) && !ISLIST(lst)){
-        exception = c_type_error(et_LIST,lst);
+        bp_exception = c_type_error(et_LIST,lst);
         return BP_ERROR;
     }
     FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
@@ -3170,7 +3170,7 @@ int b_INSERT_ORDERED_DOWN_NO_DUP_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
         }
     }
     if (!ISNIL(lst) && !ISLIST(lst)){
-        exception = c_type_error(et_LIST,lst);
+        bp_exception = c_type_error(et_LIST,lst);
         return BP_ERROR;
     }
     FOLLOW(tail_ptr) = ADDTAG(heap_top,LST);
@@ -3206,7 +3206,7 @@ int b_INSERT_STATE_LIST_ccf(BPLONG lst, BPLONG t, BPLONG ret_lst){
         }
     }
     if (!ISNIL(lst)){
-        exception = c_type_error(et_LIST,lst);
+        bp_exception = c_type_error(et_LIST,lst);
         return BP_ERROR;
     }
 real_insert_elm:

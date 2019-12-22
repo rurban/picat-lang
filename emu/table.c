@@ -120,7 +120,7 @@ int c_INITIALIZE_TABLE(){
     BPLONG_PTR low_addr,prev_low_addr;
     void init_picat_table_maps();
 
-    exception = (BPLONG)NULL;
+    bp_exception = (BPLONG)NULL;
     in_critical_region = 0;
 
 #ifdef NOTABLE
@@ -409,7 +409,7 @@ BPLONG_PTR lookupSubgoalTable(BPLONG_PTR stack_arg_ptr, int arity, SYM_REC_PTR s
     subgoal_record_size = arity+GT_RECORD_SIZE;
     ALLOCATE_FROM_NUMBERED_TERM_AREA(ta_record_ptr,thisEntryPtr,subgoal_record_size);
     if (thisEntryPtr == NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return (BPLONG_PTR)BP_ERROR;
     }
   
@@ -427,7 +427,7 @@ BPLONG_PTR lookupSubgoalTable(BPLONG_PTR stack_arg_ptr, int arity, SYM_REC_PTR s
                 BPLONG t1;
                 t1 = FOLLOW(this_subgoal_arg_ptr+i);
                 if (!IsNumberedVar(t1)){
-                    exception = output_mode_error;
+                    bp_exception = output_mode_error;
                     return (BPLONG_PTR)BP_ERROR;
                 } 
             }
@@ -851,7 +851,7 @@ l_number_var_copy_faa:
             size = arity+3;
             ALLOCATE_FROM_NUMBERED_TERM_AREA(area_record_ptr,dest_ptr,size);
             if (dest_ptr == NULL){
-                exception = et_OUT_OF_MEMORY;
+                bp_exception = et_OUT_OF_MEMORY;
                 return BP_ERROR;
             }
             dest_ptr += 2;
@@ -970,7 +970,7 @@ lab_test_cdr:
 lab_reverse_back:
     ALLOCATE_FROM_NUMBERED_TERM_AREA(area_record_ptr,dest_ptr,4); 
     if (dest_ptr == NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
     dest_ptr += 2;
@@ -1104,7 +1104,7 @@ BPLONG_PTR addFirstTableAnswer(BPLONG_PTR stack_arg_ptr, int arity){
   
     ALLOCATE_FROM_NUMBERED_TERM_AREA(ta_record_ptr,answer,size);
     if (answer == NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return (BPLONG_PTR)BP_ERROR;
     }
 
@@ -1124,7 +1124,7 @@ BPLONG_PTR allocateAnswerTable(BPLONG_PTR first_answer, int arity){
     answer_table = (BPLONG_PTR)malloc(ANSWERTABLE_RECORD_SIZE*sizeof(BPLONG));
     if (answer_table == NULL){
         //        myquit(OUT_OF_MEMORY,"at");
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return (BPLONG_PTR)BP_ERROR;
     }
     ANSWERTABLE_FIRST(answer_table) = (BPLONG)first_answer;
@@ -1134,7 +1134,7 @@ BPLONG_PTR allocateAnswerTable(BPLONG_PTR first_answer, int arity){
     bucket_ptr = (BPLONG_PTR)malloc(InitAnswerTableBucketSize*sizeof(BPLONG));
     if (bucket_ptr == NULL){
         // myquit(OUT_OF_MEMORY,"at");
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return (BPLONG_PTR)BP_ERROR;
     }
     ANSWERTABLE_BUCKET_PTR(answer_table) = (BPLONG)bucket_ptr;
@@ -1171,7 +1171,7 @@ int addTableAnswer(BPLONG_PTR stack_arg_ptr, int arity, BPLONG_PTR subgoal_entry
     answer_record_size = arity+2;
     ALLOCATE_FROM_NUMBERED_TERM_AREA(ta_record_ptr,this_answer,answer_record_size);
     if (this_answer == NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
 
@@ -1279,7 +1279,7 @@ int addTableOptimalAnswer(BPLONG_PTR stack_arg_ptr, int arity, BPLONG_PTR subgoa
     answer_record_size = arity+2;
     ALLOCATE_FROM_NUMBERED_TERM_AREA(ta_record_ptr,this_answer,answer_record_size);
     if (this_answer == NULL){
-        exception = et_OUT_OF_MEMORY;
+        bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
 
@@ -1694,7 +1694,7 @@ int c_TABLE_GET_ONE_ANSWER(){
         sym_ptr = GET_SYM_REC(Call);
         arity = GET_ARITY(sym_ptr);
     } else {
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
 
@@ -1822,12 +1822,12 @@ int c_table_cardinality_limit(){
 
     ep = (BPLONG_PTR)GET_EP(sym_ptr); 
     if (GET_ETYPE(sym_ptr) != T_PRED){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return -1;
     }
     
     if (FOLLOW(ep) != table_allocate_code){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return -1;
     }
     if (ISREF(card)){
@@ -2160,7 +2160,7 @@ int b_GET_PICAT_TABLE_MAP_cf(BPLONG map_id, BPLONG map_num){
 
     if (map_id_cp == BP_ERROR) return BP_ERROR;
     if (this_ground_flag == 0){
-        exception = ground_expected;
+        bp_exception = ground_expected;
         return BP_ERROR;
     }
     slot_i0 = slot_i = (this_hcode % NUM_PICAT_TABLE_MAPS);  
@@ -2248,7 +2248,7 @@ int b_PICAT_TABLE_MAP_PUT_ccc(BPLONG map_num, BPLONG key, BPLONG val){
 
     DEREF(key);
     if (ISREF(key)){
-        exception = nonvariable_expected;
+        bp_exception = nonvariable_expected;
         return BP_ERROR;
     }
     DEREF_NONVAR(map_num);
@@ -2302,7 +2302,7 @@ int b_PICAT_TABLE_MAP_GET_ccf(BPLONG map_num, BPLONG key, BPLONG val){
 
     DEREF(key);
     if (ISREF(key)){
-        exception = nonvariable_expected;
+        bp_exception = nonvariable_expected;
         return BP_ERROR;
     }
         

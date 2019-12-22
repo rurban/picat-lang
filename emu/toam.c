@@ -117,7 +117,7 @@ int initialize_bprolog(argc,argv)
     load_byte_code_from_c_array();
 
     if (init_loading(argc, argv)==BP_ERROR){
-        exception = bp_initialization_error;
+        bp_exception = bp_initialization_error;
         return BP_ERROR;
     }
 
@@ -223,7 +223,7 @@ interrupt_handler: {
         //      fprintf(stdout,"%% UNKNOWN\n");
         exit(1);
 #endif
-        if (exception==(BPLONG)NULL) exception = unknown_exception;
+        if (bp_exception==(BPLONG)NULL) bp_exception = unknown_exception;
         event_func.func = NULL;                                                                                         
         if (toam_signal_vec & USER_INTERRUPT)                                                                           
         {                                                                                                                       
@@ -234,7 +234,7 @@ interrupt_handler: {
             if (IS_CATCHER_FRAME(f)){
                 btm_ptr = (BPLONG_PTR)UNTAGGED_ADDR(AR_BTM(f));    /* a catcher frame is in the form of p(Flag,Cleanup,Calll,Exception,Recovery,...) */
                 this_exception = FOLLOW(btm_ptr-3); 
-                if (is_UNIFIABLE(exception,this_exception)){
+                if (is_UNIFIABLE(bp_exception,this_exception)){
                     goto interrupt_end_while;
                 }
             }
@@ -259,8 +259,8 @@ interrupt_handler: {
         else                                                                                                            
         {                       
             toam_signal_vec = 0;
-            GET_EP(ball_psc) = (int (*)(void))exception;
-            exception = (BPLONG)NULL;
+            GET_EP(ball_psc) = (int (*)(void))bp_exception;
+            bp_exception = (BPLONG)NULL;
             GET_ETYPE(ball_psc) = T_DYNA;
             BACKTRACK;
         }
@@ -269,9 +269,9 @@ interrupt_handler: {
     /*------------------------------------------------------------------*/
 catch_exception:{
         BPLONG_PTR parent_ar = (BPLONG_PTR)AR_AR(AR);
-        if (exception==(BPLONG)NULL) exception = unknown_exception;     
-        *LOCAL_TOP-- = exception; 
-        exception = (BPLONG)NULL;
+        if (bp_exception==(BPLONG)NULL) bp_exception = unknown_exception;     
+        *LOCAL_TOP-- = bp_exception; 
+        bp_exception = (BPLONG)NULL;
         *LOCAL_TOP-- = c_error_src(error_goal_name,error_goal_arity);
 
         AR_AR(LOCAL_TOP) = (BPLONG)parent_ar;
@@ -284,9 +284,9 @@ catch_exception:{
 
 forward_exception_as_is:{
         BPLONG_PTR parent_ar = (BPLONG_PTR)AR_AR(AR);
-        if (exception==(BPLONG)NULL) exception = unknown_exception;     
-        *LOCAL_TOP-- = exception; 
-        exception = (BPLONG)NULL;
+        if (bp_exception==(BPLONG)NULL) bp_exception = unknown_exception;     
+        *LOCAL_TOP-- = bp_exception; 
+        bp_exception = (BPLONG)NULL;
 
         AR_AR(LOCAL_TOP) = (BPLONG)parent_ar;
         AR_CPS(LOCAL_TOP) = (BPLONG)AR_CPS(parent_ar);

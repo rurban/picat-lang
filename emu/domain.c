@@ -38,7 +38,7 @@ int c_DM_CREATE_BV_DVAR(){
         From = INTVAL(From); To = INTVAL(To);
         return aux_create_bv_domain_var(Var,From,To);
     } else {
-        exception = integer_overflow;
+        bp_exception = integer_overflow;
         return BP_ERROR;
     }
 }
@@ -113,7 +113,7 @@ int c_DM_CREATE_DVARS(){
         if (res!=1) return res;
     }
     if (ISNIL(Vars)) return 1;
-    exception = illegal_arguments;
+    bp_exception = illegal_arguments;
     return BP_ERROR;
 }
 
@@ -147,7 +147,7 @@ BPLONG from,to;
         BPLONG v = INTVAL(Var);
         return v>=from && v<=to;
     } else {
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
 }
 
@@ -179,7 +179,7 @@ BPLONG from,to;
         BPLONG v = INTVAL(Var);
         return (v >= from && v <= to);
     } else {
-        exception = illegal_arguments; return BP_ERROR;
+        bp_exception = illegal_arguments; return BP_ERROR;
     }
 }
 
@@ -778,9 +778,9 @@ int b_DM_NEXT_ccf(DVar,E,NextE)
     BPLONG_PTR top;
 
     DEREF(DVar);DEREF(E);
-    /*  if (!IS_SUSP_VAR(DVar)) {exception = illegal_arguments; return BP_ERROR;}; */
+    /*  if (!IS_SUSP_VAR(DVar)) {bp_exception = illegal_arguments; return BP_ERROR;}; */
     if (!IS_SUSP_VAR(DVar)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(DVar);
@@ -833,7 +833,7 @@ int b_DM_PREV_ccf(DVar,E,PrevE)
     BPLONG_PTR top;
 
     DEREF(DVar);DEREF(E);
-    /*  if (!IS_SUSP_VAR(DVar)) {exception = illegal_arguments; return BP_ERROR;}; */
+    /*  if (!IS_SUSP_VAR(DVar)) {bp_exception = illegal_arguments; return BP_ERROR;}; */
     dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(DVar);
     elm = INTVAL(E);
     if (elm>DV_last(dv_ptr)){
@@ -1003,14 +1003,14 @@ int b_DM_MIN_MAX_cff(Var,Min,Max)
             ASSIGN_f_atom(Max,MAKEINT(DV_last(dv_ptr)));
             return 1;
         } else {
-            exception = illegal_arguments; return BP_ERROR;
+            bp_exception = illegal_arguments; return BP_ERROR;
         }
     } else if (ISINT(Var)) {
         ASSIGN_f_atom(Min,Var);
         ASSIGN_f_atom(Max,Var);
         return 1;
     }
-    exception = illegal_arguments; return BP_ERROR;
+    bp_exception = illegal_arguments; return BP_ERROR;
 }
 
 /******** min *************/
@@ -1027,13 +1027,13 @@ int b_DM_MIN_cf(Var,Min)
             ASSIGN_f_atom(Min,MAKEINT(DV_first(dv_ptr)));
             return 1;
         } else {
-            exception = illegal_arguments; return BP_ERROR;
+            bp_exception = illegal_arguments; return BP_ERROR;
         }
     } else if (ISINT(Var)) {
         ASSIGN_f_atom(Min,Var);
         return 1;
     }
-    exception = illegal_arguments; return BP_ERROR;
+    bp_exception = illegal_arguments; return BP_ERROR;
 }
 
 /******** max *************/
@@ -1050,13 +1050,13 @@ int b_DM_MAX_cf(Var,Max)
             ASSIGN_f_atom(Max,MAKEINT(DV_last(dv_ptr)));
             return 1;
         } else {
-            exception = illegal_arguments; return BP_ERROR;
+            bp_exception = illegal_arguments; return BP_ERROR;
         }
     } else if (ISINT(Var)) {
         ASSIGN_f_atom(Max,Var);
         return 1;
     }
-    exception = illegal_arguments; return BP_ERROR;
+    bp_exception = illegal_arguments; return BP_ERROR;
 }
 
 /******** count *************/
@@ -1065,20 +1065,20 @@ int b_DM_COUNT_cf(Var,Count)
 {
     BPLONG_PTR dv_ptr;
     BPLONG_PTR top;
-	BPLONG size;
+    BPLONG size;
 
     DEREF(Var); 
     if (IS_SUSP_VAR(Var)){
         dv_ptr = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Var);
         size = MAKEINT(DV_size(dv_ptr));
     } else if (ISINT(Var)){
-	  size = BP_ONE;
-	} else {
-	  exception = illegal_arguments;
-	  return BP_ERROR;
-	}
-	ASSIGN_f_atom(Count,size);
-	return BP_TRUE;
+        size = BP_ONE;
+    } else {
+        bp_exception = illegal_arguments;
+        return BP_ERROR;
+    }
+    ASSIGN_f_atom(Count,size);
+    return BP_TRUE;
 }
 
 int count_domain_elms(dv_ptr,from,to)
@@ -2141,7 +2141,7 @@ int b_VAR_NOTIN_D_cc(X,List)
         List = FOLLOW(lst_ptr+1);DEREF_NONVAR(List);
     }
     if (!ISNIL(List)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     return BP_TRUE;
@@ -2171,7 +2171,7 @@ int check_var_notin_d(x,List)
         List = FOLLOW(lst_ptr+1);DEREF_NONVAR(List);
     }
     if (!ISNIL(List)){
-        exception = illegal_arguments;
+        bp_exception = illegal_arguments;
         return BP_ERROR;
     }
     return BP_TRUE;
@@ -2524,14 +2524,14 @@ int c_integers_intervals_list(){
                 min0 = FOLLOW(interval_ptr+1);DEREF(min0);
                 max0 = FOLLOW(interval_ptr+2);DEREF(max0);
                 if (!ISINT(min0) || !ISINT(max0)){
-                    //  exception = illegal_arguments;
+                    //  bp_exception = illegal_arguments;
                     //  return BP_ERROR;
                     return BP_FALSE;
                 }
                 min0=INTVAL(min0);
                 max0=INTVAL(max0);
                 if (min0 > max0){
-                    // exception = illegal_arguments;
+                    // bp_exception = illegal_arguments;
                     // return BP_ERROR;
                     return BP_FALSE;
                 }
@@ -2558,14 +2558,14 @@ int c_integers_intervals_list(){
                 up = FOLLOW(interval_ptr+2);DEREF(up);
                 if (!ISINT(low) || !ISINT(up)){
                     return BP_FALSE;
-                    // exception = illegal_arguments;
+                    // bp_exception = illegal_arguments;
                     // return BP_ERROR;
                 }
                 low = INTVAL(low);
                 up = INTVAL(up);
                 if (low > up){
                     return BP_FALSE;
-                    // exception = illegal_arguments;
+                    // bp_exception = illegal_arguments;
                     // return BP_ERROR;
                 }
                 if (low <= max0){
@@ -2579,7 +2579,7 @@ int c_integers_intervals_list(){
     }
     if (!ISNIL(List)){
         return BP_FALSE;
-        // exception = illegal_arguments;
+        // bp_exception = illegal_arguments;
         // return BP_ERROR;
     }
 
@@ -2915,125 +2915,125 @@ void exclude_unsupported_z_constr_xy_eq_z(BPLONG_PTR dv_ptr_x, BPLONG_PTR dv_ptr
 
 /* X+Y = Z, X is a bit-vector domain. The constraint is already interval consistent. */
 int c_CLPFD_ADD_AC_ccc(){
-  BPLONG X, Y, Z, i, sizeZ;
-  BPLONG_PTR dv_ptr_x, dv_ptr_y, dv_ptr_z, ptr;
-  BPLONG elmX, maxX, elmY, minY, maxY, elmZ, minZ, maxZ;
+    BPLONG X, Y, Z, i, sizeZ;
+    BPLONG_PTR dv_ptr_x, dv_ptr_y, dv_ptr_z, ptr;
+    BPLONG elmX, maxX, elmY, minY, maxY, elmZ, minZ, maxZ;
 
-  X = ARG(1,3); DEREF_NONVAR(X);
-  Y = ARG(2,3); DEREF_NONVAR(Y);
-  Z = ARG(3,3); DEREF_NONVAR(Z);
+    X = ARG(1,3); DEREF_NONVAR(X);
+    Y = ARG(2,3); DEREF_NONVAR(Y);
+    Z = ARG(3,3); DEREF_NONVAR(Z);
 
-  //  printf("=> ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
+    //  printf("=> ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
   
-  if (!IS_SUSP_VAR(Z)) return BP_TRUE;
-  dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
-  minZ = DV_first(dv_ptr_z);
-  maxZ = DV_last(dv_ptr_z);
-  sizeZ = maxZ-minZ+1;
-  if (local_top - heap_top <= sizeZ || DV_size(dv_ptr_z) > 1024){
-	return BP_TRUE;  /* do not enforce AC on Z*/
-  }
-  ptr = local_top-sizeZ;
-  for (i = 1; i < sizeZ-1; i++){
-	*(ptr+i) = 0;                   /* 0 means unsupported, minZ and maxZ are supported */
-  }
-  dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
-  elmX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
-  if (IS_SUSP_VAR(Y)){
-	dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
-	minY = DV_first(dv_ptr_y);
-	maxY = DV_last(dv_ptr_y);
-	for (;;){                       /* iterate over X */
-	  if (IS_IT_DOMAIN(dv_ptr_y)){
-		for (elmY = minY; elmY <= maxY; elmY++){
-		  elmZ = elmX+elmY;
-		  if (elmZ > maxZ) break;
-		  *(ptr+elmZ-minZ) = 1;
-		}
-	  } else {
-		elmY = minY;
-		for (;;){                   /* iterate over Y */
-		  elmZ = elmX+elmY;
-		  if (elmZ > maxZ) break;
-		  *(ptr+elmZ-minZ) = 1;
-		  if (elmY == maxY) break;  /* exit loop of Y */
-		  elmY++;
-		  elmY = domain_next_bv(dv_ptr_y,elmY);
-		}
-	  }
-	  if (elmX == maxX) break;      /* exit loop of X */
-	  elmX++;
-	  elmX = domain_next_bv(dv_ptr_x,elmX);
-	}
-  } else {                          /* Y is an int */
-	elmY = INTVAL(Y);
-	for (;;){                       /* iterate over X */
-	  elmZ = elmX+elmY;
-	  if (elmZ > maxZ) break;
-	  *(ptr+elmZ-minZ) = 1;
-	  if (elmX == maxX) break;      /* exit loop of X */
-	  elmX++;
-	  elmX = domain_next_bv(dv_ptr_x,elmX);
-	}
-  }
+    if (!IS_SUSP_VAR(Z)) return BP_TRUE;
+    dv_ptr_z = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Z);
+    minZ = DV_first(dv_ptr_z);
+    maxZ = DV_last(dv_ptr_z);
+    sizeZ = maxZ-minZ+1;
+    if (local_top - heap_top <= sizeZ || DV_size(dv_ptr_z) > 1024){
+        return BP_TRUE;  /* do not enforce AC on Z*/
+    }
+    ptr = local_top-sizeZ;
+    for (i = 1; i < sizeZ-1; i++){
+        *(ptr+i) = 0;                   /* 0 means unsupported, minZ and maxZ are supported */
+    }
+    dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
+    elmX = DV_first(dv_ptr_x); maxX = DV_last(dv_ptr_x);
+    if (IS_SUSP_VAR(Y)){
+        dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
+        minY = DV_first(dv_ptr_y);
+        maxY = DV_last(dv_ptr_y);
+        for (;;){                       /* iterate over X */
+            if (IS_IT_DOMAIN(dv_ptr_y)){
+                for (elmY = minY; elmY <= maxY; elmY++){
+                    elmZ = elmX+elmY;
+                    if (elmZ > maxZ) break;
+                    *(ptr+elmZ-minZ) = 1;
+                }
+            } else {
+                elmY = minY;
+                for (;;){                   /* iterate over Y */
+                    elmZ = elmX+elmY;
+                    if (elmZ > maxZ) break;
+                    *(ptr+elmZ-minZ) = 1;
+                    if (elmY == maxY) break;  /* exit loop of Y */
+                    elmY++;
+                    elmY = domain_next_bv(dv_ptr_y,elmY);
+                }
+            }
+            if (elmX == maxX) break;      /* exit loop of X */
+            elmX++;
+            elmX = domain_next_bv(dv_ptr_x,elmX);
+        }
+    } else {                          /* Y is an int */
+        elmY = INTVAL(Y);
+        for (;;){                       /* iterate over X */
+            elmZ = elmX+elmY;
+            if (elmZ > maxZ) break;
+            *(ptr+elmZ-minZ) = 1;
+            if (elmX == maxX) break;      /* exit loop of X */
+            elmX++;
+            elmX = domain_next_bv(dv_ptr_x,elmX);
+        }
+    }
 
-  elmZ = minZ+1;
-  for (i = 1; i < sizeZ-1; i++){
-	if (*(ptr+i) == 0) {            /* elmZ is unsupported */
-	  domain_set_false_noint(dv_ptr_z,elmZ);
-	}
-	elmZ++;
-  }
-  //  printf("<= ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
-  return BP_TRUE;
+    elmZ = minZ+1;
+    for (i = 1; i < sizeZ-1; i++){
+        if (*(ptr+i) == 0) {            /* elmZ is unsupported */
+            domain_set_false_noint(dv_ptr_z,elmZ);
+        }
+        elmZ++;
+    }
+    //  printf("<= ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
+    return BP_TRUE;
 }
 
 /* Const-X = Y, X is a bit-vector domain. The constraint is already interval consistent. */
 int c_CLPFD_SUB_AC_ccc(){
-  BPLONG Const, X, Y, i, sizeY;
-  BPLONG_PTR dv_ptr_x, dv_ptr_y, ptr;
-  BPLONG elmX, maxX, elmY, minY, maxY;
+    BPLONG Const, X, Y, i, sizeY;
+    BPLONG_PTR dv_ptr_x, dv_ptr_y, ptr;
+    BPLONG elmX, maxX, elmY, minY, maxY;
 
-  Const = ARG(1,3); DEREF_NONVAR(Const); Const = INTVAL(Const);
-  X = ARG(2,3); DEREF_NONVAR(X);
-  Y = ARG(3,3); DEREF_NONVAR(Y);
+    Const = ARG(1,3); DEREF_NONVAR(Const); Const = INTVAL(Const);
+    X = ARG(2,3); DEREF_NONVAR(X);
+    Y = ARG(3,3); DEREF_NONVAR(Y);
 
-  //  printf("=> SUB_AC "); write_term(Const); printf(" - "); write_term(X); printf(" = "); write_term(Y); printf("\n"); 
+    //  printf("=> SUB_AC "); write_term(Const); printf(" - "); write_term(X); printf(" = "); write_term(Y); printf("\n"); 
   
-  if (!IS_SUSP_VAR(Y)) return BP_TRUE;
-  dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
-  minY = DV_first(dv_ptr_y);
-  maxY = DV_last(dv_ptr_y);
-  sizeY = maxY-minY+1;
-  if (local_top - heap_top <= sizeY || DV_size(dv_ptr_y) > 512){
-	return BP_TRUE;  /* do not enforce AC on Z*/
-  }
-  ptr = local_top-sizeY;
-  for (i = 1; i < sizeY-1; i++){
-	*(ptr+i) = 0;                   /* 0 means unsupported, minY and maxY are supported */
-  }
-  dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
-  elmX = DV_first(dv_ptr_x);
-  maxX = DV_last(dv_ptr_x);
-  for (;;){                         /* iterate over X */
-	elmY = Const-elmX;
-	if (elmY > maxY) break;
-	*(ptr+(elmY-minY)) = 1;       /* elmY is supported in Y */
-	if (elmX == maxX) break;        /* exit loop of X */
-	elmX++;
-	elmX = domain_next_bv(dv_ptr_x,elmX);
-  }
+    if (!IS_SUSP_VAR(Y)) return BP_TRUE;
+    dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
+    minY = DV_first(dv_ptr_y);
+    maxY = DV_last(dv_ptr_y);
+    sizeY = maxY-minY+1;
+    if (local_top - heap_top <= sizeY || DV_size(dv_ptr_y) > 512){
+        return BP_TRUE;  /* do not enforce AC on Z*/
+    }
+    ptr = local_top-sizeY;
+    for (i = 1; i < sizeY-1; i++){
+        *(ptr+i) = 0;                   /* 0 means unsupported, minY and maxY are supported */
+    }
+    dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
+    elmX = DV_first(dv_ptr_x);
+    maxX = DV_last(dv_ptr_x);
+    for (;;){                         /* iterate over X */
+        elmY = Const-elmX;
+        if (elmY > maxY) break;
+        *(ptr+(elmY-minY)) = 1;       /* elmY is supported in Y */
+        if (elmX == maxX) break;        /* exit loop of X */
+        elmX++;
+        elmX = domain_next_bv(dv_ptr_x,elmX);
+    }
 
-  elmY = minY+1;
-  for (i = 1; i < sizeY-1; i++){
-	if (*(ptr+i) == 0) {            /* elmY is unsupported */
-	  domain_set_false_noint(dv_ptr_y,elmY);
-	}
-	elmY++;
-  }
-  //  printf("<= SUB_AC "); write_term(Const); printf(" - "); write_term(X); printf(" = "); write_term(Y); printf("\n"); 
+    elmY = minY+1;
+    for (i = 1; i < sizeY-1; i++){
+        if (*(ptr+i) == 0) {            /* elmY is unsupported */
+            domain_set_false_noint(dv_ptr_y,elmY);
+        }
+        elmY++;
+    }
+    //  printf("<= SUB_AC "); write_term(Const); printf(" - "); write_term(X); printf(" = "); write_term(Y); printf("\n"); 
 
-  return BP_TRUE;
+    return BP_TRUE;
 }
 
 /* X*Y = Z */
@@ -3090,7 +3090,7 @@ x_is_int:
             z_includes_0 = 0;
         }
     } else {
-        exception = c_type_error(et_INTEGER,Z);
+        bp_exception = c_type_error(et_INTEGER,Z);
         return BP_ERROR;
     }
     if (minZ > 0){
@@ -3159,7 +3159,7 @@ x_is_int:
         if (ISINT(FOLLOW(dv_ptr_x))) return BP_TRUE;
     }
 
-	// printf("=> multi-3 "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
+    // printf("=> multi-3 "); write_term(X); printf(" "); write_term(Y); printf(" "); write_term(Z); printf("\n");
     if (IS_SUSP_VAR(Z)){
         if (IS_SMALL_DOMAIN(dv_ptr_y) && maxX-minX <= 65536){
             exclude_unsupported_y_constr_xy_eq_z(dv_ptr_x,dv_ptr_y,dv_ptr_z);
@@ -3328,7 +3328,7 @@ void Cboot_domain(){
     cpcon_k2_ptr = BP_NEW_SYM("k",2);
     insert_cpred("c_cpcon_decrement_counters",4,c_cpcon_decrement_counters);
     insert_cpred("c_CLPFD_ADD_AC_ccc",3,c_CLPFD_ADD_AC_ccc);
-    insert_cpred("c_CLPFD_SUB_AC_ccc",3,c_CLPFD_SUB_AC_ccc);	
+    insert_cpred("c_CLPFD_SUB_AC_ccc",3,c_CLPFD_SUB_AC_ccc);    
 }
 
     

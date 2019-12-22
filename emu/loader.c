@@ -74,7 +74,7 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
 #endif
       
 #define INVALID_BYTE_CODE {                     \
-        exception = invalid_byte_file;          \
+        bp_exception = invalid_byte_file;       \
         fclose(fp);                             \
         return BP_ERROR;                        \
     }
@@ -404,7 +404,7 @@ int c_GET_MODULE_SIGNATURE_cf(){
 
     File = ARG(1,2); DEREF(File);
     if (!ISATOM(File)){
-        exception = atom_expected;
+        bp_exception = atom_expected;
         return BP_FALSE;
     }
     sym_ptr = GET_ATM_SYM_REC(File);
@@ -417,7 +417,7 @@ int c_GET_MODULE_SIGNATURE_cf(){
 #endif
     if (fp == NULL){
         printf("file %s not exist\n",file_name);
-        exception = file_does_not_exist;
+        bp_exception = file_does_not_exist;
         return BP_ERROR;
     }
     /* printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); */
@@ -1338,10 +1338,10 @@ int c_CURRENT_PREDICATE(){
     BPLONG_PTR top;
 
     f = ARG(1,2);DEREF(f);if (!ISATOM(f)){
-        exception = illegal_arguments;   return BP_ERROR;
+        bp_exception = illegal_arguments;   return BP_ERROR;
     }
     n = ARG(2,2);DEREF(n);if (!ISINT(n)){
-        exception = illegal_arguments; return BP_ERROR; 
+        bp_exception = illegal_arguments; return BP_ERROR; 
     }
     n = INTVAL(n);
   
@@ -1528,7 +1528,7 @@ int c_LOAD_BYTE_CODE_FROM_BPLISTS(){
         if (total_size>parea_size) parea_size = total_size;
         ALLOCATE_NEW_PAREA_BLOCK(parea_size,success);
         if (success==0){
-            exception = bp_out_of_memory_atom;
+            bp_exception = bp_out_of_memory_atom;
             return BP_ERROR;
         }
     }
@@ -1573,7 +1573,7 @@ void load_syms_fromlist(BCSyms)
     
         i++;
         if (i>=MAXSYMS){
-            exception = out_of_range;
+            bp_exception = out_of_range;
             quit("Out of range in symbol table");
         }    
     }
