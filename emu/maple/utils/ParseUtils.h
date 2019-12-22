@@ -104,7 +104,7 @@ static bool match(B& in, const char* str) {
 
     in += i;
 
-    return true; 
+    return true;
 }
 
 // String matching: consumes characters eagerly, but does not require random access iterator.

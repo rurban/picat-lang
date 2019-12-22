@@ -208,7 +208,7 @@ pcover random_order(register pset_family F)
 int cubelist_partition(pset *T, pset **A, pset **B, unsigned int comp_debug)
          			/* a list of cubes */
                			/* cubelist of partition and remainder */
-                        
+
 {
     register pcube *T1, p, seed, cof;
     pcube *A1, *B1;

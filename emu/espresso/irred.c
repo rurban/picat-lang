@@ -288,7 +288,7 @@ fcube_is_covered(pset *T, pset c, sm_matrix *table)
 static void
 ftautology(pset *T, sm_matrix *table)
                   	/* T will be disposed of */
-                 
+
 {
     register pcube cl, cr;
     register int best;
@@ -312,7 +312,7 @@ ftautology(pset *T, sm_matrix *table)
 static bool
 ftaut_special_cases(pset *T, sm_matrix *table)
                           /* will be disposed if answer is determined */
-                 
+
 {
     register pcube *T1, *Tsave, p, temp = cube.temp[0], ceil = cube.temp[1];
     int var, rownum;

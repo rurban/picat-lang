@@ -3,7 +3,7 @@
 
 
 /*
- *  allocate a new row vector 
+ *  allocate a new row vector
  */
 sm_row *
 sm_row_alloc(void)
@@ -80,7 +80,7 @@ sm_row_dup(register sm_row *prow)
 
 
 /*
- *  insert an element into a row vector 
+ *  insert an element into a row vector
  */
 sm_element *
 sm_row_insert(register sm_row *prow, register int col)
@@ -90,7 +90,7 @@ sm_row_insert(register sm_row *prow, register int col)
     /* get a new item, save its address */
     sm_element_alloc(element);
     test = element;
-    sorted_insert(sm_element, prow->first_col, prow->last_col, prow->length, 
+    sorted_insert(sm_element, prow->first_col, prow->last_col, prow->length,
 		    next_col, prev_col, col_num, col, test);
 
     /* if item was not used, free it */
@@ -104,7 +104,7 @@ sm_row_insert(register sm_row *prow, register int col)
 
 
 /*
- *  remove an element from a row vector 
+ *  remove an element from a row vector
  */
 void
 sm_row_remove(register sm_row *prow, register int col)
@@ -114,7 +114,7 @@ sm_row_remove(register sm_row *prow, register int col)
     for(p = prow->first_col; p != 0 && p->col_num < col; p = p->next_col)
 	;
     if (p != 0 && p->col_num == col) {
-	dll_unlink(p, prow->first_col, prow->last_col, 
+	dll_unlink(p, prow->first_col, prow->last_col,
 			    next_col, prev_col, prow->length);
 	sm_element_free(p);
     }
@@ -141,7 +141,7 @@ sm_row_find(sm_row *prow, int col)
 /*
  *  return 1 if row p2 contains row p1; 0 otherwise
  */
-int 
+int
 sm_row_contains(sm_row *p1, sm_row *p2)
 {
     register sm_element *q1, *q2;
@@ -165,7 +165,7 @@ sm_row_contains(sm_row *p1, sm_row *p2)
 /*
  *  return 1 if row p1 and row p2 share an element in common
  */
-int 
+int
 sm_row_intersects(sm_row *p1, sm_row *p2)
 {
     register sm_element *q1, *q2;
@@ -192,7 +192,7 @@ sm_row_intersects(sm_row *p1, sm_row *p2)
 /*
  *  compare two rows, lexical ordering
  */
-int 
+int
 sm_row_compare(sm_row *p1, sm_row *p2)
 {
     register sm_element *q1, *q2;
@@ -251,7 +251,7 @@ sm_row_and(sm_row *p1, sm_row *p2)
     }
 }
 
-int 
+int
 sm_row_hash(sm_row *prow, int modulus)
 {
     register int sum;
@@ -265,12 +265,12 @@ sm_row_hash(sm_row *prow, int modulus)
 }
 
 /*
- *  remove an element from a row vector (given a pointer to the element) 
+ *  remove an element from a row vector (given a pointer to the element)
  */
 void
 sm_row_remove_element(register sm_row *prow, register sm_element *p)
 {
-    dll_unlink(p, prow->first_col, prow->last_col, 
+    dll_unlink(p, prow->first_col, prow->last_col,
 			next_col, prev_col, prow->length);
     sm_element_free(p);
 }

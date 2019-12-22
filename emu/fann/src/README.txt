@@ -1,14 +1,14 @@
 Fast Artificial Neural Network Library (FANN)
 
-Fast Artificial Neural Network Library is a free open source neural network 
-library, which implements multilayer artificial neural networks in C with 
-support for both fully connected and sparsely connected networks. 
-Cross-platform execution in both fixed and floating point are supported. 
-It includes a framework for easy handling of training data sets. It is easy to 
+Fast Artificial Neural Network Library is a free open source neural network
+library, which implements multilayer artificial neural networks in C with
+support for both fully connected and sparsely connected networks.
+Cross-platform execution in both fixed and floating point are supported.
+It includes a framework for easy handling of training data sets. It is easy to
 use, versatile, well documented, and fast. Bindings to more than 15 programming
-languages are available. An easy to read introduction article and a reference 
-manual accompanies the library with examples and recommendations on how to use 
-the library. Several graphical user interfaces are also available for the 
+languages are available. An easy to read introduction article and a reference
+manual accompanies the library with examples and recommendations on how to use
+the library. Several graphical user interfaces are also available for the
 library.
 
 FANN Features:
@@ -31,7 +31,7 @@ FANN Features:
 * Language Bindings to a large number of different programming languages
 * Widely used (approximately 100 downloads a day)
 
-To get started with FANN, go to the FANN help site (http://leenissen.dk/fann/wp/help/), which will include links to all the available resources. 
+To get started with FANN, go to the FANN help site (http://leenissen.dk/fann/wp/help/), which will include links to all the available resources.
 
-For more information about FANN, please refer to the FANN website: 
+For more information about FANN, please refer to the FANN website:
 http://leenissen.dk/fann/wp/

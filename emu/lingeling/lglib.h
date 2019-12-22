@@ -23,8 +23,8 @@ void lglbnr (const char * name,
 void lglsizes (void);				// ... data structure sizes
 
 void * lglfirstopt (LGL *);
-void * lglnextopt (LGL *, 
-                   void * iterator, 
+void * lglnextopt (LGL *,
+                   void * iterator,
                    const char ** nameptr,
 		   int *valptr, int *minptr, int *maxptr);
 

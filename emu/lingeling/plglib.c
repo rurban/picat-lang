@@ -87,8 +87,8 @@ static double currentime (void) {
 static double getime () { return currentime () - start; }
 
 
-#define msg3(a1,a2,a3) 
-#define msg4(a1,a2,a3,a4) 
+#define msg3(a1,a2,a3)
+#define msg4(a1,a2,a3,a4)
 #define msg5(a1,a2,a3,a4,a5)
 #define msg6(a1,a2,a3,a4,a5,a6)
 #define msg7(a1,a2,a3,a4,a5,a6,a7)
@@ -183,7 +183,7 @@ static void setsighandlers (void) {
 */
 void plgl_release(Worker *workers){
   int i;
-  
+
   for (i = 0; i < nworkers; i++) {
     lglrelease (workers[i].lgl);
     // pthread_cancel(workers[i].thread);
@@ -204,7 +204,7 @@ static int term (void * voidptr) {
     warn ("failed to lock 'done' mutex in termination check");
   res = done;
   termchks++;
-  if (pthread_mutex_unlock (&donemutex)) 
+  if (pthread_mutex_unlock (&donemutex))
     warn ("failed to unlock 'done' mutex in termination check");
   msg4 (wid, 3, "early termination check %s", res ? "succeeded" : "failed");
   return res;
@@ -241,14 +241,14 @@ static void flush (Worker * worker, int keep_locked) {
       if (!globalres) msg3 (wid, 1, "mismatched unit");
       globalres = 20;
       done = 1;
-      if (pthread_mutex_unlock (&donemutex)) 
+      if (pthread_mutex_unlock (&donemutex))
         warn ("failed to unlock 'done' mutex flushing unit");
       break;
     } else assert (tmp == val);
   }
   worker->nunits = 0;
   if (keep_locked) return;
-  if (pthread_mutex_unlock (&fixedmutex)) 
+  if (pthread_mutex_unlock (&fixedmutex))
     warn ("failed to unlock 'fixed' mutex in flush");
 }
 
@@ -288,7 +288,7 @@ static int * lockrepr (void * voidptr) {
 static void unlockrepr (void * voidptr, int consumed, int produced) {
   Worker * worker = voidptr;
   int wid = worker - workers;
-  msg5 (wid, 3, 
+  msg5 (wid, 3,
        "finished equivalences synchronization: %d consumed, %d produced",
        consumed, produced);
   worker->stats.eqs.consumed += consumed;
@@ -331,7 +331,7 @@ static void * work (void * voidptr) {
   if (pthread_mutex_lock (&donemutex))
     warn ("failed to lock 'done' mutex in worker");
   done = 1;
-  if (pthread_mutex_unlock (&donemutex)) 
+  if (pthread_mutex_unlock (&donemutex))
     warn ("failed to unlock 'done' mutex in worker");
   msg7 (wid, 2, "%d decisions, %d conflicts, %.0f props, %.1f MB",
        lglgetdecs (lgl), lglgetconfs (lgl), lglgetprops (lgl), lglmb (lgl));
@@ -339,9 +339,9 @@ static void * work (void * voidptr) {
     if (pthread_mutex_lock (&fixedmutex))
       warn ("failed to lock 'fixed' in work");
     msg7 (wid, 2, "consumed %d units %.0f%%, produced %d units %.0f%%",
-         worker->stats.units.consumed, 
+         worker->stats.units.consumed,
          percent (worker->stats.units.consumed, nfixed),
-         worker->stats.units.produced, 
+         worker->stats.units.produced,
          percent (worker->stats.units.produced, nfixed));
     if (pthread_mutex_unlock (&fixedmutex))
       warn ("failed to unlock 'fixed' in work");
@@ -351,7 +351,7 @@ static void * work (void * voidptr) {
 
 static void setopt (int wid, const char * opt, int val) {
   Worker * w;
-  LGL * lgl; 
+  LGL * lgl;
   int old;
   assert (0 <= wid && wid < nworkers);
   w = workers + wid;
@@ -366,7 +366,7 @@ static void setopt (int wid, const char * opt, int val) {
 static void set10x (int wid, const char * opt) {
   int old, val;
   Worker * w;
-  LGL * lgl; 
+  LGL * lgl;
   assert (0 <= wid && wid < nworkers);
   w = workers + wid;
   lgl = w->lgl;
@@ -397,7 +397,7 @@ void plgl_add_lit(int lit){
   for (i = 0; i < nworkers; i++)
     lgladd (workers[i].lgl, lit);
 }
-  
+
 void plgl_init(int nworkers0){
   Worker * w;
   int i, val;
@@ -406,7 +406,7 @@ void plgl_init(int nworkers0){
   nworkers = nworkers0;
   if (workers != NULL)
     plgl_release(workers);
-  
+
   nfixed = 0;
   globalres = 0;
   verbose = 0;
@@ -424,8 +424,8 @@ void plgl_init(int nworkers0){
   pthread_mutex_init(&donemutex, NULL);
   pthread_mutex_init(&msgmutex, NULL);
   pthread_mutex_init(&fixedmutex, NULL);
-  pthread_mutex_init(&reprmutex, NULL);  
-  /*  
+  pthread_mutex_init(&reprmutex, NULL);
+  /*
   donemutex = PTHREAD_MUTEX_INITIALIZER;
   msgmutex = PTHREAD_MUTEX_INITIALIZER;
   fixedmutex = PTHREAD_MUTEX_INITIALIZER;
@@ -437,7 +437,7 @@ void plgl_init(int nworkers0){
   NEW_MEM (fixed, sat_nvars + 1);
   NEW_MEM (vals, sat_nvars + 1);
   if (!noeq) NEW_MEM (repr, sat_nvars + 1);
-  
+
   //
   NEW_MEM (workers, nworkers);
   for (i = 0; i < nworkers; i++) {
@@ -481,7 +481,7 @@ void plgl_init(int nworkers0){
 int plgl_start (LGL **ptr_lgl) {
   Worker * w, * winner, *maxconsumer, * maxproducer;
   int i, res;
- 
+
   for (i = 0; i < nworkers; i++) {
     if (pthread_create (&workers[i].thread, 0, work, workers + i))
       die ("failed to create worker thread %d", i);

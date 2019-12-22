@@ -2,7 +2,7 @@
 
 static bool primes_consensus_special_cases(pset *T, pset_family *Tnew);
 static pcover primes_consensus_merge(pset_family Tl, pset_family Tr, pset cl, pset cr);
-static pcover and_with_cofactor(pset_family A, register pset cof); 
+static pcover and_with_cofactor(pset_family A, register pset cof);
 
 
 /* primes_consensus -- generate primes using consensus */
@@ -30,7 +30,7 @@ pcover primes_consensus(pset *T)
     return Tnew;
 }
 
-static bool 
+static bool
 primes_consensus_special_cases(pset *T, pset_family *Tnew)
          			/* will be disposed if answer is determined */
              			/* returned only if answer determined */
@@ -105,7 +105,7 @@ primes_consensus_special_cases(pset *T, pset_family *Tnew)
     }
 }
 
-static pcover 
+static pcover
 primes_consensus_merge(pset_family Tl, pset_family Tr, pset cl, pset cr)
 {
     register pcube pl, pr, lastl, lastr, pt;

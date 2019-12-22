@@ -317,7 +317,7 @@ int after_setup_pla(int needs_dcset, int needs_offset, pPLA PLA)
 	  EXECUTE(PLA->R=complement(cube2list(PLA->F,PLA->D)), COMPL_TIME, PLA->R, cost);
 	}
   }
-  
+
   return 1;
 }
 

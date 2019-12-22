@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <string.h>
 #include "basic.h"
@@ -74,10 +74,10 @@ void init_builtins(void){
     INITIALIZE_BUILTIN3(56,b_GLOBAL_INSERT_TAIL_ccc);
     INITIALIZE_BUILTIN3(57,b_DM_PREV0_ccf);
     INITIALIZE_BUILTIN3(58,b_GLOBAL_SET_ccc);
-    INITIALIZE_BUILTIN4(59,b_GLOBAL_SET_cccc); 
+    INITIALIZE_BUILTIN4(59,b_GLOBAL_SET_cccc);
     INITIALIZE_BUILTIN2(60,b_HASHVAL1_cf);
     INITIALIZE_BUILTIN2(61,b_HASHVAL_cf);
-    INITIALIZE_BUILTIN1(62,nondvar); 
+    INITIALIZE_BUILTIN1(62,nondvar);
     INITIALIZE_BUILTIN2(63,b_ISGLOBAL_cc);
     INITIALIZE_BUILTIN1(64,b_IS_CONSULTED_c);
     INITIALIZE_BUILTIN2(65,b_IS_DYNAMIC_cc);
@@ -111,14 +111,14 @@ void init_builtins(void){
     INITIALIZE_BUILTIN1(93,b_WRITE_QUICK_c);
     INITIALIZE_BUILTIN3(94,b_XOR_ccf);
     INITIALIZE_BUILTIN2(95,b_FLOAT_SIGN_cf);
-    INITIALIZE_BUILTIN1(96,dvar_or_int); 
+    INITIALIZE_BUILTIN1(96,dvar_or_int);
     INITIALIZE_BUILTIN2(97,b_CONSTRAINTS_NUMBER_cf);
     INITIALIZE_BUILTIN1(98,b_IS_PLANNER_STATE_c);
     INITIALIZE_BUILTIN2(99,b_select_ff);
     INITIALIZE_BUILTIN2(101,b_DM_MIN_cf);
     INITIALIZE_BUILTIN2(102,b_DM_MAX_cf);
-    INITIALIZE_BUILTIN1(103,dvar_bv); 
-    INITIALIZE_BUILTIN1(104,dvar_excludable_or_int); 
+    INITIALIZE_BUILTIN1(103,dvar_bv);
+    INITIALIZE_BUILTIN1(104,dvar_excludable_or_int);
     /**/
     INITIALIZE_BUILTIN1(105,b_FLOAT_PI_f);
     INITIALIZE_BUILTIN1(106,b_RANDOM_f);
@@ -320,7 +320,7 @@ void init_builtins(void){
     INITIALIZE_BUILTIN1(294,b_BOOL_DVAR_c);
     INITIALIZE_BUILTIN3(295,b_INSERT_ORDERED_DOWN_ccf);
     INITIALIZE_BUILTIN3(296,b_PICAT_LENGTH_cf);
-    INITIALIZE_BUILTIN1(297,b_IS_ALPHA_c); 
+    INITIALIZE_BUILTIN1(297,b_IS_ALPHA_c);
     INITIALIZE_BUILTIN3(298,b_INSERT_STATE_LIST_ccf);
     INITIALIZE_BUILTIN3(299,b_BUILD_56B_INT_ccf);
     INITIALIZE_BUILTIN2(300,b_GET_PICAT_TABLE_MAP_cf);

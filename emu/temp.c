@@ -8,8 +8,8 @@ int c_CLPFD_SUB_AC_ccc(){
   X = ARG(2,3); DEREF_NONVAR(X);
   Y = ARG(3,3); DEREF_NONVAR(Y);
 
-  //	printf("=> SUB_AC "); write_term(Const); printf(" "); write_term(X); printf(" "); write_term(Y); printf("\n"); 
-  
+  //	printf("=> SUB_AC "); write_term(Const); printf(" "); write_term(X); printf(" "); write_term(Y); printf("\n");
+
   if (!IS_SUSP_VAR(Y)) return BP_TRUE;
   dv_ptr_y = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(Y);
   minY = DV_first(dv_ptr_y);
@@ -39,7 +39,7 @@ int c_CLPFD_SUB_AC_ccc(){
 	}
 	elmY++;
   }
-  //	printf("<= SUB_AC "); write_term(Const); printf(" "); write_term(X); printf(" "); write_term(Y); printf("\n"); 
+  //	printf("<= SUB_AC "); write_term(Const); printf(" "); write_term(X); printf(" "); write_term(Y); printf("\n");
 
   return BP_TRUE;
 }

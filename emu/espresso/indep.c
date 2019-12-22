@@ -7,7 +7,7 @@ static sm_matrix *build_intersection_matrix(sm_matrix *A);
 /*
  *  verify that all rows in 'indep' are actually independent !
  */
-static int 
+static int
 verify_indep_set(A, indep)
 sm_matrix *A;
 sm_row *indep;
@@ -28,7 +28,7 @@ sm_row *indep;
 }
 #endif
 
-solution_t * 
+solution_t *
 sm_maximal_independent_set(sm_matrix *A, int *weight)
 {
     register sm_row *best_row, *prow;

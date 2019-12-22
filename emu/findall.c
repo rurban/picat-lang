@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -31,7 +31,7 @@ void init_findall_area(){
     faa_record_ptr->num_expansions = 0;
 }
 
-/* 
+/*
    not used anymore.
 */
 int b_FINDALL_COPY_ARGS(){
@@ -80,7 +80,7 @@ int c_findall_post(){
     findall_no--;
 
     /* release FAA blocks but the first block */
-    if (findall_no==0){ 
+    if (findall_no==0){
         BPLONG_PTR faa_low_addr,prev_faa_low_addr;
         faa_low_addr = faa_record_ptr->low_addr;
         prev_faa_low_addr = (BPLONG_PTR)FOLLOW(faa_low_addr);
@@ -101,9 +101,9 @@ int b_FINDALL_INSERT_cc(BPLONG SymPtr, BPLONG value)
 {
     SYM_REC_PTR sym_ptr;
 
-    DEREF_NONVAR(SymPtr);  
+    DEREF_NONVAR(SymPtr);
     sym_ptr = (SYM_REC_PTR)UNTAGGED_ADDR(SymPtr);
-  
+
     DEREF(value);
     if (TAG(value)==ATM) goto after_copy;
     value = copy_term_heap_to_faa(value);
@@ -120,11 +120,11 @@ after_copy:
 int c_FINDALL_AREA_SIZE(){
     return unify(ARG(1,1),MAKEINT(numbered_area_size(faa_record_ptr)));
 }
-  
+
 BPLONG numbered_area_size(NUMBERED_TERM_AREA_RECORD_PTR area_record_ptr){
     BPLONG size;
     BPLONG_PTR prev_faa_low_addr;
-  
+
     size = area_record_ptr->top - area_record_ptr->low_addr;
     prev_faa_low_addr = (BPLONG_PTR)FOLLOW((area_record_ptr->low_addr));
     while (prev_faa_low_addr!=NULL){
@@ -140,12 +140,12 @@ int c_FINDALL_GET()
     SYM_REC_PTR sym_ptr;
     BPLONG SymPtr,Answers;
 
-    SymPtr = ARG(1,2); 
+    SymPtr = ARG(1,2);
     DEREF_NONVAR(SymPtr);
     sym_ptr = (SYM_REC_PTR)UNTAGGED_ADDR(SymPtr);
     //  printf("findall_no=%x\n",findall_no);
     Answers = copy_answers_faa_to_heap((BPLONG)GET_EP(sym_ptr));
-    return unify(ARG(2,2),Answers); 
+    return unify(ARG(2,2),Answers);
 }
 
 BPLONG copy_answers_faa_to_heap(BPLONG list){
@@ -170,7 +170,7 @@ BPLONG copy_answers_faa_to_heap(BPLONG list){
     return list_cp;
 }
 
-BPLONG copy_term_heap_to_faa(BPLONG value) 
+BPLONG copy_term_heap_to_faa(BPLONG value)
 {
     BPLONG_PTR trail_top0;
     BPLONG initial_diff0;
@@ -183,7 +183,7 @@ BPLONG copy_term_heap_to_faa(BPLONG value)
     trail_top0 = (BPLONG_PTR)((BPULONG)trail_up_addr-initial_diff0);
     UNDO_TRAILING;
     local_top = local_top0;
-  
+
     return temp;
 }
 
@@ -210,7 +210,7 @@ int check_ground_using_faa(BPLONG term){
 
     return (global_var_num==0) ? BP_TRUE : BP_FALSE;
 }
-  
+
 
 BPLONG make_cons_in_faa(BPLONG car, BPLONG cdr)
 {
@@ -222,13 +222,13 @@ BPLONG make_cons_in_faa(BPLONG car, BPLONG cdr)
         bp_exception = et_OUT_OF_MEMORY;
         return BP_ERROR;
     }
-    temp = (BPLONG)ADDTAG(ptr,LST);    
+    temp = (BPLONG)ADDTAG(ptr,LST);
     *ptr++ = car;
     *ptr = cdr;
     return temp;
-}  
+}
 
-/* 
+/*
    Copies term from the heap to the findall area.
 */
 BPLONG numberVarCopyToFindallArea(NUMBERED_TERM_AREA_RECORD_PTR faa_record_ptr, BPLONG term)
@@ -246,7 +246,7 @@ l_number_var_copy_faa:
         ASSIGN_TRAIL_VALUE(term,NumberVar(global_var_num));
         global_var_num++;
         return FOLLOW(term);
-    
+
     case ATM:
         return term;
 
@@ -309,7 +309,7 @@ BPLONG numberVarCopyListToFindallArea(NUMBERED_TERM_AREA_RECORD_PTR faa_record_p
     ret_term_ptr = &ret_term;
     while (ISLIST(term)){
         term_ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
-        ALLOCATE_FROM_NUMBERED_TERM_AREA(faa_record_ptr,dest_ptr,2); 
+        ALLOCATE_FROM_NUMBERED_TERM_AREA(faa_record_ptr,dest_ptr,2);
         if (dest_ptr==NULL){
             bp_exception = et_OUT_OF_MEMORY;
             return BP_ERROR;

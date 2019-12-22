@@ -846,7 +846,7 @@ extern int b_ATOM_CONCAT_ccf(BPLONG a1, BPLONG a2, BPLONG a3);
 extern int c_FORMAT_PRINT_INTEGER(void);										
 extern int c_FORMAT_PRINT_FLOAT(void);
 extern char *format_comma_separated_int(BPLONG amt);									
-extern int b_NAME0_cf(BPLONG op1,BPLONG op2); /* op2 is made to be the string of the name of op1*/	 
+extern int b_NAME0_cf(BPLONG op1,BPLONG op2); /* op2 is made to be the string of the name of op1*/	
 extern void picat_str_to_c_str(TERM lst, char *s, BPLONG len);
 extern int c_PICAT_FORMAT_TO_STRING_ccff();
 extern int c_PICAT_GETENV_cf();
@@ -983,7 +983,7 @@ extern int b_GLOBAL_INSERT_TAIL_ccc(BPLONG name,BPLONG arity,BPLONG value);
 extern void assert_tail(SYM_REC_PTR sym_ptr,BPLONG term);								
 extern BPLONG make_cons_in_parea(BPLONG car, BPLONG cdr);								
 extern BPLONG copy_term_heap_to_parea(BPLONG value);									
-extern BPLONG copy_term_heap_to_parea_with_varno(BPLONG value,BPLONG *varno);						 
+extern BPLONG copy_term_heap_to_parea_with_varno(BPLONG value,BPLONG *varno);						
 extern int c_UNNUMBER_VARS(void);
 
 //
@@ -1056,8 +1056,8 @@ extern int comalpha(SYM_REC_PTR psc_ptr1,SYM_REC_PTR  psc_ptr2);
 extern int c_INCREMENTARG(void);
 extern int c_DECREMENTARG(void);
 extern int b_DESTRUCTIVE_SET_ARG_ccc(BPLONG op1,BPLONG op2,BPLONG op3);			
-extern int b_CHAR_CODE_cf(BPLONG ch,BPLONG code); 
-extern int b_CHAR_CODE_fc(BPLONG ch,BPLONG code); 
+extern int b_CHAR_CODE_cf(BPLONG ch,BPLONG code);
+extern int b_CHAR_CODE_fc(BPLONG ch,BPLONG code);
 extern int string2codes(char *str,BPLONG list);										
 extern int var_or_atomic(BPLONG op);
 extern int b_BLDATOM_fc(BPLONG op1,BPLONG op2);										
@@ -1144,7 +1144,7 @@ extern int b_sort_int_list(BPLONG lst,BPLONG sorted);
 extern int c_sort_int_list(void);
 extern int b_DEREF_c(BPLONG T);	
 extern int c_set_exception(void);
-  
+
 /**/
 extern int b_IS_STRUCT_c(BPLONG term);
 extern int b_IS_COMPOUND_c(BPLONG term);
@@ -1301,7 +1301,7 @@ extern int b_PICAT_TABLE_MAP_LIST_cf(BPLONG map_num, BPLONG pairs);
 extern BPLONG table_maps_buckets_size();
 extern void reset_temp_complete_subgoal_entries();
 void reset_temp_complete_scc_elms(BPLONG_PTR subgoal_entry);
-  
+
 //
 //	toam.c prototypes
 //
@@ -1380,13 +1380,13 @@ extern int b_SAT_RETRIEVE_BNUM_cff(BPLONG BV, BPLONG Num, BPLONG MNum);
 extern int b_SAT_GET_INC_VAR_NUM_f(BPLONG Num);
 extern int c_sat_start();
 extern int c_sat_propagate_dom_bits();
-  
+
 //
 //	espresso_bp.c prototypes
 //
 extern int c_call_espresso();
 extern int c_call_espresso_pb();
-  
+
 //
 //	kapi.c prototypes
 //

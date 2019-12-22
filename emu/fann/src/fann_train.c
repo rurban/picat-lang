@@ -1,17 +1,17 @@
 /*
   Fast Artificial Neural Network Library (fann)
   Copyright (C) 2003-2016 Steffen Nissen (steffen.fann@gmail.com)
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -356,7 +356,7 @@ void fann_backpropagate_MSE(struct fann *ann)
 
 		for(neuron_it = (layer_it - 1)->first_neuron; neuron_it != last_neuron; neuron_it++)
 		{
-			*error_prev_layer *= fann_activation_derived(neuron_it->activation_function, 
+			*error_prev_layer *= fann_activation_derived(neuron_it->activation_function,
 				neuron_it->activation_steepness, neuron_it->value, neuron_it->sum);
 			error_prev_layer++;
 		}
@@ -377,7 +377,7 @@ void fann_update_weights(struct fann *ann)
 
 	/* store some variabels local for fast access */
 	const float learning_rate = ann->learning_rate;
-    const float learning_momentum = ann->learning_momentum;        
+    const float learning_momentum = ann->learning_momentum;
 	struct fann_neuron *first_neuron = ann->first_layer->first_neuron;
 	struct fann_layer *first_layer = ann->first_layer;
 	const struct fann_layer *last_layer = ann->last_layer;
@@ -673,7 +673,7 @@ void fann_update_weights_quickprop(struct fann *ann, unsigned int num_data,
 				next_step += prev_step * slope / (prev_slope - slope);	/* Else, use quadratic estimate. */
 		}
 		else /* Last step was zero, so use only linear term. */
-			next_step += epsilon * slope; 
+			next_step += epsilon * slope;
 
 		/*
 		if(next_step > 1000 || next_step < -1000)

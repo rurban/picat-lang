@@ -148,7 +148,7 @@ pset_family dist_merge(pset_family A, pset mask)
 */
 pset_family d1merge(pset_family A, int var)
                                 /* disposes of A */
-           
+
 {
     return dist_merge(A, cube.var_mask[var]);
 }
@@ -183,7 +183,7 @@ int d1_rm_equal(register pset *A1, qsort_compare_func compare)
 /* rm_equal -- scan a sorted array of set pointers for duplicate sets */
 int rm_equal(pset *A1, qsort_compare_func compare)
                                 /* updated in place */
-                    
+
 {
     register pset *p, *pdest = A1;
 
@@ -257,8 +257,8 @@ int rm_rev_contain(pset *A1)
 /* rm2_equal -- check two sorted arrays of set pointers for equal cubes */
 int rm2_equal(register pset *A1, register pset *B1, pset *E1, qsort_compare_func compare)
                                         /* updated in place */
-             
-                    
+
+
 {
     register pset *pda = A1, *pdb = B1, *pde = E1;
 
@@ -381,7 +381,7 @@ pset_family sf_ind_unlist(pset *A1, int totcnt, int size, int *row_indices, regi
 /* sf_merge -- merge three sorted lists of set pointers */
 pset_family sf_merge(pset *A1, pset *B1, pset *E1, int totcnt, int size)
                                         /* will be disposed of */
-                    
+
 {
     register pset pr, ps, *pmin, *pmid, *pmax;
     pset_family R;

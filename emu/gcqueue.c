@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include <stdlib.h>
@@ -37,7 +37,7 @@ void gcQueueExpand(){
     GcQueueCell *q;
     BPLONG newGcQueueSize;
 
-  
+
     /*  printf("expand  %d\n",gcQueueSize*2); */
     newGcQueueSize = 2*gcQueueSize;
     q = (GcQueueCell *)malloc(newGcQueueSize*sizeof(GcQueueCell));
@@ -61,7 +61,7 @@ void gcQueueExpand(){
     gcQueueRear = gcQueueFront+gcQueueSize-1;
     gcQueueSize = newGcQueueSize;
 }
-  
+
 /*
   gcQueueAdd(addr,term)
   BPLONG_PTR addr;
@@ -149,16 +149,16 @@ start:
         free(global_mask_ptr);
         global_mask_ptr = NULL;
         goto start;
-    } 
+    }
 
     for (i=0;i<size;i++){
         FOLLOW(global_mask_ptr+i)=0;
     }
     return BP_TRUE;
-}  
+}
 
 /*****************************************************
-set the corresponding mask bits of the cells at 
+set the corresponding mask bits of the cells at
 addr, addr+1,...,addr+size-1 to be 1
    -------------------
    |     |       |   |
@@ -182,7 +182,7 @@ int gcIsMarked(addr,base)
 {
 
     BPULONG offset = ((BPULONG)addr-(BPULONG)base)/sizeof(BPLONG);
-    BPLONG_PTR word_ptr = global_mask_ptr+offset/NBITS_IN_LONG; 
+    BPLONG_PTR word_ptr = global_mask_ptr+offset/NBITS_IN_LONG;
     BPULONG word = FOLLOW(word_ptr);
     BPLONG bitPosition = offset % NBITS_IN_LONG;
     BPULONG mask = ((BPULONG)0x1 << bitPosition);

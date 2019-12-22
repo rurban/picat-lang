@@ -33,7 +33,7 @@ solution_dup(solution_t *sol)
 }
 
 
-void 
+void
 solution_add(solution_t *sol, int *weight, int col)
 {
     (void) sm_row_insert(sol->row, col);
@@ -41,7 +41,7 @@ solution_add(solution_t *sol, int *weight, int col)
 }
 
 
-void 
+void
 solution_accept(solution_t *sol, sm_matrix *A, int *weight, int col)
 {
     register sm_element *p, *pnext;
@@ -59,7 +59,7 @@ solution_accept(solution_t *sol, sm_matrix *A, int *weight, int col)
 
 
 /* ARGSUSED */
-void 
+void
 solution_reject(solution_t *sol, sm_matrix *A, int *weight, int col)
 {
     sm_delcol(A, col);

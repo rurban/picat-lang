@@ -5,7 +5,7 @@
  * pcover signature():
  *	Entry point for the signature cubes algorithm.	
  * pcover generate_primes():
- *	Generates the set of primes corresponding to 
+ *	Generates the set of primes corresponding to
  *	the Essential Signature Cubes
  */
 

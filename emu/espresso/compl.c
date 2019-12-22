@@ -381,8 +381,8 @@ static pcover compl_cube(register pset p)
 /* simp_comp -- quick simplification of T */
 void simp_comp(pset *T, pset_family *Tnew, pset_family *Tbar)
          			/* T will be disposed of */
-             
-             
+
+
 {
     register pcube cl, cr;
     register int best;

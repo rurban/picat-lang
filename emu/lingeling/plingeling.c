@@ -140,10 +140,10 @@ static void stats (void) {
   mpps = real > 0 ? (props/1e6) / real : 0;
   printf ("c equiv: %d found, %d syncs\n", eqs, syncs.eqs);
   printf ("c terms: %d termination checks\n", termchks);
-  printf ("c units: %d found, %d publications, %d syncs, %d flushed\n", 
+  printf ("c units: %d found, %d publications, %d syncs, %d flushed\n",
           units, unitcalls, syncs.units, flushed);
   printf ("c\n");
-  printf ("c %lld decisions, %lld conflicts, %.1f conflicts/sec\n", 
+  printf ("c %lld decisions, %lld conflicts, %.1f conflicts/sec\n",
           (long long)decs, (long long)confs, cps);
   printf ("c %lld0 propagations, %.1f megaprops/sec\n",
           (long long)props, mpps);
@@ -246,7 +246,7 @@ static int term (void * voidptr) {
     warn ("failed to lock 'done' mutex in termination check");
   res = done;
   termchks++;
-  if (pthread_mutex_unlock (&donemutex)) 
+  if (pthread_mutex_unlock (&donemutex))
     warn ("failed to unlock 'done' mutex in termination check");
   msg (wid, 3, "early termination check %s", res ? "succeeded" : "failed");
   return res;
@@ -282,14 +282,14 @@ static void flush (Worker * worker, int keep_locked) {
       if (!globalres) msg (wid, 1, "mismatched unit");
       globalres = 20;
       done = 1;
-      if (pthread_mutex_unlock (&donemutex)) 
+      if (pthread_mutex_unlock (&donemutex))
 	warn ("failed to unlock 'done' mutex flushing unit");
       break;
     } else assert (tmp == val);
   }
   worker->nunits = 0;
   if (keep_locked) return;
-  if (pthread_mutex_unlock (&fixedmutex)) 
+  if (pthread_mutex_unlock (&fixedmutex))
     warn ("failed to unlock 'fixed' mutex in flush");
 }
 
@@ -329,7 +329,7 @@ static int * lockrepr (void * voidptr) {
 static void unlockrepr (void * voidptr, int consumed, int produced) {
   Worker * worker = voidptr;
   int wid = worker - workers;
-  msg (wid, 3, 
+  msg (wid, 3,
        "finished equivalences synchronization: %d consumed, %d produced",
        consumed, produced);
   worker->stats.eqs.consumed += consumed;
@@ -374,7 +374,7 @@ static void * work (void * voidptr) {
   if (pthread_mutex_lock (&donemutex))
     warn ("failed to lock 'done' mutex in worker");
   done = 1;
-  if (pthread_mutex_unlock (&donemutex)) 
+  if (pthread_mutex_unlock (&donemutex))
     warn ("failed to unlock 'done' mutex in worker");
   msg (wid, 2, "%d decisions, %d conflicts, %.0f props, %.1f MB",
        lglgetdecs (lgl), lglgetconfs (lgl), lglgetprops (lgl), lglmb (lgl));
@@ -382,9 +382,9 @@ static void * work (void * voidptr) {
     if (pthread_mutex_lock (&fixedmutex))
       warn ("failed to lock 'fixed' in work");
     msg (wid, 2, "consumed %d units %.0f%%, produced %d units %.0f%%",
-	 worker->stats.units.consumed, 
+	 worker->stats.units.consumed,
 	 percent (worker->stats.units.consumed, nfixed),
-	 worker->stats.units.produced, 
+	 worker->stats.units.produced,
 	 percent (worker->stats.units.produced, nfixed));
     if (pthread_mutex_unlock (&fixedmutex))
       warn ("failed to unlock 'fixed' in work");
@@ -394,7 +394,7 @@ static void * work (void * voidptr) {
 
 static void setopt (int wid, const char * opt, int val) {
   Worker * w;
-  LGL * lgl; 
+  LGL * lgl;
   int old;
   assert (0 <= wid && wid < nworkers);
   w = workers + wid;
@@ -409,7 +409,7 @@ static void setopt (int wid, const char * opt, int val) {
 static void set10x (int wid, const char * opt) {
   int old, val;
   Worker * w;
-  LGL * lgl; 
+  LGL * lgl;
   assert (0 <= wid && wid < nworkers);
   w = workers + wid;
   lgl = w->lgl;
@@ -434,7 +434,7 @@ static int getsystemcores (int explain) {
   if (p) {
     if (fscanf (p, "%d", &coreids) != 1) coreids = 0;
     if (explain) {
-      if (coreids > 0) 
+      if (coreids > 0)
 	msg (-1, 1, "found %d unique core ids in '/proc/cpuinfo'", coreids);
       else
 	msg (-1, 1, "failed to extract core ids from '/proc/cpuinfo'");
@@ -444,20 +444,20 @@ static int getsystemcores (int explain) {
   if ((coreids > 0 && syscores > 0 && coreids == syscores / 2) ||
       (coreids > 0 && coreids == syscores)) {
 COREIDS:
-    if (explain) 
-      msg (-1, 1, 
+    if (explain)
+      msg (-1, 1,
            "assuming cores = extracted number of core ids = %d",
 	   coreids);
     res = coreids;
   } else if (syscores > 0) {
-    if (explain) 
+    if (explain)
       msg (-1, 1,
            "assuming cores = reported number of processors = %d",
            syscores);
     res = syscores;
   } else if (coreids > 0) goto COREIDS;
   else {
-    if (explain) 
+    if (explain)
       msg (-1, 1, "using compiled in default value of %d workers", NWORKERS);
     res = NWORKERS;
   }
@@ -483,7 +483,7 @@ static int cmpconsumed (const void * p, const void * q) {
 static int parsenbcoreenv (void) {
   const char * str = getenv ("NBCORE");
   if (!str) return 0;
-  if (!isposnum (str)) 
+  if (!isposnum (str))
     die ("invalid value '%s' for environment variable NBCORE", str);
   return atoi (str);
 }
@@ -535,7 +535,7 @@ NOEQ ? "" : " (default)");
       if (i + 1 == argc) die ("argument to '-t' missing");
       else if (!isposnum (arg = argv[++i]) || (nworkers = atoi (arg)) <= 0)
 	die ("invalid argument '%s' to '-t'", arg);
-    } else if (argv[i][0] == '-') 
+    } else if (argv[i][0] == '-')
       die ("invalid option '%s' (try '-h')", argv[i]);
     else if (name) die ("multiple input files '%s' and '%s'", name, argv[i]);
     else name = argv[i];
@@ -543,15 +543,15 @@ NOEQ ? "" : " (default)");
   if (verbose) lglbnr ("Plingeling", "c ", stdout), printf ("c\n");
   nbcore = parsenbcoreenv ();
   if (nworkers) {
-    msg (-1, 1, 
+    msg (-1, 1,
 	 "command line option '-t %d' overwrites system default %d",
 	 nworkers, getsystemcores (0));
     if (nbcore)
-      msg (-1, 1, 
+      msg (-1, 1,
            "and also overwrites environment variable NBCORE=%d",
 	   nbcore);
   } else if (nbcore) {
-    msg (-1, 1, 
+    msg (-1, 1,
 	 "environment variable NBCORE=%d overwrites system default %d",
 	 nbcore, getsystemcores (0));
     nworkers = nbcore;
@@ -598,7 +598,7 @@ NOEQ ? "" : " (default)");
     msg (i, 2, "initialized");
   }
   setsighandlers ();
-  if (name) { 
+  if (name) {
     if (strlen (name) >= 3 && !strcmp (name + strlen(name) - 3, ".gz")) {
       cmd = malloc (strlen (name) + 30);
       sprintf (cmd, "gunzip -c %s 2>/dev/null", name);

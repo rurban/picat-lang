@@ -3,13 +3,13 @@ MiniSat -- Copyright (c) 2006,      Niklas Een, Niklas Sorensson
            Copyright (c) 2007-2010, Niklas Sorensson
 
 Chanseok Oh's MiniSat Patch Series -- Copyright (c) 2015, Chanseok Oh
- 
+
 Maple_LCM, Based on MapleCOMSPS_DRUP -- Copyright (c) 2017, Mao Luo, Chu-Min LI, Fan Xiao: implementing a learnt clause minimisation approach
 Reference: M. Luo, C.-M. Li, F. Xiao, F. Manya, and Z. L. , “An effective learnt clause minimization approach for cdcl sat solvers,” in IJCAI-2017, 2017, pp. to–appear.
- 
+
 Maple_LCM_Dist, Based on Maple_LCM -- Copyright (c) 2017, Fan Xiao, Chu-Min LI, Mao Luo: using a new branching heuristic called Distance at the beginning of search
- 
- 
+
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -531,7 +531,7 @@ bool SimpSolver::eliminateVar(Var v)
 
     for (int i = 0; i < pos.size(); i++)
         for (int j = 0; j < neg.size(); j++)
-            if (merge(ca[pos[i]], ca[neg[j]], v, clause_size) && 
+            if (merge(ca[pos[i]], ca[neg[j]], v, clause_size) &&
                 (++cnt > cls.size() + grow || (clause_lim != -1 && clause_size > clause_lim)))
                 return true;
 
@@ -558,11 +558,11 @@ bool SimpSolver::eliminateVar(Var v)
                 return false;
 
     for (int i = 0; i < cls.size(); i++)
-        removeClause(cls[i]); 
+        removeClause(cls[i]);
 
     // Free occurs list for this variable:
     occurs[v].clear(true);
-    
+
     // Free watchers lists for this variable, if possible:
     watches_bin[ mkLit(v)].clear(true);
     watches_bin[~mkLit(v)].clear(true);
@@ -584,7 +584,7 @@ bool SimpSolver::substitute(Var v, Lit x)
     eliminated[v] = true;
     setDecisionVar(v, false);
     const vec<CRef>& cls = occurs.lookup(v);
-    
+
     vec<Lit>& subst_clause = add_tmp;
     for (int i = 0; i < cls.size(); i++){
         Clause& c = ca[cls[i]];
@@ -727,7 +727,7 @@ bool SimpSolver::eliminate_()
 
         gatherTouchedClauses();
         // printf("  ## (time = %6.2f s) BWD-SUB: queue = %d, trail = %d\n", cpuTime(), subsumption_queue.size(), trail.size() - bwdsub_assigns);
-        if ((subsumption_queue.size() > 0 || bwdsub_assigns < trail.size()) && 
+        if ((subsumption_queue.size() > 0 || bwdsub_assigns < trail.size()) &&
             !backwardSubsumptionCheck(true)){
             ok = false; goto cleanup; }
 
@@ -742,7 +742,7 @@ bool SimpSolver::eliminate_()
         // printf("  ## (time = %6.2f s) ELIM: vars = %d\n", cpuTime(), elim_heap.size());
         for (int cnt = 0; !elim_heap.empty(); cnt++){
             Var elim = elim_heap.removeMin();
-            
+
             if (asynch_interrupt) break;
 
             if (isEliminated(elim) || value(elim) != l_Undef) continue;
@@ -783,7 +783,7 @@ bool SimpSolver::eliminate_()
     checkGarbage();
 	/*
     if (verbosity >= 1 && elimclauses.size() > 0)
-        printf("c |  Eliminated clauses:     %10.2f Mb                                      |\n", 
+        printf("c |  Eliminated clauses:     %10.2f Mb                                      |\n",
                double(elimclauses.size() * sizeof(uint32_t)) / (1024*1024));
 	*/
 
@@ -823,14 +823,14 @@ void SimpSolver::garbageCollect()
 {
     // Initialize the next region to a size corresponding to the estimated utilization degree. This
     // is not precise but should avoid some unnecessary reallocations for the new region:
-    ClauseAllocator to(ca.size() - ca.wasted()); 
+    ClauseAllocator to(ca.size() - ca.wasted());
 
     to.extra_clause_field = ca.extra_clause_field; // NOTE: this is important to keep (or lose) the extra fields.
     relocAll(to);
     Solver::relocAll(to);
 	/*
     if (verbosity >= 2)
-        printf("c |  Garbage collection:   %12d bytes => %12d bytes             |\n", 
+        printf("c |  Garbage collection:   %12d bytes => %12d bytes             |\n",
                ca.size()*ClauseAllocator::Unit_Size, to.size()*ClauseAllocator::Unit_Size);
 	*/
     to.moveTo(ca);

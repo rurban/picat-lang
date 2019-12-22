@@ -5,7 +5,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 #include <string.h>
 #include <stdlib.h>
@@ -35,17 +35,17 @@ void numberVarTermOpt(term)
     BPLONG arity,i;
 
     SWITCH_OP(term,start,
-              {ASSIGN_TRAIL_VALUE(term,NumberVar(global_var_num));  
+              {ASSIGN_TRAIL_VALUE(term,NumberVar(global_var_num));
                   global_var_num++;},
               {},
               {if (IsNumberedVar(term)) return;
                   ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
-                  if (!IS_HEAP_REFERENCE(ptr)) return; 
+                  if (!IS_HEAP_REFERENCE(ptr)) return;
                   numberVarTermOpt(*ptr);
                   term = *(ptr+1);
                   goto start;},
               {ptr = (BPLONG_PTR)UNTAGGED_ADDR(term);
-                  if (!IS_HEAP_REFERENCE(ptr)) return; 
+                  if (!IS_HEAP_REFERENCE(ptr)) return;
                   arity = GET_ARITY((SYM_REC_PTR)FOLLOW(ptr));
                   for (i = 1; i <= arity; i++){
                       numberVarTermOpt(*(ptr + i));
@@ -73,10 +73,10 @@ unnumberVarTermSwitch:
     switch (TAG(term)){
     case REF:
         NDEREF(term,unnumberVarTermSwitch);
-            
+
     case ATM: return term;
-            
-    case LST: 
+
+    case LST:
         if (IsNumberedVar(term)) {
             varNo = INTVAL(term);
             if (varNo>global_unnumbervar_max){
@@ -209,9 +209,9 @@ BPLONG unnumberVarTerm(term,varVector,maxVarNo)
 int c_NUMBER_VARS(){
     register BPLONG op1,op2,op3;
     register BPLONG_PTR top;
-  
+
     op1 = ARG(1,3); op2 = ARG(2,3); op3 = ARG(3,3);
-  
+
     DEREF(op2);
     if (!ISINT(op2)) {
         bp_exception = c_type_error(et_INTEGER,op2); return BP_ERROR;
@@ -235,7 +235,7 @@ int aux_number_vars__3(op1,n0)
     BPLONG op4;
     BPLONG i,arity;
     BPLONG_PTR top;
-  
+
     LOCAL_OVERFLOW_CHECK("number_vars");
 label1:
 number_vars:
@@ -257,7 +257,7 @@ number_vars:
         goto label1;
     case STR:
         if (op1<0) {
-            fprintf(stderr,"Suspension variables cannot occur in number_vars/3!\n");      
+            fprintf(stderr,"Suspension variables cannot occur in number_vars/3!\n");
             bp_exception = illegal_arguments;
             return BP_ERROR;
         }
@@ -294,13 +294,13 @@ copy_term_shallow:
     case REF:
         NDEREF(term, copy_term_shallow);
         return BP_TRUE;
-            
+
     case ATM:
         return unify(cterm,term);
-            
+
     case LST: {
         BPLONG_PTR ptr;
-          
+
         ptr = heap_top;
         if (heap_top+2 >= local_top){
             myquit(STACK_OVERFLOW,"cp");
@@ -314,7 +314,7 @@ copy_term_shallow:
         BPLONG_PTR term_ptr, ptr;
         SYM_REC_PTR sym_ptr;
         BPLONG  i, arity;
-          
+
         if (IS_SUSP_VAR(term)){
             return BP_TRUE;
         }
@@ -369,9 +369,9 @@ int c_VARS_SET(){
     BPLONG initial_diff0;
 
     /* printf("vars_set local_top=%x heap_top=%x\n",local_top,heap_top); */
-  
+
     term = ARG(1,2);
-  
+
     //  printf("=>vars_set ");  write_term(term); printf("\n");
 
     local_top0 = local_top;
@@ -534,11 +534,11 @@ int c_SINGLETON_VARS(){
         DEREF(pair);
         ptr = (BPLONG_PTR)UNTAGGED_ADDR(pair);
         name = FOLLOW(ptr+1); DEREF(name);
-        var = FOLLOW(ptr+2); 
+        var = FOLLOW(ptr+2);
         sym_ptr = (SYM_REC_PTR)UNTAGGED_ADDR(name);
         name_ptr = GET_NAME(sym_ptr);
         if (is_marked_as_singleton(var) && *name_ptr != '_'){
-            FOLLOW(heap_top) = pair; 
+            FOLLOW(heap_top) = pair;
             FOLLOW(heap_top+1) = vars;
             vars = ADDTAG(heap_top,LST);
             heap_top +=2;
@@ -550,12 +550,12 @@ int c_SINGLETON_VARS(){
     local_top = local_top0;
     return unify(ARG(3,3),vars);
 }
-  
+
 /* extract the variables in term but not ex_term */
 void vars_set_extract_singleton_vars(term)
     BPLONG term;
 {
-    //  printf("local_top=%x heap_top=%x\n",local_top,heap_top); 
+    //  printf("local_top=%x heap_top=%x\n",local_top,heap_top);
 
 start:
     if (TAG(term)==ATM ) return;

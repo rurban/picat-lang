@@ -4,7 +4,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "frame.h"
@@ -41,7 +41,7 @@
 #define ASSIGN_DVAR(dv_ptr,value){					\
     PUSHTRAIL_H_NONATOMIC(dv_ptr,DV_var(dv_ptr));	\
     DV_var(dv_ptr) = value;							\
-    INSERT_TRIGGER_dvar_ins(dv_ptr); } 
+    INSERT_TRIGGER_dvar_ins(dv_ptr); }
 
 #define UPDATE_FIRST_LAST_SIZE(dv_ptr,old_first,first,old_last,last,size){ \
 	if (dv_ptr<hbreg){													\
@@ -90,7 +90,7 @@
 	  DV_size(dv_ptr) = size;							\
 	}													\
 	INSERT_TRIGGER_minmax(dv_ptr);						\
-  } 
+  }
 
 #define UPDATE_SIZE(dv_ptr,old_size,size)		\
   top = A_DV_size(dv_ptr);						\
@@ -282,13 +282,13 @@ typedef struct event_info {
 #define A_THREAD_STATUS(ptr) (ptr+3)
 #define A_THREAD_PRIORITY(ptr) (ptr+4)
 
-#define THREAD_START 0 
+#define THREAD_START 0
 #define THREAD_RUN 1
 #define THREAD_READY 2
 #define THREAD_SLEEP 3
 #define THREAD_EXIT 4
 
-#define TAGGED_THREAD_START MAKEINT(0) 
+#define TAGGED_THREAD_START MAKEINT(0)
 #define TAGGED_THREAD_RUN MAKEINT(1)
 #define TAGGED_THREAD_READY MAKEINT(2)
 #define TAGGED_THREAD_SLEEP MAKEINT(3)

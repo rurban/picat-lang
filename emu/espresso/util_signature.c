@@ -1,6 +1,6 @@
 /* Module:util_signature.c
  * Purpose:
- *	contains miscellaneous utility routines 
+ *	contains miscellaneous utility routines
  * Routines:
  * void set_time_limit(seconds)
  *	sets the cpu time limit

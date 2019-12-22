@@ -7,7 +7,7 @@
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  ********************************************************************/
 
 #include "espresso.h"
@@ -20,7 +20,7 @@ void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA);
 void retrieve_pla_cubes(BPLONG_PTR ptrBNs, pPLA PLA, BPLONG Cls, BPLONG ClsR);
 void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA);
 
-/************************************************************************************************** 
+/**************************************************************************************************
    call_espresso(BNs,InFlag,Vals,Cls,ClsR):
 
    BNs      : A vector of Boolean variable numbers, v(BN0,BN1,...,BN(n-1)), where BNi is ignored if f.
@@ -28,7 +28,7 @@ void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA);
    InFlag   : 1 or 0, indicating if it's a 'X :: D' or 'X notin D' domain constraint.
    Cls-ClsR : A list of clauses to be returned.
 
-   Let V be the variable encoded by BNs (log-encoding), Vals be {a1,a2,...,an}. If InFlag=1, then Cls encodes 
+   Let V be the variable encoded by BNs (log-encoding), Vals be {a1,a2,...,an}. If InFlag=1, then Cls encodes
 
                         V = a1 \/ V = a2 \/ ... \/ V = an.
 
@@ -148,12 +148,12 @@ pPLA init_PLA(int n){
         PLA->D = new_cover(10);
         PLA->R = new_cover(10);
     }
-  
+
     return PLA;
 }
 
-/* 
-   Add each domain value as a cube into PLA. Since CNF is needed, 
+/*
+   Add each domain value as a cube into PLA. Since CNF is needed,
    the output of an in-value is 0, and the output of an out-value is 1.
    Vals must be a sorted list with no duplicates.
 */
@@ -178,7 +178,7 @@ void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA){
         savef = FALSE, saved = FALSE, saver = FALSE;
         cf = cube.temp[0], cr = cube.temp[1], cd = cube.temp[2];
         set_clear(cf, cube.size);
-        
+
         tmp_val = val;
         for(var = 0; var < cube.num_binary_vars; var++){
             if (tmp_val%2 == 1){
@@ -220,7 +220,7 @@ void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA){
                 if (val >= lb && val <= ub){
                     val_is_in = InFlag;
                 } else {
-                    val_is_in = 1-InFlag;                 
+                    val_is_in = 1-InFlag;
                 }
                 if (val == ub){
                     Vals = FOLLOW(lst_ptr+1); DEREF_NONVAR(Vals);
@@ -240,7 +240,7 @@ void setup_PLA(BPLONG Vals, BPLONG InFlag, pPLA PLA){
                 set_insert(cf, i); savef = TRUE;
             }
         }
-        
+
         if (savef) PLA->F = sf_addset(PLA->F, cf);
         if (saved) PLA->D = sf_addset(PLA->D, cd);
         if (saver) PLA->R = sf_addset(PLA->R, cr);
@@ -263,7 +263,7 @@ BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNVect, register pset c)
         int lit = GETINPUT(c, var);
         elm = FOLLOW(ptrBNVect+var+1);
         DEREF_NONVAR(elm);
-        if (ISINT(elm)) {             
+        if (ISINT(elm)) {
             if (lit == 1 || lit == 2){  /* 3 means don't care */
                 if (lit == 2) {
                     elm = INTVAL(elm);
@@ -278,7 +278,7 @@ BPLONG retrieve_pla_cube(BPLONG_PTR ptrBNVect, register pset c)
                 heap_top = heap_top0;
                 return BP_TRUE;           /* this clause is already true because the literal is true */
             }                             /* else this literal is false, and need not be added */
-        }                             
+        }
     }
     FOLLOW(tail_ptr) = nil_sym;
     return lst;
@@ -289,7 +289,7 @@ void retrieve_pla_cubes(BPLONG_PTR ptrBNVect, pPLA PLA, BPLONG Cls, BPLONG ClsR)
     register pcube last, p;
     BPLONG_PTR tail_ptr;
     BPLONG lst;
-  
+
     tail_ptr = &lst;
     foreach_set(PLA->F, last, p) {
         BPLONG cell = retrieve_pla_cube(ptrBNVect, p);
@@ -326,7 +326,7 @@ int c_call_espresso_pb(){
     SYM_REC_PTR sym_ptr;
 
     prep_espresso();
-  
+
     Coes = ARG(1,6); DEREF_NONVAR(Coes);
     Rel = ARG(2,6); DEREF_NONVAR(Rel);
     Const = ARG(3,6); DEREF_NONVAR(Const);
@@ -340,7 +340,7 @@ int c_call_espresso_pb(){
     PLA = init_PLA(n);
 
     //  printf("=>espresso_pb n = %d ",n); write_term(Coes); write_term(BNVect);printf("\n");
-  
+
     setup_PLA_pb(Coes,INTVAL(Rel),INTVAL(Const),PLA);
     //  fprint_pla(curr_out,PLA, FD_type);
 
@@ -355,9 +355,9 @@ int c_call_espresso_pb(){
     return BP_TRUE;
 }
 
-/* 
+/*
    Let Coes = [A1,A2,...,An]. For each value in 0..2**n-1, get the valuation for V1,V2,...,Vn.
-   If the constraint sum(Ai*Vi) Rel Const is true, then the cube is 0; 
+   If the constraint sum(Ai*Vi) Rel Const is true, then the cube is 0;
    otherwise, the cube is 1 (Note it's turned upside down because CNF is computed, not DNF).
 */
 void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA){
@@ -371,7 +371,7 @@ void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA){
 
     needs_dcset = 1;
     needs_offset = 1;
-  
+
     //  printf("read_cubes n=%d 2^n=%d\n",cube.num_binary_vars,2<<(cube.num_binary_vars));
     arg_i = 0;
     coes_ptr = local_top;
@@ -393,7 +393,7 @@ void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA){
         savef = FALSE, saved = FALSE, saver = FALSE;
         cf = cube.temp[0], cr = cube.temp[1], cd = cube.temp[2];
         set_clear(cf, cube.size);
-        
+
         tmp_val = val;
         for(var = 0; var < cube.num_binary_vars; var++){
             if (tmp_val%2 == 1){
@@ -434,7 +434,7 @@ void setup_PLA_pb(BPLONG Coes, BPLONG pb_rel, BPLONG pb_const, pPLA PLA){
                 set_insert(cf, i); savef = TRUE;
             }
         }
-        
+
         if (savef) PLA->F = sf_addset(PLA->F, cf);
         if (saved) PLA->D = sf_addset(PLA->D, cd);
         if (saver) PLA->R = sf_addset(PLA->R, cr);
@@ -467,7 +467,7 @@ int c_call_espresso_table(){
     bp_exception = er;
     return BP_ERROR;
 }
-  
+
 int c_call_espresso_element(){
     BPLONG er  = ADDTAG(BP_NEW_SYM("sat_not_supported",0),ATM);
 
