@@ -44,6 +44,7 @@ January 14, 2013 \\
 \section*{ Module \texttt{basic} (imported by default)}
 \begin{scriptsize}
 \begin{itemize}
+    \item {\tt \verb-\+- $Call$} 
     \item {\tt $X$ \verb+!=+ $Y$} 
     \item {\tt $X$ \verb+!==+ $Y$}
     \item {\tt $X$ \verb+:=+ $Y$} 
@@ -52,6 +53,7 @@ January 14, 2013 \\
     \item {\tt $X$ \verb+=+ $Y$} 
     \item {\tt $X$ \verb+=<+ $Y$} 
     \item {\tt $X$ \verb+=:=+ $Y$}
+    \item {\tt $X$ \verb+=\=+ $Y$}    
     \item {\tt $X$ \verb+==+ $Y$} 
     \item {\tt $X$ \verb+>+ $Y$} 
     \item {\tt $X$ \verb+>=+ $Y$} 
@@ -59,7 +61,8 @@ January 14, 2013 \\
     \item {\tt $X$ @<= $Y$} 
     \item {\tt $X$ @=< $Y$} 
     \item {\tt $X$ @> $Y$} 
-    \item {\tt $X$ @>= $Y$} 
+    \item {\tt $X$ @>= $Y$}
+    \item {\tt $X$\ =..\ $Y$} 
     \item {\tt $Term_1$ \verb-++- $Term_2$ = $List$} 
     \item {\tt \verb+[+$X$ : $I$ in $D$,$\ldots$ \verb+]+ = $List$}
     \item {\tt $L$ \verb+..+ $U$ = $List$} 
@@ -92,7 +95,8 @@ January 14, 2013 \\
     \item \texttt{and\_to\_list($Conj$) = $List$}
     \item \texttt{append($X$,$Y$,$Z$)}  (nondet)
     \item \texttt{append($X$,$Y$,$Z$,$T$)}  (nondet)
-    \item \texttt{apply($S$,$Arg_1$,$\ldots$,$Arg_n$) = $Val$} 
+    \item \texttt{apply($S$,$Arg_1$,$\ldots$,$Arg_n$) = $Val$}
+    \item \texttt{arg($I$,$T$,$A$)}    
     \item \texttt{arity($Struct$) = $Arity$}
     \item \texttt{array($Term$)}
     \item \texttt{ascii\_alpha($Term$)}
@@ -134,6 +138,7 @@ January 14, 2013 \\
     \item \texttt{float($Term$)} 
     \item \texttt{fold($F$,$ACC$,$List$) = $Res$} 
     \item \texttt{freeze($X$,$Goal$)}
+    \item \texttt{functor($T$,$F$,$N$)}
     \item \texttt{get($Map$,$Key$) = $Val$}
     \item \texttt{get($Map$,$Key$,$DefaultVal$)=$Val$} 
     \item \texttt{get\_attr($AttrVar$,$Key$) = $Val$}
@@ -161,7 +166,7 @@ January 14, 2013 \\
     \item \texttt{insert\_ordered\_down($List$,$Term$) = $R$} 
     \item \texttt{int($Term$)} 
     \item \texttt{integer($Term$)} 
-    \item \texttt{is($Exp$,$Exp$)} 
+    \item \texttt{is($T_1$,$T_2$)} 
     \item \texttt{keys($Map$) = $List$} 
     \item \texttt{last($Compound$) = $Term$} 
     \item \texttt{len($Term$) = $Len$} 
@@ -206,6 +211,7 @@ January 14, 2013 \\
     \item \texttt{number($Term$)} 
     \item \texttt{number\_chars($Num$) = $String$} 
     \item \texttt{number\_codes($Num$) = $List$} 
+    \item \texttt{number\_vars($Term$)}
     \item \texttt{number\_vars($Term$,$N_0$) = $N_1$}
     \item \texttt{once $Call$}
     \item \texttt{ord($Char$) = $Int$} 
@@ -420,28 +426,6 @@ January 14, 2013 \\
    \item \texttt{writef($FD$,$Format$,$Args\ldots$)}
    \item \texttt{writeln($FD$,$Term$)}
    \item \texttt{writeln($Term$)}
-\ignore{
-%   \item \texttt{dup($FD$) = $NewFD$}
-%   \item \texttt{dup2($FromFD$,$ToFD$)}
-%   \item \texttt{eof}
-   \item \texttt{peek\_int($FD$) = $Int$}
-   \item \texttt{peek\_real($FD$) = $Real$}
-%   \item \texttt{read\_unicode\_char($FD$) = $Val$}
-%   \item \texttt{read\_unicode\_char($FD$,$N$) = $String$}
-   \item \texttt{getpos($FD$) = $Pos$}
-   \item \texttt{mkfifo($Path$)}
-   \item \texttt{mkfifo($Path$,$Mode$)}
-   \item \texttt{mkpipe() = $FD\_Map$}
-   \item \texttt{mktmp() = $FD$}
-   \item \texttt{peek\_unicode\_char($FD$) = $Val$}
-   \item \texttt{rewind($FD$)}
-   \item \texttt{seek($FD$,$Offset$,$From$)}
-   \item \texttt{setpos($FD$,$Pos$)}
-   \item \texttt{sizeof\_char() = $Size$}
-   \item \texttt{stderr}
-   \item \texttt{stdin}
-   \item \texttt{stdout}
-}
 \end{itemize}
 \end{scriptsize}
 \section*{Module \texttt{ordset}}
@@ -523,7 +507,7 @@ January 14, 2013 \\
 }
 \end{itemize}
 \end{scriptsize}
-\section*{Modules \texttt{cp}, \texttt{sat}, \texttt{smt}, and \texttt{mip}}
+\section*{Modules \texttt{cp}, \texttt{mip}, \texttt{sat}, and \texttt{smt}}
 \begin{scriptsize}
 \begin{itemize}
     \item {\tt \verb+#~+$X$}
@@ -541,6 +525,7 @@ January 14, 2013 \\
     \item {\tt $X$ \verb+#^+ $Y$}
 \item \texttt{$Vars$ :: $Exp$}
 \item \texttt{$Vars$ notin $Exp$}
+\item \texttt{acyclic($Vs$,$Es$)} (sat only)   
 \item \texttt{all\_different($FDVars$)}
 \item \texttt{all\_different\_except\_0($FDVars$)}
 \item \texttt{all\_distinct($FDVars$)}
@@ -571,6 +556,11 @@ January 14, 2013 \\
 \item \texttt{fd\_true($FDVar$,$Elm$)}
 \item \texttt{fd\_vector\_min\_max($Min$,$Max$)}
 \item \texttt{global\_cardinality($List$,$Pairs$)}
+\item \texttt{hcp($Vs$,$Es$)} (sat only)
+\item \texttt{hcp($Vs$,$Es$,$K$)} (sat only)
+\item \texttt{hcp\_grid($A$)} (sat only)
+\item \texttt{hcp\_grid($A$,$Es$)} (sat only)
+\item \texttt{hcp\_grid($A$,$Es$,$K$)} (sat only)
 \item \texttt{increasing($L$)}
 \item \texttt{increasing\_strict($L$)}
 \item \texttt{indomain($Var$)} (nondet) (cp only)
@@ -581,9 +571,14 @@ January 14, 2013 \\
 \item \texttt{neqs($NeqList$)} (cp only)
 \item \texttt{new\_dvar() = $FDVar$}
 \item \texttt{new\_fd\_var() = $FDVar$}
-\item \texttt{regular$(X, Q, S, D, Q0, F)$}
+\item \texttt{path($Vs$,$Es$,$Src$,$Dest$)} (sat only)    
+\item \texttt{regular$(X,Q,S,D,Q0,F)$}
 \item \texttt{scalar\_product($A$,$X$,$Product$)} 
 \item \texttt{scalar\_product($A$,$X$,$Rel$,$Product$)}
+\item \texttt{scc($Vs$,$Es$)} (sat only) 
+\item \texttt{scc($Vs$,$Es$,$K$)} (sat only)
+\item \texttt{scc\_grid($A$)} (sat only) 
+\item \texttt{scc\_grid($A$,$K$)} (sat only) 
 \item \texttt{serialized($Starts$,$Durations$)}
 \item \texttt{solve($Opts$,$Vars$)} (nondet)
 \item \texttt{solve($Vars$)} (nondet)
@@ -592,10 +587,12 @@ January 14, 2013 \\
 \item \texttt{solve\_suspended} (cp only)
 \item \texttt{solve\_suspended($Opt$)} (cp only)
 \item \texttt{subcircuit($FDVars$)}
-\item \texttt{subcircuit\_grid($A$) (sat only)}
-\item \texttt{subcircuit\_grid($A$,$K$) (sat only)} 
+\item \texttt{subcircuit\_grid($A$)} (sat only)
+\item \texttt{subcircuit\_grid($A$,$K$)} (sat only) 
 \item \texttt{table\_in($DVars$,$R$)}
 \item \texttt{table\_notin($DVars$,$R$)}
+\item \texttt{tree($Vs$,$Es$)} (sat only) 
+\item \texttt{tree($Vs$,$Es$,$K$)} (sat only)
 \end{itemize}
 \end{scriptsize}
 \section*{Module \texttt{planner}}  
@@ -604,23 +601,23 @@ January 14, 2013 \\
 \item \texttt{best\_plan($S$,$Limit$,$Plan$)}
 \item \texttt{best\_plan($S$,$Limit$,$Plan$,$Cost$)}
 \item \texttt{best\_plan($S$,$Plan$)}
-\item \texttt{best\_plan($S$,$Plan$,$PlanCost$)}
+\item \texttt{best\_plan($S$,$Plan$,$Cost$)}
 \item \texttt{best\_plan\_bb($S$,$Limit$,$Plan$)}
 \item \texttt{best\_plan\_bb($S$,$Limit$,$Plan$,$Cost$)}
 \item \texttt{best\_plan\_bb($S$,$Plan$)}
-\item \texttt{best\_plan\_bb($S$,$Plan$,$PlanCost$)}
+\item \texttt{best\_plan\_bb($S$,$Plan$,$Cost$)}
 \item \texttt{best\_plan\_bin($S$,$Limit$,$Plan$)}
 \item \texttt{best\_plan\_bin($S$,$Limit$,$Plan$,$Cost$)}
 \item \texttt{best\_plan\_bin($S$,$Plan$)}
-\item \texttt{best\_plan\_bin($S$,$Plan$,$PlanCost$)}
+\item \texttt{best\_plan\_bin($S$,$Plan$,$Cost$)}
 \item \texttt{best\_plan\_nondet($S$,$Limit$,$Plan$)} (nondet)
 \item \texttt{best\_plan\_nondet($S$,$Limit$,$Plan$,$Cost$)} (nondet)
 \item \texttt{best\_plan\_nondet($S$,$Plan$)} (nondet)
-\item \texttt{best\_plan\_nondet($S$,$Plan$,$PlanCost$)} (nondet)
+\item \texttt{best\_plan\_nondet($S$,$Plan$,$Cost$)} (nondet)
 \item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$)}
 \item \texttt{best\_plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}
 \item \texttt{best\_plan\_unbounded($S$,$Plan$)}
-\item \texttt{best\_plan\_unbounded($S$,$Plan$,$PlanCost$)}
+\item \texttt{best\_plan\_unbounded($S$,$Plan$,$Cost$)}
 \item \texttt{current\_plan()=$Plan$}
 \item \texttt{current\_resource()=$Amount$}
 \item \texttt{current\_resource\_plan\_cost($Amount$,$Plan$,$Cost$)}
@@ -628,11 +625,11 @@ January 14, 2013 \\
 \item \texttt{plan($S$,$Limit$,$Plan$)}
 \item \texttt{plan($S$,$Limit$,$Plan$,$Cost$)}
 \item \texttt{plan($S$,$Plan$)}
-\item \texttt{plan($S$,$Plan$,$PlanCost$)}
+\item \texttt{plan($S$,$Plan$,$Cost$)}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$)}
 \item \texttt{plan\_unbounded($S$,$Limit$,$Plan$,$Cost$)}
 \item \texttt{plan\_unbounded($S$,$Plan$)}
-\item \texttt{plan\_unbounded($S$,$Plan$,$PlanCost$)}
+\item \texttt{plan\_unbounded($S$,$Plan$,$Cost$)}
 \end{itemize}
 \end{scriptsize}
 \section*{Module \texttt{nn} (Neural Networks)}
@@ -646,20 +643,20 @@ January 14, 2013 \\
 \item \texttt{nn\_destroy\_all}
 \item \texttt{nn\_load($File$) = $NN$}
 \item \texttt{nn\_print($NN$)}
-\item \texttt{nn\_run($NN$, $Input$) = $Output$}
-\item \texttt{nn\_run($NN$, $Input$, $Opts$) = $Output$}
+\item \texttt{nn\_run($NN$,$Input$) = $Output$}
+\item \texttt{nn\_run($NN$,$Input$,$Opts$) = $Output$}
 \item \texttt{nn\_save($NN$,$File$)}
-\item \texttt{nn\_set\_activation\_function\_hidden($NN$, $Func$)}
-\item \texttt{nn\_set\_activation\_function\_layer($NN$, $Func$, $Layer$)}
-\item \texttt{nn\_set\_activation\_function\_output($NN$, $Func$)}
-\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$, $Steepness$)}
-\item \texttt{nn\_set\_activation\_steepness\_layer($NN$, $Steepness$, $Layer$)}
-\item \texttt{nn\_set\_activation\_steepness\_output($NN$, $Steepness$)}
+\item \texttt{nn\_set\_activation\_function\_hidden($NN$,$Func$)}
+\item \texttt{nn\_set\_activation\_function\_layer($NN$,$Func$,$Layer$)}
+\item \texttt{nn\_set\_activation\_function\_output($NN$,$Func$)}
+\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$,$Steepness$)}
+\item \texttt{nn\_set\_activation\_steepness\_layer($NN$,$Steepness$,$Layer$)}
+\item \texttt{nn\_set\_activation\_steepness\_output($NN$,$Steepness$)}
 \item \texttt{nn\_train($NN$,$Data$)}
 \item \texttt{nn\_train($NN$,$Data$,$Opts$)}
-\item \texttt{nn\_train\_data\_get($Data$, $I$) = $Pair$}
+\item \texttt{nn\_train\_data\_get($Data$,$I$) = $Pair$}
 \item \texttt{nn\_train\_data\_load($File$) = $Data$}
-\item \texttt{nn\_train\_data\_save($Data$, $File$)}
+\item \texttt{nn\_train\_data\_save($Data$,$File$)}
 \item \texttt{nn\_train\_data\_size($Data$) = $Size$}
 \end{itemize}
 \end{scriptsize}
@@ -750,7 +747,7 @@ January 14, 2013 \\
     \item \texttt{send($FD$,$Message$) = $NBytes$}
     \item \texttt{send($FD$,$Message$,$Flags$) = $NBytes$}
     \item \texttt{sendto($FD$,$Message$,$Domain$,$Address$,$Port$) = $NBytes$}
-    \item \texttt{sendto($FD$,$Message$,$Flags$, \\        $Domain$,$Address$,$Port$) = $NBytes$}
+    \item \texttt{sendto($FD$,$Message$,$Flags$,\\        $Domain$,$Address$,$Port$) = $NBytes$}
     \item \texttt{sendto($FD$,$Message$,$Flags$,$Name$) = $NBytes$}
     \item \texttt{sendto($FD$,$Message$,$Name$) = $NBytes$}
     \item \texttt{setsockopt($FD$,$Level$,$Option$,$Value$)}

@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : kapi.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2019
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2023
  *   Purpose: External language interface
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -19,7 +19,7 @@
 #define HALF_WORD_LONG 16
 #endif
 
-SYM_REC_PTR  objectRef;
+SYM_REC_PTR objectRef;
 extern char *string_in;
 char *bp_get_name();
 
@@ -44,7 +44,7 @@ double PvalueOfReal(term)
 BPLONG PvalueOfAddr(term)
     BPLONG term;
 {
-    BPULONG w1,w2;
+    BPULONG w1, w2;
     BPLONG_PTR top;
 
     DEREF(term);
@@ -76,7 +76,7 @@ BPLONG PargOfCompound(term, n)
     BPLONG term;
     BPLONG n;
 {
-    return picat_get_arg(n+1,term);
+    return picat_get_arg(n+1, term);
 }
 
 /* Return functors as strings*/
@@ -101,60 +101,60 @@ char *PnameToAsc(term)
 }
 
 /* UNIFY */
-int Punify(term1,term2)
+int Punify(term1, term2)
     BPLONG term1;
     BPLONG term2;
 {
-    return unify(term1,term2);
+    return unify(term1, term2);
 }
 
-int PuInt(term,i)
+int PuInt(term, i)
     BPLONG term;
     BPLONG i;
 {
     BPLONG op;
-  
+
     op = MAKEINT(i);
-    return unify(term,op);
+    return unify(term, op);
 }
 
-int PuAtom(term,str)
+int PuAtom(term, str)
     BPLONG term;
     char *str;
 {
     BPLONG op = picat_build_atom(str);
-    return unify(term,op);
+    return unify(term, op);
 }
 
-void PuStr(term,str)
+void PuStr(term, str)
     BPLONG term;
     char *str;
 {
-    string2codes(str,term);
+    string2codes(str, term);
 }
 
-int PuAddr(term,a)
+int PuAddr(term, a)
     BPLONG term;
     void *a;
 {
     register BPLONG temp;
 
-    temp = ADDTAG(heap_top,STR);
+    temp = ADDTAG(heap_top, STR);
     NEW_HEAP_NODE((BPLONG)objectRef);  /* '$addr'(int1,int2) */
-    NEW_HEAP_NODE(MAKEINT(((BPULONG)a<<HALF_WORD_LONG)>>HALF_WORD_LONG));     
-    NEW_HEAP_NODE(MAKEINT(((BPULONG)a >>HALF_WORD_LONG)));
-    return unify(term,temp);
+    NEW_HEAP_NODE(MAKEINT(((BPULONG)a << HALF_WORD_LONG) >> HALF_WORD_LONG));
+    NEW_HEAP_NODE(MAKEINT(((BPULONG)a >> HALF_WORD_LONG)));
+    return unify(term, temp);
 }
 
-int PuReal(term,d)
+int PuReal(term, d)
     BPLONG term;
     double d;
 {
-    return unify(term,encodefloat1(d));
+    return unify(term, encodefloat1(d));
 }
 
 /* Create terms */
-BPLONG PnewVar(){
+BPLONG PnewVar() {
     return picat_build_var();
 }
 
@@ -168,7 +168,7 @@ BPLONG create_FUNCTOR(name, arity)
     char * name;
     BPLONG arity;
 {
-    return bp_build_structure(name,arity);
+    return bp_build_structure(name, arity);
 }
 
 BPLONG Pfunctorn(name, arity)
@@ -178,7 +178,7 @@ BPLONG Pfunctorn(name, arity)
     char *str;
 
     str = bp_get_name(name);
-    return bp_build_structure(str,arity);
+    return bp_build_structure(str, arity);
 }
 
 /* Manipulate lists */
@@ -221,11 +221,11 @@ BPLONG PlistCdr(term)
 BPLONG PlistLength(term)
     BPLONG term;
 {
-    register BPLONG len=0;
+    register BPLONG len = 0;
     BPLONG_PTR top;
 
     DEREF(term);
-    while (!PisEndList(term)){
+    while (!PisEndList(term)) {
         len++;
         term = PlistCdr(term);
         DEREF(term);
@@ -236,15 +236,15 @@ BPLONG PlistLength(term)
 BPLONG Plistn(length)
     BPLONG length;
 {
-    BPLONG lst,tail,tmp;
-  
-    if (length<=0) return picat_build_nil();
+    BPLONG lst, tail, tmp;
+
+    if (length <= 0) return picat_build_nil();
     else {
         length--;
         lst = bp_build_list();
         tail = bp_get_cdr(lst);
-        while (length>0){
-            tmp =bp_build_list();
+        while (length > 0) {
+            tmp = bp_build_list();
             FOLLOW(tail) = tmp;
             tail = bp_get_cdr(tmp);
             length--;
@@ -282,13 +282,13 @@ int PinitP(argc, argv)
     int argc;
     char **argv;
 {
-    return initialize_bprolog(argc,argv);
+    return initialize_bprolog(argc, argv);
 }
 
-void jni_interface(){
+void jni_interface() {
 }
 
-void plc_sup(){
+void plc_sup() {
 }
 
 
@@ -297,9 +297,9 @@ void plc_sup(){
 
 
 
-  
 
-  
+
+
 
 
 

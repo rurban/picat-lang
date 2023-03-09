@@ -105,7 +105,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		
 	{
 		GetSystemTimeAsFileTime(&ft);
-		
+		
 			/* The following two lines have been modified to use the named
 			 * union member. Unnamed members are not ANSI C compatible. */ 
 			li.u.LowPart = ft.dwLowDateTime;
@@ -131,7 +131,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	return 0;
 }
 
-
+
 #else	/* _WIN32 */
 	
 #include <sys/time.h>

@@ -71,11 +71,6 @@ of these modules, applications must set the environment
 variable PICATPATH to include the folder, in which the module
 resides, or start picat with the option "-path" set.
 
-This Picat system is distributed under the Mozilla Public
-License (http://mozilla.org/MPL/2.0/). The Picat system is
-provided free of charge for any fair application, including
-commercial applications.
-
 Please contact:
     picat@picat-lang.org
     picat-lang@googlegroups.com 

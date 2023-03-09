@@ -87,7 +87,7 @@ The function \texttt{nn\_load} loads a neural network. The function \texttt{nn\_
 An activation function for a neuron determines how information is propagated to it from its predecessor neurons. When a new neural network is created, it uses the default activation function \texttt{sym\_sigmoid} for all of its non-input neurons. The following predicates can be utilized to set activation functions.
 
 \begin{itemize}
-\item \texttt{nn\_set\_activation\_function\_layer($NN$, $Func$, $Layer$)}\index{\texttt{nn\_set\_activation\_.../3}}: This predicate sets the activation function to $Func$ for all the neurons in layer $Layer$ in the neural network $NN$. Let the number of layers in $NN$ be $n$. Since the first layer is numbered 1, $Layer$ must satisfy $2\ \le\ Layer\ \le n$. The following activation functions are available:
+\item \texttt{nn\_set\_activation\_function\_layer($NN$,$Func$,$Layer$)}\index{\texttt{nn\_set\_activation\_.../3}}: This predicate sets the activation function to $Func$ for all the neurons in layer $Layer$ in the neural network $NN$. Let the number of layers in $NN$ be $n$. Since the first layer is numbered 1, $Layer$ must satisfy $2\ \le\ Layer\ \le n$. The following activation functions are available:
 \begin{itemize}
 \item \texttt{linear}
 \item \texttt{threshold}
@@ -108,15 +108,15 @@ An activation function for a neuron determines how information is propagated to 
 \end{itemize}
 The detault activation function is \texttt{sym\_sigmoid}. Each of these functions has a corresponding name in FANN. Please refer to the FANN documentation for a more detailed description of these functions.
 
-\item \texttt{nn\_set\_activation\_function\_hidden($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation function to $Func$ for all of the hidden layers in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_function\_hidden($NN$,$Func$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation function to $Func$ for all of the hidden layers in the neural network $NN$.
 
-\item \texttt{nn\_set\_activation\_function\_output($NN$, $Func$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation function to $Func$ for the output layer in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_function\_output($NN$,$Func$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation function to $Func$ for the output layer in the neural network $NN$.
 
-\item \texttt{nn\_set\_activation\_steepness\_layer($NN$, $Steepness$, $Layer$)}\index{\texttt{nn\_set\_activation\_.../3}}: This predicate sets the activation steepness for all of the neurons in $Layer$, where $-1\ \le\ Steepness\ \le 1$ and $2 \le Layer\ \le n$ ($n$ is the number of layers in $NN$).  A high steepness value means a more aggressive training. The default steepness is 0.5.
+\item \texttt{nn\_set\_activation\_steepness\_layer($NN$,$Steepness$,$Layer$)}\index{\texttt{nn\_set\_activation\_.../3}}: This predicate sets the activation steepness for all of the neurons in $Layer$, where $-1\ \le\ Steepness\ \le 1$ and $2 \le Layer\ \le n$ ($n$ is the number of layers in $NN$).  A high steepness value means a more aggressive training. The default steepness is 0.5.
 
-\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation steepness to $Steepness$ for all of the hidden layers in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_steepness\_hidden($NN$,$Steepness$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation steepness to $Steepness$ for all of the hidden layers in the neural network $NN$.
 
-\item \texttt{nn\_set\_activation\_steepness\_output($NN$, $Steepness$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation steepness to $Steepness$ for the output layer in the neural network $NN$.
+\item \texttt{nn\_set\_activation\_steepness\_output($NN$,$Steepness$)}\index{\texttt{nn\_set\_activation\_.../2}}: This predicate sets the activation steepness to $Steepness$ for the output layer in the neural network $NN$.
 \end{itemize}
 
 \section{Training Data}
@@ -137,11 +137,11 @@ A training dataset stored in a Picat collection must be either a list or an arra
 \begin{itemize}
 \item \texttt{nn\_train\_data\_size($Data$) = $Size$}\index{\texttt{nn\_train\_data\_size/1}}: This function returns the number of input-output pairs in the dataset $Data$, which is either a file name or a Picat collection.
 
-\item \texttt{nn\_train\_data\_get($Data$, $I$) = $Pair$}\index{\texttt{nn\_train\_data\_get/2}}: This function returns the $I$th pair in the dataset $Data$. Notice that while this function takes linear time when $Data$ is a list, it takes constant time when $Data$ is a file name or an array.\footnote{The data is loaded into an internal array when the dataset is accessed the first time.}
+\item \texttt{nn\_train\_data\_get($Data$,$I$) = $Pair$}\index{\texttt{nn\_train\_data\_get/2}}: This function returns the $I$th pair in the dataset $Data$. Notice that while this function takes linear time when $Data$ is a list, it takes constant time when $Data$ is a file name or an array.\footnote{The data is loaded into an internal array when the dataset is accessed the first time.}
 
 \item \texttt{nn\_train\_data\_load($File$) = $Data$}\index{\texttt{nn\_train\_data\_load/1}}: This function loads a dataset stored in $File$ into a Picat array, and returns the array.
 
-\item \texttt{nn\_train\_data\_save($Data$, $File$)}\index{\texttt{nn\_train\_data\_save/2}}: This predicate saves a dataset in a Picat collection $Data$ into a file named $File$.
+\item \texttt{nn\_train\_data\_save($Data$,$File$)}\index{\texttt{nn\_train\_data\_save/2}}: This predicate saves a dataset in a Picat collection $Data$ into a file named $File$.
 \end{itemize}
 
 \section{Train Neural Networks}
@@ -168,9 +168,9 @@ A training dataset stored in a Picat collection must be either a list or an arra
 \item \texttt{sp\_thresh($X$)}: $X$ is the \texttt{sarprop} step error threshold factor.
 \item \texttt{sp\_shift($X$)}: $X$ is the \texttt{sarprop} step error shift.
 \item \texttt{sp\_temp($X$)}: $X$ is the \texttt{sarprop} temperature.
-\item \texttt{scale(InMin, InMax, OutMin, OutMax)}: use training data scaling.
-\item \texttt{inscale(InMin, InMax)}:  use input data scaling.
-\item \texttt{outscale(OutMin, OutMax)}: use output data scaling.
+\item \texttt{scale($InMin$,$InMax$,$OutMin$,$OutMax$)}: use training data scaling.
+\item \texttt{inscale($InMin$,$InMax$)}:  use input data scaling.
+\item \texttt{outscale($OutMin$,$OutMax$)}: use output data scaling.
 \end{itemize}
 
 \item \texttt{nn\_train($NN$,$Data$)}\index{\texttt{nn\_train/2}}: This predicate is the same as \texttt{nn\_train($NN$,$Data$,[])}.
@@ -185,14 +185,14 @@ A training dataset stored in a Picat collection must be either a list or an arra
 
 \section{Run Neural Networks}
 \begin{itemize}
-\item \texttt{nn\_run($NN$, $Input$, $Opts$) = $Output$}\index{\texttt{nn\_run/3}}: This function predicts the output of a given input using the trained neural network $NN$, where $Input$ is an array of numbers or a single number, and $Opts$ is a list of testing options. The supported testing options include:
+\item \texttt{nn\_run($NN$,$Input$,$Opts$) = $Output$}\index{\texttt{nn\_run/3}}: This function predicts the output of a given input using the trained neural network $NN$, where $Input$ is an array of numbers or a single number, and $Opts$ is a list of testing options. The supported testing options include:
 \begin{itemize}
 \item \texttt{scaleIn($X$)}: $X$ indicates whether or not the input is scaled, with -1 meaning descale, 1 meaning scale, and 0 meaning nothing.
 \item \texttt{scaleOut($X$)}: $X$ indicates whether or not the output is scaled,  with -1 meaning descale, 1 meaning scale, and 0 meaning nothing.	
 \item \texttt{resetMSE}: resets the current mean squared error of the network.
 \end{itemize}
 
-\item \texttt{nn\_run($NN$, $Input$) = $Output$}\index{\texttt{nn\_run/2}}: This function is the same as \texttt{nn\_run($NN$, $Input$, [])}.
+\item \texttt{nn\_run($NN$,$Input$) = $Output$}\index{\texttt{nn\_run/2}}: This function is the same as \texttt{nn\_run($NN$,$Input$,[])}.
 \end{itemize}
 
 \ignore{

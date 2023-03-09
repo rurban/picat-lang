@@ -21,7 +21,7 @@ Once the interpreter is started, users can type a command line after the prompt 
 aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \> \> $OSPrompt$ \texttt{picat $File$ $Arg_1$ $Arg_2$ $\ldots$ $Arg_n$}
 \end{tabbing}
-where $File$ (with or without the extension \texttt{.pi}) is the main file name of the program. The program must define a predicate named \texttt{main/0} or \texttt{main/1}. If the command line contains arguments after the file name, then \texttt{main/1} is executed. Otherwise, if the file name is not followed by any arguments, then \texttt{main/0} is executed. When \texttt{main/1} executed, all of the arguments after the file name are passed to the predicate as a list of strings.
+where $File$ (with or without the extension \texttt{.pi}) is the main file name of the program. The program must define a predicate named \texttt{main/0} or \texttt{main/1}.\footnote{This document occasionally uses the notation $F/N$ when referring to predicates and functions.  When this notation is used, it refers to the predicate or function that is called $F$, which has $N$ arguments.} If the command line contains arguments after the file name, then \texttt{main/1} is executed. Otherwise, if the file name is not followed by any arguments, then \texttt{main/0} is executed. When \texttt{main/1} executed, all of the arguments after the file name are passed to the predicate as a list of strings.
 
 \ignore{
 The OS command \texttt{picatc}\index{\texttt{picatc}} compiles a file (with extension name \texttt{pi}) and all of its dependent files into bytecode files (with extension name \texttt{qi}), and the OS command \texttt{picate}\index{\texttt{picate}} executes a Picat program as a standalone application.\footnote{The executables \texttt{picatc} and \texttt{picate} will be added later.}
@@ -181,9 +181,9 @@ One = 1
 \end{verbatim}
 
 \section{Defining Predicates}
-A predicate\index{predicate} call either succeeds or fails, unless an exception\index{exception} occurs. A predicate\index{predicate} call can return multiple answers through backtracking. The built-in predicate \texttt{true}\index{\texttt{true}} always succeeds, and the built-in predicate \texttt{fail}\index{\texttt{fail}} (or \texttt{false}\index{\texttt{false}}) always fails. A \emph{goal}\index{goal} is made from predicate\index{predicate} calls and statements, including conjunction ($A,B$ and $A\ \&\&\ B$), disjunction ($A;B$ and $A\ ||\ B$), negation (not $A$), if-then-else\index{if statement}, \texttt{foreach} loops\index{foreach loop}, and \texttt{while} loops\index{while loop}.
+A predicate\index{predicate} call either succeeds or fails, unless an exception\index{exception} occurs. A predicate\index{predicate} call can return multiple answers through backtracking. The built-in predicate \texttt{true}\index{\texttt{true}} always succeeds, and the built-in predicate \texttt{fail}\index{\texttt{fail}} (or \texttt{false}\index{\texttt{false}}) always fails. A \emph{goal}\index{goal} is made from predicate\index{predicate} calls and statements, including conjunction ($A,B$), disjunction ($A;B$), negation (not $A$), if-then-else\index{if statement}, \texttt{foreach} loops\index{foreach loop}, and \texttt{while} loops\index{while loop}.
 
-A predicate\index{predicate} is defined with pattern-matching rules. Picat has two types of rules: the non-backtrackable rule\index{non-backtrackable rule} $Head, Cond\ $\verb+=>+$\ Body$, and the backtrackable rule\index{backtrackable rule} $Head, Cond\ $\verb+?=>+$\ Body$. The $Head$ takes the form $p(t_1,\ldots,t_n)$, where $p$ is called the predicate\index{predicate} name, and $n$ is called the arity\index{arity}. When $n=0$, the parentheses can be omitted. The condition $Cond$, which is an optional goal\index{goal}, specifies a condition under which the rule is applicable. For a call $C$, if $C$ matches $Head$ and $Cond$ succeeds, meaning that the condition evaluates to true, the rule is said to be \emph{applicable} to $C$. When applying a rule to call $C$, Picat rewrites $C$ into $Body$. If the used rule is non-backtrackable\index{non-backtrackable rule}, then the rewriting is a commitment, and the program can never backtrack to $C$. If the used rule is backtrackable\index{backtrackable rule}, however, the program will backtrack to $C$ once $Body$ fails, meaning that $Body$ will be rewritten back to $C$, and the next applicable rule will be tried on $C$. 
+A predicate\index{predicate} is defined with pattern-matching rules. Picat has two types of pattern-matching rules: the non-backtrackable rule\index{non-backtrackable rule} $Head, Cond\ $\verb+=>+$\ Body$, and the backtrackable rule\index{backtrackable rule} $Head, Cond\ $\verb+?=>+$\ Body$. The $Head$ takes the form $p(t_1,\ldots,t_n)$, where $p$ is called the predicate\index{predicate} name, and $n$ is called the arity\index{arity}. When $n=0$, the parentheses can be omitted. The condition $Cond$, which is an optional goal\index{goal}, specifies a condition under which the rule is applicable. For a call $C$, if $C$ matches $Head$ and $Cond$ succeeds, meaning that the condition evaluates to true, the rule is said to be \emph{applicable} to $C$. When applying a rule to call $C$, Picat rewrites $C$ into $Body$. If the used rule is non-backtrackable\index{non-backtrackable rule}, then the rewriting is a commitment, and the program can never backtrack to $C$. If the used rule is backtrackable\index{backtrackable rule}, however, the program will backtrack to $C$ once $Body$ fails, meaning that $Body$ will be rewritten back to $C$, and the next applicable rule will be tried on $C$. 
 
 \subsection*{Example}
 \begin{verbatim}
@@ -231,7 +231,21 @@ membchk(X,[_|L]) => membchk(X,L).
 \end{verbatim}
 The first rule is applicable to a call if the second argument is a list\index{list} and the first argument of the call is identical to the first element of the list\index{list}.
 
-Picat allows inclusion of \emph{predicate facts}\index{predicate fact} in the form \texttt{$p$($t_1$,$\ldots$,$t_n$)} in predicate\index{predicate} definitions. Facts\index{predicate fact} are translated into pattern-matching rules before they are compiled. A predicate\index{predicate} definition that consists of facts\index{predicate fact} can be preceded by an \emph{index declaration}\index{index declaration} in the form \texttt{index ($M_{11},\ldots,M_{1n}$) $\ldots$ ($M_{m1},\ldots,M_{mn}$)}\index{\texttt{index}} where each $M_{ij}$ is either $+$ (meaning indexed) or $-$ (meaning not indexed). For each index pattern \texttt{($M_{i1},\ldots,M_{in}$)}, the compiler generates a version of the predicate\index{predicate} that indexes all of the $+$ arguments. 
+\subsection*{\label{section:horn}Horn Clauses}
+Picat supports Prolog-style Horn clauses\index{Horn clause}\index{Prolog}.\footnote{This feature has been supported since version 3.0.} A Horn clause takes the form $Head$\ :-\ $Body$. When $Body$ is \texttt{true}, the clause can be written as $Head$. Let $Head$ be $p(t_1,\ldots,t_n)$. The Horn clause can be translated equivalently to the following pattern-matching rule:
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> $p(V_1,\ldots,V_n)$ \verb+?=>+\ $V_1 = \$t_1$, $\ldots$, $V_n = \$t_n$, $Body$.
+\end{tabbing}
+where the dollar symbols indicate that all of the $t_i$'s are terms, rather than function calls.
+
+A predicate\index{predicate} definition that consists of Horn clauses can be preceded by an \emph{index declaration}\index{index declaration} in the form
+\begin{tabbing}
+aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
+\> \texttt{index ($M_{11},\ldots,M_{1n}$) $\ldots$ ($M_{m1},\ldots,M_{mn}$)}\index{\texttt{index}}
+\end{tabbing}
+where each $M_{ij}$ is either $+$ (meaning indexed) or $-$ (meaning not indexed). When a predicate defined by Horn clauses is not preceded by an index declaration, Picat automatically generates one for the predicate. For each index pattern \texttt{($M_{i1},\ldots,M_{in}$)}, the compiler generates a version of the predicate\index{predicate} that indexes all of the $+$ arguments. An index declaration only affects the efficiency, but not the behavior of the predicate. It is assumed that there is a default version of the predicate that has none of its arguments indexed.
+
 
 \subsection*{Example}
 \begin{verbatim}
@@ -241,20 +255,20 @@ edge(a,c).
 edge(b,c).
 edge(c,b).
 \end{verbatim}
-For a predicate\index{predicate} of indexed facts\index{predicate fact}, a matching version of the predicate\index{predicate} is selected for a call. If no matching version is available, Picat throws an exception\index{exception}. For example, for the call \texttt{edge(X,Y)}, if both \texttt{X} and \texttt{Y} are free\index{free variable}, then no version of the predicate matches this call and Picat throws an exception\index{exception}. If predicate facts\index{predicate fact} are not preceded by any index declaration\index{index declaration}, then no argument is indexed.
+For a predicate of Horn clauses, a matching version of the predicate\index{predicate} is selected for a call. If no matching version is available, Picat uses the default version. For example, for the call \texttt{edge(X,Y)}, if both \texttt{X} and \texttt{Y} are free\index{free variable}, then the default version is used.
 
 \section{Defining Functions}
 A function\index{function} call always succeeds with a return value if no exception\index{exception} occurs. Functions\index{function} are defined with non-backtrackable rules\index{non-backtrackable rule} in which the head is an equation $F$\verb+=+$X$, where $F$ is the function\index{function} pattern in the form $f(t_1,\ldots, t_n)$ and $X$ holds the return value. When $n=0$, the parentheses can be omitted.
 
 \subsection*{Example}
 \begin{verbatim}
-fib(0)=F => F=1.
-fib(1)=F => F=1.
-fib(N)=F,N>1 => F=fib(N-1)+fib(N-2).
+fib(0) = F => F=1.
+fib(1) = F => F=1.
+fib(N) = F, N>1 => F = fib(N-1)+fib(N-2).
 
-qsort([])=L => L=[].
-qsort([H|T])=L => L = qsort([E : E in T, E=<H])++[H]++
-                      qsort([E : E in T, E>H]).
+qsort([]) = L => L=[].
+qsort([H|T]) = L => L = qsort([E : E in T, E=<H]) ++ [H] ++
+                        qsort([E : E in T, E>H]).
 \end{verbatim}
 A function\index{function} call never fails and never succeeds more than once. For function\index{function} calls such as \texttt{fib(-1)} or \texttt{fib(X)}, Picat raises an exception\index{exception}. 
 
@@ -262,19 +276,19 @@ Picat allows inclusion of \emph{function facts}\index{function fact} in the form
 
 \subsection*{Example}
 \begin{verbatim}
-fib(0)=1.    
-fib(1)=1.
-fib(N)=F,N>1 => F=fib(N-1)+fib(N-2).
+fib(0) = 1.    
+fib(1) = 1.
+fib(N) = F, N>1 => F = fib(N-1)+fib(N-2).
 
-qsort([])=[].
+qsort([]) = [].
 qsort([H|T]) =
-    qsort([E : E in T, E=<H])++[H]++qsort([E : E in T, E>H]).
+    qsort([E : E in T, E=<H]) ++ [H] ++ qsort([E : E in T, E>H]).
 \end{verbatim}
 Function facts\index{function fact} are automatically indexed on all of the input arguments, and hence no index declaration\index{index declaration} is necessary. Note that while a predicate\index{predicate} call with no argument does not need parentheses, a function\index{function} call with no argument must be followed with parentheses, unless the function\index{function} is module-quantified, as in \texttt{math.pi}.
 
 The \texttt{fib} function can also be defined as follows:
 \begin{verbatim}
-fib(N) = cond((N=0;N=1),1,fib(N-1)+fib(N-2)).
+fib(N) = cond((N=0;N=1), 1, fib(N-1)+fib(N-2)).
 \end{verbatim}
 The conditional expression returns 1 if the condition \texttt{(N=0;N=1)} is true, and the value of \\ \texttt{fib(N-1)+fib(N-2)} if the condition is false.
 
@@ -298,7 +312,9 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \> \> $Goal$ \\
 \>  \texttt{end} 
 \end{tabbing}
-where each iterator\index{iterator}, $E_i\ in\ D_i$, can be followed by an optional condition $Cond_i$.  Within each iterator\index{iterator}, $E_i$ is an iterating pattern\index{iterator}, and $D_i$ is an expression that gives a compound value\index{compound value}. The \texttt{foreach}\index{foreach loop} statement means that $Goal$ is executed for every possible combination of values $E_1 \in D_1$, $\ldots$, $E_n \in D_n$ that satisfies the conditions \texttt{$Cond_1$}, $\ldots$, \texttt{$Cond_n$}. A while\index{while loop} statement takes the form 
+where each iterator\index{iterator}, $E_i\ in\ D_i$, can be followed by an optional condition $Cond_i$.  Within each iterator\index{iterator}, $E_i$ is an iterating pattern\index{iterator}, and $D_i$ is an expression that gives a compound value\index{compound value}. The \texttt{foreach}\index{foreach loop} statement means that $Goal$ is executed for every possible combination of values $E_1 \in D_1$, $\ldots$, $E_n \in D_n$ that satisfies the conditions \texttt{$Cond_1$}, $\ldots$, \texttt{$Cond_n$}.\footnote{The condition \texttt{break($Cond$)} terminates the loop when $Cond$ is true.}\index{\texttt{break}}
+
+A while\index{while loop} statement takes the form 
 \begin{tabbing}
 aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \> \texttt{while ($Cond$)} \\
@@ -331,14 +347,14 @@ write_map(Map) =>
         writef("%w=%w\n",Key,Value)
     end.
 
-sum_list(L)=Sum =>    % returns sum(L)
+sum_list(L) = Sum =>    % returns sum(L)
     S=0,
     foreach (X in L)
         S:=S+X
     end,
     Sum=S.
 
-read_list=List =>
+read_list = List =>
     L=[],
     E=read_int(),
     while (E != 0) 
@@ -359,9 +375,9 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \end{tabbing}
 Note that the list\index{list} of integers is in reversed order. If users want a list\index{list} in the same order as the input, then the following loop can be used:
 \begin{verbatim}
-read_list=List =>
-    List=L,
-    E=read_int(),
+read_list = List =>
+    List = L,
+    E = read_int(),
     while (E != 0) 
         L = [E|T],
         L := T,
@@ -380,15 +396,15 @@ aa \= aaa \= aaa \= aaa \= aaa \= aaa \= aaa \kill
 \end{tabbing}
 Loop statements are compiled into tail-recursive\index{tail recursion} predicates\index{predicate}. For example, the second \texttt{read\_list} function given above is compiled into:
 \begin{verbatim}
-read_list=List =>
-    List=L,
-    E=read_int(),
+read_list = List =>
+    List = L,
+    E = read_int(),
     p(E,L,Lout),
-    Lout=[].
+    Lout = [].
 
-p(0,Lin,Lout) => Lout=Lin.
+p(0,Lin,Lout) => Lout = Lin.
 p(E,Lin,Lout) => 
-    Lin=[E|Lin1],
+    Lin = [E|Lin1],
     NE = read_int(),
     p(NE,Lin1,Lout).
 \end{verbatim}
@@ -424,15 +440,15 @@ Users can also give table\index{tabling} modes to instruct the system on what an
 \subsection*{Example}
 \begin{verbatim}
 table(+,+,min)
-edit([],[],D) => D=0.
+edit([],[],D) => D = 0.
 edit([X|Xs],[X|Ys],D) =>   
     edit(Xs,Ys,D).
 edit(Xs,[Y|Ys],D) ?=>      % insert
     edit(Xs,Ys,D1),
-    D=D1+1.
+    D = D1+1.
 edit([X|Xs],Ys,D) =>       % delete
     edit(Xs,Ys,D1),
-    D=D1+1.
+    D = D1+1.
 \end{verbatim}
 For a call \texttt{edit(L1,L2,D)}, where \texttt{L1} and \texttt{L2} are given lists\index{list} and \texttt{D} is a variable, the rules can generate all facts, each of which contains a different editing distance between the two lists\index{list}. The table\index{tabling}\index{mode-directed tabling} mode \texttt{table(+,+,min)}\index{\texttt{table}} tells the system to keep a fact with the minimal editing distance. 
 
@@ -460,11 +476,11 @@ Atoms\index{atom} and structure\index{structure} names do not belong to any modu
 % in file my_sum.pi
 module my_sum.
 
-my_sum(L)=Sum =>
+my_sum(L) = Sum =>
    sum_aux(L,0,Sum).
 
 private
-sum_aux([],Sum0,Sum) => Sum=Sum0.
+sum_aux([],Sum0,Sum) => Sum = Sum0.
 sum_aux([X|L],Sum0,Sum) => sum_aux(L,X+Sum0,Sum).
 
 % in file test_my_sum.pi
@@ -486,7 +502,7 @@ The command \texttt{load(File)}\index{\texttt{load/1}} loads a module file\index
 
 The Picat module system is static, meaning that the binding of normal calls to their definitions takes place at compile time. For higher-order calls\index{higher-order call}, however, Picat may need to search for their definitions at runtime. Several built-in modules are imported by default, including  \texttt{basic}, \texttt{io}, \texttt{math},  and \texttt{sys}. For a normal call that is not higher-order in a module, the Picat compiler searches modules for a definition in the following order:
 \begin{enumerate}
-\item The implicitly imported built-in modules in the order from \texttt{basic} to \texttt{sys}.
+\item The implicitly imported built-in modules in the order from \texttt{basic}, \texttt{math}, \texttt{io} to \texttt{sys}.
 \item The enclosing module of the call.
 \item The explicitly imported modules in the order that they were imported.
 \item The global module.
@@ -500,7 +516,7 @@ Picat can be used as a modeling and solving language for constraint\index{constr
 import cp.
 
 go => 
-    Vars=[S,E,N,D,M,O,R,Y],  % generate variables
+    Vars = [S,E,N,D,M,O,R,Y],  % generate variables
     Vars :: 0..9,
     all_different(Vars),     % generate constraints
     S #!= 0,
@@ -560,26 +576,26 @@ The call \texttt{call\_cleanup($Goal$,$Cleanup$)} is equivalent to {\tt call($Ca
 
 
 \section{Higher-Order Calls}
-A predicate\index{predicate} or function\index{function} is said to be \emph{higher-order}\index{higher-order call} if it takes calls as arguments. The built-ins \texttt{call}\index{\texttt{call}}, \texttt{apply}\index{\texttt{apply}}, and \texttt{find\_all}\index{\texttt{find\_all/2}} are higher-order\index{higher-order call}. The predicate \texttt{call($S$,$Arg_1$,$\ldots$,$Arg_n$)}\index{\texttt{call}}, where $S$ is an atom\index{atom} or a structure\index{structure}, calls the predicate named by $S$ with the arguments that are specified in $S$ together with extra arguments $Arg_1$,$\ldots$,$Arg_n$. The function \texttt{apply($S$,$Arg_1$,$\ldots$,$Arg_n$)}\index{\texttt{apply}} is similar to \texttt{call}\index{\texttt{call}}, except that \texttt{apply}\index{\texttt{apply}} returns a value. The function \texttt{findall($Template$,$S$)}\index{\texttt{findall/2}} returns a list\index{list} of all possible solutions of \texttt{call($S$)}\index{\texttt{call}} in the form of $Template$. Other higher-order predicates include \texttt{call\_cleanup/2}\index{\texttt{call\_cleanup/2}}, \texttt{catch/3}\index{\texttt{catch/3}}, \texttt{count\_all}\index{\texttt{count\_all/2}}, \texttt{freeze/2}\index{\texttt{freeze/2}}, \texttt{not/1}\index{\texttt{not/1}}, \texttt{maxof/2-3}\index{\texttt{maxof/2}}\index{\texttt{maxof/3}}, \texttt{maxof\_inc/2-3}\index{\texttt{maxof\_inc/2}}\index{\texttt{maxof\_inc/3}}, \texttt{minof/2-3}\index{\texttt{minof/2}}\index{\texttt{minof/3}}, \texttt{minof\_inc/2-3}\index{\texttt{minof\_inc/2}}\index{\texttt{minof\_inc/3}}, \texttt{once/1}\index{\texttt{once/1}},  \texttt{time/1}\index{\texttt{time/1}}, \texttt{time\_out/3}\index{\texttt{time\_out/3}} and \texttt{time2/1}\index{\texttt{time/1}}. All of these higher-order predicates are defined in the {\tt basic} module, except for \texttt{time/1}, \texttt{time2/1}, and \texttt{time\_out/3}, which are defined in the {\tt sys} module. Higher-order calls cannot contain assignments or loops.
+A predicate\index{predicate} or function\index{function} is said to be \emph{higher-order}\index{higher-order call} if it takes calls as arguments. The built-ins \texttt{call}\index{\texttt{call}}, \texttt{apply}\index{\texttt{apply}}, and \texttt{find\_all}\index{\texttt{find\_all/2}} are higher-order\index{higher-order call}. The predicate \texttt{call($S$,$Arg_1$,$\ldots$,$Arg_n$)}\index{\texttt{call}}, where $S$ is an atom\index{atom} or a structure\index{structure}, calls the predicate named by $S$ with the arguments that are specified in $S$ together with extra arguments $Arg_1$,$\ldots$,$Arg_n$. The function \texttt{apply($S$,$Arg_1$,$\ldots$,$Arg_n$)}\index{\texttt{apply}} is similar to \texttt{call}\index{\texttt{call}}, except that \texttt{apply}\index{\texttt{apply}} returns a value. The function \texttt{findall($Template$,$S$)}\index{\texttt{findall/2}} returns a list\index{list} of all possible solutions of \texttt{call($S$)}\index{\texttt{call}} in the form of $Template$. Other higher-order predicates include \verb-\+/1-\index{{\verb-\+/1-}}, \texttt{call\_cleanup/2}\index{\texttt{call\_cleanup/2}}, \texttt{catch/3}\index{\texttt{catch/3}}, \texttt{count\_all}\index{\texttt{count\_all/2}}, \texttt{freeze/2}\index{\texttt{freeze/2}}, \texttt{maxof/2-3}\index{\texttt{maxof/2}}\index{\texttt{maxof/3}}, \texttt{maxof\_inc/2-3}\index{\texttt{maxof\_inc/2}}\index{\texttt{maxof\_inc/3}}, \texttt{minof/2-3}\index{\texttt{minof/2}}\index{\texttt{minof/3}}, \texttt{minof\_inc/2-3}\index{\texttt{minof\_inc/2}}\index{\texttt{minof\_inc/3}}, \texttt{not/1}\index{\texttt{not/1}}, \texttt{once/1}\index{\texttt{once/1}},  \texttt{time/1}\index{\texttt{time/1}}, \texttt{time2/1}\index{\texttt{time/1}}, and \texttt{time\_out/3}\index{\texttt{time\_out/3}}. All of these higher-order predicates are defined in the {\tt basic} module, except for \texttt{time/1}, \texttt{time2/1}, and \texttt{time\_out/3}, which are defined in the {\tt sys} module. Higher-order calls cannot contain assignments or loops.
 
 \subsection*{Example}
 \begin{verbatim}
-Picat> S=$member(X), call(S,[1,2,3])
-X=1;
-X=2;
-X=3;
+Picat> S = $member(X), call(S,[1,2,3])
+X = 1;
+X = 2;
+X = 3;
 no
 
-Picat> L=findall(X,member(X,[1,2,3])).
-L=[1,2,3]
+Picat> L = findall(X,member(X,[1,2,3])).
+L = [1,2,3]
 
-Picat> Z=apply('+',1,2)
-Z=3
+Picat> Z = apply('+',1,2)
+Z = 3
 \end{verbatim}
 \ignore{
 A lambda term\index{term} in the form \texttt{lambda($VList$,$Exp$)}, where $VList$ is a list\index{list} of input variables, and $Exp$ is an expression, denotes an anonymous function\index{function}. The last command in the example is the same as \texttt{Z=apply(add,1,2)}\index{\texttt{apply}}, where \texttt{add} is a function defined as follows:
 \begin{verbatim}
-add(X,Y)=Z => Z=X+Y.
+add(X,Y) = Z => Z = X+Y.
 \end{verbatim}
 }
 
@@ -590,13 +606,13 @@ The meta-call \texttt{apply}\index{\texttt{apply}} never returns a partially eva
 \subsection*{Example}
 \begin{verbatim}
 map(_F,[]) = [].
-map(F,[X|Xs])=[apply(F,X)|map(F,Xs)].
+map(F,[X|Xs]) = [apply(F,X)|map(F,Xs)].
 
 map2(_F,[],[]) = [].
-map2(F,[X|Xs],[Y|Ys])=[apply(F,X,Y)|map2(F,Xs,Ys)].
+map2(F,[X|Xs],[Y|Ys]) = [apply(F,X,Y)|map2(F,Xs,Ys)].
 
 fold(_F,Acc,[]) = Acc.
-fold(F,Acc,[H|T])=fold(F, apply(F,H,Acc),T).
+fold(F,Acc,[H|T]) = fold(F, apply(F,H,Acc),T).
 \end{verbatim}
 
 A call that is passed to \texttt{apply} is assumed to invoke a definition in a pre-imported built-in module, the enclosing module in which \texttt{apply} occurs, an imported module of the enclosing module, or the global module. Due to the overhead of runtime search, the use of higher-order calls is discouraged. Whenever possible, recursion, loops, or list and array comprehensions should be used instead.
@@ -613,7 +629,7 @@ An event channel is an attributed variable\index{attributed variable} to which a
 
 \subsection*{Example}
 \begin{verbatim}
-echo(X,Flag),var(Flag),{event(X,T)} => writeln(T).
+echo(X,Flag), var(Flag), {event(X,T)} => writeln(T).
 echo(_X,_Flag) => writeln(done).
 
 foo(Flag) => Flag=1.
@@ -646,10 +662,10 @@ install_echo_actor =>
 
 echo(X,Flag),var(Flag),{event(X,T)} => 
     writeln(T), 
-    if (T==done) then Flag=1 end.
+    if (T == done) then Flag=1 end.
 echo(_,_) => true.
 
-loop(Flag),var(Flag) => loop(Flag).
+loop(Flag), var(Flag) => loop(Flag).
 loop(_) => true.
 
 send(N,EchoThread) =>
